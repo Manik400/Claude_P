@@ -1,0 +1,65 @@
+# ---------------------------------------------------------------------------
+# THIS IS A PUBLIC REPOSITORY. Nothing personal goes in it.
+#
+# Every file below is either your identity, your login, or something a stranger
+# could use to impersonate you. The pattern throughout this project is that the
+# *example* is tracked and your filled-in copy is not - so if you add a new
+# config file, add its ignore rule here in the same commit.
+#
+# Before your first push, check what is actually staged:
+#     git status --porcelain
+#     git ls-files | sort
+# ---------------------------------------------------------------------------
+
+# Session state - these files ARE your logins. Never commit them.
+data/state.json
+data/linkedin_state.json
+
+# Extracted profile data (personal) and every run artifact: scan results, the
+# openings pages, the interview study pages, the spreadsheets. All of it is
+# built from your profile and your job history.
+data/*
+!data/.gitkeep
+
+logs/
+
+# Your real config files. Only the examples are tracked.
+#
+# jobs.yaml holds your expected salary, your notice period, your years per
+# skill and the answers sent to recruiters in your name.
+jobs.yaml
+changes.yaml
+# Past employers, project write-ups and expected salary for the scripts/ tools.
+scripts/profile_edits.yaml
+
+# Your resume: the content file and every format it is generated into.
+resume/resume.yaml
+resume/*.docx
+resume/*.txt
+resume/*.pdf
+
+# Analysis written against your own profile and resume. Useful to you,
+# personal in public. Keep new ones in docs/private/ and they stay out.
+docs/interview-prep-gaps.md
+docs/private/
+
+# Anything you drop in to work on locally.
+*.local.yaml
+*.local.json
+.env
+.env.*
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+.pytest_cache/
+.venv/
+venv/
+*.egg-info/
+
+# Editors and OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db

@@ -1,0 +1,353 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
+<style>
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1c2128; --muted: #5f6b7a; --line: #e3e7ec; --soft: #eef1f5;
+    --accent: #2b6cb0; --accent-ink: #ffffff; --accent-soft: #e6f0fb;
+    --good: #1f8a4c; --good-soft: #e3f5ea; --warn: #b7791f; --warn-soft: #fbf1dc; --bad: #c53030; --bad-soft: #fde8e8;
+    --grey-soft: #eceff3; --shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+    --radius: 12px; --font: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1419; --card: #171d25; --ink: #e6e9ee; --muted: #9aa5b4; --line: #2a333f; --soft: #1f2732;
+      --accent: #6ea8ff; --accent-ink: #0b1220; --accent-soft: #1c2c44;
+      --good: #4cc38a; --good-soft: #14301f; --warn: #e0b04a; --warn-soft: #362a10; --bad: #f08a8a; --bad-soft: #3a1717;
+      --grey-soft: #232c37; --shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1419; --card: #171d25; --ink: #e6e9ee; --muted: #9aa5b4; --line: #2a333f; --soft: #1f2732;
+    --accent: #6ea8ff; --accent-ink: #0b1220; --accent-soft: #1c2c44;
+    --good: #4cc38a; --good-soft: #14301f; --warn: #e0b04a; --warn-soft: #362a10; --bad: #f08a8a; --bad-soft: #3a1717;
+    --grey-soft: #232c37; --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 14px/1.45 var(--font); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font: inherit; cursor: pointer; }
+  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+
+  header.top { border-bottom: 1px solid var(--line); background: var(--card); }
+  header.top .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; padding: 14px 16px; }
+  .brand { font-size: 20px; font-weight: 700; letter-spacing: .2px; }
+  .brand span { color: var(--accent); }
+  .criteria { color: var(--muted); }
+  .criteria b { color: var(--ink); font-weight: 600; }
+  .spacer { flex: 1; }
+  .stat { color: var(--muted); font-size: 13px; }
+  .stat b { color: var(--ink); }
+  .iconbtn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 4px 10px; font-size: 13px; }
+  .iconbtn:hover { background: var(--soft); }
+
+  nav.tabs { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+  nav.tabs .wrap { display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px; scrollbar-width: thin; }
+  .tab { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 12px; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .tab .n { background: var(--soft); border-radius: 999px; padding: 0 8px; font-size: 12px; color: var(--muted); }
+  .tab.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .tab.active .n { background: rgba(255,255,255,.25); color: inherit; }
+
+  section.controls .wrap { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 12px 16px; }
+  .controls input[type=search] { flex: 1 1 260px; min-width: 200px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+  .controls select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+  .chips { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: 4px 10px; font-size: 12px; }
+  .chip.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .range { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
+  .range input { width: 120px; }
+  details.srcs { margin: 0 0 6px; }
+  details.srcs summary { cursor: pointer; color: var(--muted); font-size: 13px; }
+  .srcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; padding: 8px 0 4px; font-size: 12.5px; }
+  .srcgrid .ok { color: var(--good); } .srcgrid .blocked { color: var(--bad); } .srcgrid .error { color: var(--warn); }
+  .srcgrid .cc { color: var(--muted); }
+  .direct { color: var(--muted); font-size: 13px; padding: 4px 0 10px; }
+  .direct a { margin-right: 10px; white-space: nowrap; }
+
+  main .wrap { padding: 6px 16px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 12px; }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+  .card.applied { border-color: var(--good); }
+  .card.saved { border-left: 4px solid var(--warn); }
+  .card.hidden-job { opacity: .55; }
+  .card .head { display: flex; gap: 12px; align-items: flex-start; }
+  .card .title { font-size: 16px; font-weight: 650; line-height: 1.3; }
+  .card .title a { color: var(--ink); }
+  .card .sub { color: var(--muted); font-size: 13px; margin-top: 2px; }
+  .card .sub b { color: var(--ink); font-weight: 600; }
+  .ring { flex: 0 0 auto; width: 52px; height: 52px; position: relative; }
+  .ring svg { width: 52px; height: 52px; transform: rotate(-90deg); }
+  .ring .v { position: absolute; inset: 0; display: grid; place-items: center; font-size: 14px; font-weight: 700; }
+  .ring .lbl { position: absolute; left: 0; right: 0; bottom: -14px; text-align: center; font-size: 10px; color: var(--muted); }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .b { font-size: 11.5px; border-radius: 6px; padding: 2px 7px; background: var(--grey-soft); color: var(--muted); white-space: nowrap; }
+  .b.src { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .b.fit-fit { background: var(--good-soft); color: var(--good); font-weight: 600; }
+  .b.fit-stretch { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+  .b.fit-over { background: var(--soft); color: var(--muted); }
+  .b.fit-no { background: var(--bad-soft); color: var(--bad); }
+  .b.fit-unknown { background: var(--grey-soft); color: var(--muted); }
+  .b.remote { background: var(--soft); color: var(--ink); }
+  .skills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .sk { font-size: 11.5px; border-radius: 999px; padding: 2px 8px; border: 1px solid var(--line); color: var(--muted); }
+  .sk.hit { border-color: transparent; background: var(--good-soft); color: var(--good); }
+  .sk.miss { border-color: transparent; background: var(--bad-soft); color: var(--bad); }
+  .snip { color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .card.open .snip { display: block; -webkit-line-clamp: unset; max-height: 400px; overflow: auto; }
+  .more { color: var(--accent); font-size: 12px; background: none; border: 0; padding: 0; align-self: flex-start; }
+  .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; align-items: center; }
+  .btn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 7px 12px; font-size: 13px; }
+  .btn:hover { background: var(--soft); text-decoration: none; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.on { background: var(--good-soft); color: var(--good); border-color: transparent; }
+  .btn.warn.on { background: var(--warn-soft); color: var(--warn); }
+  .empty { color: var(--muted); padding: 40px 0; text-align: center; }
+  footer .wrap { color: var(--muted); font-size: 12px; padding: 20px 16px 40px; border-top: 1px solid var(--line); }
+  @media print { nav.tabs, section.controls, .actions, .iconbtn { display: none !important; } .card { break-inside: avoid; box-shadow: none; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand">Job<span>Hunt</span></div>
+  <div class="criteria" id="criteria"></div>
+  <div class="spacer"></div>
+  <div class="stat" id="stats"></div>
+  <button class="iconbtn" id="theme" title="Toggle light/dark">◐</button>
+</div></header>
+
+<nav class="tabs"><div class="wrap" id="tabs"></div></nav>
+
+<section class="controls"><div class="wrap">
+  <input type="search" id="q" placeholder="Search title, company, skills…">
+  <span class="range" id="scoreRange"><label for="minScore">Min score</label><input type="range" id="minScore" min="0" max="100" step="5" value="0"><b id="minScoreV">0</b></span>
+  <span class="chips" id="fitChips"></span>
+  <select id="remote"><option value="any">Remote: any</option><option value="only">Remote only</option><option value="no">On-site / hybrid only</option></select>
+  <select id="sort"></select>
+  <select id="srcSel"><option value="">All sources</option></select>
+  <span class="chips">
+    <button class="chip" id="onlySaved">★ Saved</button>
+    <button class="chip" id="hideApplied">Hide applied</button>
+    <button class="chip" id="showHidden">Show hidden</button>
+    <button class="chip" id="titleOnly">Title match only</button>
+  </span>
+  <button class="iconbtn" id="csv">Export CSV</button>
+  <button class="iconbtn" id="reset">Reset</button>
+</div></section>
+
+<main><div class="wrap">
+  <details class="srcs" id="srcPanel"><summary id="srcSummary">Sources</summary><div class="srcgrid" id="srcGrid"></div></details>
+  <div class="direct" id="direct"></div>
+  <div class="grid" id="list"></div>
+</div></main>
+
+<footer><div class="wrap" id="foot"></div></footer>
+
+<script id="data" type="application/json">__DATA__</script>
+<script>
+(function () {
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const META = DATA.meta || {};
+  const JOBS = DATA.jobs || [];
+  const COUNTRIES = DATA.countries || [];
+  const SCORED = JOBS.some(j => j.score !== null && j.score !== undefined);
+  const STATE_KEY = 'jobhunt:state';
+  const UI_KEY = 'jobhunt:ui:' + (META.run_id || 'run');
+
+  function load(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+  const S = Object.assign({ applied: {}, saved: {}, hidden: {} }, load(STATE_KEY, {}));
+  const ui = Object.assign({
+    country: 'ALL', q: '', minScore: 0, fits: ['fit', 'stretch', 'unknown', 'over'], remote: 'any',
+    sort: SCORED ? 'score' : 'fit', src: '', onlySaved: false, hideApplied: false, showHidden: false, titleOnly: false,
+  }, load(UI_KEY, {}));
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // theme
+  const savedTheme = load('jobhunt:theme', null);
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+  $('theme').onclick = () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next); save('jobhunt:theme', next);
+  };
+
+  // header
+  const roles = (META.roles || []).join(', ');
+  const exp = META.experience_label ? ` · <b>${esc(META.experience_label)}</b> experience` : '';
+  const cs = COUNTRIES.filter(c => c.code !== 'REMOTE').map(c => c.flag + ' ' + c.name).join(', ');
+  $('criteria').innerHTML = `<b>${esc(roles)}</b>${exp} · ${esc(cs)}${META.resume_name ? ' · scored against <b>' + esc(META.resume_name) + '</b>' : ''} · ${esc(META.generated || '')}`;
+  const okSources = new Set((DATA.sources || []).filter(s => s.status === 'ok' && s.count > 0).map(s => s.source_name));
+  const blocked = new Set((DATA.sources || []).filter(s => s.status !== 'ok').map(s => s.source_name));
+  $('stats').innerHTML = `<b>${JOBS.length}</b> jobs · <b>${okSources.size}</b> sources${blocked.size ? ` · <span title="${esc([...blocked].join(', '))}">${blocked.size} unavailable</span>` : ''}`;
+
+  // sources panel
+  const grid = $('srcGrid');
+  const bySrc = {};
+  (DATA.sources || []).forEach(s => { (bySrc[s.source_name] = bySrc[s.source_name] || []).push(s); });
+  grid.innerHTML = Object.keys(bySrc).sort().map(name => {
+    const rows = bySrc[name];
+    const total = rows.reduce((a, r) => a + (r.count || 0), 0);
+    const bad = rows.filter(r => r.status !== 'ok');
+    const cls = bad.length === rows.length ? (bad[0].status) : 'ok';
+    const detail = rows.map(r => `${r.country}${r.status === 'ok' ? ':' + r.count : ' ' + r.status}`).join(' ');
+    return `<div><span class="${cls}">●</span> ${esc(name)} <b>${total}</b> <span class="cc" title="${esc(bad.map(b => b.error || '').join('\n'))}">${esc(detail)}</span></div>`;
+  }).join('');
+  $('srcSummary').textContent = `Sources (${Object.keys(bySrc).length}) — click to see per-country counts; blocked platforms have direct search links under each country tab`;
+
+  // fit chips
+  const FITS = [['fit', 'Fit'], ['stretch', 'Stretch'], ['unknown', 'Unknown'], ['over', 'Overqualified'], ['no', 'Too senior']];
+  function renderFitChips() {
+    $('fitChips').innerHTML = FITS.map(([k, l]) => `<button class="chip ${ui.fits.includes(k) ? 'on' : ''}" data-fit="${k}">${l}</button>`).join('');
+  }
+  $('fitChips').onclick = e => {
+    const b = e.target.closest('[data-fit]'); if (!b) return;
+    const k = b.dataset.fit; ui.fits = ui.fits.includes(k) ? ui.fits.filter(x => x !== k) : ui.fits.concat(k); persist(); render();
+  };
+
+  // sort options
+  const SORTS = SCORED ? [['score', 'Best match'], ['date', 'Newest'], ['fit', 'Experience fit'], ['relevance', 'Title relevance'], ['company', 'Company A–Z']]
+                       : [['fit', 'Experience fit'], ['date', 'Newest'], ['relevance', 'Title relevance'], ['company', 'Company A–Z']];
+  $('sort').innerHTML = SORTS.map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
+  if (!SCORED) $('scoreRange').style.display = 'none';
+
+  // source select
+  const srcNames = [...new Set(JOBS.map(j => j.source_name))].sort();
+  $('srcSel').innerHTML = '<option value="">All sources</option>' + srcNames.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+
+  // tabs
+  function renderTabs(counts) {
+    const tabs = [{ code: 'ALL', name: 'All', flag: '' }].concat(COUNTRIES);
+    $('tabs').innerHTML = tabs.map(c => `<button class="tab ${ui.country === c.code ? 'active' : ''}" data-cc="${c.code}">${c.flag ? c.flag + ' ' : ''}${esc(c.name)} <span class="n">${counts[c.code] || 0}</span></button>`).join('');
+  }
+  $('tabs').onclick = e => { const b = e.target.closest('[data-cc]'); if (!b) return; ui.country = b.dataset.cc; persist(); render(); window.scrollTo({ top: 0 }); };
+
+  // controls wiring
+  $('q').value = ui.q; $('minScore').value = ui.minScore; $('minScoreV').textContent = ui.minScore; $('remote').value = ui.remote; $('sort').value = ui.sort; $('srcSel').value = ui.src;
+  $('q').oninput = () => { ui.q = $('q').value; persist(); render(); };
+  $('minScore').oninput = () => { ui.minScore = +$('minScore').value; $('minScoreV').textContent = ui.minScore; persist(); render(); };
+  $('remote').onchange = () => { ui.remote = $('remote').value; persist(); render(); };
+  $('sort').onchange = () => { ui.sort = $('sort').value; persist(); render(); };
+  $('srcSel').onchange = () => { ui.src = $('srcSel').value; persist(); render(); };
+  ['onlySaved', 'hideApplied', 'showHidden', 'titleOnly'].forEach(k => { $(k).onclick = () => { ui[k] = !ui[k]; persist(); render(); }; });
+  $('reset').onclick = () => { Object.assign(ui, { q: '', minScore: 0, fits: ['fit', 'stretch', 'unknown', 'over'], remote: 'any', src: '', onlySaved: false, hideApplied: false, showHidden: false, titleOnly: false }); $('q').value = ''; $('minScore').value = 0; $('minScoreV').textContent = 0; $('remote').value = 'any'; $('srcSel').value = ''; persist(); render(); };
+  $('csv').onclick = () => {
+    const rows = [['country', 'title', 'company', 'location', 'source', 'posted', 'salary', 'fit', 'exp_min', 'exp_max', 'score', 'matched_skills', 'missing_skills', 'url', 'applied', 'saved']];
+    visible().forEach(j => rows.push([j.country, j.title, j.company, j.location, j.source_name, j.posted || '', j.salary, j.fit, j.exp_min ?? '', j.exp_max ?? '', j.score ?? '', (j.matched_skills || []).join('; '), (j.missing_skills || []).join('; '), j.url, S.applied[j.id] ? 'yes' : '', S.saved[j.id] ? 'yes' : '']));
+    const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'jobs.csv'; a.click();
+  };
+  function persist() { save(UI_KEY, ui); }
+
+  // filtering
+  function passes(j, ignoreCountry) {
+    if (!ignoreCountry && ui.country !== 'ALL' && j.country !== ui.country) return false;
+    if (S.hidden[j.id] && !ui.showHidden) return false;
+    if (ui.hideApplied && S.applied[j.id]) return false;
+    if (ui.onlySaved && !S.saved[j.id]) return false;
+    if (!ui.fits.includes(j.fit || 'unknown')) return false;
+    if (SCORED && ui.minScore > 0 && (j.score == null || j.score < ui.minScore)) return false;
+    if (ui.remote === 'only' && !j.remote) return false;
+    if (ui.remote === 'no' && j.remote === true) return false;
+    if (ui.src && j.source_name !== ui.src) return false;
+    if (ui.titleOnly && !(j.relevance >= 0.75)) return false;
+    if (ui.q) {
+      const q = ui.q.toLowerCase();
+      const hay = [j.title, j.company, j.location, (j.skills || []).join(' '), (j.matched_skills || []).join(' '), j.snippet].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+  const FIT_RANK = { fit: 0, unknown: 1, stretch: 2, over: 3, no: 4 };
+  function sorter(a, b) {
+    switch (ui.sort) {
+      case 'score': return (b.score ?? -1) - (a.score ?? -1) || (FIT_RANK[a.fit] - FIT_RANK[b.fit]) || (b.posted || '').localeCompare(a.posted || '');
+      case 'date': return (b.posted || '').localeCompare(a.posted || '') || (b.score ?? -1) - (a.score ?? -1);
+      case 'fit': return (FIT_RANK[a.fit] - FIT_RANK[b.fit]) || (b.score ?? -1) - (a.score ?? -1) || (b.relevance - a.relevance) || (b.posted || '').localeCompare(a.posted || '');
+      case 'relevance': return (b.relevance - a.relevance) || (b.score ?? -1) - (a.score ?? -1);
+      case 'company': return (a.company || '').localeCompare(b.company || '') || (b.score ?? -1) - (a.score ?? -1);
+    }
+    return 0;
+  }
+  function visible() { return JOBS.filter(j => passes(j, false)).sort(sorter); }
+
+  // rendering
+  function ago(iso) {
+    if (!iso) return '';
+    const d = Math.round((Date.now() - new Date(iso + 'T00:00:00Z').getTime()) / 86400000);
+    if (d <= 0) return 'today'; if (d === 1) return 'yesterday'; if (d < 30) return d + 'd ago'; return Math.round(d / 30) + 'mo ago';
+  }
+  function ring(score, conf) {
+    if (score == null) return '';
+    const col = score >= 70 ? 'var(--good)' : score >= 45 ? 'var(--warn)' : 'var(--muted)';
+    const r = 22, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(100, score)) / 100);
+    return `<div class="ring" title="Resume match ${score} (${conf || ''} confidence)"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="${r}" fill="none" stroke="var(--line)" stroke-width="5"/><circle cx="26" cy="26" r="${r}" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/></svg><div class="v">${Math.round(score)}</div><div class="lbl">${conf === 'low' ? 'title only' : 'match'}</div></div>`;
+  }
+  function expLabel(j) {
+    if (j.exp_min == null && j.exp_max == null) return j.seniority ? j.seniority : '';
+    if (j.exp_min != null && j.exp_max != null && j.exp_min !== j.exp_max) return `${j.exp_min}–${j.exp_max} yrs`;
+    if (j.exp_min != null) return `${j.exp_min}${j.exp_max == null ? '+' : ''} yrs`;
+    return `up to ${j.exp_max} yrs`;
+  }
+  const FIT_LABEL = { fit: 'Fit', stretch: 'Stretch', unknown: 'Exp. unknown', over: 'Overqualified', no: 'Too senior' };
+  function card(j) {
+    const applied = !!S.applied[j.id], saved = !!S.saved[j.id], hidden = !!S.hidden[j.id];
+    const matched = new Set(j.matched_skills || []), missing = new Set(j.missing_skills || []);
+    const tagSkills = (j.skills || []).filter(s => !matched.has(s) && !missing.has(s)).slice(0, 8);
+    const skills = [...matched].map(s => `<span class="sk hit" title="in your resume">${esc(s)}</span>`)
+      .concat([...missing].map(s => `<span class="sk miss" title="asked for, not in your resume">${esc(s)}</span>`))
+      .concat(tagSkills.map(s => `<span class="sk">${esc(s)}</span>`)).join('');
+    const eligible = (j.extra && j.extra.eligible && j.extra.eligible.length) ? `<span class="b remote" title="Countries this remote job is open to">open to: ${esc(j.extra.eligible.join(', '))}</span>` : '';
+    const country = COUNTRIES.find(c => c.code === j.country);
+    const text = j.description && j.description.length > (j.snippet || '').length ? j.description : (j.snippet || '');
+    return `<article class="card ${applied ? 'applied' : ''} ${saved ? 'saved' : ''} ${hidden ? 'hidden-job' : ''}" data-id="${j.id}">
+      <div class="head">${ring(j.score, j.extra && j.extra.score_confidence)}<div style="flex:1;min-width:0">
+        <div class="title"><a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.title)}</a></div>
+        <div class="sub"><b>${esc(j.company || '—')}</b>${j.location ? ' · ' + esc(j.location) : ''}${ui.country === 'ALL' && country ? ' · ' + country.flag : ''}${j.posted ? ' · ' + ago(j.posted) : ''}${j.salary ? ' · ' + esc(j.salary) : ''}${j.employment_type ? ' · ' + esc(j.employment_type) : ''}</div>
+      </div></div>
+      <div class="badges"><span class="b src">${esc(j.source_name)}</span>${(j.also_on || []).map(a => `<span class="b">also on ${esc(a)}</span>`).join('')}<span class="b fit-${j.fit}">${FIT_LABEL[j.fit] || j.fit}</span>${expLabel(j) ? `<span class="b">${esc(expLabel(j))}</span>` : ''}${j.remote ? '<span class="b remote">remote</span>' : ''}${eligible}${j.extra && j.extra.relocation_paid ? '<span class="b remote">relocation paid</span>' : ''}${j.extra && j.extra.japanese_level ? `<span class="b">JP: ${esc(j.extra.japanese_level)}</span>` : ''}</div>
+      ${skills ? `<div class="skills">${skills}</div>` : ''}
+      ${text ? `<div class="snip">${esc(text)}</div><button class="more" data-act="more">more</button>` : ''}
+      <div class="actions">
+        <a class="btn primary" href="${esc(j.url)}" target="_blank" rel="noopener" data-act="apply">Apply ↗</a>
+        <button class="btn ${applied ? 'on' : ''}" data-act="applied">${applied ? '✓ Applied' : 'Mark applied'}</button>
+        <button class="btn warn ${saved ? 'on' : ''}" data-act="save">${saved ? '★ Saved' : '☆ Save'}</button>
+        <button class="btn" data-act="hide">${hidden ? 'Unhide' : 'Hide'}</button>
+      </div>
+    </article>`;
+  }
+  function render() {
+    renderFitChips();
+    ['onlySaved', 'hideApplied', 'showHidden', 'titleOnly'].forEach(k => $(k).classList.toggle('on', !!ui[k]));
+    const counts = { ALL: 0 };
+    JOBS.forEach(j => { if (passes(j, true)) { counts.ALL++; counts[j.country] = (counts[j.country] || 0) + 1; } });
+    renderTabs(counts);
+    const cur = COUNTRIES.find(c => c.code === ui.country);
+    $('direct').innerHTML = cur && cur.links && cur.links.length ? `Search directly on: ${cur.links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.name)} ↗</a>`).join('')}` : (ui.country === 'ALL' ? 'Pick a country tab to see one-click search links for platforms that block automated search (Indeed, Glassdoor, Naukri, StepStone…).' : '');
+    const vis = visible();
+    $('list').innerHTML = vis.length ? vis.map(card).join('') : '<div class="empty">No jobs match the current filters.</div>';
+    $('foot').innerHTML = `Showing ${vis.length} of ${JOBS.length} jobs · generated by the job-hunt skill ${META.generated ? 'on ' + esc(META.generated) : ''} · ${META.version ? 'jobbot v' + esc(META.version) : ''}<br>Applied / saved / hidden marks are stored in this browser only. Scores are a lexical estimate (skills overlap + text similarity + experience fit) — read the posting before applying.`;
+  }
+  $('list').onclick = e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const art = b.closest('.card'); const id = art.dataset.id; const act = b.dataset.act;
+    if (act === 'apply') { S.applied[id] = S.applied[id] || Date.now(); save(STATE_KEY, S); setTimeout(render, 300); return; }
+    if (act === 'more') { art.classList.toggle('open'); b.textContent = art.classList.contains('open') ? 'less' : 'more'; return; }
+    e.preventDefault();
+    if (act === 'applied') { if (S.applied[id]) delete S.applied[id]; else S.applied[id] = Date.now(); }
+    if (act === 'save') { if (S.saved[id]) delete S.saved[id]; else S.saved[id] = Date.now(); }
+    if (act === 'hide') { if (S.hidden[id]) delete S.hidden[id]; else S.hidden[id] = Date.now(); }
+    save(STATE_KEY, S); render();
+  };
+  render();
+})();
+</script>
+</body>
+</html>

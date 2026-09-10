@@ -1,0 +1,94 @@
+# Data for the one-off profile scripts in this folder.
+#
+#   cp scripts/profile_edits.example.yaml scripts/profile_edits.yaml
+#
+# profile_edits.yaml is gitignored. Past employers, project write-ups and your
+# expected salary are personal; only this template is tracked.
+#
+# Every section is optional - fill in only the one the script you are running
+# needs, and it will tell you which that is. These scripts type into your LIVE
+# profile, so read what you have written here before running one.
+#
+# For the everyday edits (headline, summary, key skills), use `changes.yaml`
+# and `python main.py --apply` instead. These scripts exist for the parts of
+# Naukri's profile that have their own dialogs and no equivalent in changes.yaml.
+
+# --- scripts/add_past_employment.py -----------------------------------------
+#
+# Naukri drops the salary, notice-period and key-skill fields once a job is
+# marked as past, so a previous role needs only these five things.
+#
+# Recruiter search filters on the total-experience header, NOT on the sum of
+# these entries - so after adding past roles, run set_total_experience.py too
+# or the additions buy you no visibility.
+past_employment:
+  - company: Previous Company Pvt. Ltd.
+    designation: Your Title There
+    from: [Oct, 2021]          # [month, year], month as Naukri spells it
+    to: [Oct, 2022]
+    desc: >-
+      Two or three sentences on what you owned and what improved. This is the
+      same material as the resume bullets for this role, written as prose.
+
+# --- scripts/add_project.py --------------------------------------------------
+project:
+  title: Project Title As You Want It Displayed
+  # Which employment entry this project hangs off. Matched as a substring
+  # against the dropdown, so a distinctive fragment of the company name is enough.
+  employment: Your Current Company
+  # Naukri makes this mandatory. If the product is your employer's own, the
+  # employer is the client.
+  client: Your Current Company Pvt. Ltd.
+  details: >-
+    What the project is, what you built, which tools, and what it covers. Four
+    or five sentences. This is indexed by recruiter search, so name the
+    technologies explicitly rather than describing them.
+
+# --- scripts/fix_worksample.py -----------------------------------------------
+#
+# The Work Sample section takes a public URL. A GitHub repository a reviewer can
+# open in ten seconds is worth more than any description of one.
+work_sample:
+  # Exact title of the existing work sample to edit, as it appears on your profile.
+  title: API Framework Using Playwright with Python
+  # No .git suffix - that is the clone URL and it 404s in a browser.
+  url: https://github.com/yourhandle/your-repo
+  description: >-
+    What the repository contains and what it demonstrates. Three or four
+    sentences naming the tools.
+
+# --- scripts/repair_skills.py ------------------------------------------------
+#
+# Key skills are ordered and earlier entries weigh more in recruiter matching.
+# This script keeps only `keep`, drops everything else, then adds `add` in order.
+#
+# Mirror the exact wording of the postings you want, including the spellings
+# recruiters actually type.
+key_skills:
+  keep:
+    - python
+    - sql
+    - git
+  add:
+    - Backend Development
+    - REST API
+    - Django
+    - Docker
+    - CI/CD
+    - Microservices
+
+# --- scripts/career_profile.py -----------------------------------------------
+#
+# The Career Profile block: the role you want to be found for, and your expected
+# salary. Both are recruiter search filters.
+career_profile:
+  # Must match one of Naukri's own role options - the script prints the
+  # available matches if yours does not.
+  role: Software Developer
+  # Digits and commas, exactly as Naukri formats it.
+  expected_salary: "18,00,000"
+  # Optional safety check: the script refuses to run unless the role currently
+  # on your profile is this. Set it to what your profile says today, so a
+  # mis-click on a different dialog cannot silently overwrite something else.
+  # Delete the line to skip the check.
+  expect_current_role: Your Current Role On Naukri

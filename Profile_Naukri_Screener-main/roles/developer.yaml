@@ -1,0 +1,175 @@
+# Software developer - backend, frontend or full stack.
+#
+# Inherits roles/_common.yaml, which already carries the languages, cloud, CI/CD
+# and database vocabulary. This file adds frameworks, design and the things an
+# engineering interview actually turns on.
+#
+# If you are specifically frontend or specifically backend, trim the half you
+# do not do. A lexicon entry that never matches your resume shows up as a Gap
+# on the study page and pulls questions toward skills you were never hiring for.
+
+label: Software Developer
+primary_role: Software Engineer
+
+seed_keywords:
+  - Software Engineer
+  - Backend Developer
+  - Full Stack Developer
+  - Python Developer
+
+searches:
+  - {keyword: Software Engineer, location: null}
+  - {keyword: Backend Developer, location: null}
+  - {keyword: Full Stack Developer, location: remote}
+  - {keyword: Python Developer, location: null}
+  - {keyword: Java Developer, location: null}
+
+must_have_any:
+  - developer
+  - engineer
+  - software development
+  - programming
+  - backend
+  - frontend
+  - full stack
+  - application development
+
+exclude_title_keywords:
+  - sales
+  - recruiter
+  - business development
+  # A developer searching "engineer" collects a lot of adverts that are not
+  # software at all. Drop them on the title rather than scoring them.
+  - mechanical
+  - civil
+  - electrical
+  - site engineer
+
+synonyms:
+  oops: object oriented programming
+  oop: object oriented programming
+  dsa: data structures and algorithms
+  api: rest api
+  spring: spring boot
+
+tight_terms: [orm, mvc, jwt, dsa, oop, solid, tdd, spa, ssr]
+
+interview_focus: >-
+  Weight questions toward system design, data structures, debugging production
+  issues, API design decisions and the trade-offs behind a framework choice.
+  Advanced questions should be design problems with no single right answer.
+
+lexicon:
+  # --- backend frameworks
+  Spring Boot:
+    category: Backend
+    aliases: [spring, spring boot, spring mvc, spring security, hibernate]
+  Django:
+    category: Backend
+    aliases: [django, django rest framework, drf]
+  Flask / FastAPI:
+    category: Backend
+    aliases: [flask, fastapi, fast api]
+  Express / Node:
+    category: Backend
+    aliases: [express, express.js, expressjs, nestjs, nest.js]
+  ".NET / ASP.NET":
+    category: Backend
+    aliases: [asp.net core, .net core, entity framework, web api]
+
+  # --- frontend
+  React:
+    category: Frontend
+    aliases: [react, react.js, reactjs, redux, next.js, nextjs]
+  Angular:
+    category: Frontend
+    aliases: [angular, angularjs, rxjs]
+  Vue:
+    category: Frontend
+    aliases: [vue, vue.js, vuejs, nuxt]
+  HTML / CSS:
+    category: Frontend
+    aliases: [html, html5, css, css3, sass, scss, tailwind, bootstrap]
+  Responsive / cross-browser UI:
+    category: Frontend
+    aliases: [responsive design, cross browser, mobile first, accessibility, wcag]
+  State management:
+    category: Frontend
+    aliases: [state management, redux, mobx, context api, zustand]
+
+  # --- API & integration
+  REST API design:
+    category: API
+    aliases: [api design, rest api design, api development, endpoint design, versioning]
+  GraphQL:
+    category: API
+    aliases: [graphql, apollo]
+  gRPC:
+    category: API
+    aliases: [grpc, protobuf, protocol buffers]
+  Authentication & authorisation:
+    category: API
+    aliases: [oauth, oauth2, jwt, sso, saml, authentication, authorization, rbac]
+  Swagger / OpenAPI:
+    category: API
+    aliases: [swagger, openapi, open api]
+  Third-party integrations:
+    category: API
+    aliases: [payment gateway, stripe, razorpay, twilio, webhook, webhooks]
+
+  # --- computer science
+  Data structures & algorithms:
+    category: Fundamentals
+    aliases: [data structures, algorithms, dsa, time complexity, big o, leetcode]
+  Object-oriented programming:
+    category: Fundamentals
+    aliases: [object oriented programming, oops, oop, inheritance, polymorphism, encapsulation, abstraction]
+  Design patterns:
+    category: Fundamentals
+    aliases: [design patterns, singleton, factory pattern, observer pattern, builder pattern, dependency injection]
+  SOLID principles:
+    category: Fundamentals
+    aliases: [solid principles, clean code, separation of concerns, dry principle]
+  Concurrency & multithreading:
+    category: Fundamentals
+    aliases: [multithreading, concurrency, threading, async, asyncio, parallel processing, race condition, deadlock]
+  Memory management:
+    category: Fundamentals
+    aliases: [memory management, garbage collection, memory leak, heap, stack]
+
+  # --- design & quality
+  System design:
+    category: Design
+    aliases: [system design, architecture design, low level design, high level design, lld, hld]
+  Caching:
+    category: Design
+    aliases: [caching, cache, redis cache, memcached, cdn]
+  Query optimisation:
+    category: Design
+    aliases: [query optimization, query optimisation, indexing, database tuning, execution plan, n+1]
+  ORM:
+    category: Design
+    aliases: [orm, hibernate, sqlalchemy, entity framework, sequelize, prisma]
+  Unit testing:
+    category: Quality
+    aliases: [unit testing, unit test, junit, pytest, jest, mocha, nunit, xunit, mocking, test coverage]
+  TDD:
+    category: Quality
+    aliases: [tdd, test driven development, red green refactor]
+  Debugging & profiling:
+    category: Quality
+    aliases: [debugging, profiling, performance tuning, memory profiling, bottleneck]
+  Refactoring & tech debt:
+    category: Quality
+    aliases: [refactoring, technical debt, legacy code, code quality, sonarqube, static analysis, linting]
+
+  # --- delivery
+  Deployment & release:
+    category: Delivery
+    aliases: [deployment, release management, blue green, canary, rollback, feature flag, feature toggle]
+  Serverless:
+    category: Delivery
+    aliases: [serverless, aws lambda, azure functions, cloud functions]
+  Mobile development:
+    category: Specialised
+    aliases: [android development, ios development, react native, flutter, kotlin, swift]

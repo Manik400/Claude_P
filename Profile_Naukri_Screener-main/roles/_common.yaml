@@ -1,0 +1,201 @@
+# Skills that appear in job adverts for every technical field.
+#
+# Every role pack inherits this file, so a pack only has to describe what makes
+# its field different. Edit here and all four roles get the change.
+#
+# Format, per entry:
+#
+#   Canonical Name:
+#     category: the group it appears under on the study page
+#     aliases:  every spelling a recruiter might type. Matched with word
+#               boundaries, case-insensitively. "java" will not match
+#               "javascript" and "api" will not match "rapid".
+#
+# The canonical name is what the study page and the prompts print, so write it
+# the way people say it out loud.
+
+label: Common technical vocabulary
+
+# Title words that are a no for anyone using this toolkit as an experienced
+# hire. Role packs add their own on top.
+exclude_title_keywords:
+  - intern
+  - fresher
+  - trainee
+
+# Terms whose bare form is too common to trust a loose match on.
+tight_terms: [sql, git, aws, gcp, ai, ml, api, ci, qc, rca, ip, dns, sla]
+
+# Different spellings folded together before job scoring compares anything.
+synonyms:
+  cicd: ci cd
+  ci/cd: ci cd
+  js: javascript
+  k8s: kubernetes
+
+lexicon:
+  # --- languages
+  Python:
+    category: Language
+    aliases: [python, python3, pytest-python]
+  Java:
+    category: Language
+    aliases: [java, core java, j2ee]
+  JavaScript:
+    category: Language
+    aliases: [javascript, java script, es6, ecmascript, node.js, nodejs, node js]
+  TypeScript:
+    category: Language
+    aliases: [typescript, type script]
+  "C#":
+    category: Language
+    aliases: ["c#", csharp, c sharp, .net, dotnet, asp.net]
+  "C / C++":
+    category: Language
+    aliases: ["c++", cpp, embedded c]
+  Go:
+    category: Language
+    aliases: [golang, go lang]
+  PHP:
+    category: Language
+    aliases: [php, laravel]
+  Ruby:
+    category: Language
+    aliases: [ruby, ruby on rails]
+  SQL:
+    category: Language
+    aliases: [sql, t-sql, pl/sql, plsql, sql queries]
+  Shell / Bash:
+    category: Language
+    aliases: [bash, shell script, shell scripting, powershell, batch scripting]
+
+  # --- version control & CI/CD
+  Git:
+    category: Tooling
+    aliases: [git, github, gitlab, bitbucket, version control, source control]
+  CI/CD:
+    category: CI/CD
+    aliases: [ci/cd, cicd, ci cd, continuous integration, continuous delivery, continuous deployment, build pipeline, release pipeline]
+  Jenkins:
+    category: CI/CD
+    aliases: [jenkins]
+  GitHub Actions:
+    category: CI/CD
+    aliases: [github actions, gh actions]
+  GitLab CI:
+    category: CI/CD
+    aliases: [gitlab ci, gitlab-ci, gitlab pipeline]
+  Azure DevOps:
+    category: CI/CD
+    aliases: [azure devops, azure pipelines, vsts, tfs]
+
+  # --- infrastructure & cloud
+  Docker:
+    category: Infrastructure
+    aliases: [docker, containerization, containerisation, containers, podman]
+  Kubernetes:
+    category: Infrastructure
+    aliases: [kubernetes, k8s, openshift, eks, aks, gke]
+  Linux:
+    category: Infrastructure
+    aliases: [linux, unix, ubuntu, rhel, centos, red hat]
+  Windows Server:
+    category: Infrastructure
+    aliases: [windows server, active directory, group policy, iis]
+  Terraform / IaC:
+    category: Infrastructure
+    aliases: [terraform, infrastructure as code, ansible, helm, puppet, chef, cloudformation]
+  Networking:
+    category: Infrastructure
+    aliases: [tcp/ip, dns, dhcp, vpn, subnetting, routing, load balancer, firewall rules, osi model]
+  AWS:
+    category: Cloud
+    aliases: [aws, amazon web services, ec2, s3, lambda, cloudwatch]
+  Azure:
+    category: Cloud
+    aliases: [azure, microsoft azure, entra id]
+  GCP:
+    category: Cloud
+    aliases: [gcp, google cloud, google cloud platform]
+
+  # --- data & messaging
+  Databases:
+    category: Data
+    aliases: [mysql, postgres, postgresql, oracle, rdbms, mssql, sql server, database design]
+  NoSQL:
+    category: Data
+    aliases: [mongodb, cassandra, dynamodb, nosql, redis, couchbase]
+  Kafka:
+    category: Data
+    aliases: [kafka, apache kafka]
+  Message queues:
+    category: Data
+    aliases: [rabbitmq, activemq, message queue, messaging queue, sqs, pub/sub, pubsub, event driven, event-driven]
+  Elasticsearch / ELK:
+    category: Data
+    aliases: [elasticsearch, elk stack, kibana, logstash, opensearch]
+  ETL / data pipelines:
+    category: Data
+    aliases: [etl, data warehouse, data pipeline, big data, snowflake, databricks, airflow, spark]
+
+  # --- architecture
+  Microservices:
+    category: Architecture
+    aliases: [microservices, micro services, micro-services]
+  Distributed systems:
+    category: Architecture
+    aliases: [distributed system, distributed architecture, high availability, fault tolerance, resiliency, scalability]
+  REST APIs:
+    category: Architecture
+    aliases: [rest api, restful, web services, http methods]
+  Observability & monitoring:
+    category: Specialised
+    aliases: [grafana, splunk, datadog, prometheus, new relic, dynatrace, observability, monitoring, log analysis, apm]
+
+  # --- process & ways of working
+  Agile / Scrum:
+    category: Process
+    aliases: [agile, scrum, kanban, sprint, safe agile, scrum master]
+  JIRA:
+    category: Process
+    aliases: [jira, atlassian, confluence]
+  SDLC:
+    category: Process
+    aliases: [sdlc, software development life cycle, waterfall]
+  Documentation:
+    category: Process
+    aliases: [documentation, runbook, knowledge base, technical writing, sop]
+  Code review & mentoring:
+    category: Process
+    aliases: [code review, mentoring, mentor, peer review, coaching, knowledge transfer]
+  Stakeholder communication:
+    category: Process
+    aliases: [stakeholder, client communication, cross functional, cross-functional, customer facing]
+  Root cause analysis:
+    category: Process
+    aliases: [root cause analysis, rca, five whys, post mortem, postmortem]
+
+  # --- AI
+  AI / LLM:
+    category: AI
+    aliases: [llm, large language model, generative ai, genai, prompt engineering, openai, anthropic, chatgpt, rag, langchain, model context protocol, mcp]
+  Machine learning:
+    category: AI
+    aliases: [machine learning, ml model, deep learning, tensorflow, pytorch, data science, scikit-learn]
+
+  # --- domains
+  Banking / fintech domain:
+    category: Domain
+    aliases: [banking, fintech, payments, trading, capital markets, insurance, bfsi]
+  Healthcare domain:
+    category: Domain
+    aliases: [healthcare, hipaa, clinical, pharma, life sciences]
+  E-commerce / retail domain:
+    category: Domain
+    aliases: [e-commerce, ecommerce, retail, supply chain, logistics, warehouse]
+  Telecom domain:
+    category: Domain
+    aliases: [telecom, 5g, ims, voip]
+  ERP / CRM platforms:
+    category: Domain
+    aliases: [sap, salesforce, oracle ebs, workday, dynamics 365, servicenow platform]

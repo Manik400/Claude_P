@@ -1,0 +1,19 @@
+# Copy to changes.yaml, then run:
+#   python main.py --apply          (dry run - prints what it would do)
+#   python main.py --apply --yes    (actually saves)
+#
+# Only include the fields you want changed. Omitted fields are left alone.
+
+# 220 characters max on Naukri. Front-load the keywords recruiters search for.
+resume_headline: >-
+  Replace me
+
+# ~1000 characters. Recruiters skim the first two lines - put your strongest
+# proof there, not a personality statement.
+profile_summary: >-
+  Replace me
+
+# Naukri allows a limited number of key skills. Order matters - the first ones
+# carry the most weight in search matching.
+key_skills:
+  - Replace me

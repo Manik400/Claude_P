@@ -1,0 +1,197 @@
+# QA Automation / SDET.
+#
+# Inherits roles/_common.yaml and adds what is specific to testing. See
+# docs/ROLES.md for the format.
+
+label: QA Automation / SDET
+primary_role: QA / SDET
+
+# Seeds for the search terms jobs.yaml falls back to when it lists none.
+seed_keywords:
+  - SDET
+  - QA Automation
+  - Automation Test Engineer
+  - Test Automation Engineer
+
+# Ready-made searches. Copy these into jobs.yaml and edit the locations.
+searches:
+  - {keyword: SDET, location: null}
+  - {keyword: QA Automation, location: null}
+  - {keyword: Automation Test Lead, location: remote}
+  - {keyword: Python Automation Testing, location: null}
+  - {keyword: Playwright Automation, location: null}
+
+# A job must mention at least one of these somewhere, or it is dropped before
+# scoring. This is the "is this even my field" gate.
+must_have_any:
+  - QA
+  - SDET
+  - test automation
+  - automation testing
+  - quality engineering
+  - test engineer
+  - quality assurance
+
+exclude_title_keywords:
+  - hardware
+  - sales
+
+synonyms:
+  sdet: software development engineer in test
+  qa: quality assurance
+  restassured: rest assured
+  automation testing: test automation
+  automation tester: test automation
+
+tight_terms: [pom, tdd, bdd, uat, k6]
+
+interview_focus: >-
+  Weight questions toward framework design, flaky-test debugging, CI
+  integration and what the candidate would do when a suite fails in a release
+  pipeline. Test strategy questions belong at the advanced level.
+
+lexicon:
+  # --- automation frameworks
+  Selenium:
+    category: Automation
+    aliases: [selenium, selenium webdriver, webdriver]
+  Playwright:
+    category: Automation
+    aliases: [playwright]
+  Cypress:
+    category: Automation
+    aliases: [cypress]
+  Appium:
+    category: Automation
+    aliases: [appium]
+  WebdriverIO:
+    category: Automation
+    aliases: [webdriverio, wdio]
+  PyTest:
+    category: Automation
+    aliases: [pytest, py.test]
+  TestNG:
+    category: Automation
+    aliases: [testng]
+  JUnit:
+    category: Automation
+    aliases: [junit]
+  Cucumber / BDD:
+    category: Automation
+    aliases: [cucumber, bdd, behaviour driven, behavior driven, gherkin, specflow]
+  Robot Framework:
+    category: Automation
+    aliases: [robot framework]
+  Katalon:
+    category: Automation
+    aliases: [katalon]
+  Karate:
+    category: Automation
+    aliases: [karate]
+  Page Object Model:
+    category: Automation
+    aliases: [page object model, pom, page object]
+  Test automation framework design:
+    category: Automation
+    aliases: [automation framework, framework design, framework development, hybrid framework, keyword driven, data driven]
+  Parallel / cross-browser execution:
+    category: Automation
+    aliases: [parallel execution, cross browser, cross-browser, selenium grid, browserstack, sauce labs, lambdatest]
+
+  # --- API testing
+  REST API testing:
+    category: API
+    aliases: [api testing, api automation, web services testing, rest api testing]
+  REST Assured:
+    category: API
+    aliases: [rest assured, restassured]
+  Postman:
+    category: API
+    aliases: [postman, newman]
+  GraphQL:
+    category: API
+    aliases: [graphql]
+  gRPC:
+    category: API
+    aliases: [grpc]
+  SOAP / SoapUI:
+    category: API
+    aliases: [soapui, soap ui, soap]
+  JSON schema validation:
+    category: API
+    aliases: [json schema, schema validation]
+  Swagger / OpenAPI:
+    category: API
+    aliases: [swagger, openapi, open api]
+  Contract testing:
+    category: API
+    aliases: [contract testing, pact, consumer driven]
+  Mocking / service virtualisation:
+    category: API
+    aliases: [wiremock, mock server, service virtualization, service virtualisation, stubbing, mocking]
+
+  # --- non-functional
+  Performance testing:
+    category: Non-functional
+    aliases: [performance testing, load testing, stress testing, soak test, scalability testing]
+  JMeter:
+    category: Non-functional
+    aliases: [jmeter]
+  k6:
+    category: Non-functional
+    aliases: [k6, grafana k6]
+  Gatling:
+    category: Non-functional
+    aliases: [gatling]
+  LoadRunner:
+    category: Non-functional
+    aliases: [loadrunner, load runner]
+  Locust:
+    category: Non-functional
+    aliases: [locust]
+  Security testing:
+    category: Non-functional
+    aliases: [security testing, owasp, penetration testing, vapt, sast, dast]
+  Accessibility testing:
+    category: Non-functional
+    aliases: [accessibility testing, wcag, a11y, axe-core, 508 compliance]
+
+  # --- test management & process
+  TestRail / test management:
+    category: Process
+    aliases: [testrail, zephyr, qtest, xray, test management tool, alm, qc]
+  Allure / test reporting:
+    category: Process
+    aliases: [allure, extent report, extentreports, test report]
+  STLC:
+    category: Process
+    aliases: [stlc, software testing life cycle]
+  Test strategy & planning:
+    category: Process
+    aliases: [test strategy, test plan, test planning, test approach, risk based testing, estimation]
+  Defect lifecycle & triage:
+    category: Process
+    aliases: [defect management, defect lifecycle, bug lifecycle, triage, defect tracking]
+  Shift-left / TDD:
+    category: Process
+    aliases: [shift left, shift-left, tdd, test driven]
+  Manual & exploratory testing:
+    category: Process
+    aliases: [manual testing, exploratory testing, test case design, test cases, regression testing, smoke testing, sanity testing, uat, functional testing, integration testing]
+
+  # --- specialised
+  Mobile testing:
+    category: Specialised
+    aliases: [mobile testing, android testing, ios testing, mobile automation]
+  Test data management:
+    category: Specialised
+    aliases: [test data management, test data, data masking, synthetic data]
+  AI / LLM testing:
+    category: AI
+    aliases: [ai testing, llm testing, model output validation, prompt regression, non-deterministic output]
+  Computer vision:
+    category: AI
+    aliases: [computer vision, opencv, image processing, video analytics, anpr, facial recognition, object detection]
+  Gaming / betting domain:
+    category: Domain
+    aliases: [casino, igaming, sports betting, gaming]

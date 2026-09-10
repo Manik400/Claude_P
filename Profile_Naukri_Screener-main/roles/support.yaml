@@ -1,0 +1,157 @@
+# Technical / application / production support engineer.
+#
+# Covers L1-L3 support, application support, production support, service desk
+# and NOC-shaped roles. Inherits roles/_common.yaml for the languages, cloud,
+# database and Linux vocabulary that support adverts share with everyone else.
+#
+# The scoring gate below is deliberately wide, because "support" adverts are
+# titled a dozen different ways. Tighten must_have_any if you are getting
+# non-technical customer-service roles in your scan.
+
+label: Technical / Application Support
+primary_role: Technical Support Engineer
+
+seed_keywords:
+  - Technical Support Engineer
+  - Application Support
+  - Production Support
+  - L2 Support
+
+searches:
+  - {keyword: Technical Support Engineer, location: null}
+  - {keyword: Application Support Engineer, location: null}
+  - {keyword: Production Support, location: null}
+  - {keyword: L2 Support Engineer, location: remote}
+  - {keyword: Service Desk Analyst, location: null}
+
+must_have_any:
+  - support
+  - service desk
+  - helpdesk
+  - help desk
+  - incident
+  - troubleshooting
+  - noc
+  - technical operations
+
+exclude_title_keywords:
+  - sales
+  - business development
+  - telecaller
+  - tele caller
+  # "Customer support" adverts for non-technical call-centre work outnumber
+  # the technical ones on Naukri. These titles are the reliable tell.
+  - bpo
+  - voice process
+  - collections
+
+synonyms:
+  l1: level 1
+  l2: level 2
+  l3: level 3
+  itsm: it service management
+  sla: service level agreement
+  rca: root cause analysis
+  ticketing: ticket management
+
+tight_terms: [l1, l2, l3, sla, rca, itil, itsm, noc, ssh, ftp, ad]
+
+interview_focus: >-
+  Weight questions toward live troubleshooting under time pressure: how the
+  candidate isolates a fault from logs, what they escalate and when, how they
+  communicate to a customer during an outage, and how an incident becomes a
+  permanent fix. Advanced questions should be major-incident and RCA scenarios.
+
+lexicon:
+  # --- ITSM process
+  ITIL:
+    category: Process
+    aliases: [itil, itil v4, itil foundation, it service management, itsm]
+  Incident management:
+    category: Process
+    aliases: [incident management, incident response, major incident, outage management, p1, sev1, severity 1]
+  Problem management:
+    category: Process
+    aliases: [problem management, known error, permanent fix, problem record]
+  Change management:
+    category: Process
+    aliases: [change management, cab, change advisory board, release management, change request, rfc]
+  SLA management:
+    category: Process
+    aliases: [sla, service level agreement, olas, response time target, resolution time, sla breach]
+  Escalation & on-call:
+    category: Process
+    aliases: [escalation, escalation matrix, on call, on-call, rotational shift, 24x7, follow the sun]
+  Shift handover:
+    category: Process
+    aliases: [shift handover, handover, shift roster, night shift, rotational]
+
+  # --- tooling
+  ServiceNow:
+    category: Tooling
+    aliases: [servicenow, service now, snow ticketing]
+  Ticketing systems:
+    category: Tooling
+    aliases: [ticketing, ticketing tool, remedy, bmc remedy, freshdesk, zendesk, jira service desk, jira service management, otrs, ivanti]
+  Remote support tools:
+    category: Tooling
+    aliases: [teamviewer, anydesk, remote desktop, rdp, citrix, vnc, screen sharing]
+  Knowledge base:
+    category: Tooling
+    aliases: [knowledge base, kb article, runbook, sop, standard operating procedure, work instruction]
+
+  # --- diagnosis
+  Log analysis:
+    category: Diagnosis
+    aliases: [log analysis, log monitoring, splunk, kibana, elk, grep logs, application logs, event viewer]
+  Application troubleshooting:
+    category: Diagnosis
+    aliases: [troubleshooting, debugging, issue resolution, fault finding, diagnosis, first level analysis]
+  Database troubleshooting:
+    category: Diagnosis
+    aliases: [sql queries, database support, stored procedure, table locks, deadlock, db performance, query tuning]
+  Server & OS support:
+    category: Diagnosis
+    aliases: [server support, os troubleshooting, disk space, cpu utilization, memory utilization, service restart, systemctl, task manager]
+  Network troubleshooting:
+    category: Diagnosis
+    aliases: [network troubleshooting, ping, traceroute, telnet, netstat, port issue, connectivity issue, latency]
+  Batch & job monitoring:
+    category: Diagnosis
+    aliases: [batch job, scheduled job, cron, autosys, control-m, job failure, job monitoring]
+
+  # --- platform
+  Middleware:
+    category: Platform
+    aliases: [middleware, weblogic, websphere, tomcat, jboss, apache, nginx, iis]
+  Application deployment:
+    category: Platform
+    aliases: [deployment support, patching, hotfix, release deployment, rollback, environment setup]
+  Backup & recovery:
+    category: Platform
+    aliases: [backup, restore, disaster recovery, dr drill, failover, business continuity]
+  Active Directory & access:
+    category: Platform
+    aliases: [active directory, user provisioning, access management, password reset, ldap, group policy, o365, office 365]
+  Monitoring & alerting:
+    category: Platform
+    aliases: [nagios, zabbix, solarwinds, appdynamics, alert configuration, threshold, health check]
+
+  # --- customer side
+  Customer communication:
+    category: Customer
+    aliases: [customer communication, client handling, end user, stakeholder update, status update, customer satisfaction, csat]
+  Ticket triage & prioritisation:
+    category: Customer
+    aliases: [triage, prioritization, prioritisation, queue management, backlog, first call resolution, fcr]
+  Reporting & metrics:
+    category: Customer
+    aliases: [mis report, dashboard reporting, ticket metrics, trend analysis, weekly report]
+
+  # --- improvement
+  Automation of manual tasks:
+    category: Improvement
+    aliases: [automation script, task automation, powershell script, shell script automation, toil reduction, self healing]
+  Site reliability:
+    category: Improvement
+    aliases: [sre, site reliability, error budget, availability, uptime, mttr, mtbf]

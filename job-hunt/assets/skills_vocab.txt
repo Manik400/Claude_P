@@ -1,0 +1,433 @@
+# One skill per line. Multi-word entries allowed. Lines starting with # are ignored.
+# Aliases: use "canonical | alias1 | alias2" to map variants onto one skill.
+# --- languages ---
+python
+java
+kotlin
+swift
+objective-c | objective c | objc
+javascript | js
+typescript | ts
+c++ | cpp
+c# | csharp | c sharp
+c
+golang | go lang | go developer | go engineer | go programming
+rust
+ruby
+php
+scala
+dart
+r
+matlab
+perl
+lua
+bash | shell scripting | shell
+powershell
+sql
+plsql | pl/sql
+t-sql | tsql
+groovy
+elixir
+erlang
+haskell
+clojure
+julia
+solidity
+cobol
+fortran
+vba
+# --- mobile ---
+flutter
+react native
+android
+ios
+android sdk
+jetpack compose
+swiftui
+uikit
+xcode
+android studio
+kotlin multiplatform | kmm | kmp
+xamarin
+ionic
+capacitor
+cordova
+mobile development | mobile app development | mobile apps
+firebase
+push notifications
+in-app purchases
+app store
+play store | google play
+bluetooth | ble
+nfc
+# --- web frontend ---
+react | react.js | reactjs
+angular | angularjs
+vue | vue.js | vuejs
+next.js | nextjs
+nuxt | nuxt.js
+svelte
+html
+css
+sass | scss
+tailwind | tailwind css | tailwindcss
+bootstrap
+webpack
+vite
+redux
+mobx
+graphql
+rest api | rest apis | restful | restful apis | restful api
+websockets | websocket
+pwa | progressive web app
+web components
+three.js | threejs
+d3 | d3.js
+jquery
+electron
+# --- backend / frameworks ---
+django
+flask
+fastapi
+spring | spring boot | springboot
+spring cloud
+hibernate
+jpa
+node.js | node | nodejs
+express.js | expressjs
+nestjs | nest.js
+.net | dotnet | .net core | asp.net | asp.net core
+entity framework
+laravel
+symfony
+rails | ruby on rails
+phoenix
+gin
+fiber
+grpc
+protobuf | protocol buffers
+openapi | swagger
+microservices | microservice
+serverless
+event-driven | event driven
+domain-driven design | ddd
+clean architecture
+mvvm
+mvc
+mvp
+oauth | oauth2 | oauth 2.0
+jwt
+openid connect | oidc
+saml
+# --- data / db ---
+postgresql | postgres
+mysql
+mariadb
+sqlite
+oracle | oracle db
+sql server | mssql | microsoft sql server
+mongodb | mongo
+redis
+elasticsearch | elastic search
+opensearch
+cassandra
+dynamodb
+couchbase
+neo4j
+influxdb
+timescaledb
+clickhouse
+bigquery
+snowflake
+redshift
+databricks
+data warehouse | data warehousing
+data lake | lakehouse
+etl | elt
+data pipelines | data pipeline
+airflow | apache airflow
+dbt
+kafka | apache kafka
+rabbitmq
+activemq
+pulsar
+spark | apache spark | pyspark
+hadoop
+hive
+flink
+beam | apache beam
+pandas
+numpy
+scipy
+dask
+polars
+# --- ml / ai ---
+machine learning | ml
+deep learning
+artificial intelligence | ai
+nlp | natural language processing
+computer vision
+llm | llms | large language models
+generative ai | genai | gen ai
+rag | retrieval augmented generation
+langchain
+llamaindex
+openai | openai api
+anthropic | claude api
+hugging face | huggingface
+transformers
+pytorch | torch
+tensorflow
+keras
+scikit-learn | sklearn | scikit learn
+xgboost
+lightgbm
+opencv
+yolo
+mlops
+mlflow
+kubeflow
+sagemaker
+vertex ai
+onnx
+tensorrt
+cuda
+reinforcement learning
+recommendation systems | recommender systems
+time series
+statistics | statistical analysis
+a/b testing | ab testing
+data science
+data analysis | data analytics
+tableau
+power bi | powerbi
+looker
+metabase
+superset
+jupyter
+prompt engineering
+ai agents | ai agent | agentic
+vector databases | vector database | pinecone | weaviate | milvus | qdrant | pgvector
+# --- cloud / devops ---
+aws | amazon web services
+azure | microsoft azure
+gcp | google cloud | google cloud platform
+oracle cloud | oci
+alibaba cloud
+digitalocean
+heroku
+vercel
+netlify
+cloudflare
+docker
+kubernetes | k8s
+helm
+openshift
+terraform
+pulumi
+ansible
+puppet
+chef
+cloudformation
+cdk | aws cdk
+ci/cd | ci cd | cicd | continuous integration | continuous delivery
+jenkins
+github actions
+gitlab ci | gitlab
+circleci
+argo cd | argocd
+bitbucket
+git
+linux
+ubuntu
+windows server
+nginx
+apache
+haproxy
+load balancing
+prometheus
+grafana
+datadog
+new relic
+splunk
+elk | elk stack
+opentelemetry
+observability
+monitoring
+logging
+site reliability | sre
+devops
+platform engineering
+infrastructure as code | iac
+lambda | aws lambda
+ec2
+s3
+ecs
+eks
+rds
+cloud functions
+cloud run
+azure devops
+azure functions
+service mesh | istio
+vpn
+dns
+tcp/ip | tcp ip | computer networking | network engineering
+# --- testing / quality ---
+unit testing | unit tests
+integration testing | integration tests
+test automation | automated testing
+tdd | test driven development
+bdd
+selenium
+cypress
+playwright
+puppeteer
+appium
+jest
+mocha
+pytest
+junit
+testng
+espresso
+xctest
+postman
+jmeter
+k6
+load testing | performance testing
+qa | quality assurance
+manual testing
+# --- security ---
+cybersecurity | cyber security | information security | infosec
+penetration testing | pentesting | pentest
+owasp
+application security | appsec
+encryption | cryptography
+iam | identity and access management
+soc 2 | soc2
+iso 27001
+gdpr
+siem
+zero trust
+# --- embedded / hardware / video ---
+embedded | embedded systems | embedded software
+rtos | freertos
+arm cortex | arm architecture
+stm32
+esp32
+raspberry pi
+arduino
+fpga
+verilog
+vhdl
+firmware
+iot | internet of things
+mqtt
+can bus | canbus
+modbus
+opencl
+gstreamer
+ffmpeg
+video analytics | video surveillance | cctv
+onvif
+rtsp
+webrtc
+hls
+h.264 | h264
+h.265 | h265 | hevc
+computer graphics
+opengl
+vulkan
+unity
+unreal | unreal engine
+game development
+ros | ros2 | robot operating system
+robotics
+plc
+scada
+# --- architecture / practices ---
+system design
+distributed systems
+high availability
+scalability
+performance optimization | performance tuning
+caching
+concurrency | multithreading
+design patterns
+object-oriented | oop | object oriented
+functional programming
+data structures | algorithms | data structures and algorithms
+api design
+code review | code reviews
+refactoring
+agile
+scrum
+kanban
+scaled agile | safe agile
+jira
+confluence
+technical documentation
+mentoring
+team leadership | leadership
+stakeholder management
+product management
+project management
+solution architecture | solutions architect
+enterprise architecture
+requirements gathering | requirements analysis
+uml
+# --- design / product ---
+ui/ux | ui ux | ux | ui design | user experience
+figma
+sketch
+adobe xd
+photoshop
+illustrator
+prototyping
+design systems
+accessibility | wcag
+# --- erp / business apps ---
+sap
+sap abap | abap
+sap hana | hana
+salesforce
+apex
+servicenow
+dynamics 365 | microsoft dynamics
+workday
+oracle ebs
+sharepoint
+power platform | power apps | power automate
+# --- blockchain / fintech ---
+blockchain
+ethereum
+smart contracts
+web3
+defi
+payments | payment systems
+fintech
+trading systems
+# --- telecom / itms / transport ---
+telecommunications | telecom
+5g
+lte
+sip | voip
+gis | geospatial
+intelligent transport | intelligent transportation | itms
+traffic management
+anpr | alpr | license plate recognition
+face recognition | facial recognition
+object detection
+edge ai | edge computing
+nvidia jetson | jetson
+deepstream
+# --- languages (human) ---
+english
+german
+dutch
+spanish
+finnish
+japanese
+thai
+french
+hindi

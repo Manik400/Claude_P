@@ -1,0 +1,181 @@
+# Cyber security - SOC analyst, VAPT, GRC and security engineering.
+#
+# Security job titles cover four fairly different careers, and this pack
+# deliberately holds all four so the first scan shows which one the market is
+# actually offering you. Once you know, delete the categories you do not work
+# in - a lexicon full of skills you have never touched fills the study page
+# with Gaps and drags the interview questions away from your real strengths.
+#
+#   Offensive   - VAPT, red team, exploit work
+#   Defensive   - SOC, SIEM, incident response, threat hunting
+#   GRC         - audit, ISO 27001, risk, compliance
+#   Engineering - cloud security, IAM, DevSecOps, security tooling
+#
+# Inherits roles/_common.yaml for the networking, cloud and Linux vocabulary,
+# all of which security adverts lean on heavily.
+
+label: Cyber Security
+primary_role: Cyber Security Analyst
+
+seed_keywords:
+  - Cyber Security Analyst
+  - SOC Analyst
+  - Information Security
+  - VAPT
+
+searches:
+  - {keyword: Cyber Security Analyst, location: null}
+  - {keyword: SOC Analyst, location: null}
+  - {keyword: Information Security Engineer, location: null}
+  - {keyword: VAPT, location: null}
+  - {keyword: Security Engineer, location: remote}
+
+must_have_any:
+  - security
+  - cyber
+  - soc
+  - infosec
+  - information security
+  - vulnerability
+  - penetration testing
+  - threat
+  - compliance
+
+exclude_title_keywords:
+  # "Security" without "cyber" is overwhelmingly physical security on Naukri.
+  - security guard
+  - physical security
+  - security supervisor
+  - housekeeping
+  - sales
+
+synonyms:
+  vapt: vulnerability assessment and penetration testing
+  ir: incident response
+  infosec: information security
+  siem: security information and event management
+  edr: endpoint detection and response
+  iam: identity and access management
+  soc: security operations centre
+
+tight_terms: [soc, siem, edr, xdr, iam, waf, dlp, mfa, pki, ids, ips, ir, vpn, ssl, tls, cve, ioc, ttp, sast, dast]
+
+interview_focus: >-
+  Weight questions toward the reasoning behind a call: why this alert was a
+  true positive, what the analyst did next and in what order, how a finding was
+  written up for a developer who has to fix it, and how risk was explained to
+  someone non-technical. Advanced questions should be incident scenarios and
+  architecture decisions, not tool trivia.
+
+lexicon:
+  # --- defensive / SOC
+  SIEM:
+    category: Defensive
+    aliases: [siem, splunk enterprise security, qradar, arcsight, logrhythm, microsoft sentinel, azure sentinel, wazuh, security information and event management]
+  SOC operations:
+    category: Defensive
+    aliases: [soc, security operations centre, security operations center, soc analyst, alert triage, security monitoring]
+  Incident response:
+    category: Defensive
+    aliases: [incident response, incident handling, containment, eradication, forensic investigation, breach response, csirt]
+  Threat hunting:
+    category: Defensive
+    aliases: [threat hunting, threat intelligence, ioc, indicators of compromise, ttp, mitre attack, adversary]
+  EDR / XDR:
+    category: Defensive
+    aliases: [edr, xdr, crowdstrike, sentinelone, carbon black, defender for endpoint, endpoint detection]
+  Malware analysis:
+    category: Defensive
+    aliases: [malware analysis, reverse engineering, sandboxing, static analysis, dynamic analysis, ransomware, virustotal]
+  Digital forensics:
+    category: Defensive
+    aliases: [digital forensics, dfir, memory forensics, disk forensics, chain of custody, volatility, autopsy, encase]
+  Phishing & email security:
+    category: Defensive
+    aliases: [phishing, email security, spam filtering, proofpoint, mimecast, dmarc, spf, dkim, social engineering]
+  SOAR & playbooks:
+    category: Defensive
+    aliases: [soar, playbook, automated response, cortex xsoar, phantom, orchestration]
+
+  # --- offensive
+  Penetration testing:
+    category: Offensive
+    aliases: [penetration testing, pentest, pen test, vapt, ethical hacking, red team, exploitation]
+  Vulnerability assessment:
+    category: Offensive
+    aliases: [vulnerability assessment, vulnerability management, vulnerability scanning, cve, cvss, patch management, remediation tracking]
+  Burp Suite:
+    category: Offensive
+    aliases: [burp suite, burpsuite, burp, owasp zap, zap proxy]
+  Nessus / Qualys:
+    category: Offensive
+    aliases: [nessus, qualys, rapid7, nexpose, openvas, tenable]
+  OWASP Top 10:
+    category: Offensive
+    aliases: [owasp, owasp top 10, sql injection, xss, cross site scripting, csrf, ssrf, broken authentication, insecure deserialization]
+  Nmap & recon:
+    category: Offensive
+    aliases: [nmap, reconnaissance, port scanning, enumeration, footprinting, shodan]
+  Metasploit:
+    category: Offensive
+    aliases: [metasploit, msfconsole, exploit development, payload, kali linux]
+  Wireshark / packet analysis:
+    category: Offensive
+    aliases: [wireshark, packet capture, pcap, tcpdump, traffic analysis, network forensics]
+  Mobile & API security testing:
+    category: Offensive
+    aliases: [mobile application security, api security testing, thick client, source code review, secure code review]
+
+  # --- governance, risk & compliance
+  ISO 27001:
+    category: GRC
+    aliases: [iso 27001, iso27001, isms, information security management system, annex a]
+  Risk assessment:
+    category: GRC
+    aliases: [risk assessment, risk management, risk register, threat modelling, threat modeling, stride, business impact analysis]
+  Audit & compliance:
+    category: GRC
+    aliases: [internal audit, external audit, compliance, gap assessment, evidence collection, control testing, soc 2, soc2]
+  Regulatory frameworks:
+    category: GRC
+    aliases: [gdpr, pci dss, pci-dss, hipaa compliance, sox, nist, cis benchmark, rbi guidelines, dpdp]
+  Policy & governance:
+    category: GRC
+    aliases: [security policy, security governance, awareness training, security awareness]
+  Third-party risk:
+    category: GRC
+    aliases: [vendor risk, third party risk, supplier assessment, due diligence]
+  Business continuity:
+    category: GRC
+    aliases: [business continuity, bcp, disaster recovery, dr plan, crisis management]
+
+  # --- security engineering
+  Identity & access management:
+    category: Engineering
+    aliases: [iam, identity and access management, privileged access, pam, cyberark, okta, sso, mfa, multi factor, least privilege, rbac]
+  Network security:
+    category: Engineering
+    aliases: [firewall, palo alto, fortinet, checkpoint, cisco asa, ids, ips, waf, network segmentation, zero trust, vpn configuration]
+  Cloud security:
+    category: Engineering
+    aliases: [cloud security, cspm, aws security, azure security, security groups, iam policies, guardduty, security hub, cnapp]
+  DevSecOps:
+    category: Engineering
+    aliases: [devsecops, sast, dast, sca, software composition analysis, snyk, checkmarx, veracode, secure sdlc, shift left security]
+  Cryptography & PKI:
+    category: Engineering
+    aliases: [cryptography, encryption, pki, ssl, tls, certificate management, hashing, key management, hsm]
+  Data loss prevention:
+    category: Engineering
+    aliases: [dlp, data loss prevention, data classification, data protection, information rights management]
+  Container & Kubernetes security:
+    category: Engineering
+    aliases: [container security, kubernetes security, image scanning, trivy, aqua security, pod security]
+  Security scripting:
+    category: Engineering
+    aliases: [log parsing, custom detection rule, sigma rule, yara, detection engineering]
+
+  # --- credentials
+  Security certifications:
+    category: Credential
+    aliases: [ceh, oscp, cissp, cism, cisa, comptia security, security plus, gcih, gpen, azure security engineer, aws security specialty]

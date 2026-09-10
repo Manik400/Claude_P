@@ -1,0 +1,203 @@
+# Search criteria and thresholds for the daily job run.
+#
+#   cp jobs.example.yaml jobs.yaml     then edit jobs.yaml
+#
+# jobs.yaml is gitignored. It ends up holding your expected salary, your notice
+# period and the answers given to recruiters in your name, none of which belong
+# in a shared repository. Only this template is tracked.
+#
+# EVERY KEY IS OPTIONAL. Anything left out falls back to your role pack
+# (roles/*.yaml) and then to your live profile in data/profile.json, so this
+# file stays small and does not go stale when you edit your Naukri profile.
+#
+#   python main.py --roles         see the packs and which one is active
+#   python main.py --jobs          dry run: search, score, report. Sends nothing.
+#   python main.py --jobs --yes    live: applies to the strong matches.
+
+# ---------------------------------------------------------------------------
+# THE ONE LINE THAT MATTERS MOST
+# ---------------------------------------------------------------------------
+#
+# Which field you are in. This decides the search keywords, the "is this even
+# my field" gate, and the skill vocabulary the interview-prep module counts
+# across job descriptions. Shipped packs:
+#
+#   qa-automation    QA, SDET, test automation
+#   developer        backend, frontend, full stack
+#   support          technical / application / production support, service desk
+#   cybersecurity    SOC, VAPT, GRC, security engineering
+#
+# Run `python main.py --roles` to see them, and read docs/ROLES.md to write
+# your own. Getting this wrong is the single biggest cause of a bad scan.
+role: developer
+
+# ---------------------------------------------------------------------------
+# SEARCHES
+# ---------------------------------------------------------------------------
+#
+# Each search is one navigation returning ~20 jobs. Breadth beats depth - five
+# distinct queries return more usable jobs than paging five deep into one.
+# Add `pages: 2` to an entry to go deeper on a query that is working.
+#
+# Delete this whole block and the role pack's own searches are used, with your
+# city filled in from your profile. That is a perfectly good starting point;
+# come back and tune it once you have seen a scan or two.
+searches:
+  - keyword: Backend Developer
+    location: Pune
+  - keyword: Python Developer
+    location: Pune
+  - keyword: Software Engineer
+    location: remote
+  - keyword: Full Stack Developer
+    location: Bengaluru
+  - keyword: Django Developer
+    location: null          # null = search all of India
+
+preferred_locations:
+  - Pune
+  - Remote
+  - Hybrid
+  - Mumbai
+
+# ---------------------------------------------------------------------------
+# FILTERS
+# ---------------------------------------------------------------------------
+#
+# Both of these default to your role pack's lists, which are a sensible start.
+# Set them here only to override the pack entirely - these are not merged, so
+# writing one line replaces the pack's whole list.
+#
+# must_have_any: a job must mention at least one of these somewhere, or it is
+# dropped before scoring. This is the "is this even my field" gate.
+#
+# must_have_any:
+#   - developer
+#   - engineer
+#   - backend
+#
+# exclude_title_keywords: dropped on the title alone.
+#
+# exclude_title_keywords:
+#   - intern
+#   - fresher
+#   - sales
+
+# Companies you never want to hear from. Substring match, case-insensitive.
+# Your current employer belongs here - applying to your own company's listing
+# through Naukri is a conversation you would rather not have.
+exclude_companies: []
+
+# ---------------------------------------------------------------------------
+# THRESHOLDS
+# ---------------------------------------------------------------------------
+#
+# Scoring is 0-100. See naukri/jobs/score.py for the breakdown.
+#
+# Start conservative. Run a few days of `--jobs` dry runs, read the report, and
+# only lower auto_apply_min_score once you agree with what it wanted to send.
+auto_apply_min_score: 75    # apply without asking at or above this
+review_min_score: 55        # queue for you to read at or above this
+daily_target: 50            # how many jobs to shortlist per run
+max_auto_applies: 15        # hard cap on applications sent per day
+
+# Drop jobs asking for more than this many years beyond your experience.
+max_experience_gap_years: 2.0
+
+# Include Naukri's own recommendations for your profile alongside the searches.
+include_recommended: true
+
+# ---------------------------------------------------------------------------
+# SCREENING QUESTIONNAIRES
+# ---------------------------------------------------------------------------
+#
+# Most good matches open a recruiter questionnaire, and the application is not
+# submitted until it is answered.
+#
+# The agent answers a question ONLY when the answer is a fact already on
+# record - your notice period, current CTC, total experience, current location
+# and per-skill years all come straight off your Naukri profile. Anything it
+# cannot ground in a fact, it abandons and queues for you.
+#
+# LEAVE THIS OFF UNTIL YOU HAVE RUN:  python main.py --jobs-probe
+# That opens one real questionnaire and records its structure without answering
+# anything, so you can see what would be filled in before anything is sent.
+answer_questionnaires: false
+
+# Facts your profile has no field for. Leave one blank and any question that
+# needs it is queued rather than guessed.
+answers:
+  expected_ctc: ""          # e.g. "18 LPA"
+  willing_to_relocate: true
+  notice_buyout: false
+
+# Your own answers to questions no profile field covers. Checked before any
+# built-in logic, so these are the final word.
+#
+# `match` is a regular expression tested against the question, case-insensitively.
+# THESE ARE ANSWERS GIVEN TO RECRUITERS IN YOUR NAME - read every one and change
+# any you disagree with. Delete a rule and that question goes back to your queue.
+#
+# Rules are tried in order and the first match wins, so the traps have to sit
+# above the catch-alls. The report lists every question that blocked an
+# application, so you can add a rule for it and the next run gets past it.
+#
+# USE SINGLE QUOTES for any pattern containing a backslash. A double-quoted YAML
+# scalar processes escapes before the regex engine sees the string, so "\b"
+# arrives as a literal backspace and the pattern can never match. tests/
+# test_answers.py fails the build if one is not single-quoted.
+answer_rules:
+  # Traps first.
+  - match: "pay cut|salary cut|reduction in (ctc|salary)|unpaid|without (pay|salary)"
+    answer: "No"
+  - match: "any gap in (your )?(education|career|employment)"
+    answer: "No"
+
+  # `skip: true` means "do not answer this one" - the question is abandoned and
+  # the job goes to your queue, exactly as if no rule existed. That is NOT the
+  # same as answering "No": a bond or a contract role may well be acceptable to
+  # you for the right job, and a "No" sent in your name screens you out of it
+  # silently. Replace these with a real answer once you know your own position.
+  - match: "bond|service agreement|surety|security deposit"
+    skip: true
+  - match: "third.?party payroll|c2h|contract.?to.?hire|contract (role|position)|payroll of"
+    skip: true
+  - match: "lower (designation|position|title|band)|designation downgrade"
+    skip: true
+
+  # Skill-claim questions. "Are you comfortable working on Java" is a claim
+  # about your experience, not a willingness question, and the module never
+  # invents experience. Put the technologies you have NOT worked in here.
+  - match: 'comfortable (working )?(on|with|in|using) .*(kotlin|scala|ruby|php|golang)'
+    skip: true
+
+  # Things you are happy to agree to. Edit these - they are guesses about you.
+  - match: "5 days office|work from office|wfo|return to office|onsite"
+    answer: "Yes"
+  - match: "valid passport|passport"
+    answer: "Yes"
+  - match: "willing to (work|travel|relocate|learn|join|take)"
+    answer: "Yes"
+  - match: "comfortable (with|in|to)"
+    answer: "Yes"
+  # Catch-all for the remaining willingness questions. Single-quoted - see above.
+  - match: '^(are you|will you|can you|would you|do you agree)\b.{0,60}(ok|okay|comfortable|willing|fine|available|able|agree)'
+    answer: "Yes"
+
+# ---------------------------------------------------------------------------
+# YEARS PER SKILL
+# ---------------------------------------------------------------------------
+#
+# In your words. Naukri's IT-skills table usually records only two or three
+# entries, so without these every "how many years of X" question is refused and
+# the job goes to your queue.
+#
+# FILL THESE IN - they are quoted to recruiters as your experience. Do not
+# round up. A number here that your resume cannot back is a bad interview
+# waiting to happen.
+skill_years:
+  python: 4
+  sql: 3
+  git: 4
+  docker: 2
+  linux: 3

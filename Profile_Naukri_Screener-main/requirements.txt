@@ -1,0 +1,12 @@
+# Core - needed by every command.
+playwright>=1.45
+PyYAML>=6.0
+openpyxl>=3.1
+
+# Resume generator only (resume/build_resume.py). Skip it if you keep your
+# resume elsewhere - nothing else in the toolkit imports it.
+python-docx>=1.1
+
+# Interview prep only, and only when using the Anthropic API directly. If you
+# have the `claude` CLI installed, that is used instead and this is not needed.
+# anthropic>=0.40

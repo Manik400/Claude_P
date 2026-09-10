@@ -1,0 +1,106 @@
+# Resume content template. Copy to resume.yaml and replace everything.
+#
+#   cp resume/resume.example.yaml resume/resume.yaml
+#   python resume/build_resume.py
+#
+# That writes an ATS-safe .docx and a matching .txt next to it. resume.yaml and
+# both outputs are gitignored - your resume is personal data and never belongs
+# in a shared repository. Only this template is tracked.
+#
+# THE .txt IS NOT JUST A SPARE COPY. The interview-prep module reads it to
+# decide which skills you can honestly claim. A skill described in an
+# experience bullet counts as Strong; the same skill sitting only in the
+# `skills` list below counts as Moderate; one that appears nowhere is a Gap and
+# gets answered as a study topic instead of as experience. So the difference
+# between a bullet and a comma here changes what the questions assume about you.
+#
+# The example content below is a support engineer, deliberately - it is not the
+# author's field, so there is no temptation to leave a line in by accident.
+
+name: YOUR NAME
+# The positioning line under your name. This is what you want to be hired as,
+# which is not always your payroll title - keep the payroll title in the
+# experience block below, where a background check will look for it.
+title: Application Support Engineer | Incident Management, SQL, Linux
+
+contact:
+  - City, Country | +00 0000000000 | your.email@example.com
+  - linkedin.com/in/yourhandle | github.com/yourhandle
+
+# Two or three sentences. Lead with proof, not adjectives. Numbers survive a
+# six-second skim; "hardworking team player" does not.
+summary: >-
+  Application support engineer with N years running production systems for
+  <domain>. Handles L2 incidents end to end - triage, log analysis, SQL
+  investigation, RCA - against a 99.9% availability SLA. Reduced repeat
+  incidents by X% by turning recurring fixes into runbooks and scripts.
+
+# Grouped so a recruiter can find a keyword fast. Keep the group labels short.
+skills:
+  - label: Operating Systems
+    items: Linux (RHEL, Ubuntu), Windows Server
+  - label: Databases
+    items: Oracle, MySQL, SQL query analysis, stored procedures
+  - label: Monitoring & Logs
+    items: Splunk, Grafana, Nagios, ELK
+  - label: ITSM
+    items: ServiceNow, JIRA Service Management, ITIL v4 practices
+  - label: Scripting
+    items: Shell, Python, PowerShell
+
+# Most recent first. `loc` is optional; everything else is required.
+#
+# Bullets are where the interview questions come from, so write what you did
+# and what changed because of it. One number per bullet is a good target.
+experience:
+  - title: Application Support Engineer
+    org: Company Name
+    loc: City, Country
+    dates: Mon YYYY - Present
+    bullets:
+      - >-
+        Own L2 support for N production applications serving X users, handling
+        ~Y incidents a month against a 99.9% availability SLA.
+      - >-
+        Cut mean time to resolution from A to B minutes by building runbooks
+        for the ten most frequent incident types.
+      - >-
+        Automated a daily manual reconciliation with a Python script, removing
+        N hours of toil a week and the errors that came with it.
+      - >-
+        Ran root cause analysis on P1 incidents and drove permanent fixes with
+        the development team, reducing repeat occurrences by X%.
+
+  - title: Previous Title
+    org: Previous Company
+    loc: City, Country
+    dates: Mon YYYY - Mon YYYY
+    bullets:
+      - What you owned, and what measurably improved.
+
+# Optional. Delete the section if you have nothing to put here.
+#
+# Anything with a public link is worth more than anything without one - a
+# reviewer can check it in ten seconds.
+projects:
+  - label: Incident Automation Toolkit
+    description: >-
+      Python scripts that parse application logs, detect the signature of the
+      three most common failures and restart the affected service, with a Slack
+      notification. github.com/yourhandle/repo
+
+# Optional. Include what you are actively studying - a skill the market wants
+# and you are learning is far better answered as "I am three weeks into it"
+# than as a blank.
+certifications:
+  - ITIL v4 Foundation
+  - Currently studying: Kubernetes administration, Splunk search fundamentals
+
+education:
+  - degree: B.E. Computer Science
+    institution: Your University
+    years: YYYY - YYYY
+
+# Optional. The file stem for the generated .docx and .txt. Defaults to your
+# name plus "_Resume". Recruiters see this filename, so make it readable.
+output_basename: Your_Name_Support_Engineer_Resume
