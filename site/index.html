@@ -1,0 +1,370 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0f172a">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Job Hunt">
+<title>Job Hunt</title>
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230f172a'/%3E%3Ctext x='32' y='43' font-size='34' text-anchor='middle'%3E%F0%9F%92%BC%3C/text%3E%3C/svg%3E">
+<link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' fill='%230f172a'/%3E%3Ctext x='32' y='43' font-size='34' text-anchor='middle'%3E%F0%9F%92%BC%3C/text%3E%3C/svg%3E">
+<link rel="manifest" href='data:application/manifest+json,{"name":"Job Hunt","short_name":"Job Hunt","display":"standalone","start_url":".","background_color":"%230f172a","theme_color":"%230f172a"}'>
+<style>
+  :root {
+    --bg: #f5f6f8; --card: #ffffff; --fg: #111827; --muted: #6b7280; --line: #e5e7eb;
+    --accent: #2563eb; --accent-fg: #ffffff; --ok: #16a34a; --warn: #d97706; --bad: #dc2626; --chip: #eef2ff;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root { --bg: #0b1220; --card: #111a2e; --fg: #e5e7eb; --muted: #94a3b8; --line: #1f2a44;
+            --accent: #3b82f6; --accent-fg: #ffffff; --chip: #1e293b; }
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 16px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif; }
+  header { position: sticky; top: 0; z-index: 5; background: var(--card); border-bottom: 1px solid var(--line);
+    padding: calc(10px + env(safe-area-inset-top)) 16px 0; }
+  header h1 { margin: 0 0 8px; font-size: 20px; }
+  nav { display: flex; gap: 4px; }
+  nav button { flex: 1; background: none; border: 0; border-bottom: 3px solid transparent; padding: 10px 4px;
+    font-size: 15px; color: var(--muted); cursor: pointer; }
+  nav button.on { color: var(--accent); border-color: var(--accent); font-weight: 600; }
+  main { padding: 14px 14px calc(30px + env(safe-area-inset-bottom)); max-width: 720px; margin: 0 auto; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; margin-bottom: 12px; }
+  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+  input, select, textarea { width: 100%; font: inherit; padding: 11px 12px; border: 1px solid var(--line);
+    border-radius: 10px; background: var(--bg); color: var(--fg); }
+  input:focus, select:focus { outline: 2px solid var(--accent); border-color: transparent; }
+  .row { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+  button.primary { width: 100%; margin-top: 14px; padding: 14px; font-size: 17px; font-weight: 600; border: 0;
+    border-radius: 12px; background: var(--accent); color: var(--accent-fg); cursor: pointer; }
+  button.primary:disabled { opacity: .5; }
+  button.ghost { background: none; border: 1px solid var(--line); color: var(--fg); padding: 8px 12px;
+    border-radius: 10px; font: inherit; cursor: pointer; }
+  .muted { color: var(--muted); font-size: 13px; }
+  .hint { font-size: 13px; color: var(--muted); margin-top: 8px; }
+  .msg { padding: 10px 12px; border-radius: 10px; margin-top: 10px; font-size: 14px; }
+  .msg.ok { background: rgba(22,163,74,.12); color: var(--ok); }
+  .msg.bad { background: rgba(220,38,38,.12); color: var(--bad); }
+  .msg.info { background: var(--chip); }
+  .item { display: flex; align-items: center; gap: 12px; padding: 12px 0; border-top: 1px solid var(--line); cursor: pointer; }
+  .item:first-child { border-top: 0; }
+  .item .t { flex: 1; min-width: 0; }
+  .item .t b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item .t span { font-size: 13px; color: var(--muted); }
+  .chip { font-size: 12px; padding: 3px 8px; border-radius: 999px; background: var(--chip); white-space: nowrap; }
+  .chip.ok { color: var(--ok); } .chip.warn { color: var(--warn); } .chip.bad { color: var(--bad); }
+  h2 { font-size: 15px; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
+  h2:first-child { margin-top: 0; }
+  .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--accent);
+    border-radius: 50%; animation: s 1s linear infinite; vertical-align: -2px; }
+  @keyframes s { to { transform: rotate(360deg); } }
+  #viewer { position: fixed; inset: 0; z-index: 20; background: var(--bg); display: none; flex-direction: column; }
+  #viewer.on { display: flex; }
+  #viewer .bar { display: flex; align-items: center; gap: 10px; padding: calc(8px + env(safe-area-inset-top)) 12px 8px;
+    background: var(--card); border-bottom: 1px solid var(--line); }
+  #viewer .bar b { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
+  #viewer .frame { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
+  #viewer iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+  code { font-size: 13px; background: var(--chip); padding: 1px 5px; border-radius: 5px; }
+  ol { padding-left: 20px; } ol li { margin: 6px 0; }
+</style>
+</head>
+<body>
+<header>
+  <h1>Job Hunt</h1>
+  <nav>
+    <button data-tab="run" class="on">Search</button>
+    <button data-tab="reports">Reports</button>
+    <button data-tab="settings">Settings</button>
+  </nav>
+</header>
+
+<main>
+  <!-- ---------------------------------------------------------------- Search -->
+  <section id="tab-run">
+    <div class="card">
+      <div id="run-need" class="msg info" hidden>Add a GitHub token in <b>Settings</b> first, then you can start searches from here.</div>
+      <label>Job title(s) <span class="muted">(comma-separate several)</span></label>
+      <input id="f-role" placeholder="python developer, backend engineer" autocapitalize="none">
+      <div class="row">
+        <div><label>Years of experience</label><input id="f-exp" placeholder="3 or 2-4" inputmode="numeric"></div>
+        <div><label>Posted in last N days</label><input id="f-days" value="14" inputmode="numeric"></div>
+      </div>
+      <label>Countries <span class="muted">(names or codes; empty = DE, NL, ES, FI, AU, JP, TH + Remote)</span></label>
+      <input id="f-countries" placeholder="Germany, India, Japan" autocapitalize="none">
+      <div class="row">
+        <div><label>Experience filter</label>
+          <select id="f-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
+        <div><label>Extra flags <span class="muted">(optional)</span></label><input id="f-extra" placeholder="--no-remote --must python" autocapitalize="none"></div>
+      </div>
+      <button class="primary" id="btn-run">Start search</button>
+      <div id="run-msg"></div>
+      <div class="hint">Runs on GitHub, takes about 5–15 minutes. Jobs are scored against your resume if you stored it during setup. The report appears under <b>Reports</b> when done.</div>
+    </div>
+
+    <div class="card">
+      <h2>Recent runs</h2>
+      <div id="runs" class="muted">Loading…</div>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------------- Reports -->
+  <section id="tab-reports" hidden>
+    <div id="reports-need" class="msg info" hidden>Enter your passphrase in <b>Settings</b> to open reports. They are encrypted; nobody without it can read them.</div>
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Worldwide search</h2>
+        <button class="ghost" id="btn-refresh">Refresh</button>
+      </div>
+      <div id="list-jobhunt" class="muted">Loading…</div>
+    </div>
+    <div class="card">
+      <h2>Naukri daily openings</h2>
+      <div id="list-naukri" class="muted">Loading…</div>
+      <div class="hint">Made on your PC by the Naukri scan (needs a real Chrome window). Runs on its schedule and pushes here on its own.</div>
+    </div>
+    <div class="card">
+      <h2>Interview prep</h2>
+      <div id="list-interview" class="muted">Loading…</div>
+    </div>
+    <div class="muted" id="index-updated"></div>
+  </section>
+
+  <!-- -------------------------------------------------------------- Settings -->
+  <section id="tab-settings" hidden>
+    <div class="card">
+      <label>Passphrase <span class="muted">(the one you chose in setup_phone.bat)</span></label>
+      <input id="s-pass" type="password" autocomplete="off">
+      <label>GitHub token <span class="muted">(fine-grained: this repo only, Actions read+write)</span></label>
+      <input id="s-token" type="password" autocomplete="off" placeholder="github_pat_…">
+      <label>Repository</label>
+      <input id="s-repo" placeholder="owner/repo" autocapitalize="none">
+      <label>Branch the workflow runs from</label>
+      <input id="s-ref" value="main" autocapitalize="none">
+      <button class="primary" id="btn-save">Save</button>
+      <div id="s-msg"></div>
+      <div class="hint">Everything is stored only in this browser (localStorage). The token is sent only to api.github.com to start a run and read its status. The passphrase never leaves the phone.</div>
+    </div>
+    <div class="card">
+      <h2>How to get a token</h2>
+      <ol class="muted" style="font-size:14px">
+        <li>GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate.</li>
+        <li>Repository access: <b>Only select repositories</b> → this repo.</li>
+        <li>Permissions: <b>Actions: Read and write</b>. Leave the rest at defaults.</li>
+        <li>Copy it into the field above and Save.</li>
+      </ol>
+      <h2>Tip</h2>
+      <div class="muted" style="font-size:14px">Add this page to your home screen (Share → Add to Home Screen) and it opens like an app.</div>
+    </div>
+  </section>
+</main>
+
+<div id="viewer">
+  <div class="bar"><button class="ghost" id="btn-close">‹ Back</button><b id="v-title"></b></div>
+  <div class="frame"><iframe id="v-frame" title="report"></iframe></div>
+</div>
+
+<script>
+(function () {
+  "use strict";
+  var $ = function (id) { return document.getElementById(id); };
+  var API = "https://api.github.com";
+  var WORKFLOW = "jobhunt.yml";
+  var store = {
+    get: function (k, d) { try { var v = localStorage.getItem("jh:" + k); return v === null ? d : v; } catch (e) { return d; } },
+    set: function (k, v) { try { localStorage.setItem("jh:" + k, v); } catch (e) {} }
+  };
+
+  // ---- repo guess from the Pages URL: owner.github.io/repo/
+  function guessRepo() {
+    var m = location.hostname.match(/^([^.]+)\.github\.io$/i);
+    var seg = location.pathname.split("/").filter(Boolean)[0];
+    return m && seg ? m[1] + "/" + seg : "";
+  }
+
+  // ---- tabs
+  var tabs = document.querySelectorAll("nav button");
+  function showTab(name) {
+    tabs.forEach(function (b) { b.classList.toggle("on", b.dataset.tab === name); });
+    ["run", "reports", "settings"].forEach(function (t) { $("tab-" + t).hidden = t !== name; });
+    store.set("tab", name);
+    if (name === "reports") loadIndex();
+    if (name === "run") loadRuns();
+  }
+  tabs.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
+
+  // ---- settings
+  function settings() {
+    return { pass: store.get("pass", ""), token: store.get("token", ""),
+             repo: store.get("repo", "") || guessRepo(), ref: store.get("ref", "main") || "main" };
+  }
+  function fillSettings() {
+    var s = settings();
+    $("s-pass").value = s.pass; $("s-token").value = s.token; $("s-repo").value = s.repo; $("s-ref").value = s.ref;
+    $("run-need").hidden = !!s.token;
+    $("reports-need").hidden = !!s.pass;
+  }
+  $("btn-save").addEventListener("click", function () {
+    store.set("pass", $("s-pass").value); store.set("token", $("s-token").value.trim());
+    store.set("repo", $("s-repo").value.trim()); store.set("ref", $("s-ref").value.trim() || "main");
+    fillSettings(); cache = {};
+    msg("s-msg", "Saved.", "ok");
+    setTimeout(function () { $("s-msg").innerHTML = ""; }, 1500);
+  });
+
+  function msg(id, text, cls) { $(id).innerHTML = '<div class="msg ' + (cls || "info") + '">' + esc(text) + "</div>"; }
+  function esc(s) { return String(s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+  function ago(iso) {
+    var d = (Date.now() - new Date(iso).getTime()) / 1000;
+    if (d < 90) return "just now";
+    if (d < 3600) return Math.round(d / 60) + " min ago";
+    if (d < 86400) return Math.round(d / 3600) + " h ago";
+    return new Date(iso).toLocaleDateString(undefined, { day: "numeric", month: "short" });
+  }
+
+  // ---- GitHub API
+  function gh(path, opts) {
+    var s = settings();
+    opts = opts || {};
+    opts.headers = { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28",
+                     "Authorization": "Bearer " + s.token };
+    if (opts.body) { opts.headers["Content-Type"] = "application/json"; }
+    return fetch(API + "/repos/" + s.repo + path, opts).then(function (r) {
+      if (r.status === 204) return null;
+      return r.json().then(function (j) {
+        if (!r.ok) throw new Error((j && j.message) || ("HTTP " + r.status));
+        return j;
+      });
+    });
+  }
+
+  // ---- run form
+  ["role", "exp", "days", "countries", "fit", "extra"].forEach(function (k) {
+    var el = $("f-" + k); el.value = store.get("f." + k, el.value);
+    el.addEventListener("change", function () { store.set("f." + k, el.value); });
+  });
+  $("btn-run").addEventListener("click", function () {
+    var s = settings();
+    if (!s.token || !s.repo) { showTab("settings"); return; }
+    var role = $("f-role").value.trim();
+    if (!role) { msg("run-msg", "Type at least one job title.", "bad"); return; }
+    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: $("f-countries").value.trim(),
+                   days: $("f-days").value.trim() || "14", fit: $("f-fit").value, extra: $("f-extra").value.trim() };
+    $("btn-run").disabled = true;
+    msg("run-msg", "Starting…");
+    gh("/actions/workflows/" + WORKFLOW + "/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
+      .then(function () {
+        msg("run-msg", "Started. Watch it below; the report lands in Reports when it finishes.", "ok");
+        setTimeout(loadRuns, 4000);
+      })
+      .catch(function (e) { msg("run-msg", "Could not start: " + e.message, "bad"); })
+      .then(function () { $("btn-run").disabled = false; });
+  });
+
+  // ---- runs list
+  var runsTimer = null;
+  function loadRuns() {
+    var s = settings();
+    clearTimeout(runsTimer);
+    if (!s.token || !s.repo) { $("runs").innerHTML = '<span class="muted">No token yet.</span>'; return; }
+    gh("/actions/workflows/" + WORKFLOW + "/runs?per_page=6").then(function (j) {
+      var runs = (j && j.workflow_runs) || [];
+      if (!runs.length) { $("runs").innerHTML = '<span class="muted">No runs yet.</span>'; return; }
+      var busy = false;
+      $("runs").innerHTML = runs.map(function (r) {
+        var st = r.status === "completed" ? r.conclusion : r.status;
+        var cls = st === "success" ? "ok" : (st === "failure" || st === "cancelled" ? "bad" : "warn");
+        if (r.status !== "completed") busy = true;
+        var mins = r.run_started_at ? Math.round(((r.updated_at && r.status === "completed" ? new Date(r.updated_at) : new Date()) - new Date(r.run_started_at)) / 60000) : 0;
+        return '<div class="item" data-url="' + esc(r.html_url) + '"><div class="t"><b>' + esc(r.display_title || r.name) +
+          '</b><span>' + ago(r.created_at) + (mins ? " · " + mins + " min" : "") + '</span></div>' +
+          '<span class="chip ' + cls + '">' + (r.status !== "completed" ? '<span class="spin"></span> ' : "") + esc(st) + "</span></div>";
+      }).join("");
+      $("runs").querySelectorAll(".item").forEach(function (el) {
+        el.addEventListener("click", function () { window.open(el.dataset.url, "_blank"); });
+      });
+      if (busy) runsTimer = setTimeout(loadRuns, 20000);
+    }).catch(function (e) { $("runs").innerHTML = '<span class="muted">' + esc(e.message) + "</span>"; });
+  }
+
+  // ---- reports index
+  var index = null, cache = {};
+  function loadIndex() {
+    fetch("data/index.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { items: [] }; })
+      .then(function (j) {
+        index = j;
+        ["jobhunt", "naukri", "interview"].forEach(function (kind) {
+          var items = (j.items || []).filter(function (i) { return i.kind === kind; });
+          var box = $("list-" + kind);
+          if (!items.length) { box.innerHTML = '<span class="muted">Nothing here yet.</span>'; return; }
+          box.innerHTML = items.map(function (i) {
+            var m = i.meta || {}, sub = [ago(i.when)];
+            if (m.jobs) sub.push(m.jobs + " jobs");
+            if (m.countries && m.countries !== "default countries") sub.push(m.countries);
+            if (m.experience) sub.push(m.experience + " yrs");
+            return '<div class="item" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" +
+              esc(sub.join(" · ")) + '</span></div><span class="chip">open</span></div>';
+          }).join("");
+          box.querySelectorAll(".item").forEach(function (el) {
+            el.addEventListener("click", function () { openReport(el.dataset.id); });
+          });
+        });
+        $("index-updated").textContent = j.updated ? "Last update " + ago(j.updated) : "";
+      }).catch(function (e) { $("list-jobhunt").innerHTML = '<span class="muted">' + esc(e.message) + "</span>"; });
+  }
+  $("btn-refresh").addEventListener("click", loadIndex);
+
+  // ---- decrypt (matches site/tools/vault.py)
+  function b64(s) { var bin = atob(s), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
+  function decrypt(obj, pass) {
+    var enc = new TextEncoder();
+    return crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]).then(function (km) {
+      return crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(obj.salt), iterations: obj.iter, hash: "SHA-256" }, km,
+        { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
+    }).then(function (key) {
+      return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(obj.iv) }, key, b64(obj.ct));
+    }).then(function (pt) { return new TextDecoder().decode(pt); });
+  }
+
+  function openReport(id) {
+    var s = settings();
+    if (!s.pass) { showTab("settings"); $("s-pass").focus(); return; }
+    var item = (index.items || []).filter(function (i) { return i.id === id; })[0];
+    if (!item) return;
+    var el = document.querySelector('.item[data-id="' + id + '"] .chip');
+    el.innerHTML = '<span class="spin"></span>';
+    var p = cache[id] ? Promise.resolve(cache[id]) :
+      fetch(item.file, { cache: "force-cache" }).then(function (r) { if (!r.ok) throw new Error("file missing (" + r.status + ")"); return r.json(); })
+        .then(function (obj) { return decrypt(obj, s.pass); })
+        .then(function (html) { cache[id] = html; return html; });
+    p.then(function (html) {
+      el.textContent = "open";
+      showViewer(item.title, html);
+    }).catch(function (e) {
+      el.textContent = "open";
+      alert(e.name === "OperationError" ? "Wrong passphrase. Check Settings." : "Could not open: " + e.message);
+    });
+  }
+
+  function showViewer(title, html) {
+    // Links inside the report open in a new tab; the report itself stays in the frame.
+    if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
+    $("v-title").textContent = title;
+    $("v-frame").srcdoc = html;
+    $("viewer").classList.add("on");
+    history.pushState({ viewer: 1 }, "");
+  }
+  function closeViewer() { $("viewer").classList.remove("on"); $("v-frame").srcdoc = ""; }
+  $("btn-close").addEventListener("click", function () { if (history.state && history.state.viewer) history.back(); else closeViewer(); });
+  window.addEventListener("popstate", closeViewer);
+
+  // ---- boot
+  fillSettings();
+  showTab(store.get("tab", "run"));
+  if (!settings().pass && !settings().token) showTab("settings");
+})();
+</script>
+</body>
+</html>

@@ -6,6 +6,7 @@ There are two job-search tools in this repo:
 | --- | --- |
 | `job-hunt/` | Searches about 20 job sites worldwide, scores each job against your resume, and writes an HTML report with Apply buttons. |
 | `Profile_Naukri_Screener-main/` | Improves your Naukri profile, keeps it near the top of recruiter searches, scans and applies to Naukri jobs, and builds interview-prep pages. |
+| `site/` | Phone page on GitHub Pages: start a worldwide search from your phone (runs on GitHub Actions) and read all reports, encrypted. See `site/README.md`. |
 
 ---
 
