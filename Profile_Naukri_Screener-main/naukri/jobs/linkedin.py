@@ -21,6 +21,8 @@ import time
 from pathlib import Path
 from urllib.parse import urlencode
 
+from ..session import launch_browser
+
 log = logging.getLogger("naukri.jobs.linkedin")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -88,7 +90,7 @@ def login(state_path: Path = STATE_PATH, timeout_sec: int = 420) -> bool:
     state_path.parent.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as p:
-        browser = p.chromium.launch(headless=False)
+        browser = launch_browser(p, headless=False)
         context = browser.new_context(viewport={"width": 1440, "height": 900})
         page = context.new_page()
         page.goto(LOGIN_URL, wait_until="domcontentloaded")
@@ -121,7 +123,7 @@ def open_session(p, state_path: Path = STATE_PATH, headless: bool = False):
             "Run: python main.py --linkedin-login"
         )
 
-    browser = p.chromium.launch(headless=headless)
+    browser = launch_browser(p, headless=headless)
     context = browser.new_context(
         storage_state=str(state_path),
         viewport={"width": 1440, "height": 900},
