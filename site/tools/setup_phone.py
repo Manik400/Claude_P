@@ -69,6 +69,8 @@ def main():
             raise SystemExit("%s is not installed. git: https://git-scm.com  gh: https://cli.github.com" % tool)
     if sh(["gh", "auth", "status"], check=False).returncode != 0:
         raise SystemExit("GitHub CLI is not logged in. Run:  gh auth login   (choose HTTPS, then re-run this).")
+    # Let plain `git push` (used to publish to gh-pages) reuse the gh login.
+    sh(["gh", "auth", "setup-git"], check=False)
     repo = gh_repo()
     owner, name = repo["nameWithOwner"].split("/")
     print("repo:", repo["nameWithOwner"])
