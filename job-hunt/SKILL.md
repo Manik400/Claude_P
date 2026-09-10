@@ -75,6 +75,8 @@ python <skill-dir>/scripts/job_bot.py merge --run "<run_dir>" --file extra.json
 
 `merge` dedups against existing jobs, parses experience, re-scores with the run's resume and re-renders the report. If `FIRECRAWL_API_KEY` is set, the bot runs this plan itself (`firecrawl` source).
 
+**Claude connectors (preferred when available).** If the session exposes claude.ai job-board connectors — `Indeed` (`search_jobs`, `get_job_details`, `get_resume`), `Dice`, `ZipRecruiter`, `Snagajob` — use them instead of web-search queries for those platforms: they return real postings with URLs, so no bot check and no category pages. Map results to the JSON shape above (`source` = `indeed` / `dice` / `ziprecruiter` / `snagajob`) and `merge` them into the run. Gmail / Google Calendar / Google Drive connectors can be used, on request, to save the report to Drive or draft follow-up emails — never send anything without being asked.
+
 Optional API keys unlock more coverage automatically: `ADZUNA_APP_ID` + `ADZUNA_APP_KEY`, `JOOBLE_API_KEY`, `RAPIDAPI_KEY` (JSearch — includes Indeed/Glassdoor listings via Google Jobs). Mention them only if the user wants broader coverage; they are free tiers the user signs up for themselves.
 
 ## 5. Present the result
