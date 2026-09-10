@@ -1,0 +1,77 @@
+name: Job Hunt (phone)
+
+# Started from the phone page (site/index.html), the GitHub mobile app, or
+# `gh workflow run jobhunt.yml -f role="python developer"`.
+# Runs the job-hunt bot on a GitHub runner and publishes the encrypted report
+# to the gh-pages branch, where the phone page lists it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      role:
+        description: "Job title(s), comma-separated"
+        required: true
+        default: "software engineer"
+      experience:
+        description: "Years of experience, e.g. 3 or 2-4"
+        required: false
+        default: ""
+      countries:
+        description: "Countries (names or ISO2), comma-separated. Empty = DE,NL,ES,FI,AU,JP,TH + Remote"
+        required: false
+        default: ""
+      days:
+        description: "Only jobs posted in the last N days"
+        required: false
+        default: "14"
+      fit:
+        description: "Experience filter"
+        type: choice
+        options: [default, strict, all]
+        default: default
+      extra:
+        description: "Extra job_bot flags (e.g. --no-remote --must python)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: job-hunt/requirements.txt
+
+      - name: Install
+        run: python -m pip install -q -r job-hunt/requirements.txt cryptography
+
+      - name: Search and publish
+        env:
+          INPUT_ROLE: ${{ inputs.role }}
+          INPUT_EXPERIENCE: ${{ inputs.experience }}
+          INPUT_COUNTRIES: ${{ inputs.countries }}
+          INPUT_DAYS: ${{ inputs.days }}
+          INPUT_FIT: ${{ inputs.fit }}
+          INPUT_EXTRA: ${{ inputs.extra }}
+          RESUME_TEXT: ${{ secrets.RESUME_TEXT }}
+          SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
+          PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+          # Optional extra coverage, all free sign-ups (see job-hunt/README.md)
+          ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}
+          ADZUNA_APP_KEY: ${{ secrets.ADZUNA_APP_KEY }}
+          JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
+          RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
+          FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+        run: python site/tools/run_jobhunt.py

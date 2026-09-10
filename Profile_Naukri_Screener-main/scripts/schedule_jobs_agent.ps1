@@ -25,8 +25,10 @@ param(
     #          afternoon never overwrites the morning. Costs model tokens -
     #          roughly $5-6 for the first run of a day, less for later runs
     #          where the Top 10 has barely moved and questions carry over.
+    # scanpublish scan, then push the new openings page to the phone site
+    #          (jobs_scan_and_publish.bat; set up once with site\setup_phone.bat).
     # apply    submit real applications. Read jobs_agent.bat before using it.
-    [ValidateSet("scan", "scanprep", "apply")]
+    [ValidateSet("scan", "scanprep", "scanpublish", "apply")]
     [string]$Mode = "scan",
     [switch]$Remove,
     [string[]]$Times = @("08:52", "13:23", "18:11")
@@ -39,6 +41,7 @@ $prefix = "NaukriJobAgent"
 $batch  = switch ($Mode) {
     "apply"    { Join-Path $root "jobs_agent.bat" }
     "scanprep" { Join-Path $root "jobs_scan_and_prep.bat" }
+    "scanpublish" { Join-Path $root "jobs_scan_and_publish.bat" }
     default    { Join-Path $root "jobs_scan.bat" }
 }
 

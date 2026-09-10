@@ -1,0 +1,37 @@
+name: Publish phone site
+
+# Copies site/index.html to the gh-pages branch whenever it changes on main
+# (reports already on the branch are kept). Also runnable by hand.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "site/index.html"
+      - "site/tools/publish.py"
+      - ".github/workflows/site.yml"
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Publish
+        env:
+          PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: |
+          python site/tools/pages_git.py checkout "$RUNNER_TEMP/pages"
+          python site/tools/publish.py site --pages "$RUNNER_TEMP/pages"
+          python site/tools/pages_git.py push "$RUNNER_TEMP/pages" "phone site: update UI"

@@ -69,6 +69,19 @@ Ask Claude in this project folder, for example:
 
 ---
 
+## 3. On your phone (no PC, no Claude)
+
+One URL for everything, hosted on GitHub Pages. Setup is one double-click on the PC; see `site/README.md`.
+
+1. Run `site\setup_phone.bat` once (needs the GitHub CLI logged in). It prints the URL.
+2. Open the URL on the phone, enter your passphrase and a GitHub token in **Settings**, add it to the home screen.
+3. **Search** tab: type role, experience, countries, tap **Start search**. GitHub runs the job-hunt bot and the report appears in **Reports** in 5–15 minutes.
+4. **Reports** tab: worldwide reports, plus Naukri openings and interview-prep pages pushed from the PC by `Profile_Naukri_Screener-main\publish_to_phone.bat` (or on a schedule with `jobs_scan_and_publish.bat`).
+
+Everything published is encrypted with your passphrase, so the public repo shows nothing readable.
+
+---
+
 ## Quick Tip
 
 | Way | How it works |
