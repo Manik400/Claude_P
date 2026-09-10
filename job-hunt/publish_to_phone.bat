@@ -5,7 +5,7 @@ rem Drag the report.html onto this file, or run it with no argument to publish t
 cd /d "%~dp0"
 set "PY=python"
 if exist "..\Profile_Naukri_Screener-main\.venv\Scripts\python.exe" set "PY=..\Profile_Naukri_Screener-main\.venv\Scripts\python.exe"
-"%PY%" -c "import cryptography" 2>nul || "%PY%" -m pip install -q --user cryptography
+"%PY%" -c "import cryptography" 2>nul || "%PY%" -m pip install -q --disable-pip-version-check cryptography 2>nul || "%PY%" -m pip install -q --disable-pip-version-check --user cryptography
 if "%~1"=="" (
   for /f "delims=" %%d in ('dir /b /ad /o-d "%USERPROFILE%\Documents\JobHunt"') do (
     "%PY%" "..\site\tools\phone_publish.py" jobhunt "%USERPROFILE%\Documents\JobHunt\%%d\report.html"

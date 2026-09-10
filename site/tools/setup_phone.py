@@ -33,7 +33,8 @@ def config_path():
 def sh(args, check=True, capture=True, **kw):
     r = subprocess.run(args, text=True, capture_output=capture, **kw)
     if check and r.returncode != 0:
-        raise SystemExit("failed: %s\n%s" % (" ".join(args), r.stderr or r.stdout))
+        detail = (r.stderr or r.stdout or "").strip() if capture else "(see the output above)"
+        raise SystemExit("failed: %s\n%s" % (" ".join(args), detail))
     return r
 
 
@@ -54,12 +55,33 @@ def gh_repo():
     return json.loads(r.stdout)
 
 
+def in_venv():
+    return sys.prefix != getattr(sys, "base_prefix", sys.prefix) or hasattr(sys, "real_prefix")
+
+
 def ensure_pkg(mod, pip_name):
     try:
         __import__(mod)
+        return
     except ImportError:
-        print("installing %s ..." % pip_name)
-        sh([sys.executable, "-m", "pip", "install", "-q", "--user", pip_name], capture=False)
+        pass
+    print("installing %s ..." % pip_name)
+    base = [sys.executable, "-m", "pip", "install", "-q", "--disable-pip-version-check", pip_name]
+    # Inside a virtualenv pip refuses --user; outside one, a plain install into
+    # Program Files needs admin, so fall back to --user there.
+    attempts = [base] if in_venv() else [base, base + ["--user"]]
+    for args in attempts:
+        if subprocess.run(args).returncode == 0:
+            import importlib
+            import site
+            importlib.invalidate_caches()
+            if not in_venv():
+                user_site = site.getusersitepackages()
+                if user_site not in sys.path:
+                    sys.path.append(user_site)
+            return
+    raise SystemExit("could not install %s. Run this, then re-run setup:\n    \"%s\" -m pip install %s"
+                     % (pip_name, sys.executable, pip_name))
 
 
 def main():
