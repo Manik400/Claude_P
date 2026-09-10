@@ -15,7 +15,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 
 
 def sh(args, cwd=None, check=True, capture=False):
-    r = subprocess.run(args, cwd=cwd, text=True, capture_output=capture)
+    r = subprocess.run(args, cwd=cwd, text=True, encoding="utf-8", errors="replace", capture_output=capture)
     if check and r.returncode != 0:
         err = (r.stderr or "") if capture else ""
         raise SystemExit("command failed (%d): %s\n%s" % (r.returncode, " ".join(args), err))

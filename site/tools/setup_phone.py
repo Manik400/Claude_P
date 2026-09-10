@@ -31,7 +31,8 @@ def config_path():
 
 
 def sh(args, check=True, capture=True, **kw):
-    r = subprocess.run(args, text=True, capture_output=capture, **kw)
+    # Always UTF-8: Windows defaults to cp1252, which cannot carry resume text with symbols.
+    r = subprocess.run(args, text=True, encoding="utf-8", errors="replace", capture_output=capture, **kw)
     if check and r.returncode != 0:
         detail = (r.stderr or r.stdout or "").strip() if capture else "(see the output above)"
         raise SystemExit("failed: %s\n%s" % (" ".join(args), detail))

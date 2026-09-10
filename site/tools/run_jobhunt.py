@@ -58,7 +58,7 @@ def main():
         print("resume: no RESUME_TEXT secret, jobs will not be scored")
 
     print("running:", " ".join(shlex.quote(a) for a in argv[1:]), flush=True)
-    r = subprocess.run(argv, text=True, capture_output=True)
+    r = subprocess.run(argv, text=True, encoding="utf-8", errors="replace", capture_output=True)
     sys.stdout.write(r.stdout)
     sys.stderr.write(r.stderr)
     if r.returncode != 0:
