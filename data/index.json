@@ -1,4 +1,19 @@
 {
- "updated": "2026-09-10T23:43:25Z",
- "items": []
+ "updated": "2026-09-11T00:11:22Z",
+ "items": [
+  {
+   "id": "jobhunt-20260911-001122-software-engineer",
+   "kind": "jobhunt",
+   "title": "software engineer",
+   "when": "2026-09-11T00:11:22Z",
+   "file": "data/jobhunt/jobhunt-20260911-001122-software-engineer.enc",
+   "bytes": 1434701,
+   "meta": {
+    "jobs": "800",
+    "countries": "default countries",
+    "experience": "2",
+    "days": "14"
+   }
+  }
+ ]
 }
