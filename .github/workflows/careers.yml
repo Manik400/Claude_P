@@ -1,0 +1,78 @@
+name: Careers search (phone)
+run-name: "Careers: ${{ inputs.role }} · ${{ inputs.countries || 'worldwide' }}${{ inputs.relocation == 'strict' && ' · relocation' || '' }}"
+
+# Started from the phone page (site/index.html -> Careers), the GitHub mobile app, or
+# `gh workflow run careers.yml -f role="software engineer" -f experience=3-5 -f relocation=strict`.
+# Reads the career pages of the companies in job-hunt/assets/companies.txt and publishes the
+# encrypted result to the gh-pages branch, where the phone page's Careers tab shows it.
+
+on:
+  workflow_dispatch:
+    inputs:
+      role:
+        description: "Job title(s), comma-separated"
+        required: true
+        default: "software engineer"
+      experience:
+        description: "Your experience in years, e.g. 4 or 3-5"
+        required: false
+        default: ""
+      countries:
+        description: "Countries (names or ISO2), comma-separated, or worldwide"
+        required: false
+        default: "worldwide"
+      relocation:
+        description: "strict = only jobs that offer relocation; visa = relocation or visa sponsorship"
+        type: choice
+        options: [strict, visa, any]
+        default: strict
+      fit:
+        description: "Experience filter"
+        type: choice
+        options: [default, strict, all]
+        default: default
+      days:
+        description: "Only postings from the last N days (empty = all open postings)"
+        required: false
+        default: ""
+      companies:
+        description: "Only these companies (comma list, empty = whole list)"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  search:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: job-hunt/requirements.txt
+
+      - name: Install
+        run: python -m pip install -q -r job-hunt/requirements.txt cryptography
+
+      - name: Search and publish
+        env:
+          INPUT_ROLE: ${{ inputs.role }}
+          INPUT_EXPERIENCE: ${{ inputs.experience }}
+          INPUT_COUNTRIES: ${{ inputs.countries }}
+          INPUT_RELOCATION: ${{ inputs.relocation }}
+          INPUT_FIT: ${{ inputs.fit }}
+          INPUT_DAYS: ${{ inputs.days }}
+          INPUT_COMPANIES: ${{ inputs.companies }}
+          RESUME_TEXT: ${{ secrets.RESUME_TEXT }}
+          SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
+          PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: python site/tools/run_careers.py

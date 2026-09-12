@@ -76,7 +76,12 @@ One URL for everything, hosted on GitHub Pages. Setup is one double-click on the
 1. Run `site\setup_phone.bat` once (needs the GitHub CLI logged in). It prints the URL.
 2. Open the URL on the phone, enter your passphrase and a GitHub token in **Settings**, add it to the home screen.
 3. **Search** tab: type role, experience, countries, tap **Start search**. GitHub runs the job-hunt bot and the report appears in **Reports** in 5–15 minutes.
-4. **Reports** tab: worldwide reports, plus Naukri openings and interview-prep pages pushed from the PC by `Profile_Naukri_Screener-main\publish_to_phone.bat` (or on a schedule with `jobs_scan_and_publish.bat`).
+4. **Careers** tab (`…/#careers`): searches the career pages of the companies in `job-hunt/assets/companies.txt` (Agoda, Adyen, Spotify, …).
+   Type role, your experience range (e.g. `3-5`), pick countries (or 🌍 Worldwide) and tick **Only jobs that clearly offer relocation**.
+   The result shows each job's resume match, experience fit and the sentence that promises relocation, a country filter ranked by
+   chance of getting hired, and **Contacts**: LinkedIn / Google searches for the CTO, engineering managers, senior engineers and
+   recruiters at that company in that city. Add companies by editing the list (tap **Company list** → *Edit the list on GitHub*).
+5. **Reports** tab: worldwide reports, plus Naukri openings and interview-prep pages pushed from the PC by `Profile_Naukri_Screener-main\publish_to_phone.bat` (or on a schedule with `jobs_scan_and_publish.bat`).
 
 Everything published is encrypted with your passphrase, so the public repo shows nothing readable.
 

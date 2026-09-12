@@ -1,9 +1,10 @@
 """Add an encrypted report to a gh-pages checkout and update data/index.json.
 
-    python publish.py report --pages DIR --kind jobhunt|naukri|interview --title "..." --file report.html [--meta k=v ...]
+    python publish.py report --pages DIR --kind jobhunt|careers|naukri|interview --title "..." --file report.html [--meta k=v ...]
     python publish.py site   --pages DIR            copy the phone UI (site/index.html) into the checkout
 
 Kinds:  jobhunt   worldwide search report (job-hunt bot)
+        careers   company career-page search (careers bot; JSON the Careers tab renders)
         naukri    Naukri daily openings page
         interview interview-prep study page
 Old reports are pruned per kind (KEEP newest) so the branch stays small.
@@ -18,7 +19,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE_DIR = os.path.dirname(HERE)
-KEEP = {"jobhunt": 40, "naukri": 40, "interview": 20}
+KEEP = {"jobhunt": 40, "careers": 30, "naukri": 40, "interview": 20}
 
 
 def slug(s):
