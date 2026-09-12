@@ -67,6 +67,27 @@
   #viewer .bar b { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 15px; }
   #viewer .frame { flex: 1; overflow: auto; -webkit-overflow-scrolling: touch; }
   #viewer iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 4px; }
+  .chips button { border: 1px solid var(--line); background: var(--bg); color: var(--fg); border-radius: 999px;
+    padding: 6px 11px; font: inherit; font-size: 14px; cursor: pointer; }
+  .chips button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+  label.check { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 15px; color: var(--fg); }
+  label.check input { width: 20px; height: 20px; flex: none; }
+  details summary { cursor: pointer; }
+  #c-box { padding: 12px 12px calc(30px + env(safe-area-inset-bottom)); }
+  #c-box > * { max-width: 720px; margin-left: auto; margin-right: auto; }
+  .job { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
+  .job h3 { font-size: 16px; margin: 0 0 2px; }
+  .job .sub { font-size: 13px; color: var(--muted); }
+  .job .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0 4px; }
+  .job .ev { font-size: 13px; color: var(--muted); border-left: 3px solid var(--line); padding-left: 8px; margin: 6px 0; }
+  .job .acts { display: flex; gap: 8px; margin-top: 10px; }
+  .job .acts a { flex: 1; text-align: center; text-decoration: none; padding: 9px; border-radius: 10px; font-weight: 600; font-size: 14px; }
+  .job a.btn { background: var(--accent); color: var(--accent-fg); }
+  .job a.btn2 { border: 1px solid var(--line); color: var(--fg); }
+  .contacts { margin-top: 10px; font-size: 14px; }
+  .contacts div { margin: 5px 0; }
+  .contacts a { color: var(--accent); }
   code { font-size: 13px; background: var(--chip); padding: 1px 5px; border-radius: 5px; }
   ol { padding-left: 20px; } ol li { margin: 6px 0; }
 </style>
@@ -76,6 +97,7 @@
   <h1>Job Hunt</h1>
   <nav>
     <button data-tab="run" class="on">Search</button>
+    <button data-tab="careers">Careers</button>
     <button data-tab="reports">Reports</button>
     <button data-tab="settings">Settings</button>
   </nav>
@@ -107,6 +129,47 @@
     <div class="card">
       <h2>Recent runs</h2>
       <div id="runs" class="muted">Loading…</div>
+    </div>
+  </section>
+
+  <!-- --------------------------------------------------------------- Careers -->
+  <section id="tab-careers" hidden>
+    <div class="card">
+      <div id="careers-need" class="msg info" hidden>Add a GitHub token in <b>Settings</b> first, then you can start searches from here.</div>
+      <div class="muted">Reads the career pages of the companies in your list directly, so you see jobs the moment the company posts them — including ones that never reach LinkedIn.</div>
+      <label>Job title(s) <span class="muted">(comma-separate several)</span></label>
+      <input id="c-role" placeholder="software engineer, backend engineer" autocapitalize="none">
+      <div class="row">
+        <div><label>Your experience (years)</label><input id="c-exp" placeholder="4 or 3-5" autocapitalize="none"></div>
+        <div><label>Experience filter</label>
+          <select id="c-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
+      </div>
+      <label>Countries <span class="muted">(ordered by how often employers there relocate foreign tech hires)</span></label>
+      <div class="chips" id="c-countries"></div>
+      <label>Other countries <span class="muted">(names or codes, comma-separated; searched together with the ones ticked above)</span></label>
+      <input id="c-more" placeholder="Estonia, Israel, Brazil" autocapitalize="none">
+      <label class="check"><input type="checkbox" id="c-reloc" checked> Only jobs that clearly offer relocation</label>
+      <label class="check"><input type="checkbox" id="c-visa"> …or visa sponsorship</label>
+      <div class="row">
+        <div><label>Posted in last N days <span class="muted">(empty = all)</span></label><input id="c-days" inputmode="numeric"></div>
+        <div><label>Only these companies <span class="muted">(optional)</span></label><input id="c-companies" placeholder="agoda, adyen" autocapitalize="none"></div>
+      </div>
+      <button class="primary" id="btn-careers">Search career pages</button>
+      <div id="careers-msg"></div>
+      <details class="hint"><summary id="c-list-sum">Company list</summary><div id="c-list-body">Loading…</div></details>
+    </div>
+
+    <div class="card">
+      <h2>Recent runs</h2>
+      <div id="c-runs" class="muted">Loading…</div>
+    </div>
+
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;align-items:center">
+        <h2 style="margin:0">Results</h2>
+        <button class="ghost" id="btn-c-refresh">Refresh</button>
+      </div>
+      <div id="list-careers" class="muted">Loading…</div>
     </div>
   </section>
 
@@ -163,7 +226,8 @@
 
 <div id="viewer">
   <div class="bar"><button class="ghost" id="btn-close">‹ Back</button><b id="v-title"></b></div>
-  <div class="frame"><iframe id="v-frame" title="report"></iframe></div>
+  <div class="frame" id="v-box"><iframe id="v-frame" title="report"></iframe></div>
+  <div class="frame" id="c-box" hidden></div>
 </div>
 
 <script>
@@ -186,12 +250,16 @@
 
   // ---- tabs
   var tabs = document.querySelectorAll("nav button");
+  var TABS = ["run", "careers", "reports", "settings"];
   function showTab(name) {
+    if (TABS.indexOf(name) < 0) name = "run";
     tabs.forEach(function (b) { b.classList.toggle("on", b.dataset.tab === name); });
-    ["run", "reports", "settings"].forEach(function (t) { $("tab-" + t).hidden = t !== name; });
+    TABS.forEach(function (t) { $("tab-" + t).hidden = t !== name; });
     store.set("tab", name);
+    try { history.replaceState(history.state, "", "#" + name); } catch (e) {}
     if (name === "reports") loadIndex();
     if (name === "run") loadRuns();
+    if (name === "careers") { loadRuns("careers.yml", "c-runs"); loadIndex(); loadCompanies(); }
   }
   tabs.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
 
@@ -204,6 +272,7 @@
     var s = settings();
     $("s-pass").value = s.pass; $("s-token").value = s.token; $("s-repo").value = s.repo; $("s-ref").value = s.ref;
     $("run-need").hidden = !!s.token;
+    $("careers-need").hidden = !!s.token;
     $("reports-need").hidden = !!s.pass;
   }
   $("btn-save").addEventListener("click", function () {
@@ -263,17 +332,18 @@
       .then(function () { $("btn-run").disabled = false; });
   });
 
-  // ---- runs list
-  var runsTimer = null;
-  function loadRuns() {
-    var s = settings();
-    clearTimeout(runsTimer);
-    if (!s.token || !s.repo) { $("runs").innerHTML = '<span class="muted">No token yet.</span>'; return; }
-    gh("/actions/workflows/" + WORKFLOW + "/runs?per_page=6").then(function (j) {
+  // ---- runs list (one per workflow: jobhunt.yml -> #runs, careers.yml -> #c-runs)
+  var runsTimers = {}, runsBusy = {};
+  function loadRuns(wf, boxId) {
+    wf = wf || WORKFLOW; boxId = boxId || "runs";
+    var s = settings(), box = $(boxId);
+    clearTimeout(runsTimers[boxId]);
+    if (!s.token || !s.repo) { box.innerHTML = '<span class="muted">No token yet.</span>'; return; }
+    gh("/actions/workflows/" + wf + "/runs?per_page=6").then(function (j) {
       var runs = (j && j.workflow_runs) || [];
-      if (!runs.length) { $("runs").innerHTML = '<span class="muted">No runs yet.</span>'; return; }
+      if (!runs.length) { box.innerHTML = '<span class="muted">No runs yet.</span>'; return; }
       var busy = false;
-      $("runs").innerHTML = runs.map(function (r) {
+      box.innerHTML = runs.map(function (r) {
         var st = r.status === "completed" ? r.conclusion : r.status;
         var cls = st === "success" ? "ok" : (st === "failure" || st === "cancelled" ? "bad" : "warn");
         if (r.status !== "completed") busy = true;
@@ -282,11 +352,13 @@
           '</b><span>' + ago(r.created_at) + (mins ? " · " + mins + " min" : "") + '</span></div>' +
           '<span class="chip ' + cls + '">' + (r.status !== "completed" ? '<span class="spin"></span> ' : "") + esc(st) + "</span></div>";
       }).join("");
-      $("runs").querySelectorAll(".item").forEach(function (el) {
+      box.querySelectorAll(".item").forEach(function (el) {
         el.addEventListener("click", function () { window.open(el.dataset.url, "_blank"); });
       });
-      if (busy) runsTimer = setTimeout(loadRuns, 20000);
-    }).catch(function (e) { $("runs").innerHTML = '<span class="muted">' + esc(e.message) + "</span>"; });
+      if (runsBusy[boxId] && !busy) loadIndex();  // a run just finished: its result is on the list now
+      runsBusy[boxId] = busy;
+      if (busy) runsTimers[boxId] = setTimeout(function () { loadRuns(wf, boxId); }, 20000);
+    }).catch(function (e) { box.innerHTML = '<span class="muted">' + esc(e.message) + "</span>"; });
   }
 
   // ---- reports index
@@ -295,13 +367,14 @@
     fetch("data/index.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { items: [] }; })
       .then(function (j) {
         index = j;
-        ["jobhunt", "naukri", "interview"].forEach(function (kind) {
+        ["jobhunt", "careers", "naukri", "interview"].forEach(function (kind) {
           var items = (j.items || []).filter(function (i) { return i.kind === kind; });
           var box = $("list-" + kind);
           if (!items.length) { box.innerHTML = '<span class="muted">Nothing here yet.</span>'; return; }
           box.innerHTML = items.map(function (i) {
             var m = i.meta || {}, sub = [ago(i.when)];
             if (m.jobs) sub.push(m.jobs + " jobs");
+            if (m.relocation) sub.push(m.relocation + " with relocation");
             if (m.countries && m.countries !== "default countries") sub.push(m.countries);
             if (m.experience) sub.push(m.experience + " yrs");
             return '<div class="item" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" +
@@ -339,9 +412,10 @@
       fetch(item.file, { cache: "force-cache" }).then(function (r) { if (!r.ok) throw new Error("file missing (" + r.status + ")"); return r.json(); })
         .then(function (obj) { return decrypt(obj, s.pass); })
         .then(function (html) { cache[id] = html; return html; });
-    p.then(function (html) {
+    p.then(function (text) {
       el.textContent = "open";
-      showViewer(item.title, html);
+      if (item.kind === "careers") showCareers(item.title, JSON.parse(text));
+      else showViewer(item.title, text);
     }).catch(function (e) {
       el.textContent = "open";
       alert(e.name === "OperationError" ? "Wrong passphrase. Check Settings." : "Could not open: " + e.message);
@@ -352,18 +426,328 @@
     // Links inside the report open in a new tab; the report itself stays in the frame.
     if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
     $("v-title").textContent = title;
+    $("v-box").hidden = false; $("c-box").hidden = true;
     $("v-frame").srcdoc = html;
     $("viewer").classList.add("on");
     history.pushState({ viewer: 1 }, "");
   }
-  function closeViewer() { $("viewer").classList.remove("on"); $("v-frame").srcdoc = ""; }
+  function closeViewer() { $("viewer").classList.remove("on"); $("v-frame").srcdoc = ""; $("c-box").innerHTML = ""; }
   $("btn-close").addEventListener("click", function () { if (history.state && history.state.viewer) history.back(); else closeViewer(); });
   window.addEventListener("popstate", closeViewer);
 
+  // ---- careers: search form (starts careers.yml)
+  // Rough guide, most first: how often employers there relocate and sponsor foreign tech hires.
+  var CHOICES = ["*", "NL", "DE", "TH", "AE", "SG", "IE", "GB", "JP", "AU", "CA", "SE", "FI", "DK", "EE", "ES", "PT", "PL",
+                 "MY", "CH", "AT", "FR", "NZ", "US", "IN"];
+  var CHOICE_NAMES = { NL: "Netherlands", DE: "Germany", TH: "Thailand", AE: "UAE", SG: "Singapore", IE: "Ireland",
+    GB: "United Kingdom", JP: "Japan", AU: "Australia", CA: "Canada", SE: "Sweden", FI: "Finland", DK: "Denmark", EE: "Estonia",
+    ES: "Spain", PT: "Portugal", PL: "Poland", MY: "Malaysia", CH: "Switzerland", AT: "Austria", FR: "France", NZ: "New Zealand",
+    US: "United States", IN: "India" };
+  var COMPANIES_PATH = "job-hunt/assets/companies.txt";
+
+  function flag(cc) {
+    if (cc === "REMOTE") return "🌐";
+    if (!/^[A-Z]{2}$/.test(cc || "")) return "";
+    return String.fromCodePoint(127397 + cc.charCodeAt(0), 127397 + cc.charCodeAt(1));
+  }
+  function pickedCountries() { return (store.get("c.countries", "*") || "*").split(","); }
+  function renderCountryPicker() {
+    var picked = pickedCountries();
+    $("c-countries").innerHTML = CHOICES.map(function (cc) {
+      return '<button type="button" data-cc="' + cc + '"' + (picked.indexOf(cc) >= 0 ? ' class="on"' : "") + ">" +
+        (cc === "*" ? "🌍 Worldwide" : flag(cc) + " " + CHOICE_NAMES[cc]) + "</button>";
+    }).join("");
+  }
+  $("c-countries").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-cc]");
+    if (!b) return;
+    var cc = b.dataset.cc, picked = pickedCountries().filter(function (c) { return c !== "*"; });
+    if (cc === "*") picked = [];
+    else if (picked.indexOf(cc) >= 0) picked.splice(picked.indexOf(cc), 1);
+    else picked.push(cc);
+    store.set("c.countries", picked.length ? picked.join(",") : "*");
+    renderCountryPicker();
+  });
+  ["role", "exp", "fit", "days", "companies", "more"].forEach(function (k) {
+    var el = $("c-" + k); el.value = store.get("c." + k, el.value);
+    el.addEventListener("change", function () { store.set("c." + k, el.value); });
+  });
+  ["reloc", "visa"].forEach(function (k) {
+    var el = $("c-" + k); el.checked = store.get("c." + k, el.checked ? "1" : "") === "1";
+    el.addEventListener("change", function () { store.set("c." + k, el.checked ? "1" : ""); $("c-visa").disabled = !$("c-reloc").checked; });
+  });
+  $("c-visa").disabled = !$("c-reloc").checked;
+
+  $("btn-careers").addEventListener("click", function () {
+    var s = settings();
+    if (!s.token || !s.repo) { showTab("settings"); return; }
+    var role = $("c-role").value.trim();
+    if (!role) { msg("careers-msg", "Type at least one job title.", "bad"); return; }
+    // Typed countries narrow the search: with Worldwide on and nothing typed it stays worldwide.
+    var picked = pickedCountries().filter(function (c) { return c !== "*"; });
+    var more = $("c-more").value.split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+    var countries = picked.concat(more);
+    var inputs = { role: role, experience: $("c-exp").value.trim(),
+                   countries: countries.length ? countries.join(",") : "worldwide",
+                   relocation: $("c-reloc").checked ? ($("c-visa").checked ? "visa" : "strict") : "any",
+                   fit: $("c-fit").value, days: $("c-days").value.trim(), companies: $("c-companies").value.trim() };
+    $("btn-careers").disabled = true;
+    msg("careers-msg", "Starting…");
+    gh("/actions/workflows/careers.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
+      .then(function () {
+        msg("careers-msg", "Started. It takes about 3–8 minutes; the result appears under Results below.", "ok");
+        setTimeout(function () { loadRuns("careers.yml", "c-runs"); }, 4000);
+      })
+      .catch(function (e) { msg("careers-msg", "Could not start: " + e.message, "bad"); })
+      .then(function () { $("btn-careers").disabled = false; });
+  });
+  $("btn-c-refresh").addEventListener("click", loadIndex);
+
+  // The company list lives in the repo (public), so read it straight from GitHub.
+  var companiesLoaded = false;
+  function loadCompanies() {
+    var s = settings();
+    if (companiesLoaded || !s.repo) return;
+    fetch("https://raw.githubusercontent.com/" + s.repo + "/" + s.ref + "/" + COMPANIES_PATH, { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then(function (txt) {
+        var names = txt.split("\n").map(function (l) { return l.trim(); })
+          .filter(function (l) { return l && l.charAt(0) !== "#"; })
+          .map(function (l) { return l.split("|")[0].trim(); }).filter(Boolean);
+        companiesLoaded = true;
+        $("c-list-sum").textContent = "Company list (" + names.length + ")";
+        $("c-list-body").innerHTML = '<div class="chips">' + names.map(function (n) {
+          return '<button type="button" data-co="' + esc(n) + '">' + esc(n) + "</button>";
+        }).join("") + '</div><div class="hint">Tap a company to search only that one. ' +
+          ext("https://github.com/" + s.repo + "/edit/" + s.ref + "/" + COMPANIES_PATH, "Edit the list on GitHub") +
+          " (one line per company; the file explains the format).</div>";
+      })
+      .catch(function (e) { $("c-list-body").textContent = "Could not load the list: " + e.message; });
+  }
+  $("c-list-body").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-co]");
+    if (!b) return;
+    var have = $("c-companies").value.split(",").map(function (x) { return x.trim(); }).filter(Boolean);
+    if (have.indexOf(b.dataset.co) < 0) have.push(b.dataset.co);
+    $("c-companies").value = have.join(", ");
+    store.set("c.companies", $("c-companies").value);
+  });
+
+  // ---- careers: results viewer (decrypted JSON written by careers_bot.py)
+  var CV = null;
+  var RELOC = { yes: ["ok", "✈ relocation"], visa: ["ok", "visa sponsorship"], maybe: ["warn", "relocation?"],
+                no: ["bad", "no relocation"], unknown: ["", "relocation not stated"] };
+  var FIT = { fit: ["ok", "experience fits"], stretch: ["warn", "stretch"], over: ["warn", "over-qualified"],
+              no: ["bad", "needs more experience"], unknown: ["", "experience not stated"] };
+  function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : "#"; }
+  function ext(href, text, cls) {
+    return '<a href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener"' + (cls ? ' class="' + cls + '"' : "") + ">" + esc(text) + "</a>";
+  }
+  function chip(cls, text) { return '<span class="chip ' + (cls || "") + '">' + esc(text) + "</span>"; }
+  function sel(id, value, opts) {
+    return '<select id="' + id + '">' + opts.map(function (o) {
+      return '<option value="' + o[0] + '"' + (String(o[0]) === String(value) ? " selected" : "") + ">" + esc(o[1]) + "</option>";
+    }).join("") + "</select>";
+  }
+  function cname(cc) {
+    if (cc === "??") return "Location not stated";
+    if (cc === "REMOTE") return "Remote";
+    return (CV.data.names || {})[cc] || CHOICE_NAMES[cc] || cc;
+  }
+  // City to look for people in: the part of the location inside country `cc`, skipping country / region names.
+  var NOT_A_CITY = /^(remote|hybrid|anywhere|worldwide|global|asia|europe|emea|apac|latam|americas|south ?east asia|middle east|usa?|uk|uae)$/i;
+  function cityOf(loc, cc) {
+    var country = cc && cc !== "??" && cc !== "REMOTE" ? cname(cc) : "";
+    var names = CV.data.names || {}, countries = Object.keys(names).map(function (k) { return names[k].toLowerCase(); });
+    var segs = String(loc || "").split(/ \/ |;| or /);
+    if (country) segs = segs.filter(function (s) { return s.toLowerCase().indexOf(country.toLowerCase()) >= 0; }).concat(segs);
+    for (var i = 0; i < segs.length; i++) {
+      var parts = segs[i].replace(/\(.*?\)/g, "").split(",");
+      for (var k = 0; k < parts.length; k++) {
+        var p = parts[k].trim().replace(/^(hybrid|remote|on-?site)\s*[-–:]\s*/i, "");
+        if (p && !NOT_A_CITY.test(p) && countries.indexOf(p.toLowerCase()) < 0 && !/^[A-Z]{2}$/.test(p)) return p;
+      }
+    }
+    return country;
+  }
+  function expText(e) {
+    if (e[1] === null || e[1] === undefined) return e[0] + "+ yrs";
+    return e[0] === e[1] ? e[0] + " yrs" : e[0] + "–" + e[1] + " yrs";
+  }
+
+  function showCareers(title, data) {
+    CV = { data: data, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60 };
+    $("v-title").textContent = title;
+    $("v-box").hidden = true; $("c-box").hidden = false;
+    renderCareers();
+    $("c-box").scrollTop = 0;
+    $("viewer").classList.add("on");
+    history.pushState({ viewer: 1 }, "");
+  }
+
+  function careersJobs(withCountry) {
+    return (CV.data.jobs || []).filter(function (j) {
+      if (CV.reloc === "yes" && j.reloc !== "yes") return false;
+      if (CV.reloc === "visa" && j.reloc !== "yes" && j.reloc !== "visa") return false;
+      if (CV.min && !(j.score >= CV.min)) return false;
+      if (withCountry && CV.country) {
+        var cs = j.countries && j.countries.length ? j.countries : ["??"];
+        if (cs.indexOf(CV.country) < 0) return false;
+      }
+      return true;
+    });
+  }
+
+  // Country filter order = sum of each opening's chance there: several decent openings beat one lucky match.
+  function countryRank(jobs) {
+    var agg = {};
+    jobs.forEach(function (j) {
+      (j.countries && j.countries.length ? j.countries : ["??"]).forEach(function (cc) {
+        var a = agg[cc] || (agg[cc] = { cc: cc, n: 0, s: 0 });
+        a.n++; a.s += j.chance / 100;
+      });
+    });
+    return Object.keys(agg).map(function (k) { return agg[k]; }).sort(function (a, b) { return b.s - a.s || b.n - a.n; });
+  }
+
+  function renderCareers() {
+    var d = CV.data, m = d.meta || {}, box = $("c-box"), top = box.scrollTop;
+    var base = careersJobs(false), rank = countryRank(base);
+    if (CV.country && !rank.some(function (r) { return r.cc === CV.country; })) CV.country = "";
+    var jobs = careersJobs(true).sort(function (a, b) {
+      if (CV.sort === "score") return (b.score || 0) - (a.score || 0) || b.chance - a.chance;
+      if (CV.sort === "new") return String(b.posted || "").localeCompare(String(a.posted || "")) || b.chance - a.chance;
+      return b.chance - a.chance || (b.score || 0) - (a.score || 0);
+    });
+    var all = d.jobs || [], nReloc = all.filter(function (j) { return j.reloc === "yes"; }).length;
+    var dropped = Object.keys(m.dropped || {}).map(function (k) { return m.dropped[k] + " " + k; }).join(", ");
+    var asked = [(m.roles || []).join(", "), m.experience ? m.experience + " yrs" : "",
+                 (m.countries || []).indexOf("*") >= 0 ? "worldwide" : (m.countries || []).join(", "),
+                 { strict: "relocation only", visa: "relocation or visa", any: "" }[m.relocation] || ""].filter(Boolean).join(" · ");
+    var ccBtn = function (cc, label) {
+      return '<button type="button" data-cc="' + esc(cc) + '"' + (CV.country === cc ? ' class="on"' : "") + ">" + esc(label) + "</button>";
+    };
+    var h = '<div class="card"><div><b>' + esc(asked) + "</b></div>" +
+      '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read · " + (m.role_matches || 0) +
+        " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" +
+        (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
+      (m.scored ? "" : '<div class="msg info">No resume match scores: store your resume with setup_phone.bat (RESUME_TEXT secret) and search again.</div>') +
+      '<label>Country <span class="muted">(best chance of getting hired first)</span></label>' +
+      '<div class="chips">' + ccBtn("", "All · " + base.length) + rank.map(function (r) {
+        return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n);
+      }).join("") + "</div>" +
+      '<div class="hint">Order = each opening\'s chance (resume match × experience fit × relocation) added up per country.</div>' +
+      '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) +
+      '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
+      '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) +
+      '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div></div>";
+    if (CV.view === "companies") h += companiesHtml(jobs);
+    else {
+      h += jobs.length ? jobs.slice(0, CV.limit).map(jobHtml).join("") : '<div class="card muted">No jobs match these filters.</div>';
+      if (jobs.length > CV.limit) h += '<button class="primary" data-more="1">Show more (' + (jobs.length - CV.limit) + " left)</button>";
+    }
+    box.innerHTML = h;
+    box.scrollTop = top;
+  }
+
+  function jobHtml(j) {
+    var R = RELOC[j.reloc] || ["", j.reloc], F = FIT[j.fit] || ["", j.fit], t = [];
+    t.push(chip(j.chance >= 65 ? "ok" : j.chance >= 45 ? "warn" : "", "chance " + j.chance));
+    if (typeof j.score === "number") t.push(chip(j.score >= 55 ? "ok" : j.score >= 35 ? "warn" : "bad", "match " + Math.round(j.score) + "%"));
+    t.push(chip(R[0], R[1]));
+    t.push(chip(F[0], F[1] + (j.exp && j.exp[0] !== null && j.exp[0] !== undefined ? " · asks " + expText(j.exp) : "")));
+    var flags = (j.countries || []).map(flag).join(" ");
+    var skills = "";
+    if (j.matched && j.matched.length) skills += '<div class="hint">✓ ' + esc(j.matched.join(", ")) + "</div>";
+    if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
+    return '<div class="job"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " +
+      esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
+      '<div class="tags">' + t.join("") + "</div>" +
+      (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + skills +
+      '<div class="acts">' + ext(j.url, "Open & apply", "btn") + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' +
+      (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a></div>" +
+      (CV.open[j.id] ? '<div class="contacts">' + contactsHtml(j.company, cityOf(j.location, CV.country || (j.countries || [])[0]), j.recruiter) + "</div>" : "") + "</div>";
+  }
+
+  // People search links (LinkedIn + Google X-ray) for the company in the job's city, plus anything the postings named.
+  function contactsHtml(company, city, recruiter) {
+    var co = (CV.data.companies || []).filter(function (c) { return c.name === company; })[0] || {};
+    var role = (((CV.data.meta || {}).roles) || ["software engineer"])[0];
+    var where = city ? ' "' + city + '"' : "";
+    var li = function (q) { return "https://www.linkedin.com/search/results/people/?keywords=" + encodeURIComponent(q); };
+    var groups = [
+      ["CTO / Head of Engineering", '"CTO" OR "VP Engineering" OR "Head of Engineering"'],
+      ["Engineering managers", '"Engineering Manager"'],
+      ["Senior " + role, '"Senior ' + role + '"'],
+      ["Tech recruiters", '"Technical Recruiter" OR "Talent Acquisition"']
+    ];
+    var h = '<div class="muted">People at ' + esc(company) + (city ? " in " + esc(city) : "") + "</div>";
+    h += groups.map(function (g) {
+      var q = '"' + company + '" (' + g[1] + ")" + where;
+      return "<div>" + esc(g[0]) + ": " + ext(li(q), "LinkedIn") + " · " +
+        ext("https://www.google.com/search?q=" + encodeURIComponent("site:linkedin.com/in " + q), "Google") + "</div>";
+    }).join("");
+    var people = (co.recruiters || []).slice();
+    if (recruiter && people.indexOf(recruiter) < 0) people.unshift(recruiter);
+    if (people.length) h += "<div>Posted by: " + people.map(function (p) { return ext(li('"' + p + '" "' + company + '"'), p); }).join(", ") + "</div>";
+    if (co.emails && co.emails.length) h += "<div>Emails in the postings: " + co.emails.map(function (e) {
+      return '<a href="mailto:' + esc(e) + '">' + esc(e) + "</a>";
+    }).join(", ") + "</div>";
+    h += "<div>" + ext("https://www.linkedin.com/search/results/companies/?keywords=" + encodeURIComponent(company), "Company on LinkedIn") +
+      (co.careers ? " · " + ext(co.careers, "Career page") : "") + "</div>";
+    return h;
+  }
+
+  function companiesHtml(jobs) {
+    var count = {};
+    jobs.forEach(function (j) { count[j.company] = (count[j.company] || 0) + 1; });
+    var cos = (CV.data.companies || []).slice().sort(function (a, b) {
+      return (count[b.name] || 0) - (count[a.name] || 0) || (b.reloc_share || 0) - (a.reloc_share || 0);
+    });
+    var h = cos.filter(function (c) { return count[c.name]; }).map(function (c) {
+      var share = typeof c.reloc_share === "number" ? chip(c.reloc_share >= 0.3 ? "ok" : "", Math.round(c.reloc_share * 100) + "% of its matching jobs offer relocation") : "";
+      return '<div class="job"><h3>' + esc(c.name) + '</h3><div class="sub">' + esc(c.note || c.ats) + "</div>" +
+        '<div class="tags">' + chip("", count[c.name] + " shown · " + c.role_matches + " match the role · " + c.open + " open") + share + "</div>" +
+        '<div class="contacts">' + contactsHtml(c.name, (c.cities || [])[0] || "", "") + "</div></div>";
+    }).join("");
+    var rest = cos.filter(function (c) { return !count[c.name]; });
+    if (rest.length) h += '<div class="card muted">Nothing with these filters at: ' + esc(rest.map(function (c) {
+      return c.name + (c.status === "error" ? " (could not read: " + c.error + ")" : "");
+    }).join(", ")) + "</div>";
+    return h || '<div class="card muted">No companies.</div>';
+  }
+
+  $("c-box").addEventListener("click", function (e) {
+    var b = e.target.closest("[data-cc],[data-contacts],[data-more]");
+    if (!b || !CV) return;
+    if (b.hasAttribute("data-cc")) { CV.country = b.dataset.cc; CV.limit = 60; }
+    else if (b.hasAttribute("data-more")) CV.limit += 60;
+    else { e.preventDefault(); CV.open[b.dataset.contacts] = !CV.open[b.dataset.contacts]; }
+    renderCareers();
+  });
+  $("c-box").addEventListener("change", function (e) {
+    if (!CV) return;
+    var id = e.target.id;
+    if (id === "cf-reloc") CV.reloc = e.target.value;
+    else if (id === "cf-sort") CV.sort = e.target.value;
+    else if (id === "cf-min") CV.min = +e.target.value;
+    else if (id === "cf-view") CV.view = e.target.value;
+    else return;
+    CV.limit = 60;
+    renderCareers();
+  });
+
   // ---- boot
   fillSettings();
-  showTab(store.get("tab", "run"));
+  renderCountryPicker();
+  var hashTab = location.hash.slice(1);
+  showTab(TABS.indexOf(hashTab) >= 0 ? hashTab : store.get("tab", "run"));
   if (!settings().pass && !settings().token) showTab("settings");
+  // #run / #careers / #reports / #settings links work while the page is open too
+  window.addEventListener("hashchange", function () {
+    var t = location.hash.slice(1);
+    if (TABS.indexOf(t) >= 0) showTab(t);
+  });
 })();
 </script>
 </body>
