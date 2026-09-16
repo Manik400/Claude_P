@@ -30,6 +30,8 @@ so you see a job the day the company posts it, including ones that never reach L
 
 ## Auto-apply from the phone
 
+Full walkthrough: [AUTO_APPLY.md](../AUTO_APPLY.md).
+
 Open a worldwide report's **auto-apply** chip under Reports. It lists the report's LinkedIn postings with a
 checkbox each and two buttons: **Apply to all** and **Apply to selected**. Tapping one starts the
 `apply.yml` workflow, which only *queues* the request (encrypted, on `gh-pages`). The applying is done by

@@ -53,6 +53,10 @@
   .item .t { flex: 1; min-width: 0; }
   .item .t b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
   .item .t span { font-size: 13px; color: var(--muted); }
+  .item input[type=checkbox] { width: 22px; height: 22px; flex: none; padding: 0; margin: 0; accent-color: var(--accent); }
+  .item.sel { cursor: pointer; }
+  .item.sel.off { opacity: .55; }
+  .item.sel.off input[type=checkbox] { visibility: hidden; }
   .chip { font-size: 12px; padding: 3px 8px; border-radius: 999px; background: var(--chip); white-space: nowrap; }
   .chip.ok { color: var(--ok); } .chip.warn { color: var(--warn); } .chip.bad { color: var(--bad); }
   h2 { font-size: 15px; margin: 18px 0 8px; color: var(--muted); text-transform: uppercase; letter-spacing: .04em; }
@@ -74,8 +78,14 @@
   label.check { display: flex; align-items: center; gap: 10px; margin-top: 12px; font-size: 15px; color: var(--fg); }
   label.check input { width: 20px; height: 20px; flex: none; }
   details summary { cursor: pointer; }
-  #c-box { padding: 12px 12px calc(30px + env(safe-area-inset-bottom)); }
-  #c-box > * { max-width: 720px; margin-left: auto; margin-right: auto; }
+  #c-box, #a-box { padding: 12px 12px calc(30px + env(safe-area-inset-bottom)); }
+  #c-box > *, #a-box > * { max-width: 720px; margin-left: auto; margin-right: auto; }
+  .row.acts { margin-top: 12px; }
+  .row.acts button { margin-top: 0; padding: 13px 8px; font-size: 15px; font-weight: 600; border-radius: 12px; }
+  .row.acts button:disabled { opacity: .5; }
+  .a-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 8px; }
+  .a-head h2 { margin: 0; }
+  .a-stats { display: flex; flex-wrap: wrap; gap: 6px; margin: 8px 0; }
   .job { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 12px 14px; margin-bottom: 10px; }
   .job h3 { font-size: 16px; margin: 0 0 2px; }
   .job .sub { font-size: 13px; color: var(--muted); }
@@ -233,7 +243,7 @@
 
 <div id="viewer">
   <div class="bar"><button class="ghost" id="btn-close">‹ Back</button><b id="v-title"></b></div>
-  <div class="frame" id="v-box"><iframe id="v-frame" title="report"></iframe></div>
+  <div class="frame" id="v-box"></div>
   <div class="frame" id="c-box" hidden></div>
   <div class="frame" id="a-box" hidden></div>
 </div>
@@ -441,11 +451,21 @@
     if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
     $("v-title").textContent = title;
     $("v-box").hidden = false; $("c-box").hidden = true; $("a-box").hidden = true;
-    $("v-frame").srcdoc = html;
-    $("viewer").classList.add("on");
-    history.pushState({ viewer: 1 }, "");
+    // A fresh iframe each time: setting srcdoc on an existing one is a
+    // navigation that adds a history entry, which would make the Back button
+    // pop the iframe's entry instead of the viewer's and leave it open.
+    var f = document.createElement("iframe"); f.title = "report"; f.srcdoc = html;
+    $("v-box").innerHTML = ""; $("v-box").appendChild(f);
+    openViewer();
   }
-  function closeViewer() { $("viewer").classList.remove("on"); $("v-frame").srcdoc = ""; $("c-box").innerHTML = ""; $("a-box").innerHTML = ""; $("a-box").hidden = true; }
+  function openViewer() {
+    $("viewer").classList.add("on");
+    if (!(history.state && history.state.viewer)) history.pushState({ viewer: 1 }, "");
+  }
+  function closeViewer() {
+    if (!$("viewer").classList.contains("on")) return;
+    $("viewer").classList.remove("on"); $("v-box").innerHTML = ""; $("c-box").innerHTML = ""; $("a-box").innerHTML = ""; $("a-box").hidden = true;
+  }
 
   // ---- auto-apply (Reports -> worldwide report -> auto-apply)
   // The phone only queues a request (workflow apply.yml writes it to the site
@@ -478,15 +498,13 @@
       $("v-box").hidden = true; $("c-box").hidden = true; $("a-box").hidden = false;
       $("a-box").innerHTML = '<div class="card"><div class="msg info">This report was made before auto-apply existed, so it has no job list to apply from. ' +
         'Run the search again from the <b>Search</b> tab (about 5-15 minutes) and the new report will have the auto-apply panel.</div></div>';
-      $("viewer").classList.add("on");
-      history.pushState({ viewer: 1 }, "");
+      openViewer();
       return;
     }
     $("v-title").textContent = "Auto-apply · " + applyItem.title;
     $("v-box").hidden = true; $("c-box").hidden = true; $("a-box").hidden = false;
     $("a-box").innerHTML = '<div class="card"><span class="spin"></span> Loading postings…</div>';
-    $("viewer").classList.add("on");
-    history.pushState({ viewer: 1 }, "");
+    openViewer();
     Promise.all([
       fetch(applyItem.meta.jobs_file, { cache: "force-cache" }).then(function (r) { if (!r.ok) throw new Error("job list missing (" + r.status + ")"); return r.json(); })
         .then(function (o) { return decrypt(o, s.pass); }).then(JSON.parse),
@@ -503,21 +521,26 @@
   function renderApply() {
     var st = applyStatus || {}, jobsSt = st.jobs || {}, pend = st.pending_questions || [];
     var counts = st.counts || {};
+    // "open" = not requested yet, or the last attempt failed and can be retried
     var open = applyJobs.filter(function (j) { var x = jobsSt[j._id]; return !x || x.status === "queued" || x.status === "error" || x.status === "unconfirmed" || x.status === "questionnaire-failed"; });
+    var tally = {};
+    applyJobs.forEach(function (j) { var x = jobsSt[j._id]; if (x) tally[x.status] = (tally[x.status] || 0) + 1; });
+    var stats = Object.keys(tally).map(function (k) { return '<span class="chip ' + applyCls(k) + '">' + tally[k] + " " + esc(APPLY_LABELS[k] || k) + '</span>'; }).join("");
     var head = '<div class="card">' +
-      '<div class="muted">' + applyJobs.length + ' LinkedIn postings in this report can be applied to for you (' + open.length + ' not yet requested). ' +
-      'Your PC does the applying with your LinkedIn login - it checks for requests every 30 minutes while it is on, a few at a time, ' +
+      '<div class="a-head"><h2>' + applyJobs.length + ' LinkedIn postings</h2><span class="chip">' + open.length + ' to request</span></div>' +
+      (stats ? '<div class="a-stats">' + stats + '</div>' : "") +
+      '<div class="muted">Your PC applies with your LinkedIn login - it checks for requests every 30 minutes while it is on, a few at a time, ' +
       (counts.cap ? 'never more than ' + counts.cap + ' a day' : 'within the daily cap') + '. Other boards stay manual: open the report and tap Apply.</div>' +
-      '<div class="row" style="margin-top:10px"><button class="primary" id="a-all"' + (open.length ? "" : " disabled") + '>Apply to all (' + open.length + ')</button>' +
+      '<div class="row acts"><button class="primary" id="a-all"' + (open.length ? "" : " disabled") + '>Apply to all (' + open.length + ')</button>' +
       '<button class="ghost" id="a-sel" disabled>Apply to selected (0)</button></div>' +
-      '<div class="muted" style="margin-top:8px" id="a-status">' + (st.updated ? "PC last checked " + ago(st.updated) + (counts.applied_today != null ? " · " + counts.applied_today + " applied today" : "") : "The PC has not checked in yet.") + '</div>' +
+      '<div class="muted" style="margin-top:8px" id="a-status">' + (st.updated ? "PC last checked " + ago(st.updated) + (counts.applied_today != null ? " · " + counts.applied_today + " applied today" : "") : "The PC has not checked in yet - turn it on (lock screen is fine) so requests get carried out.") + '</div>' +
       '<div id="a-msg"></div></div>';
-    var list = '<div class="card"><div class="muted" style="margin-bottom:6px"><label class="check"><input type="checkbox" id="a-selall"> select all not yet requested</label></div>' +
+    var list = '<div class="card"><label class="check" style="margin:0 0 6px"><input type="checkbox" id="a-selall"' + (open.length ? "" : " disabled") + '> <span class="muted">Select all not yet requested (' + open.length + ')</span></label>' +
       applyJobs.map(function (j) {
-        var x = jobsSt[j._id], chip = x ? '<span class="chip ' + applyCls(x.status) + '" title="' + esc(x.note || "") + '">' + esc(APPLY_LABELS[x.status] || x.status) + '</span>' : "";
+        var x = jobsSt[j._id], chip = x ? '<span class="chip ' + applyCls(x.status) + '" title="' + esc(x.note || "") + '">' + esc(APPLY_LABELS[x.status] || x.status) + '</span>' : '<span class="chip">new</span>';
         var can = open.indexOf(j) >= 0;
-        return '<div class="item" style="cursor:default"><input type="checkbox" data-sel="' + esc(j._id) + '"' + (can ? "" : " disabled") + '><div class="t"><b>' + esc(j.title) + '</b><span>' +
-          esc([j.company, j.location, (j.score != null ? j.score + "% match" : "")].filter(Boolean).join(" · ")) + '</span></div>' + chip + '</div>';
+        return '<label class="item sel' + (can ? "" : " off") + '"><input type="checkbox" data-sel="' + esc(j._id) + '"' + (can ? "" : " disabled") + '><div class="t"><b>' + esc(j.title) + '</b><span>' +
+          esc([j.company, j.location, (j.score != null ? j.score + "% match" : "")].filter(Boolean).join(" · ")) + '</span></div>' + chip + '</label>';
       }).join("") + '</div>';
     var qs = '';
     if (pend.length) {
@@ -679,8 +702,14 @@
       })
       .catch(function (e) { msg("a-msg", "Could not queue: " + e.message, "bad"); $("a-all").disabled = false; });
   }
-  $("btn-close").addEventListener("click", function () { if (history.state && history.state.viewer) history.back(); else closeViewer(); });
-  window.addEventListener("popstate", closeViewer);
+  // Close right away (so the tap always works), then drop the history entry
+  // the viewer pushed so the browser's own back does not reopen anything.
+  $("btn-close").addEventListener("click", function () {
+    var pushed = history.state && history.state.viewer;
+    closeViewer();
+    if (pushed) history.back();
+  });
+  window.addEventListener("popstate", function () { if (!(history.state && history.state.viewer)) closeViewer(); });
 
   // ---- careers: search form (starts careers.yml)
   // Rough guide, most first: how often employers there relocate and sponsor foreign tech hires.
@@ -829,8 +858,7 @@
     $("v-box").hidden = true; $("c-box").hidden = false;
     renderCareers();
     $("c-box").scrollTop = 0;
-    $("viewer").classList.add("on");
-    history.pushState({ viewer: 1 }, "");
+    openViewer();
   }
 
   function careersJobs(withCountry) {
