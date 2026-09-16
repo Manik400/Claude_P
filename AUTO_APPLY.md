@@ -1,5 +1,7 @@
 # Auto-apply from the phone
 
+> Short version: [AUTO_APPLY_SIMPLE.md](AUTO_APPLY_SIMPLE.md)
+
 **What it is:** on the phone site (<https://manik400.github.io/Claude_P/#reports>) every worldwide
 search report has an **auto-apply** chip. It opens a panel that lists the report's LinkedIn
 postings, and one tap asks your PC to apply to them for you with your LinkedIn login. The phone
