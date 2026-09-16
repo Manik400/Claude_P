@@ -21,9 +21,9 @@ python main.py --apply --yes   # writes to your live profile.
 it off. Run `--jobs-probe` first — it opens one real questionnaire and records
 its structure without answering a single field.
 
-**The browser is visible.** Everything that touches Naukri runs headed, because
-Naukri serves "Access Denied" to headless Chromium. A side effect worth having:
-you can watch what it does.
+**The browser is visible when you run things by hand.** Commands default to
+a headed browser, so you can watch what they do. Only `--background` (which the
+scheduled runs use) makes them headless and silent.
 
 ## What it will never do
 

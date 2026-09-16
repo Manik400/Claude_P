@@ -67,7 +67,7 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 
 ### Setup (once)
 
-1. Needs Python 3.9 or newer and a desktop session. Naukri blocks headless browsers, so a real browser window opens while it works.
+1. Needs Python 3.9 or newer. Commands you run by hand open a visible browser; scheduled runs are silent (headless browser, hidden console).
 2. Create a virtual environment and install:
    ```
    cd Profile_Naukri_Screener-main
@@ -110,7 +110,7 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 
 ### Automation (optional)
 
-- `powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1` schedules 3 runs a day (08:52, 13:23, 18:11). Stay logged in to Windows, because it needs a visible browser.
+- `powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1` schedules 3 runs a day (08:52, 13:23, 18:11). Runs put nothing on screen (no console, no browser window; output in `logs\scheduled.log`). Stay logged in to Windows anyway - the lock screen is fine.
 - `jobs_agent.bat` applies **live** with no limit. Don't use it until you trust the scores.
 
 ### Settings in `jobs.yaml`
@@ -128,7 +128,7 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 | `Saved session has expired` | `python main.py --login` |
 | Google says "This browser or app may not be secure" | `--login` now opens plain Chrome, so Google sign-in works there. Its profile is kept in `data/chrome-login-profile/`; treat it like a password. |
 | `No profile at data/profile.json` | `python main.py --extract` |
-| `Access Denied` | Don't run headless; keep the browser visible |
+| `Access Denied` | Naukri refused the browser. Background runs retry with an off-screen window by themselves; for a visible run, wait a while and retry |
 | `spawn UNKNOWN` / "side-by-side configuration is incorrect" | Playwright's bundled Chromium is broken on this PC, so the tool now uses your installed Chrome. Set `NAUKRI_BROWSER_CHANNEL=msedge` for Edge, or `none` to use the bundled build. |
 | Many fields `MISSING` | Naukri changed its page layout. Update `naukri/selectors.py` |
 

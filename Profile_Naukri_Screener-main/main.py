@@ -16,6 +16,7 @@ from __future__ import annotations
 
 import argparse
 import logging
+import os
 import sys
 from pathlib import Path
 
@@ -93,6 +94,11 @@ def main() -> int:
                              "questions that fail, without re-running the whole analysis")
 
     parser.add_argument("--show", action="store_true", help="Run with a visible browser")
+    parser.add_argument("--background", action="store_true",
+                        help="Never put a window on the screen: the browser runs headless, "
+                             "falling back to an off-screen window if Naukri refuses it. "
+                             "The scheduled runs get this from scripts\\run_hidden.vbs. "
+                             "Same as setting NAUKRI_BACKGROUND=1.")
     parser.add_argument("--yes", action="store_true", help="With --apply or --jobs: actually do it (default is a dry run)")
     parser.add_argument("--url", help="With --jobs-probe: probe this job URL instead of the top queued one")
     parser.add_argument("--limit", type=int, metavar="N",
@@ -130,6 +136,9 @@ def main() -> int:
     parser.add_argument("-v", "--verbose", action="store_true", help="Debug logging")
     args = parser.parse_args()
 
+    if args.background:
+        os.environ["NAUKRI_BACKGROUND"] = "1"
+
     _setup_logging(args.verbose)
 
     try:
@@ -146,7 +155,7 @@ def main() -> int:
             return 0 if session_mod.login() else 1
 
         if args.extract:
-            # Same Akamai constraint as --refresh: headless gets blocked.
+            # Headed by default; --background makes every run below headless.
             profile = extract_mod.extract(headless=False)
             print(extract_mod.summarise(profile))
             print("  Written to data/profile.json, data/profile.txt, data/profile.png")
@@ -163,8 +172,8 @@ def main() -> int:
             return 1 if failed else 0
 
         if args.jobs:
-            # Headed for the same Akamai reason as --refresh, and because a run
-            # that submits real applications is one you want to be able to see.
+            # Headed by default because a run that submits real applications is
+            # one you want to be able to see. --background hides it.
             overrides = None
             if args.limit is not None:
                 overrides = {"max_auto_applies": args.limit, "max_apply_attempts": args.limit}
@@ -201,8 +210,8 @@ def main() -> int:
             return 0
 
         if args.interview_prep:
-            # Headed for the JD fetch, same Akamai reason as everything else
-            # that opens Naukri. The model calls afterwards are offline.
+            # Headed for the JD fetch unless --background. The model calls
+            # afterwards are offline.
             from naukri.interview import generate as prep_mod
             prep = prep_mod.run(day=args.date, engine=args.engine, model=args.model,
                                 headless=False, reuse_jds=args.reuse_jds,
@@ -252,8 +261,9 @@ def main() -> int:
             return 0
 
         if args.refresh:
-            # Headed, always. Akamai serves "Access Denied" to headless
-            # Chromium, so a headless daily job would fail every single day.
+            # Headed by default. The scheduled runs set NAUKRI_BACKGROUND=1
+            # (via scripts\\run_hidden.vbs), which makes this headless - see
+            # naukri/session.py for why that is no longer blocked.
             ok = refresh_mod.refresh(headless=False)
             print("  Profile refreshed." if ok else "  Refresh failed - see logs/naukri.log")
             return 0 if ok else 1

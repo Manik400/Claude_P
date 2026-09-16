@@ -3,11 +3,11 @@ rem Daily profile nudge. Bumps your Naukri last-modified timestamp so you keep
 rem surfacing near the top of recruiter searches. Schedule this once a day via
 rem Task Scheduler.
 rem
-rem IT NEEDS A DESKTOP TO DRAW INTO. main.py forces refresh(headless=False)
-rem because Akamai serves "Access Denied" to headless Chromium, so a visible
-rem browser window opens while it works. Register the task as "Run only when
-rem the user is logged on" - under "whether user is logged on or not" there is
-rem no session for the browser to appear in and the job fails every single day.
+rem Run by hand, a browser window opens while it works. To run it silently
+rem (headless browser, no console) start it through the hidden launcher:
+rem     wscript //B //Nologo scripts\run_hidden.vbs daily_refresh.bat
+rem Register the task as "Run only when the user is logged on": the off-screen
+rem fallback browser needs a desktop session to exist.
 rem
 rem NOTE: this file is currently registered in no scheduled task. The refresh
 rem that actually runs is step 2 of jobs_scan_and_prep.bat, three times a day.

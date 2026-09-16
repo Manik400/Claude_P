@@ -21,7 +21,7 @@ import time
 from pathlib import Path
 from urllib.parse import urlencode
 
-from ..session import launch_browser
+from ..session import launch_attempts, launch_browser, new_context
 
 log = logging.getLogger("naukri.jobs.linkedin")
 
@@ -90,7 +90,7 @@ def login(state_path: Path = STATE_PATH, timeout_sec: int = 420) -> bool:
     state_path.parent.mkdir(parents=True, exist_ok=True)
 
     with sync_playwright() as p:
-        browser = launch_browser(p, headless=False)
+        browser = launch_browser(p, headless=False, interactive=True)
         context = browser.new_context(viewport={"width": 1440, "height": 900})
         page = context.new_page()
         page.goto(LOGIN_URL, wait_until="domcontentloaded")
@@ -123,23 +123,33 @@ def open_session(p, state_path: Path = STATE_PATH, headless: bool = False):
             "Run: python main.py --linkedin-login"
         )
 
-    browser = launch_browser(p, headless=headless)
-    context = browser.new_context(
-        storage_state=str(state_path),
-        viewport={"width": 1440, "height": 900},
-    )
-    page = context.new_page()
-    # The 18:11 run on 2026-08-28 lost the entire LinkedIn side here to
-    # "Page.goto: Timeout 30000ms exceeded" on the default 30s.
-    page.goto(JOBS_URL, wait_until="domcontentloaded", timeout=60000)
-    page.wait_for_timeout(4000)
-
-    if not is_logged_in(page, strict=True):
-        browser.close()
-        raise NotLoggedIn(
-            "Saved LinkedIn session has expired. Run: python main.py --linkedin-login"
+    attempts = launch_attempts(headless)
+    for n, (try_headless, offscreen) in enumerate(attempts, 1):
+        browser = launch_browser(p, headless=try_headless, offscreen=offscreen)
+        context = new_context(
+            browser,
+            storage_state=str(state_path),
+            viewport={"width": 1440, "height": 900},
         )
-    return browser, context, page
+        page = context.new_page()
+        # The 18:11 run on 2026-08-28 lost the entire LinkedIn side here to
+        # "Page.goto: Timeout 30000ms exceeded" on the default 30s.
+        page.goto(JOBS_URL, wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(4000)
+
+        if is_logged_in(page, strict=True):
+            return browser, context, page
+        browser.close()
+        if n < len(attempts):
+            # A headless launch that lands on the authwall may be a refused
+            # browser rather than a dead session - give the off-screen window
+            # one go before declaring the login expired.
+            log.warning("Headless LinkedIn run not signed in - retrying with an off-screen window")
+            continue
+
+    raise NotLoggedIn(
+        "Saved LinkedIn session has expired. Run: python main.py --linkedin-login"
+    )
 
 
 def search_url(keyword: str, location: str | None = None,

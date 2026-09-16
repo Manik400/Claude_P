@@ -16,8 +16,9 @@ rem
 rem RUN THE SCAN FIRST. This analyses today's results file; without one it
 rem stops and tells you so rather than analysing a stale day.
 rem
-rem A browser opens for the ten JD fetches (Naukri blocks headless). After that
-rem it is model calls only - roughly ten minutes and a few dollars of tokens.
+rem A browser opens for the ten JD fetches (headless, so nothing on screen,
+rem when run through scripts\run_hidden.vbs or with NAUKRI_BACKGROUND=1). After
+rem that it is model calls only - roughly ten minutes and a few dollars of tokens.
 rem Add --reuse-jds to re-run the analysis without re-opening the job pages.
 rem
 rem Needs the `claude` CLI on PATH (it reuses your Claude Code login), or

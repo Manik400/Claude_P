@@ -38,8 +38,12 @@ cp jobs.example.yaml jobs.yaml   # then set `role:` in it
 python main.py --roles           # confirm which pack is active
 ```
 
-Needs Python 3.9+. Everything that touches Naukri runs headed — Akamai serves
-"Access Denied" to headless Chromium — so the machine needs a desktop session.
+Needs Python 3.9+. Commands you run by hand open a visible browser so you can
+watch them. Add `--background` (or set `NAUKRI_BACKGROUND=1`) and nothing
+appears on screen: the browser runs headless, and the scheduled runs do this
+automatically. If Naukri ever refuses the headless browser again, that mode
+falls back to a headed window parked off-screen, which still needs a desktop
+session to exist — so stay logged in to Windows (the lock screen is fine).
 
 ## Pick your role
 
@@ -253,8 +257,8 @@ human present for 2FA, no password in this codebase. Cookies land in
 
 LinkedIn is stricter about automation than Naukri, and a restriction there
 costs you your professional network rather than one job board. So the LinkedIn
-side only ever **reads**: it navigates search pages in a visible browser at
-human pace and parses what renders. It never applies, messages or connects.
+side only ever **reads**: it navigates search pages in a browser at human
+pace and parses what renders. It never applies, messages or connects.
 
 LinkedIn cards carry no skills list and no experience range - the two
 components worth 60 of the 100-point Naukri score - so they get their own tab
@@ -345,8 +349,12 @@ actually want:
 **51 matches found - 4 applied to - 47 waiting for you.**
 ```
 
-The tasks run interactively rather than in the background, for the same Akamai
-reason as `--refresh`: headless Chromium gets "Access Denied".
+Nothing appears on screen while a scheduled run works. Task Scheduler starts
+`scripts\run_hidden.vbs`, which runs the batch file with its console hidden
+and sets `NAUKRI_BACKGROUND=1`, so the browser is headless too. The batch
+output goes to `logs\scheduled.log`. The tasks are still registered as "run
+only when the user is logged on", because the off-screen fallback (used only
+if Naukri refuses the headless browser) needs a desktop session.
 
 ## AI interview preparation
 

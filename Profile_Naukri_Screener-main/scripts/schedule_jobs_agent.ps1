@@ -13,10 +13,16 @@
 # at :00, and a run that always starts exactly at 09:00 is a more obvious
 # pattern than one that starts at 08:52.
 #
-# The tasks run interactively (not "whether user is logged on or not") on
-# purpose: both boards serve blocked pages to headless Chromium, so the agent
-# needs a real desktop session to draw a browser into. A visible browser window
-# will open while each run works.
+# NOTHING APPEARS ON SCREEN WHILE A RUN WORKS. The task does not start the
+# batch file directly - that would open a console window for the whole run -
+# but goes through scripts\run_hidden.vbs, which starts it with its window
+# hidden and sets NAUKRI_BACKGROUND=1 so the browser runs headless (see
+# naukri\session.py). Everything the batch prints lands in logs\scheduled.log.
+#
+# The tasks still run interactively (not "whether user is logged on or not"):
+# if Naukri ever refuses the headless browser again, the fallback is a headed
+# window parked off-screen, and that needs a desktop session to exist. Stay
+# logged in to Windows; the lock screen is fine.
 
 param(
     # scan     search both boards, score, write the openings page. Free.
@@ -62,7 +68,17 @@ if ($Remove) {
     return
 }
 
-$action = New-ScheduledTaskAction -Execute $batch -WorkingDirectory $root
+$launcher = Join-Path $PSScriptRoot "run_hidden.vbs"
+if (-not (Test-Path $launcher)) {
+    throw "Cannot find $launcher"
+}
+
+# wscript.exe has no console of its own, and run_hidden.vbs starts the batch
+# with its window hidden - so no cmd window, and no Chrome window either.
+$action = New-ScheduledTaskAction `
+    -Execute "$env:SystemRoot\System32\wscript.exe" `
+    -Argument "//B //Nologo `"$launcher`" `"$batch`"" `
+    -WorkingDirectory $root
 
 # THE BATTERY FLAGS ARE LOAD-BEARING ON A LAPTOP. Task Scheduler defaults
 # DisallowStartIfOnBatteries and StopIfGoingOnBatteries to TRUE, and
@@ -107,3 +123,4 @@ Write-Host "Run one now with:  Start-ScheduledTask -TaskName '$prefix-1'"
 Write-Host "Stop them with:    ...\schedule_jobs_agent.ps1 -Remove"
 Write-Host ""
 Write-Host "Each run rewrites data\jobs\openings-<date>.html - your tracker page."
+Write-Host "Runs are silent (no console, no browser window); their output is in logs\scheduled.log."

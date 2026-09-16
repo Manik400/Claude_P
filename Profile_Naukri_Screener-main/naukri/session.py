@@ -25,20 +25,95 @@ class NotLoggedIn(RuntimeError):
     """Raised when no usable saved session exists."""
 
 
-def launch_browser(p, headless: bool):
+# Window bounds far outside any monitor. Used only as the fallback when a
+# background run is refused headless: the browser is headed, so it can draw and
+# is not blocked, but it never lands on the screen. Disabling native occlusion
+# tracking stops Chrome noticing it is off-screen and pausing rendering, which
+# would otherwise leave Playwright's click/fill actions hanging.
+OFFSCREEN_ARGS = [
+    "--window-position=-32000,-32000",
+    "--disable-features=CalculateNativeWinOcclusion",
+]
+
+
+def background() -> bool:
+    """True when runs must never put a window on the screen.
+
+    Set by `main.py --background`, by NAUKRI_BACKGROUND=1 in the environment,
+    and by scripts\\run_hidden.vbs, which is what Task Scheduler launches.
+    """
+    return os.environ.get("NAUKRI_BACKGROUND", "").strip() == "1"
+
+
+def launch_attempts(headless: bool) -> list[tuple[bool, bool]]:
+    """The (headless, offscreen) launches to try, in order.
+
+    Naukri sits behind Akamai, which used to refuse every headless browser.
+    Chrome's current headless mode is the real browser with a "Headless" tag
+    in its user agent, and with that tag removed (see new_context) both
+    boards serve normal pages. In background mode we still keep a second
+    attempt: a headed window parked off-screen, for the day Akamai changes
+    its mind. Interactive runs keep whatever the caller asked for.
+    """
+    if background():
+        return [(True, False), (False, True)]
+    return [(headless, False)]
+
+
+def launch_browser(p, headless: bool, interactive: bool = False, offscreen: bool = False):
     """Launch the installed Chrome, falling back to Playwright's bundled Chromium.
 
     The bundled Chromium fails on some Windows machines with "side-by-side
     configuration is incorrect". Set NAUKRI_BROWSER_CHANNEL to "msedge" to use
     Edge, or to "none" to force the bundled build.
+
+    In background mode every non-interactive launch is headless, whatever the
+    caller passed. `interactive=True` is for the login flows, where a human
+    has to see the window. `offscreen=True` positions a headed window outside
+    the visible desktop.
     """
+    if background() and not interactive:
+        headless = True
+    args = list(OFFSCREEN_ARGS) if (offscreen and not headless) else []
     channel = os.environ.get("NAUKRI_BROWSER_CHANNEL", "chrome")
     if channel and channel.lower() != "none":
         try:
-            return p.chromium.launch(headless=headless, channel=channel)
+            browser = p.chromium.launch(headless=headless, channel=channel, args=args)
+            browser._naukri_headless = headless
+            return browser
         except Exception as exc:
             log.warning("Could not launch %s (%s) - using bundled Chromium", channel, exc)
-    return p.chromium.launch(headless=headless)
+    browser = p.chromium.launch(headless=headless, args=args)
+    browser._naukri_headless = headless
+    return browser
+
+
+def new_context(browser, **kwargs):
+    """browser.new_context(), minus the "HeadlessChrome" user-agent tag.
+
+    Headless Chrome announces itself in navigator.userAgent, and that tag is
+    the one thing Akamai reliably refuses. Everything else about the current
+    headless mode is the ordinary browser. Headed launches are left alone.
+    """
+    if getattr(browser, "_naukri_headless", False) and "user_agent" not in kwargs:
+        ua = getattr(browser, "_naukri_ua", None)
+        if ua is None:
+            probe = browser.new_page()
+            try:
+                ua = probe.evaluate("navigator.userAgent")
+            finally:
+                probe.close()
+            browser._naukri_ua = ua
+        kwargs["user_agent"] = ua.replace("HeadlessChrome", "Chrome")
+    return browser.new_context(**kwargs)
+
+
+def blocked(page) -> bool:
+    """True when the page is Akamai's "Access Denied" body."""
+    try:
+        return "Access Denied" in page.locator("body").inner_text(timeout=3000)[:400]
+    except Exception:
+        return False
 
 
 def is_logged_in(page) -> bool:
@@ -158,7 +233,7 @@ def _login_playwright(state_path: Path, timeout_sec: int) -> bool:
 
     with sync_playwright() as p:
         # Headed on purpose - a human is completing this flow.
-        browser = launch_browser(p, headless=False)
+        browser = launch_browser(p, headless=False, interactive=True)
         context = browser.new_context(viewport={"width": 1440, "height": 900})
         page = context.new_page()
         page.goto(S.LOGIN_URL, wait_until="domcontentloaded")
@@ -199,17 +274,26 @@ def open_profile(p, state_path: Path = DEFAULT_STATE, headless: bool = True):
     except Exception as exc:
         raise NotLoggedIn(f"Session file at {state_path} is unreadable ({exc}). Re-run --login.")
 
-    browser = launch_browser(p, headless=headless)
-    context = browser.new_context(
-        storage_state=str(state_path),
-        viewport={"width": 1440, "height": 900},
-    )
-    page = context.new_page()
-    page.goto(S.PROFILE_URL, wait_until="domcontentloaded")
-    page.wait_for_timeout(4000)  # profile widgets lazy-load after first paint
+    attempts = launch_attempts(headless)
+    for n, (try_headless, offscreen) in enumerate(attempts, 1):
+        browser = launch_browser(p, headless=try_headless, offscreen=offscreen)
+        context = new_context(
+            browser,
+            storage_state=str(state_path),
+            viewport={"width": 1440, "height": 900},
+        )
+        page = context.new_page()
+        page.goto(S.PROFILE_URL, wait_until="domcontentloaded")
+        page.wait_for_timeout(4000)  # profile widgets lazy-load after first paint
 
-    if not is_logged_in(page):
+        if is_logged_in(page):
+            return browser, context, page
+
+        was_blocked = blocked(page)
         browser.close()
-        raise NotLoggedIn("Saved session has expired. Run: python main.py --login")
+        if was_blocked and n < len(attempts):
+            log.warning("Headless run was refused by Naukri - retrying with an off-screen window")
+            continue
+        break
 
-    return browser, context, page
+    raise NotLoggedIn("Saved session has expired. Run: python main.py --login")

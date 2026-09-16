@@ -13,9 +13,11 @@ The order below matters. Each step needs the one before it.
 - **Python 3.9 or newer** and **Git**.
 - **A Naukri account you already use.** This does not create accounts, and it
   does not scrape anyone's profile but yours.
-- **A machine you can leave logged in.** Naukri serves "Access Denied" to
-  headless Chromium, so a real browser window opens while the tools work. That
-  is not a bug you can configure around.
+- **A machine you can leave logged in.** Commands you run by hand open a
+  visible browser. Scheduled runs (and anything run with `--background`) are
+  headless and put nothing on screen, but keep a headed off-screen window as a
+  fallback for the day Naukri refuses the headless browser, and that fallback
+  needs a desktop session to exist. The lock screen is fine.
 
 Read [SAFETY.md](SAFETY.md) before you turn on anything that submits. The short
 version: every command defaults to a dry run, applications are sent in your
@@ -203,9 +205,12 @@ Needs either the `claude` CLI installed, or `pip install anthropic` and an
 powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1
 ```
 
-Registers scan runs via Task Scheduler. Default mode sends nothing. Register as
-"Run only when the user is logged on" — there is no desktop for the browser
-otherwise and it fails every day.
+Registers scan runs via Task Scheduler. Default mode sends nothing. Runs are
+silent: no console window and no browser window (the task goes through
+`scripts\run_hidden.vbs`, which hides the console and sets
+`NAUKRI_BACKGROUND=1`). Their output is in `logs\scheduled.log`. The script
+registers them as "Run only when the user is logged on" on purpose — the
+off-screen fallback browser needs a desktop session — so stay logged in.
 
 ---
 
@@ -238,8 +243,10 @@ generated resume are already ignored.
 
 ## Common problems
 
-**`Access Denied` / blank pages.** Naukri blocks headless Chromium. Every
-command that touches it already runs headed; don't try to force headless.
+**`Access Denied` / blank pages.** Naukri refused the browser. In
+`--background` mode this is handled: a headless attempt that gets this page is
+retried with a headed window parked off-screen (see `naukri/session.py`). If
+it happens on a normal visible run, wait a while and try again.
 
 **`Saved session has expired`.** Run `python main.py --login` again.
 
