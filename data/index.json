@@ -1,6 +1,17 @@
 {
- "updated": "2026-09-12T22:19:29Z",
+ "updated": "2026-09-16T07:57:03Z",
  "items": [
+  {
+   "id": "jobhunt-20260916-075703-software-engineer-pc-run-14-sep",
+   "kind": "jobhunt",
+   "title": "software engineer (PC run 14 Sep)",
+   "when": "2026-09-16T07:57:03Z",
+   "file": "data/jobhunt/jobhunt-20260916-075703-software-engineer-pc-run-14-sep.enc",
+   "bytes": 1368235,
+   "meta": {
+    "jobs_file": "data/jobhunt/jobhunt-20260916-075703-software-engineer-pc-run-14-sep.jobs.enc"
+   }
+  },
   {
    "id": "naukri-20260912-221929-naukri-openings-2026-09-11-run-2",
    "kind": "naukri",

@@ -378,7 +378,7 @@
             if (m.relocation) sub.push(m.relocation + " with relocation");
             if (m.countries && m.countries !== "default countries") sub.push(m.countries);
             if (m.experience) sub.push(m.experience + " yrs");
-            var applyChip = (kind === "jobhunt" && m.jobs_file) ? '<span class="chip ok" data-apply="' + esc(i.id) + '">auto-apply</span>' : "";
+            var applyChip = (kind === "jobhunt") ? '<span class="chip ' + (m.jobs_file ? "ok" : "") + '" data-apply="' + esc(i.id) + '">auto-apply</span>' : "";
             return '<div class="item" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" +
               esc(sub.join(" · ")) + '</span></div>' + applyChip + '<span class="chip">open</span></div>';
           }).join("");
@@ -463,7 +463,16 @@
     if (!s.pass) { showTab("settings"); $("s-pass").focus(); return; }
     if (!s.token) { showTab("settings"); $("s-token").focus(); return; }
     applyItem = (index.items || []).filter(function (i) { return i.id === id; })[0];
-    if (!applyItem || !(applyItem.meta || {}).jobs_file) return;
+    if (!applyItem) return;
+    if (!(applyItem.meta || {}).jobs_file) {
+      $("v-title").textContent = "Auto-apply · " + applyItem.title;
+      $("v-box").hidden = true; $("c-box").hidden = true; $("a-box").hidden = false;
+      $("a-box").innerHTML = '<div class="card"><div class="msg info">This report was made before auto-apply existed, so it has no job list to apply from. ' +
+        'Run the search again from the <b>Search</b> tab (about 5-15 minutes) and the new report will have the auto-apply panel.</div></div>';
+      $("viewer").classList.add("on");
+      history.pushState({ viewer: 1 }, "");
+      return;
+    }
     $("v-title").textContent = "Auto-apply · " + applyItem.title;
     $("v-box").hidden = true; $("c-box").hidden = true; $("a-box").hidden = false;
     $("a-box").innerHTML = '<div class="card"><span class="spin"></span> Loading postings…</div>';
