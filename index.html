@@ -99,6 +99,7 @@
     <button data-tab="run" class="on">Search</button>
     <button data-tab="careers">Careers</button>
     <button data-tab="reports">Reports</button>
+    <button data-tab="track">Track</button>
     <button data-tab="settings">Settings</button>
   </nav>
 </header>
@@ -195,6 +196,12 @@
     <div class="muted" id="index-updated"></div>
   </section>
 
+  <!-- ----------------------------------------------------------------- Track -->
+  <section id="tab-track" hidden>
+    <div id="track-need" class="msg info" hidden>Enter your passphrase in <b>Settings</b> to see this. Everything here is encrypted; nobody without it can read it.</div>
+    <div id="track-body"></div>
+  </section>
+
   <!-- -------------------------------------------------------------- Settings -->
   <section id="tab-settings" hidden>
     <div class="card">
@@ -251,7 +258,7 @@
 
   // ---- tabs
   var tabs = document.querySelectorAll("nav button");
-  var TABS = ["run", "careers", "reports", "settings"];
+  var TABS = ["run", "careers", "reports", "settings", "track"];
   function showTab(name) {
     if (TABS.indexOf(name) < 0) name = "run";
     tabs.forEach(function (b) { b.classList.toggle("on", b.dataset.tab === name); });
@@ -261,6 +268,7 @@
     if (name === "reports") loadIndex();
     if (name === "run") loadRuns();
     if (name === "careers") { loadRuns("careers.yml", "c-runs"); loadIndex(); loadCompanies(); }
+    if (name === "track") loadTrack();
   }
   tabs.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
 
@@ -275,6 +283,7 @@
     $("run-need").hidden = !!s.token;
     $("careers-need").hidden = !!s.token;
     $("reports-need").hidden = !!s.pass;
+    $("track-need").hidden = !!s.pass;
   }
   $("btn-save").addEventListener("click", function () {
     store.set("pass", $("s-pass").value); store.set("token", $("s-token").value.trim());
@@ -537,6 +546,128 @@
         .catch(function (e) { msg("a-qmsg", "Could not send: " + e.message, "bad"); $("a-send").disabled = false; });
     });
   }
+  // ---- Track: your answers, every application with its Q&A and replies, editable.
+  // Data comes from data/apply/profile.enc, written by the PC poller from its
+  // dashboard; edits go back as "profile" / "notes" requests through apply.yml
+  // and the PC saves them exactly as its dashboard would.
+  var track = null, trackBank = [], trackSkills = {};
+  var T_LABELS = { applied: "applied", already: "applied earlier", offsite: "company site", questionnaire: "needs your answer",
+    "questionnaire-failed": "form failed", unconfirmed: "unconfirmed", "no-button": "no apply button", error: "error" };
+  function tCls(st) { return st === "applied" || st === "already" ? "ok" : (st === "questionnaire" || st === "offsite" ? "warn" : (st === "error" || st === "questionnaire-failed" || st === "unconfirmed" ? "bad" : "")); }
+  function kCls(k) { return k === "rejected" ? "bad" : (k === "interview" || k === "shortlisted" || k === "offer" ? "ok" : (k === "viewed" ? "warn" : "")); }
+  function loadTrack() {
+    var s = settings();
+    if (!s.pass) { $("track-body").innerHTML = ""; return; }
+    $("track-body").innerHTML = '<div class="card"><span class="spin"></span> Loading…</div>';
+    fetch("data/apply/profile.enc?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("nothing published yet - the PC writes this on its next check (every 30 min while on)"); return r.json(); })
+      .then(function (o) { return decrypt(o, s.pass); }).then(JSON.parse)
+      .then(function (t) { track = t; trackBank = (t.bank || []).slice(); trackSkills = Object.assign({}, (t.answers || {}).skill_years || {}); renderTrack(); })
+      .catch(function (e) { $("track-body").innerHTML = '<div class="card msg ' + (e.name === "OperationError" ? "bad" : "info") + '">' + esc(e.name === "OperationError" ? "Wrong passphrase. Check Settings." : e.message) + "</div>"; });
+  }
+  function sendRequest(action, payload, msgId, okText) {
+    var s = settings();
+    if (!s.token) { showTab("settings"); $("s-token").focus(); return Promise.resolve(false); }
+    msg(msgId, "Sending…");
+    return gh("/actions/workflows/apply.yml/dispatches", { method: "POST",
+      body: JSON.stringify({ ref: s.ref, inputs: { action: action, payload: JSON.stringify(payload) } }) })
+      .then(function () { msg(msgId, okText, "ok"); return true; })
+      .catch(function (e) { msg(msgId, "Could not send: " + e.message, "bad"); return false; });
+  }
+  function renderTrack() {
+    var a = track.answers || { fields: [], facts: {}, policies: [] }, c = track.counts || {}, apps = track.applications || [], pend = track.pending || [];
+    var waiting = pend.filter(function (q) { return !(q.answer || "").trim(); });
+    var html = '';
+    // --- stats
+    html += '<div class="card"><div class="row" style="grid-template-columns:repeat(3,1fr)">' +
+      [["Applied", c.applied || 0], ["Today", c.applied_today || 0], ["Waiting on you", waiting.length]].map(function (x) {
+        return '<div><b style="font-size:22px">' + x[1] + '</b><div class="muted">' + x[0] + '</div></div>'; }).join("") + '</div>' +
+      '<div class="muted" style="margin-top:6px">' + (track.gmail && track.gmail.synced_at ? "Gmail replies checked " + ago(track.gmail.synced_at) : "Gmail replies: set an app password in the PC dashboard to see recruiter replies here") + '</div></div>';
+    // --- my answers
+    html += '<div class="card"><h2>My answers</h2><div class="muted">What the agent says on your behalf. Blank fields fall back to your Naukri profile or jobs.yaml (shown as the placeholder).</div>';
+    (a.fields || []).forEach(function (f) {
+      var v = (a.facts || {})[f.id] || {}, ph = v.from_profile || v.from_jobs_yaml || f.hint || "";
+      if (f.kind === "bool") {
+        var cur = v.value === "" || v.value == null ? String(v.from_jobs_yaml == null ? "" : v.from_jobs_yaml) : String(v.value);
+        html += '<label>' + esc(f.label) + '</label><select data-tf="' + f.id + '"><option value="">not set</option><option value="true"' + (/^true$/i.test(cur) ? " selected" : "") + '>Yes</option><option value="false"' + (/^false$/i.test(cur) ? " selected" : "") + '>No</option></select>';
+      } else {
+        html += '<label>' + esc(f.label) + (f.override && v.from_profile ? ' <span class="muted">(profile: ' + esc(v.from_profile) + ')</span>' : '') + '</label><input data-tf="' + f.id + '" value="' + esc(v.value == null ? "" : v.value) + '" placeholder="' + esc(ph) + '" autocapitalize="none">';
+      }
+    });
+    html += '<h2 style="margin-top:14px">Years per skill</h2><div id="t-skills"></div><div class="row"><input id="t-skill-name" placeholder="skill" autocapitalize="none"><input id="t-skill-years" placeholder="years" inputmode="decimal"></div><button class="ghost" id="t-skill-add">Add skill</button>';
+    html += '<h2 style="margin-top:14px">Standard questions</h2><div class="muted">Yes / No / Ask me (leaves it for you).</div>';
+    (a.policies || []).forEach(function (pol) {
+      html += '<label>' + esc(pol.label) + '</label><select data-tp="' + pol.id + '">' + ["yes", "no", "ask"].map(function (o) { return '<option value="' + o + '"' + (pol.choice === o ? " selected" : "") + '>' + (o === "ask" ? "Ask me" : o) + '</option>'; }).join("") + '</select>';
+    });
+    html += '<h2 style="margin-top:14px">Answers to specific questions</h2><div id="t-bank"></div><input id="t-bank-q" placeholder="question, as the recruiter words it" autocapitalize="none"><input id="t-bank-a" placeholder="answer" autocapitalize="none"><button class="ghost" id="t-bank-add">Add answer</button>';
+    html += '<button class="primary" id="t-save" style="margin-top:12px">Save all answers</button><div id="t-msg"></div></div>';
+    // --- questions waiting
+    if (waiting.length) {
+      html += '<div class="card"><h2>Questions waiting for you (' + waiting.length + ')</h2>' + waiting.map(function (q, i) {
+        var input = q.options && q.options.length ? '<select data-tq="' + i + '"><option value="">choose</option>' + q.options.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join("") + '<option value="skip">skip - never answer</option></select>' : '<input data-tq="' + i + '" placeholder="your answer (or skip)" autocapitalize="none">';
+        return '<div style="margin-top:10px"><b>' + esc(q.question) + '</b><div class="muted">' + esc((q.jobs || []).map(function (j) { return j.title + " - " + j.company; }).join("; ")) + '</div>' + input + '</div>';
+      }).join("") + '<button class="primary" id="t-qsend" style="margin-top:10px">Send answers</button><div id="t-qmsg"></div></div>';
+    }
+    // --- applications
+    html += '<div class="card"><h2>Applications (' + apps.length + ')</h2><input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div id="t-apps"></div></div>';
+    $("track-body").innerHTML = html;
+    renderTrackSkills(); renderTrackBank(); renderTrackApps("");
+    $("t-skill-add").addEventListener("click", function () { var n = $("t-skill-name").value.trim(), y = parseFloat($("t-skill-years").value); if (n && !isNaN(y)) { trackSkills[n] = y; $("t-skill-name").value = ""; $("t-skill-years").value = ""; renderTrackSkills(); } });
+    $("t-bank-add").addEventListener("click", function () { var q = $("t-bank-q").value.trim(), an = $("t-bank-a").value.trim(); if (q && an) { trackBank.push({ question: q, answer: an, options: [] }); $("t-bank-q").value = ""; $("t-bank-a").value = ""; renderTrackBank(); } });
+    $("t-q").addEventListener("input", function () { renderTrackApps($("t-q").value.trim().toLowerCase()); });
+    $("t-save").addEventListener("click", function () {
+      document.querySelectorAll("[data-ts]").forEach(function (i) { trackSkills[i.dataset.ts] = parseFloat(i.value) || 0; });
+      document.querySelectorAll("[data-tb]").forEach(function (i) { trackBank[+i.dataset.tb].answer = i.value; });
+      var facts = {}; document.querySelectorAll("[data-tf]").forEach(function (i) { facts[i.dataset.tf] = i.value === "true" ? true : (i.value === "false" ? false : i.value); });
+      var policies = {}; document.querySelectorAll("[data-tp]").forEach(function (i) { policies[i.dataset.tp] = i.value; });
+      $("t-save").disabled = true;
+      sendRequest("profile", { facts: facts, skill_years: trackSkills, policies: policies, bank: trackBank }, "t-msg",
+        "Sent. The PC saves these on its next check (every 30 min while on) and every later application uses them.")
+        .then(function () { $("t-save").disabled = false; });
+    });
+    if ($("t-qsend")) $("t-qsend").addEventListener("click", function () {
+      var answers = {}; document.querySelectorAll("[data-tq]").forEach(function (el) { var v = el.value.trim(); if (v) answers[waiting[+el.dataset.tq].question] = v; });
+      if (!Object.keys(answers).length) { msg("t-qmsg", "Type at least one answer.", "bad"); return; }
+      $("t-qsend").disabled = true;
+      gh("/actions/workflows/apply.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: settings().ref, inputs: { action: "answers", answers: JSON.stringify(answers) } }) })
+        .then(function () { msg("t-qmsg", "Sent. The PC applies with these on its next check.", "ok"); })
+        .catch(function (e) { msg("t-qmsg", "Could not send: " + e.message, "bad"); $("t-qsend").disabled = false; });
+    });
+  }
+  function renderTrackSkills() {
+    $("t-skills").innerHTML = Object.keys(trackSkills).sort().map(function (n) {
+      return '<div class="row" style="grid-template-columns:1fr 90px 70px;align-items:center;margin-top:4px"><div>' + esc(n) + '</div><input data-ts="' + esc(n) + '" value="' + esc(trackSkills[n]) + '" inputmode="decimal"><button class="ghost" data-tsdel="' + esc(n) + '">remove</button></div>'; }).join("") || '<div class="muted">None yet.</div>';
+    $("t-skills").querySelectorAll("[data-tsdel]").forEach(function (b) { b.addEventListener("click", function () { delete trackSkills[b.dataset.tsdel]; renderTrackSkills(); }); });
+  }
+  function renderTrackBank() {
+    $("t-bank").innerHTML = trackBank.map(function (e, i) {
+      return '<div style="margin-top:8px"><div>' + esc(e.question) + (e.options && e.options.length ? '<div class="muted">options: ' + esc(e.options.join(" / ")) + '</div>' : '') + '</div><div class="row" style="grid-template-columns:1fr 70px"><input data-tb="' + i + '" value="' + esc(e.answer) + '" autocapitalize="none"><button class="ghost" data-tbdel="' + i + '">delete</button></div></div>'; }).join("") || '<div class="muted">Nothing saved yet.</div>';
+    $("t-bank").querySelectorAll("[data-tbdel]").forEach(function (b) { b.addEventListener("click", function () { trackBank.splice(+b.dataset.tbdel, 1); renderTrackBank(); }); });
+  }
+  function renderTrackApps(q) {
+    var apps = (track.applications || []).filter(function (x) { return !q || (x.title + " " + x.company).toLowerCase().indexOf(q) >= 0; });
+    var statuses = track.manual_statuses || ["", "viewed", "shortlisted", "interview", "offer", "rejected", "withdrawn"];
+    $("t-apps").innerHTML = apps.map(function (x, i) {
+      var r = x.response, m = x.manual || {};
+      var reply = m.status ? '<span class="chip ' + kCls(m.status) + '">' + esc(m.status) + ' (you)</span>' : (r ? '<span class="chip ' + kCls(r.kind) + '">' + esc(r.label) + '</span>' : '');
+      var qa = (x.answers || []).length ? x.answers.map(function (y) { return '<div style="margin-top:6px"><div class="muted">' + esc(y.question) + '</div><b>' + esc(y.answer) + '</b> <span class="muted">(' + esc(y.source) + (y.fix ? ' - fix at ' + esc(y.fix) : '') + ')</span></div>'; }).join("") : '<div class="muted">One-click apply, no questions asked.</div>';
+      var blocked = x.blocked ? '<div class="msg info">Stopped at: <b>' + esc(x.blocked.question) + '</b> - ' + esc(x.blocked.why) + '</div>' : '';
+      var mails = r ? r.emails.map(function (e) { return '<div style="margin-top:6px;padding-left:8px;border-left:3px solid var(--line)"><b>' + esc(e.subject) + '</b> <span class="chip ' + kCls(e.kind) + '">' + esc((track.kind_labels || {})[e.kind] || e.kind) + '</span><div class="muted">' + esc((e.date || "").slice(0, 16).replace("T", " ")) + ' - ' + esc(e.from) + '</div><div class="muted">' + esc(e.snippet) + '</div></div>'; }).join("") : '';
+      return '<details style="border-top:1px solid var(--line);padding:10px 0"><summary style="cursor:pointer"><b>' + esc(x.title) + '</b> <span class="muted">' + esc(x.company) + '</span><br><span class="chip">' + esc(x.board) + '</span> ' +
+        '<span class="chip ' + tCls(x.status) + '">' + esc(T_LABELS[x.status] || x.status) + '</span> ' + reply + ' <span class="muted">' + esc((x.at || "").slice(0, 16).replace("T", " ")) + '</span></summary>' +
+        '<div class="muted"><a href="' + esc(x.url) + '" target="_blank" rel="noopener">open posting</a></div>' + qa + blocked + mails +
+        '<label style="margin-top:8px">Your status</label><select data-tns="' + esc(x.job_id) + '">' + statuses.map(function (st) { return '<option value="' + st + '"' + (m.status === st ? " selected" : "") + '>' + (st || "none") + '</option>'; }).join("") + '</select>' +
+        '<input data-tnn="' + esc(x.job_id) + '" placeholder="note (interview date, recruiter name...)" value="' + esc(m.note || "") + '"><button class="ghost" data-tnsave="' + esc(x.job_id) + '">Save status</button><div id="t-nm-' + i + '"></div></details>';
+    }).join("") || '<div class="muted">No applications yet.</div>';
+    $("t-apps").querySelectorAll("[data-tnsave]").forEach(function (b, i) {
+      b.addEventListener("click", function () {
+        var id = b.dataset.tnsave, payload = {};
+        payload[id] = { status: document.querySelector('[data-tns="' + id.replace(/"/g, '\\"') + '"]').value, note: document.querySelector('[data-tnn="' + id.replace(/"/g, '\\"') + '"]').value };
+        sendRequest("notes", payload, "t-nm-" + i, "Sent. The PC saves it on its next check.");
+      });
+    });
+  }
+
   function requestApply(jobs, n) {
     if (!n) return;
     $("a-all").disabled = true; $("a-sel").disabled = true;
