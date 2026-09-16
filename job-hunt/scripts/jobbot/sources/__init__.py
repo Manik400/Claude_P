@@ -1,5 +1,6 @@
 """Source registry."""
 from .adzuna import Adzuna
+from .apify import ApifyIndeed, ApifyLinkedIn, ApifyNaukri
 from .arbeitnow import Arbeitnow
 from .daijob import Daijob
 from .duunitori import Duunitori
@@ -31,6 +32,7 @@ ALL_SOURCES = [
     TokyoDev(), JapanDev(), Daijob(), Wantedly(), JobThai(), TheMuse(), LandingJobs(), RelocateMe(),
     Instahyre(), Remotive(), RemoteOK(), Jobicy(), WorkingNomads(),
     Adzuna(), Jooble(), JSearch(), FirecrawlSearch(),
+    ApifyNaukri(), ApifyIndeed(), ApifyLinkedIn(),
 ]
 
 BY_KEY = {s.key: s for s in ALL_SOURCES}

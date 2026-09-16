@@ -50,3 +50,17 @@ then ask Claude e.g. "find python developer jobs in Germany and Japan, 3 years e
 
 ## Optional API keys (more coverage)
 ADZUNA_APP_ID + ADZUNA_APP_KEY, JOOBLE_API_KEY, RAPIDAPI_KEY (JSearch), FIRECRAWL_API_KEY.
+
+**India (and any board that blocks scripts):** `APIFY_TOKEN` rents real scrapers on Apify -
+`apify-naukri` (India), `apify-indeed` (60+ countries), `apify-linkedin` (everywhere; also returns the
+job poster as a contact). `APIFY_SOURCES` picks which run, default `naukri,indeed`. A search costs a
+few cents. Get a token at <https://console.apify.com/account/integrations>.
+
+## Contacts per company
+After every search the best companies are looked up for recruiters, engineering managers and heads
+of engineering (`scripts/jobbot/contacts.py`): what the postings themselves reveal (emails, the
+LinkedIn poster, the company site) plus, when a key is set, SignalHire (`SIGNALHIRE_API_KEY`, people
+by title), Hunter.io (`HUNTER_API_KEY`, named emails + the company's email pattern) and Apollo.io
+(`APOLLO_API_KEY`, people with LinkedIn URLs). The result lands in `contacts.json` in the run folder
+and on each job (`extra.contacts`), which the phone shows under **Contacts**. Without keys you still
+get ready-made LinkedIn / Google people searches per role. `--no-contacts` skips it.

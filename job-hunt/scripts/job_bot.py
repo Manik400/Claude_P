@@ -263,6 +263,23 @@ def do_apply(run_dir, meta, statuses, jobs, args, log):
     return outcomes
 
 
+def do_contacts(run_dir, meta, statuses, jobs, log):
+    """Recruiters / hiring managers per company -> contacts.json and each job's extra.contacts."""
+    from jobbot import contacts
+    from jobbot.http import Http
+    try:
+        found = contacts.enrich(jobs, Http(log=log), meta.get("roles") or [], log=log)
+    except Exception as e:  # noqa: BLE001 - contacts are a bonus, never the reason a run fails
+        log(f"contacts: skipped ({e})")
+        return None
+    with open(os.path.join(run_dir, "contacts.json"), "w", encoding="utf-8") as f:
+        json.dump(found, f, ensure_ascii=False, indent=1)
+    contacts.attach(jobs, found)
+    meta["contacts"] = {"companies": len(found), "providers": contacts.providers()}
+    save_run(run_dir, meta, statuses, jobs)
+    return found
+
+
 def cmd_run(args):
     log0 = Logger(None, quiet=args.quiet)
     if getattr(args, "like_last", False):
@@ -276,6 +293,8 @@ def cmd_run(args):
         do_score(run_dir, meta, jobs, args.resume, log)
         jobs = sort_jobs(jobs)
         save_run(run_dir, meta, statuses, jobs)
+    if not getattr(args, "no_contacts", False):
+        do_contacts(run_dir, meta, statuses, jobs, log)
     report = render(run_dir, meta, jobs, statuses)
     summary(meta, jobs, statuses, report, log)
     if getattr(args, "apply_found", False):
@@ -458,6 +477,8 @@ def main(argv=None):
     p = sub.add_parser("run", help="search + score + render (+ apply with --apply-found)")
     add_search_args(p)
     p.add_argument("--resume", help="resume file (.pdf/.docx/.txt) used only for match scoring")
+    p.add_argument("--no-contacts", action="store_true", dest="no_contacts",
+                   help="skip the recruiter / hiring-manager lookup per company (SIGNALHIRE_API_KEY, HUNTER_API_KEY, APOLLO_API_KEY)")
     p.add_argument("--open", action="store_true", help="open the report in the browser")
     p.add_argument("--like-last", action="store_true", dest="like_last",
                    help="reuse the roles, experience, countries and resume of the newest run")

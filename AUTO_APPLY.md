@@ -1,152 +1,130 @@
-# Auto-apply from the phone
+# Auto-apply from the phone: the one queue
 
 > Short version: [AUTO_APPLY_SIMPLE.md](AUTO_APPLY_SIMPLE.md)
 
-**What it is:** on the phone site (<https://manik400.github.io/Claude_P/#reports>) every worldwide
-search report has an **auto-apply** chip. It opens a panel that lists the report's LinkedIn
-postings, and one tap asks your PC to apply to them for you with your LinkedIn login. The phone
-never applies by itself and GitHub never does either - it only carries the request home.
+**What it is:** on the phone site (<https://manik400.github.io/Claude_P/>) every worldwide report and
+every Naukri scan opens as a job list. Tap **Queue all** (or tick a few and **Queue selected**) and the
+jobs go into **one queue**. Your PC works through that queue every 30 minutes with your own LinkedIn and
+Naukri logins, and the phone shows the progress: `75% · 9 of 12 settled · 5 applied · 1 needs your
+answer · 2 by hand · 1 failed`. The phone never applies by itself and GitHub never does either - it only
+carries the request home.
+
+## The tabs
+
+| Tab | What it is for |
+| --- | --- |
+| **Home** | The queue's progress bar, whether the PC is on, today's counts against the daily caps, the questions waiting for you, the latest reports, searches running. |
+| **Search** | Worldwide boards (country chips, India first; Naukri / Indeed / LinkedIn through Apify when set up) or company career pages. |
+| **Jobs** | Every report: worldwide searches, Naukri scans from the PC, career-page searches, interview prep. Tap one → its job list with filters (board, country, match), **Contacts** per job, **+ Queue** per job or **Queue all**. |
+| **Queue** | The one list: progress, pause / resume, the rules (auto-queue, minimum match, boards, per-run limit, what to do with company-site postings), every job with its status, **retry** / **remove**, the PC's recent runs. |
+| **Track** | Every application (both projects), its screening Q&A, Gmail replies, your own status and notes; your answers form. |
+| **Settings** | Passphrase, token, repo. Which optional keys unlock India coverage, contacts and Simplify. |
 
 ## Why the PC does the applying
 
-* **The phone can't.** A web page on github.io has no access to your LinkedIn session.
-* **GitHub's runners mustn't.** They have no LinkedIn login, and even if they had, a datacenter IP
-  logging into your account is exactly what gets it restricted.
-* **The PC already can.** The Naukri screener on it has the LinkedIn Easy Apply walker, your saved
-  answers, the pacing rules and the daily cap. Auto-apply just feeds it postings from the phone.
-
-So the phone drops an encrypted request on the `gh-pages` branch, the PC picks it up on a
-schedule, applies from home with the real session, and publishes the result back so the phone
-can show it.
+* **The phone can't.** A web page on github.io has no access to your LinkedIn or Naukri session.
+* **GitHub's runners mustn't.** No login there, and a datacenter IP on your account is what gets it restricted.
+* **The PC already can.** The Naukri screener on it has the Naukri applier, the LinkedIn Easy Apply
+  walker, your saved answers, the pacing rules and the daily caps. The queue just feeds it.
 
 ```
-phone ──auto-apply chip──▶ apply.yml (GitHub Actions)
-                              │  writes  data/apply/queue/<request>.enc   (encrypted, gh-pages)
-                              ▼
-        PC: site\phone_apply.bat  (every 30 min, scheduled by site\schedule_phone_apply.ps1)
-                              │  reads the queue, applies on LinkedIn via the Naukri screener
-                              │  writes  data/apply/status.enc   (per-posting outcome, open questions)
-                              │  writes  data/apply/profile.enc  (your answers form, applications, replies)
-                              ▼
-phone ◀── auto-apply panel shows applied / needs your answer / apply on company site
-phone ◀── Track tab shows every application, its Q&A, Gmail replies, your notes
+phone ──Queue all / +Queue / retry / remove / rules / answers──▶ apply.yml (GitHub Actions)
+                                   │  writes  data/apply/queue/<request>.enc   (encrypted, gh-pages)
+                                   ▼
+        PC: site\phone_apply.bat  (every 30 min + 2 min after logon; site\schedule_phone_apply.ps1)
+                                   │  folds requests into THE queue, auto-queues strong matches,
+                                   │  applies on Naukri + LinkedIn (Simplify for company sites, optional)
+                                   │  writes  data/apply/queue.enc    (every item, status, %, questions, PC heartbeat)
+                                   │  writes  data/apply/profile.enc  (Track tab)
+                                   ▼
+phone ◀── Home / Queue: 75% done · applied · needs your answer · by hand · failed
 ```
 
-## Step by step
+## What happens when...
 
-### 1. You tap on the phone
+**...I tap Queue all and the PC is off.** Nothing is lost. The request sits on the `gh-pages` branch;
+the queue file remembers every item and its status. The scheduled task fires two minutes after you log
+in (and every 30 minutes after that), reads the request and starts applying. Home shows "PC off? last
+seen 5 h ago" until then, and every queued item says *queued*.
 
-Reports → a worldwide report → **auto-apply**. The panel shows:
+**...the queue has 60 jobs.** Each run applies to at most 5 per board (change it under Queue → Rules),
+a minute or more apart, and the daily caps from `Profile_Naukri_Screener-main\jobs.yaml`
+(`linkedin_max_applies_per_day`, `max_auto_applies`) still hold. 60 jobs take a few hours to a couple of
+days; the percentage on Home tells you where it is.
 
-* how many LinkedIn postings the report has and how many are not requested yet,
-* a tally of what already happened (`3 applied`, `1 needs your answer`, …),
-* **Apply to all (N)** and **Apply to selected (N)** - tap rows to tick them,
-* one row per posting with its company, location, resume match and a status chip
-  (`new`, `queued`, `applied`, `needs your answer`, `apply on company site`, `error`, …),
-* **Questions waiting for you** - screening questions the agent could not answer from your profile,
-  with a box or a dropdown each and a **Send answers** button,
-* when the PC last checked in and how many it applied today.
+**...a form asks something the agent cannot answer.** The job shows *needs your answer* and the
+question appears on Home / Queue / Track. Answer it there; the next run absorbs the answer, re-applies to
+every job that was waiting on it, and remembers it for later applications (same
+`data/jobs/questions.yaml` / answer bank the PC dashboard uses).
 
-Only LinkedIn postings are listed (they are the ones the Easy Apply walker can do). Jobs marked
-"not a fit" by the search are left out. Everything else in the report (Indeed, company boards,
-Seek, …) stays manual: open the report and tap its Apply button.
+**...an application fails.** It is retried on the next two runs; after three tries it shows
+*failed - tap retry* and waits for you. *Retry* puts it back in the queue.
 
-Reports made before auto-apply existed have no job list attached; the panel says so and asks you
-to run the search again.
+**...the posting is on the company's own site.** With the default rule it is marked *company site -
+apply by hand* and the job stays in the list with an **open** link. With Simplify set up (below) the PC
+opens it in a browser that has the Simplify Copilot extension, lets it fill the form, screenshots it, and
+either stops (*form pre-filled - finish on PC*) or presses Submit (*submitted*).
 
-### 2. The request is queued on GitHub
+**...I want it fully automatic.** Queue → Rules → **Auto-queue jobs from every new report**, pick a
+minimum resume match (say 60%) and the boards. From then on every new worldwide report and every Naukri
+scan feeds the queue by itself; you only answer questions and read the Track tab.
 
-The tap calls the GitHub API with your fine-grained token and starts the
-**Auto-apply request (phone)** workflow (`.github/workflows/apply.yml`) with
-`action=apply`, the report id and the job ids (or `all`). The workflow runs
-`site/tools/run_apply_queue.py`, which encrypts the request with the site passphrase
-(`SITE_PASSPHRASE` secret) and commits it to `data/apply/queue/` on `gh-pages`.
+**...I remove a job.** *Remove* takes it out on the next run (it cannot un-apply). *Pause queue* stops
+applying without losing anything; *Resume* continues.
 
-That is all GitHub does. The same workflow carries three other request kinds from the phone:
-
-| `action` | Sent from | What it carries |
-| --- | --- | --- |
-| `apply` | auto-apply panel | report id + LinkedIn job ids |
-| `answers` | auto-apply panel, "Questions waiting for you" | `{question: answer}` |
-| `profile` | Track tab, "My answers" form | CTC, phone, notice period, skill years, Yes/No answers |
-| `notes` | Track tab, an application | your status and notes for that application |
-
-### 3. The PC carries it out
-
-`site\phone_apply.bat` runs `site/tools/phone_apply.py` (with the Naukri screener's venv).
-`site\schedule_phone_apply.ps1` registers it as a hidden Windows scheduled task every 30 minutes
-(`-Every`, `-Limit` to change; `-Remove` to stop). Each run:
-
-1. refreshes the local `gh-pages` clone and reads `data/apply/queue/*.enc`;
-2. **answers** → written into the Naukri screener's `data/jobs/questions.yaml`, exactly as if you had
-   typed them in its dashboard, so they are reused for every later application;
-3. **profile / notes** → saved through the dashboard's own save functions;
-4. **apply** → the report's postings (`data/jobhunt/<report>.jobs.enc`) become cards for the
-   screener's applier: same Easy Apply walker, same answers, same pacing (a minute or more
-   between applications), same daily LinkedIn cap from `Profile_Naukri_Screener-main\jobs.yaml`
-   (`linkedin_max_applies_per_day`), same applications log - entries are tagged `phone`;
-5. writes `data/apply/status.enc`: every requested posting's outcome, the requests' progress,
-   the screening questions that are waiting for you, applied-today count and the cap;
-6. writes `data/apply/profile.enc`: what the PC dashboard shows (answers form, answer bank,
-   every application with its questions, answers, Gmail replies and your notes);
-7. moves finished requests to `data/apply/done/` and pushes - only when something changed.
-
-A request is not done in one go. At most `--limit` postings (default 5) are applied per run; a
-request for 60 postings stays in the queue and is continued every 30 minutes until every posting
-is settled, while the daily cap still bounds the total. So "Apply to all (60)" is safe to tap - it
-is spread over hours or days, the same way the screener's own runs are.
-
-The PC must be on and you logged in (lock screen is fine): the headless browser needs a desktop
-session. Nothing appears on screen; output goes to `Profile_Naukri_Screener-main\logs\scheduled.log`.
-
-### 4. What comes back
-
-Open the panel again (or refresh the Track tab). Statuses per posting:
+## Statuses
 
 | Chip | Meaning |
 | --- | --- |
-| `new` | not requested yet |
-| `queued` | requested, the PC has not got to it yet |
-| `applied` | Easy Apply completed |
-| `needs your answer` | the form asked something not in your profile; answer it in the panel and the PC re-applies on its next run |
+| `sent - waits for PC` | the phone sent it; the PC has not run since |
+| `queued` | in the queue, not reached yet |
+| `applied` | Easy Apply / Naukri apply completed |
+| `needs your answer` | stopped at a screening question; answer it on Home / Queue |
 | `skipped (your rule)` | a question you marked "skip - never answer" |
-| `applied earlier / closed` | already applied through the screener, or the posting closed |
-| `apply on company site` | no Easy Apply - the posting redirects to the employer's own site; do it by hand from the report |
-| `unconfirmed` | the walker finished but LinkedIn did not show the confirmation; check LinkedIn |
-| `error` / `form failed` | something broke; the row can be requested again |
+| `applied earlier / closed` | already applied through the screener, or the posting is closed |
+| `company site - apply by hand` | not one-click; open it from the list (or set up Simplify) |
+| `form pre-filled - finish on PC` / `submitted` | Simplify modes |
+| `unconfirmed` / `error` / `form failed` | retried twice more, then `failed - tap retry` |
 
-The **Track** tab (`#track`) shows the fuller picture: your answers form, the questions waiting,
-and every application (phone or PC) with its Q&A, Gmail replies and your own status and notes.
-Edits made there travel back the same way (`apply.yml` → queue → PC) and are saved as the dashboard
-would save them.
+## The pieces
 
-## Privacy and safety
-
-* The repo is public, so every request, status and profile file is AES-256-GCM encrypted with
-  your passphrase before it is committed. Without the passphrase the site shows nothing readable.
-* The GitHub token on the phone is fine-grained, this repo only, Actions read+write. It is sent
-  only to `api.github.com`.
-* LinkedIn cookies never leave the PC. GitHub never touches LinkedIn.
-* The PC applies at the screener's pace and daily cap; the phone cannot override either.
-* `phone_apply.bat --dry-run` shows what a run would do without applying or pushing.
+| File | Role |
+| --- | --- |
+| `site/index.html` | the phone page (Home, Search, Jobs, Queue, Track, Settings) |
+| `.github/workflows/apply.yml` | carries a request from the phone to the branch (`queue`, `remove`, `retry`, `pause`, `resume`, `settings`, `answers`, `profile`, `notes`) |
+| `site/tools/run_apply_queue.py` | what that workflow runs |
+| `site/tools/phone_apply.py` | the PC worker: the only writer of `data/apply/queue.enc` |
+| `site/tools/offsite_apply.py` | Simplify-assisted browser for company-site postings (experimental) |
+| `site/tools/phone_publish.py` | publishes Naukri scan pages **with their job list** so the phone can queue them; contacts on the way |
+| `site/phone_apply.bat`, `site/schedule_phone_apply.ps1` | run / schedule the worker (every 30 min + at logon, hidden) |
+| `job-hunt/scripts/jobbot/sources/apify.py` | Naukri / Indeed / LinkedIn through Apify (`APIFY_TOKEN`) |
+| `job-hunt/scripts/jobbot/contacts.py` | recruiters and hiring managers per company (SignalHire / Hunter / Apollo + what the postings say) |
+| `Profile_Naukri_Screener-main/` | the appliers, answers, pacing, caps, ledger, dashboard |
 
 ## Setup checklist
 
 1. `site\setup_phone.bat` once (passphrase, secrets, `gh-pages`, Pages URL).
 2. On the phone: Settings → passphrase + token → Save; add the page to the home screen.
-3. Naukri screener set up on the PC with a LinkedIn login that works for `apply`.
-4. `powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1` once, on the PC.
-5. Run a worldwide search from the phone; when the report appears, tap **auto-apply**.
+3. Naukri screener set up on the PC with logins that work for `apply` (Naukri) and `--linkedin-login`.
+4. `powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1` once, on the PC
+   (`-Every 30 -Limit 5` are the defaults; `-Remove` to stop).
+5. Optional, for India results: `gh secret set APIFY_TOKEN` (and repo variable `APIFY_SOURCES`, default
+   `naukri,indeed`; add `linkedin` to also get the job poster as a contact).
+6. Optional, for contacts on every report: any of `gh secret set SIGNALHIRE_API_KEY`, `HUNTER_API_KEY`,
+   `APOLLO_API_KEY`. For Naukri scans (made on the PC) put the same keys in
+   `%LOCALAPPDATA%\JobHuntPhone\config.json` under `"env": {...}`.
+7. Optional, for company-site postings: install Simplify Copilot in Chrome, complete your Simplify
+   profile, run `python site\tools\offsite_apply.py --setup` (sign in once), then Queue → Rules →
+   Company-site postings → *Simplify fills the form, I submit on the PC*. Try *fills and submits* only
+   after a few good screenshots in `%LOCALAPPDATA%\JobHuntPhone\shots`.
 
-## Files
+## Privacy and safety
 
-| File | Role |
-| --- | --- |
-| `site/index.html` | the panel (`openApply`, `renderApply`, `requestApply`) and the Track tab |
-| `.github/workflows/apply.yml` | the request workflow the phone starts |
-| `site/tools/run_apply_queue.py` | encrypts the request and commits it to the queue |
-| `site/tools/phone_apply.py` | PC poller: applies, publishes status and profile |
-| `site/phone_apply.bat` | runs the poller with the screener's Python |
-| `site/schedule_phone_apply.ps1` | schedules the poller every 30 minutes |
-| `site/tools/vault.py` | the encryption both sides use |
-| `Profile_Naukri_Screener-main/` | the Easy Apply walker, answers, pacing, cap, dashboard |
+* The repo is public, so every request, the queue, the profile and every report are AES-256-GCM
+  encrypted with your passphrase before they are committed. Without the passphrase the site shows nothing
+  readable.
+* The GitHub token on the phone is fine-grained, this repo only, Actions read+write. It is sent only to
+  `api.github.com`.
+* LinkedIn / Naukri cookies never leave the PC. GitHub never touches either site.
+* The PC applies at the screener's pace and daily caps; the phone cannot override either.
+* `phone_apply.bat --dry-run` shows what a run would do without applying or pushing.

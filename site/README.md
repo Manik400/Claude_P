@@ -28,32 +28,34 @@ so you see a job the day the company posts it, including ones that never reach L
   `python job-hunt/scripts/careers_bot.py find "<company>"` tells you what to write, `... check` tests the whole list.
   Tap **Company list** on the phone to see it or open it in GitHub's editor.
 
-## Auto-apply from the phone
+## Auto-apply from the phone: the one queue
 
 Full walkthrough: [AUTO_APPLY.md](../AUTO_APPLY.md).
 
-Open a worldwide report's **auto-apply** chip under Reports. It lists the report's LinkedIn postings with a
-checkbox each and two buttons: **Apply to all** and **Apply to selected**. Tapping one starts the
-`apply.yml` workflow, which only *queues* the request (encrypted, on `gh-pages`). The applying is done by
-your PC: `site\phone_apply.bat`, scheduled every 30 minutes by `site\schedule_phone_apply.ps1`, reads
-the queue, applies with your LinkedIn login through the Naukri screener's Easy Apply walker (same
-answers, same pacing, same daily cap, a few per poll), and publishes each posting's status back, so the
-panel shows *applied* / *needs your answer* / *apply on company site*. Screening questions it could not
-answer appear in the same panel; answer them there and the PC re-applies on its next check.
+The phone page has six tabs: **Home** (queue progress, PC status, questions waiting), **Search**
+(worldwide boards with country chips - India first - or company career pages), **Jobs** (every report;
+worldwide searches and Naukri scans open as job lists with filters, contacts and **Queue all** /
+**+ Queue**), **Queue** (the one list with every job's status, pause / resume, retry / remove, the rules:
+auto-queue, minimum match, boards, per-run limit, company-site handling), **Track** (applications, Q&A,
+Gmail replies, your answers form) and **Settings**.
 
-The **Track** tab (`#track`) shows, after the passphrase, what the PC dashboard shows: your answers form
-(CTC, phone, notice period, skill years, Yes/No on the standard questions, saved answers), the questions
-waiting for you, and every application with its questions, answers, Gmail replies and your own status and
-notes. Everything is editable there; edits travel back the same way (`apply.yml` -> queue -> PC) and are
-saved exactly as the dashboard would save them. The PC refreshes `data/apply/profile.enc` on every check.
-
-GitHub's runners never apply: they have no LinkedIn session, and a datacenter IP on your account is what
-gets it restricted. So the PC has to be on (the lock screen is fine) for requests to be carried out.
+Every tap that asks the PC for something starts `apply.yml`, which only *queues* the request
+(encrypted, on `gh-pages`). The PC does the applying: `site\phone_apply.bat`, scheduled every 30 minutes
+and 2 minutes after every logon by `site\schedule_phone_apply.ps1`, folds the requests into
+`data/apply/queue.enc`, applies on Naukri and LinkedIn with your logins through the Naukri screener's
+own walkers (same answers, same pacing, same daily caps), hands company-site postings to a
+Simplify-equipped browser when that is set up, and publishes the queue back with every item's status,
+the percentage done, the questions waiting and a heartbeat. A PC that was off simply catches up
+after boot; nothing is lost in between.
 
 ```
-phone ──auto-apply──▶ apply.yml ──▶ data/apply/queue/*.enc ──▶ PC (phone_apply.bat, every 30 min) ──▶ LinkedIn
-                                                                          └──▶ data/apply/status.enc ──▶ phone
+phone ──queue / retry / remove / rules / answers──▶ apply.yml ──▶ data/apply/queue/*.enc
+   ▲                                                                       │
+   └── Home / Queue: 75% · applied · needs answer · by hand ◀── data/apply/queue.enc ◀── PC (phone_apply.bat)
 ```
+
+GitHub's runners never apply: they have no login, and a datacenter IP on your account is what gets it
+restricted. So the PC has to be on (the lock screen is fine) for the queue to move.
 
 ## Privacy
 
@@ -74,9 +76,9 @@ Naukri login cookies and profile data never leave the PC; only the generated HTM
 
 | Where | What |
 | --- | --- |
-| Phone → **Search** | Type role, experience, countries → **Start search**. About 5–15 min later it shows up under **Reports**. |
-| Phone → **Careers** | Role, experience range, countries, relocation → **Search career pages**. About 3–8 min later it shows up under **Results** on the same tab. |
-| Phone → **Reports** | Tap any report. Apply buttons open the job site in a new tab. |
+| Phone → **Search** | Worldwide: role, experience, country chips → **Start search**; 5–15 min later it is under **Jobs**. Career pages: role, experience range, countries, relocation → **Search career pages**; 3–8 min. |
+| Phone → **Jobs** | Tap a worldwide report or Naukri scan → job list → **Queue all** / **+ Queue** / **Contacts**; **Full report** opens the HTML. |
+| Phone → **Queue** | Progress, every job's status, retry / remove, pause, the rules (auto-queue, limits, company sites). |
 | PC, Naukri | `Profile_Naukri_Screener-main\publish_to_phone.bat` pushes the newest openings + interview pages. `jobs_scan_and_publish.bat` does the scan and the push; schedule it with `scripts\schedule_jobs_agent.ps1 -Mode scanpublish`. |
 | PC, job-hunt | `job-hunt\publish_to_phone.bat` pushes the newest local report (or drag a `report.html` onto it). |
 | No phone page | The GitHub mobile app can start the same run: repo → Actions → *Job Hunt (phone)* → Run workflow. |
@@ -84,6 +86,9 @@ Naukri login cookies and profile data never leave the PC; only the generated HTM
 ## Optional secrets for more coverage
 
 `ADZUNA_APP_ID`, `ADZUNA_APP_KEY`, `JOOBLE_API_KEY`, `RAPIDAPI_KEY`, `FIRECRAWL_API_KEY` (all free sign-ups).
+`APIFY_TOKEN` (+ repo variable `APIFY_SOURCES`) for real Naukri / Indeed / LinkedIn scraping - what makes India
+searches worth reading. `SIGNALHIRE_API_KEY` / `HUNTER_API_KEY` / `APOLLO_API_KEY` for recruiter and
+hiring-manager contacts on every report.
 Add them with `gh secret set NAME` and the GitHub runs pick them up.
 
 ## Files
@@ -97,7 +102,8 @@ Add them with `gh secret set NAME` and the GitHub runs pick them up.
 | `tools/run_jobhunt.py` | What the GitHub Actions run executes. |
 | `tools/run_careers.py` | What the careers run executes (career-page search → encrypted JSON). |
 | `tools/run_apply_queue.py` | What `apply.yml` executes: writes the phone's request to the queue. |
-| `tools/phone_apply.py` | PC-side poller: carries out queued requests, publishes status. |
+| `tools/phone_apply.py` | PC-side worker: the one queue - folds requests in, applies, publishes `queue.enc`. |
+| `tools/offsite_apply.py` | Simplify-assisted browser for company-site postings (experimental). |
 | `../.github/workflows/apply.yml` | The auto-apply request (`workflow_dispatch`). |
 | `tools/phone_publish.py` | PC-side publisher used by the `.bat` files. |
 | `tools/setup_phone.py` | One-time setup. |

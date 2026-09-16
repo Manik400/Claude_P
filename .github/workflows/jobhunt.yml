@@ -17,7 +17,7 @@ on:
         required: false
         default: ""
       countries:
-        description: "Countries (names or ISO2), comma-separated. Empty = DE,NL,ES,FI,AU,JP,TH + Remote"
+        description: "Countries (names or ISO2), comma-separated, e.g. India,DE,NL. Empty = DE,NL,ES,FI,AU,JP,TH + Remote"
         required: false
         default: ""
       days:
@@ -74,4 +74,11 @@ jobs:
           JOOBLE_API_KEY: ${{ secrets.JOOBLE_API_KEY }}
           RAPIDAPI_KEY: ${{ secrets.RAPIDAPI_KEY }}
           FIRECRAWL_API_KEY: ${{ secrets.FIRECRAWL_API_KEY }}
+          # Real scrapers for Naukri / Indeed / LinkedIn through Apify (India needs this)
+          APIFY_TOKEN: ${{ secrets.APIFY_TOKEN }}
+          APIFY_SOURCES: ${{ vars.APIFY_SOURCES }}
+          # Recruiter / hiring-manager contacts per company (any of them, all optional)
+          SIGNALHIRE_API_KEY: ${{ secrets.SIGNALHIRE_API_KEY }}
+          HUNTER_API_KEY: ${{ secrets.HUNTER_API_KEY }}
+          APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
         run: python site/tools/run_jobhunt.py

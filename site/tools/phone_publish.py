@@ -33,7 +33,12 @@ def load_config():
     if not os.path.exists(p):
         raise SystemExit("phone_publish: run site\\setup_phone.bat first (no %s)" % p)
     with open(p, encoding="utf-8") as f:
-        return json.load(f)
+        cfg = json.load(f)
+    # Optional API keys for the PC side (contacts providers, Apify), kept out of the repo:
+    #   "env": {"HUNTER_API_KEY": "...", "SIGNALHIRE_API_KEY": "..."}
+    for k, v in (cfg.get("env") or {}).items():
+        os.environ.setdefault(k, str(v))
+    return cfg
 
 
 def save_config(cfg):
@@ -76,6 +81,54 @@ def _stamp(path):
     return "%s:%d" % (os.path.abspath(path).lower(), int(os.path.getmtime(path)))
 
 
+def naukri_jobs_file(day):
+    """The scan's results-<day>.json as the common job-list format the phone
+    and the queue understand (same shape as job-hunt's jobs.json)."""
+    src = os.path.join(NAUKRI, "data", "jobs", "results-%s.json" % day)
+    if not os.path.exists(src):
+        return None
+    with open(src, encoding="utf-8") as f:
+        data = json.load(f)
+    jobs = []
+    for j in data.get("naukri") or []:
+        jobs.append({
+            "source": "naukri", "source_name": "Naukri", "title": j.get("title") or "", "company": j.get("company") or "",
+            "url": j.get("url") or "", "country": "IN", "location": j.get("location") or "", "posted": None,
+            "salary": j.get("salary_label") or "", "snippet": (j.get("description") or "")[:300],
+            "skills": j.get("skills") or [], "exp_min": j.get("min_exp"), "exp_max": j.get("max_exp"),
+            "fit": "unknown", "score": j.get("score"), "matched_skills": j.get("matched_skills") or [],
+            "id": "nk%s" % j.get("job_id"),
+            "extra": {"naukri_id": str(j.get("job_id") or ""), "company_apply": bool(j.get("company_apply")),
+                      "has_questionnaire": bool(j.get("has_questionnaire")), "apply_status": j.get("apply_status") or "",
+                      "experience": j.get("experience_label") or "", "rating": j.get("company_rating")},
+        })
+    for c in data.get("linkedin") or []:
+        loc = c.get("location") or ""
+        jobs.append({
+            "source": "linkedin", "source_name": "LinkedIn", "title": c.get("title") or "", "company": c.get("company") or "",
+            "url": c.get("url") or "", "country": "IN" if "india" in loc.lower() else ("REMOTE" if c.get("_remote") else "??"),
+            "location": loc, "posted": None, "salary": "", "snippet": " · ".join(c.get("metadata") or [])[:300],
+            "skills": [], "fit": "unknown", "score": c.get("_match"), "id": "li%s" % c.get("job_id"),
+            "extra": {"linkedin_id": str(c.get("job_id") or ""), "easy_apply": bool(c.get("easy_apply")),
+                      "apply_status": c.get("apply_status") or ""},
+        })
+    # Recruiter / hiring-manager contacts per company, when any provider key is set
+    # (SIGNALHIRE_API_KEY / HUNTER_API_KEY / APOLLO_API_KEY in the environment or config.json "env").
+    try:
+        sys.path.insert(0, os.path.join(ROOT, "job-hunt", "scripts"))
+        from jobbot import contacts
+        from jobbot.http import Http
+        if contacts.providers():
+            contacts.attach(jobs, contacts.enrich(jobs, Http(), ["software engineer"], log=print, max_companies=20))
+    except Exception as exc:  # noqa: BLE001 - a bonus, never a reason not to publish
+        print("phone_publish: contacts skipped (%s)" % exc)
+    out = os.path.join(config_dir(), "naukri-jobs-%s.json" % day)
+    os.makedirs(config_dir(), exist_ok=True)
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump(jobs, f, ensure_ascii=False)
+    return out
+
+
 def cmd_naukri(a):
     cfg = load_config()
     pages = pages_dir(cfg)
@@ -90,16 +143,19 @@ def cmd_naukri(a):
         name = os.path.basename(path)
         m = re.search(r"(\d{4}-\d{2}-\d{2})(?:-r(\d+))?", name)
         if name.startswith("openings-"):
-            title = "Naukri openings %s%s" % (m.group(1) if m else name, (" run " + m.group(2)) if m and m.group(2) else "")
-            publish(cfg, pages, "naukri", path, title, replace=True)
+            day = m.group(1) if m else ""
+            title = "Naukri openings %s%s" % (day or name, (" run " + m.group(2)) if m and m.group(2) else "")
+            publish(cfg, pages, "naukri", path, title, replace=True, attach=naukri_jobs_file(day) if day else None)
         else:
             title = "Interview prep %s" % (name[len("interview-prep-"):-len(".html")])
             publish(cfg, pages, "interview", path, title, replace=True)
         done[key] = title
         count += 1
     save_config(cfg)
-    if count:
+    if count and not a.no_push:
         push(pages, "naukri: %d page(s)" % count)
+    elif count:
+        print("phone_publish: %d page(s) staged; the queue run pushes them" % count)
     else:
         print("phone_publish: nothing new to publish")
 
@@ -126,6 +182,7 @@ def main(argv=None):
     n = sub.add_parser("naukri")
     n.add_argument("--max", type=int, default=3, help="newest N pages of each type to consider")
     n.add_argument("--force", action="store_true", help="re-publish even if already published")
+    n.add_argument("--no-push", action="store_true", dest="no_push", help="stage in the clone; the caller pushes")
     n.set_defaults(fn=cmd_naukri)
     j = sub.add_parser("jobhunt")
     j.add_argument("report")

@@ -1,17 +1,21 @@
-"""GitHub Actions entry point: put a phone's auto-apply request on the queue.
+"""GitHub Actions entry point: put a phone's request on the queue for the PC.
 
 Inputs come from the environment (set by .github/workflows/apply.yml):
-    INPUT_ACTION      apply | answers
-    INPUT_REPORT      report id (apply): whose postings
-    INPUT_JOBS        "all" or comma-separated LinkedIn job ids (apply)
-    INPUT_ANSWERS     JSON {question: answer} (answers)
-    INPUT_PAYLOAD     JSON (profile: the answers form; notes: {job_id: {status, note}})
+    INPUT_ACTION      queue | remove | retry | pause | resume | settings |
+                      answers | profile | notes   (apply = old name for queue)
+    INPUT_PAYLOAD     JSON. By action:
+                        queue     {report, jobs: "all" | [keys]}  or  {items: [job dicts]}
+                        remove    {keys: [...]}       retry  {keys: [...]}
+                        settings  {auto: {enabled, min_score, boards}, limit, offsite}
+                        answers   {question: answer}
+                        profile   the answers form     notes  {job_id: {status, note}}
+    INPUT_REPORT / INPUT_JOBS / INPUT_ANSWERS   old-style inputs, still accepted
     INPUT_NOTE        free text
     SITE_PASSPHRASE   encrypts the queue file (repo secret)
     PAGES_REPO_URL    push URL for the gh-pages branch (set by the workflow)
 
-Writes data/apply/queue/<stamp>-<action>.enc on gh-pages. The PC-side poller
-(site/tools/phone_apply.py) reads it, applies, and publishes data/apply/status.enc.
+Writes data/apply/queue/<stamp>-<action>.enc on gh-pages. The PC-side worker
+(site/tools/phone_apply.py) folds it into data/apply/queue.enc, the one queue.
 """
 import json
 import os
@@ -23,6 +27,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
 import vault  # noqa: E402
 
+ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes"}
+
 
 def env(name, default=""):
     return (os.environ.get(name) or default).strip()
@@ -32,34 +38,44 @@ def main():
     passphrase = vault.get_passphrase()
     if not passphrase:
         raise SystemExit("SITE_PASSPHRASE secret is missing")
-    action = env("INPUT_ACTION", "apply")
+    action = env("INPUT_ACTION", "queue")
+    if action not in ACTIONS:
+        raise SystemExit("unknown action %r" % action)
+    if action == "apply":
+        action = "queue"
     now = datetime.now(timezone.utc)
     request = {"type": action, "requested_at": now.strftime("%Y-%m-%dT%H:%M:%SZ"), "note": env("INPUT_NOTE")}
-    if action == "apply":
-        report = env("INPUT_REPORT")
-        if not report:
-            raise SystemExit("report id is required for an apply request")
-        raw = env("INPUT_JOBS", "all")
-        request["report"] = report
-        request["jobs"] = "all" if raw.lower() == "all" else [j.strip() for j in raw.split(",") if j.strip()]
-    elif action == "answers":
+    raw = env("INPUT_PAYLOAD")
+    payload = {}
+    if raw:
         try:
-            answers = json.loads(env("INPUT_ANSWERS") or "{}")
-        except ValueError as exc:
-            raise SystemExit("answers must be a JSON object: %s" % exc)
-        if not isinstance(answers, dict) or not answers:
-            raise SystemExit("answers must be a non-empty JSON object")
-        request["answers"] = {str(k): str(v) for k, v in answers.items()}
-    elif action in ("profile", "notes"):
-        try:
-            payload = json.loads(env("INPUT_PAYLOAD") or "{}")
+            payload = json.loads(raw)
         except ValueError as exc:
             raise SystemExit("payload must be JSON: %s" % exc)
-        if not isinstance(payload, dict) or not payload:
-            raise SystemExit("payload must be a non-empty JSON object")
-        request["payload"] = payload
-    else:
-        raise SystemExit("unknown action %r" % action)
+        if not isinstance(payload, dict):
+            raise SystemExit("payload must be a JSON object")
+    if action == "queue":
+        if not payload:
+            report = env("INPUT_REPORT")
+            if not report:
+                raise SystemExit("queue needs a payload with report+jobs or items")
+            jobs = env("INPUT_JOBS", "all")
+            payload = {"report": report, "jobs": "all" if jobs.lower() == "all" else [j.strip() for j in jobs.split(",") if j.strip()]}
+        if not (payload.get("report") or payload.get("items")):
+            raise SystemExit("queue needs report+jobs or items")
+    elif action == "answers":
+        if not payload:
+            try:
+                payload = json.loads(env("INPUT_ANSWERS") or "{}")
+            except ValueError as exc:
+                raise SystemExit("answers must be a JSON object: %s" % exc)
+        if not payload:
+            raise SystemExit("answers must be a non-empty JSON object")
+        payload = {str(k): str(v) for k, v in payload.items()}
+        request["answers"] = payload
+    elif action in ("remove", "retry", "settings", "profile", "notes") and not payload:
+        raise SystemExit("%s needs a payload" % action)
+    request["payload"] = payload
 
     work = os.path.abspath(env("RUNNER_TEMP", "work"))
     pages = os.path.join(work, "pages")
@@ -71,7 +87,7 @@ def main():
     with open(os.path.join(queue_dir, name), "wb") as f:
         f.write(vault.encrypt_bytes(json.dumps(request, ensure_ascii=False).encode("utf-8"), passphrase))
     subprocess.run(py + [os.path.join(HERE, "pages_git.py"), "push", pages,
-                         "apply request: %s%s" % (action, (" " + request.get("report", "")) if action == "apply" else "")],
+                         "phone request: %s%s" % (action, (" " + str(payload.get("report", ""))) if action == "queue" else "")],
                    check=True)
     print("queued %s -> data/apply/queue/%s" % (action, name))
 

@@ -1,14 +1,14 @@
-# Poll the phone's auto-apply queue every N minutes, silently.
+# Run the auto-apply queue every N minutes (and after every logon), silently.
 #
 #   powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1
 #   powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1 -Every 30 -Limit 5
 #   powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1 -Remove
 #
-# Each poll refreshes the gh-pages clone, applies to at most -Limit of the
-# postings the phone asked for (a minute or more apart), and publishes the
-# status back. A request for many postings is finished over several polls,
-# and the daily LinkedIn cap in Profile_Naukri_Screener-main\jobs.yaml still
-# bounds everything. Nothing appears on screen (run_hidden.vbs); output is in
+# Each run refreshes the gh-pages clone, folds in what the phone asked for,
+# applies to at most -Limit queued postings per board (a minute or more
+# apart) and publishes the queue with every item's status back. A queue of
+# many postings is finished over several runs, and the daily caps in
+# Profile_Naukri_Screener-main\jobs.yaml still bound everything. Nothing appears on screen (run_hidden.vbs); output is in
 # Profile_Naukri_Screener-main\logs\scheduled.log. Runs only while you are
 # logged on - the headless browser needs a desktop session to fall back to.
 
@@ -53,18 +53,25 @@ $action = New-ScheduledTaskAction `
     -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=$Limit" `
     -WorkingDirectory $PSScriptRoot
 
-# Repeats every -Every minutes, indefinitely, starting a few minutes from now.
-$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(3) `
-    -RepetitionInterval (New-TimeSpan -Minutes $Every)
+# Repeats every -Every minutes, indefinitely, starting a few minutes from now -
+# and again from two minutes after every logon, so a PC that was off when you
+# tapped "add to queue" picks the request up right after it boots. Nothing is
+# lost in between: the request waits on the gh-pages branch and the queue file
+# remembers every item's state.
+$repeat  = New-TimeSpan -Minutes $Every
+$trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(3) -RepetitionInterval $repeat
+$logon   = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$logon.Delay = "PT2M"
+$logon.Repetition = $trigger.Repetition
 
 Register-ScheduledTask `
     -TaskName $name `
     -Action $action `
-    -Trigger $trigger `
+    -Trigger @($trigger, $logon) `
     -Settings $settings `
-    -Description "Phone auto-apply queue: every $Every min, up to $Limit LinkedIn applies per poll." | Out-Null
+    -Description "Auto-apply queue: every $Every min and after logon, up to $Limit applies per board per run." | Out-Null
 
-Write-Host "Scheduled $name every $Every minutes, up to $Limit applies per poll."
+Write-Host "Scheduled $name every $Every minutes (and 2 min after each logon), up to $Limit applies per board per run."
 Write-Host "Check it with:   Get-ScheduledTask -TaskName '$name'"
 Write-Host "Run it now with: Start-ScheduledTask -TaskName '$name'"
 Write-Host "Stop it with:    ...\schedule_phone_apply.ps1 -Remove"

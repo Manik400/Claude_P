@@ -1,39 +1,36 @@
-name: Auto-apply request (phone)
-run-name: "Apply request: ${{ inputs.action }} · ${{ inputs.report || inputs.note || '' }}"
+name: Queue request (phone)
+run-name: "Queue: ${{ inputs.action }} · ${{ inputs.note || '' }}"
 
-# Started from the phone page (Reports -> a worldwide report -> Auto-apply).
+# Started from the phone page (Jobs -> add to queue, Queue tab, Track tab).
 # Writes an encrypted request to data/apply/queue/ on the gh-pages branch.
-# It does NOT apply itself: GitHub's runners have no LinkedIn login, and a
-# datacenter IP on your account is what gets it restricted. Your PC polls the
-# queue (site\phone_apply.bat, scheduled by site\schedule_phone_apply.ps1),
-# applies from home with the real session, and publishes the status back.
+# It does NOT apply itself: GitHub's runners have no LinkedIn/Naukri login,
+# and a datacenter IP on your account is what gets it restricted. Your PC
+# runs the queue (site\phone_apply.bat, every 30 min and at logon, scheduled
+# by site\schedule_phone_apply.ps1), applies from home with the real session,
+# and publishes data/apply/queue.enc back for the phone.
 
 on:
   workflow_dispatch:
     inputs:
       action:
-        description: "apply = queue postings; answers = screening answers; profile = your answers form; notes = application status/notes"
+        description: "queue = add jobs; remove / retry = by key; pause / resume the queue; settings = auto rule, limit, offsite; answers = screening answers; profile = your answers form; notes = application status/notes"
         type: choice
-        options: [apply, answers, profile, notes]
-        default: apply
+        options: [queue, remove, retry, pause, resume, settings, answers, profile, notes]
+        default: queue
+      payload:
+        description: "JSON payload (see site/tools/run_apply_queue.py)"
+        required: false
+        default: ""
       report:
-        description: "Report id (from data/index.json) whose LinkedIn postings to apply to"
+        description: "(queue, old style) report id whose postings to queue"
         required: false
         default: ""
       jobs:
-        description: "LinkedIn job ids, comma-separated, or 'all'"
+        description: "(queue, old style) job keys, comma-separated, or 'all'"
         required: false
         default: "all"
-      answers:
-        description: "JSON object {question: answer} (action = answers)"
-        required: false
-        default: ""
       note:
         description: "Optional note"
-        required: false
-        default: ""
-      payload:
-        description: "JSON payload (action = profile or notes)"
         required: false
         default: ""
 
@@ -60,7 +57,6 @@ jobs:
           INPUT_ACTION: ${{ inputs.action }}
           INPUT_REPORT: ${{ inputs.report }}
           INPUT_JOBS: ${{ inputs.jobs }}
-          INPUT_ANSWERS: ${{ inputs.answers }}
           INPUT_NOTE: ${{ inputs.note }}
           INPUT_PAYLOAD: ${{ inputs.payload }}
           SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
