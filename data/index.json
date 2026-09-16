@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-16T07:57:03Z",
+ "updated": "2026-09-16T13:28:44Z",
  "items": [
+  {
+   "id": "jobhunt-20260916-132844-software-engineer",
+   "kind": "jobhunt",
+   "title": "software engineer",
+   "when": "2026-09-16T13:28:44Z",
+   "file": "data/jobhunt/jobhunt-20260916-132844-software-engineer.enc",
+   "bytes": 288915,
+   "meta": {
+    "jobs": "103",
+    "countries": "india",
+    "experience": "1",
+    "days": "7",
+    "jobs_file": "data/jobhunt/jobhunt-20260916-132844-software-engineer.jobs.enc"
+   }
+  },
   {
    "id": "jobhunt-20260916-075703-software-engineer-pc-run-14-sep",
    "kind": "jobhunt",
