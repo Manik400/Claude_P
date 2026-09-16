@@ -12,9 +12,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "apply = queue postings to apply to; answers = answers to screening questions"
+        description: "apply = queue postings; answers = screening answers; profile = your answers form; notes = application status/notes"
         type: choice
-        options: [apply, answers]
+        options: [apply, answers, profile, notes]
         default: apply
       report:
         description: "Report id (from data/index.json) whose LinkedIn postings to apply to"
@@ -30,6 +30,10 @@ on:
         default: ""
       note:
         description: "Optional note"
+        required: false
+        default: ""
+      payload:
+        description: "JSON payload (action = profile or notes)"
         required: false
         default: ""
 
@@ -58,6 +62,7 @@ jobs:
           INPUT_JOBS: ${{ inputs.jobs }}
           INPUT_ANSWERS: ${{ inputs.answers }}
           INPUT_NOTE: ${{ inputs.note }}
+          INPUT_PAYLOAD: ${{ inputs.payload }}
           SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
           PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: python site/tools/run_apply_queue.py

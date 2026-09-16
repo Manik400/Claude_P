@@ -5,6 +5,7 @@ Inputs come from the environment (set by .github/workflows/apply.yml):
     INPUT_REPORT      report id (apply): whose postings
     INPUT_JOBS        "all" or comma-separated LinkedIn job ids (apply)
     INPUT_ANSWERS     JSON {question: answer} (answers)
+    INPUT_PAYLOAD     JSON (profile: the answers form; notes: {job_id: {status, note}})
     INPUT_NOTE        free text
     SITE_PASSPHRASE   encrypts the queue file (repo secret)
     PAGES_REPO_URL    push URL for the gh-pages branch (set by the workflow)
@@ -49,6 +50,14 @@ def main():
         if not isinstance(answers, dict) or not answers:
             raise SystemExit("answers must be a non-empty JSON object")
         request["answers"] = {str(k): str(v) for k, v in answers.items()}
+    elif action in ("profile", "notes"):
+        try:
+            payload = json.loads(env("INPUT_PAYLOAD") or "{}")
+        except ValueError as exc:
+            raise SystemExit("payload must be JSON: %s" % exc)
+        if not isinstance(payload, dict) or not payload:
+            raise SystemExit("payload must be a non-empty JSON object")
+        request["payload"] = payload
     else:
         raise SystemExit("unknown action %r" % action)
 

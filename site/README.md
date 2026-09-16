@@ -39,6 +39,12 @@ answers, same pacing, same daily cap, a few per poll), and publishes each postin
 panel shows *applied* / *needs your answer* / *apply on company site*. Screening questions it could not
 answer appear in the same panel; answer them there and the PC re-applies on its next check.
 
+The **Track** tab (`#track`) shows, after the passphrase, what the PC dashboard shows: your answers form
+(CTC, phone, notice period, skill years, Yes/No on the standard questions, saved answers), the questions
+waiting for you, and every application with its questions, answers, Gmail replies and your own status and
+notes. Everything is editable there; edits travel back the same way (`apply.yml` -> queue -> PC) and are
+saved exactly as the dashboard would save them. The PC refreshes `data/apply/profile.enc` on every check.
+
 GitHub's runners never apply: they have no LinkedIn session, and a datacenter IP on your account is what
 gets it restricted. So the PC has to be on (the lock screen is fine) for requests to be carried out.
 

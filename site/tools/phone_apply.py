@@ -17,7 +17,14 @@ PC with the real session, does the work:
        applications log (tagged "phone")
     4. write data/apply/status.enc: every requested posting's outcome, the
        requests' progress, and the screening questions waiting for you
-    5. move finished requests to data/apply/done/, push
+    5. write data/apply/profile.enc: what the PC dashboard shows - your
+       answers form, the answer bank, and every application with its
+       questions, answers, Gmail replies and your notes - so the phone's
+       Track tab can show it (after the passphrase) and edit it. "profile"
+       and "notes" requests from that tab are saved exactly as the
+       dashboard would save them.
+    6. move finished requests to data/apply/done/, push (only when
+       something changed)
 
 A request whose postings are not all settled yet stays in the queue and the
 next poll continues it - a request for 60 postings is applied in batches of
@@ -170,6 +177,24 @@ def main(argv=None) -> int:
     if answered:
         log("%d answer(s) from the phone written to questions.yaml" % answered)
 
+    # Edits made in the phone's Track tab: the answers form and application notes.
+    from naukri.jobs import dashboard
+    edits = 0
+    for name, path, req in requests_:
+        if req.get("type") == "profile":
+            dashboard.save_answers(req.get("payload") or {})
+            edits += 1
+            finished.append(name)
+        elif req.get("type") == "notes":
+            for job_id, note in (req.get("payload") or {}).items():
+                if isinstance(note, dict):
+                    dashboard.save_note({"job_id": job_id, "status": note.get("status", ""),
+                                         "note": note.get("note", "")})
+            edits += 1
+            finished.append(name)
+    if edits:
+        log("%d edit(s) from the phone saved" % edits)
+
     # 2. Apply requests: gather every wanted posting across requests.
     ledger = Ledger()
     cards: dict[str, dict] = {}
@@ -268,11 +293,45 @@ def main(argv=None) -> int:
     }
     write_enc(status_path, status, passphrase)
 
+    # 5. The dashboard's data for the phone's Track tab.
+    profile_path = os.path.join(pages, "data", "apply", "profile.enc")
+    try:
+        state = dashboard.state()
+        state.pop("generated", None)
+        track = {
+            "answers": state["answers"], "bank": state["bank"], "pending": state["pending"],
+            "applications": state["applications"], "counts": state["counts"],
+            "manual_statuses": state["manual_statuses"], "kind_labels": state["kind_labels"],
+            "gmail": {"configured": state["gmail"]["configured"], "synced_at": state["gmail"]["synced_at"]},
+        }
+        fingerprint = json.dumps(track, sort_keys=True, ensure_ascii=False)
+        old_fp = None
+        if os.path.exists(profile_path):
+            try:
+                old_fp = json.dumps(read_enc(profile_path, passphrase), sort_keys=True, ensure_ascii=False)
+            except Exception:
+                old_fp = None
+        if fingerprint != old_fp:
+            write_enc(profile_path, track, passphrase)
+            log("track: profile.enc refreshed (%d application(s))" % len(track["applications"]))
+    except Exception as exc:
+        log("track: could not build profile.enc: %s" % exc)
+
     summary = outcomes.get("_summary") if outcomes else None
     if summary:
         log(autoapply.summarise(outcomes).strip())
     if args.dry_run:
         log("dry run: status written locally, nothing pushed")
+        return 0
+    # Push only when something other than the timestamp moved, so an idle
+    # PC does not commit to the site branch every half hour.
+    changed = bool(requests_) or bool(outcomes) or (
+        json.dumps({k: v for k, v in (previous or {}).items() if k != "updated"}, sort_keys=True)
+        != json.dumps({k: v for k, v in status.items() if k != "updated"}, sort_keys=True))
+    profile_changed = subprocess.run(["git", "status", "--porcelain", "--", "data/apply/profile.enc"],
+                                     cwd=pages, capture_output=True, text=True).stdout.strip() != ""
+    if not changed and not profile_changed:
+        log("nothing changed; not pushing")
         return 0
     subprocess.run([sys.executable, os.path.join(HERE, "pages_git.py"), "push", pages,
                     "auto-apply: %d request(s), %d applied today" % (len(queue_status), applied_today)], check=True)
