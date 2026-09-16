@@ -30,7 +30,7 @@ There are two job-search tools in this repo:
    ```
 3. A full run takes about 3–8 minutes. The report opens in your browser when it finishes.
 4. Reports are saved to `Documents\JobHunt\<date>_<role>\report.html`.
-5. In the report, click **Apply** on a job. The bot never applies for you.
+5. In the report, click **Apply** on a job. For LinkedIn postings the bot can apply for you: `jobhunt_apply.bat` (or `python scripts\job_bot.py apply --limit 5 --yes`) uses the Naukri screener's LinkedIn login, answers and dashboard, so both projects share one set of answers, one applications log and one daily LinkedIn cap. `scripts\schedule_jobhunt.ps1` schedules two small batches a day. Other boards stay manual.
 
 ### Useful flags
 
@@ -96,10 +96,13 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
    - `--locations "Pune,Gurgaon"` picks the cities to search.
    - `--worldwide` includes remote LinkedIn jobs.
    - `--posted-days 1 --new-only` shows only today's new jobs.
-3. `jobs_scan.bat`: daily scan. Writes `data/jobs/openings-<date>.html`, a tracker page with jobs new today marked **NEW**.
-4. `python main.py --linkedin-login`: log in to LinkedIn once. LinkedIn is **read-only**; the tool never applies there.
-5. `python main.py --jobs --yes --limit 3`: really applies, up to 3 jobs. Check what it sent before you raise the limit.
-6. Jobs it couldn't auto-apply to are listed, ranked, in `data/jobs/review_queue.json`.
+3. `jobs_scan.bat`: daily scan, then **applies** to what it found: Naukri one-click and questionnaire postings, LinkedIn Easy Apply. Company-site postings are left for you. Writes `data/jobs/openings-<date>.html`, a tracker page where every row shows *Applied by agent* / *Needs your answer* / *Company site*.
+4. `dashboard.bat`: the local dashboard. Edit the common answers form (CTC, phone, notice period, skill years, Yes/No on bond / contract / pay cut / office / shifts...), answer the questions the bot could not, and see every application with its answers and the replies pulled from Gmail. Save a Gmail app password under Settings for the reply check.
+5. `python main.py --applications`: every application the bot sent, with company, link, time, each question and the answer it gave, and where to correct a wrong answer. Also `data/jobs/applications.html`, linked from the tracker page.
+6. `python main.py --answer-questions`: at the end of the day, answer the screening questions the bot could not (they are in `data/jobs/questions.yaml`). Answers are remembered in `data/jobs/answer_bank.yaml`, and the next run applies to the jobs that were waiting.
+7. `python main.py --linkedin-login`: log in to LinkedIn once. The LinkedIn search only reads; applying is limited to Easy Apply postings, capped per day by `linkedin_max_applies_per_day` in `jobs.yaml`.
+8. `python main.py --jobs --yes --limit 3`: the older apply cycle with its own search, up to 3 jobs.
+9. Jobs it couldn't auto-apply to are listed, ranked, in `data/jobs/review_queue.json`.
 
 ### Use: interview prep
 
@@ -110,7 +113,7 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 
 ### Automation (optional)
 
-- `powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1` schedules 3 runs a day (08:52, 13:23, 18:11). Runs put nothing on screen (no console, no browser window; output in `logs\scheduled.log`). Stay logged in to Windows anyway - the lock screen is fine.
+- `powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1` schedules 5 runs a day (08:52, 13:23, 18:11, 23:07, 04:23) applying to at most 5, 5, 10, 10 and 10 jobs per board, a minute or more apart, so the boards never see a burst. The night runs skip interview prep. Runs put nothing on screen (no console, no browser window; output in `logs\scheduled.log`). Stay logged in to Windows anyway - the lock screen is fine.
 - `jobs_agent.bat` applies **live** with no limit. Don't use it until you trust the scores.
 
 ### Settings in `jobs.yaml`

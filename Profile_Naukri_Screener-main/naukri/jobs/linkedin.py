@@ -8,8 +8,9 @@ codebase. Cookies land in data/linkedin_state.json, which is gitignored and
 
 LinkedIn is stricter than Naukri about automation and a restriction costs you
 your professional network, not just a job board. So this module only ever
-reads: it navigates search pages in a visible browser at human pace and parses
-what renders. It does not apply, message, connect, or touch anything else.
+reads: it navigates search pages at human pace and parses what renders.
+Applying lives in linkedin_apply.py, is limited to Easy Apply postings, and is
+capped per day. Nothing here messages, connects, or touches anything else.
 """
 from __future__ import annotations
 

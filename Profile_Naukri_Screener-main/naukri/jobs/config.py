@@ -58,6 +58,14 @@ DEFAULTS = {
     # Years of experience per skill, stated by you. Layered over the profile's
     # IT-skills table, which usually lists only a couple of entries.
     "skill_years": {},
+    # --jobs-export --apply-found (the scheduled scan) applies to every Naukri job
+    # the scan lists at or above this score. 0 = all of them - the scan has
+    # already dropped anything outside your field.
+    "scan_apply_min_score": 0,
+    # LinkedIn Easy Apply in the same pass, and its own daily cap. LinkedIn
+    # restricts accounts that apply in bursts, so keep this modest.
+    "linkedin_easy_apply": True,
+    "linkedin_max_applies_per_day": 25,
 }
 
 
@@ -164,6 +172,10 @@ def load(path: Path = CONFIG_PATH, profile: dict | None = None) -> dict:
     if not config["preferred_locations"]:
         location = (profile.get("location") or "").split(",")[0].strip()
         config["preferred_locations"] = [l for l in (location, "Remote") if l]
+
+    # What you saved in the dashboard's "My answers" form wins over jobs.yaml.
+    from . import my_answers
+    my_answers.overlay(config)
 
     if config["auto_apply_min_score"] < config["review_min_score"]:
         raise ConfigError(

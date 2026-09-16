@@ -205,7 +205,14 @@ Needs either the `claude` CLI installed, or `pip install anthropic` and an
 powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1
 ```
 
-Registers scan runs via Task Scheduler. Default mode sends nothing. Runs are
+Registers scan runs via Task Scheduler. Every mode runs `jobs_scan.bat`, which
+scans and then **applies** to what it found (Naukri and LinkedIn Easy Apply;
+company-site postings are left for you). Questions it cannot answer land in
+`data/jobs/questions.yaml` — answer them with `python main.py --answer-questions`
+and the next run uses them. Applications go out in small batches - 5, 5, 10
+by day, then 10 twice overnight - a minute or more apart, so neither board
+sees a burst; edit `-Times` / `-NightTimes` in the script to change that.
+Runs are
 silent: no console window and no browser window (the task goes through
 `scripts\run_hidden.vbs`, which hides the console and sets
 `NAUKRI_BACKGROUND=1`). Their output is in `logs\scheduled.log`. The script

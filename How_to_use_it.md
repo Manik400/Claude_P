@@ -11,7 +11,7 @@ Here's how to use each project, with and without Claude.
 1. Double-click `job-hunt\jobhunt.bat`.
 2. Answer the questions: job title, years of experience, countries, and your resume file.
 3. Wait a few minutes. The report opens in your browser.
-4. Click **Apply** on the jobs you like.
+4. Click **Apply** on the jobs you like. For LinkedIn jobs, double-click `job-hunt\jobhunt_apply.bat` instead and it applies for you (Easy Apply), using the same answers, questions and dashboard as the Naukri screener. Postings it applied to are marked in the report.
 
 Or type one line:
 
@@ -40,7 +40,8 @@ Claude runs the search, also checks sites that block bots (Naukri, Indeed, Glass
 **Every day:**
 
 - Double-click `daily_refresh.bat`. It bumps your profile so recruiters see you higher.
-- Double-click `jobs_scan.bat`. It finds new jobs and makes an Excel sheet plus a tracker page.
+- Double-click `jobs_scan.bat`. It finds new jobs, applies to them (Naukri, and LinkedIn Easy Apply), and makes an Excel sheet plus a tracker page. Jobs that must be applied to on the company's site are left for you.
+- At the end of the day double-click `dashboard.bat`. It opens a page where you fill in the common answers form (salary, phone, notice period, skill years, yes/no on bond, contract, office, shifts...), answer the questions it could not, and see every application with the answers it gave and any replies from your Gmail. Save once; the next run uses it.
 
 **When you want:**
 

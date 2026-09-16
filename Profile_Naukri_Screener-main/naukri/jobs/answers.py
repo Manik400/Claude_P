@@ -9,6 +9,8 @@ a fact already on record. Two sources count as on record.
     2. The `answers:` block     things a profile has no field for - expected
        in jobs.yaml             CTC, willingness to relocate - which you state
                                 once, in your own words
+    3. The answer bank          questions you answered after a run left them
+       data/jobs/answer_bank.yaml   for you (see questions.py)
 
 Anything else returns None and the job goes to the review queue unanswered.
 That is the whole point: "what is your expected CTC" answered wrong by a guess
@@ -158,6 +160,10 @@ def build_facts(profile: dict, config: dict) -> dict:
     }
     for key, value in stated.items():
         facts.setdefault(f"stated_{key}", value)
+    # Overrides typed into the dashboard for what the profile says.
+    for key, value in (config.get("fact_overrides") or {}).items():
+        if value not in (None, ""):
+            facts[key] = value
     return facts
 
 
@@ -303,6 +309,16 @@ def resolve(question: str, options: list[str], facts: dict) -> tuple[str | None,
             return None, (f"your rule {rule['match']!r} keeps this one for you "
                           "- the job is queued unanswered")
         return _format("_rule", rule["answer"]), f"your rule {rule['match']!r}"
+
+    # Then the answers you gave to earlier runs' questions. Exact question
+    # match only - a saved answer must never be stretched to a different
+    # question.
+    from . import questions as questions_mod
+    saved = questions_mod.lookup(question, facts.get("_bank"))
+    if saved:
+        if str(saved.get("answer", "")).strip().lower() == questions_mod.SKIP:
+            return None, "you chose to skip this question (data/jobs/answer_bank.yaml)"
+        return _format("_bank", saved.get("answer")), "your saved answer"
 
     # Skill-specific questions are handled before the generic rules, because
     # "how many years of experience do you have in Playwright" also matches the

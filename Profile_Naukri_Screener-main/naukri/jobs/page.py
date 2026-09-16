@@ -142,6 +142,8 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
             "note": ", ".join((job.get("matched_skills") or [])[:6]),
             "new": first == today,
             "first_seen": first,
+            "status": job.get("apply_status") or "",
+            "status_note": job.get("apply_note") or "",
         })
 
     for card in results.get("linkedin") or []:
@@ -166,6 +168,8 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
             "note": card.get("insight") or "",
             "new": first == today,
             "first_seen": first,
+            "status": card.get("apply_status") or "",
+            "status_note": card.get("apply_note") or "",
         })
 
     # Remote first, then newest, then best-ranked.
@@ -384,6 +388,7 @@ TEMPLATE = """<title>__TITLE__</title>
     <span class="here">Job Scanner</span>
     <a href="__PREP_JOBS_HREF__" class="__PREP_STATE__">Top 10 Jobs</a>
     <a href="__PREP_HREF__" class="__PREP_STATE__">Interview Preparation__PREP_HINT__</a>
+    <a href="applications.html">Applications sent</a>
   </nav>
 
   <nav class="runs">__RUNS__</nav>
@@ -449,7 +454,7 @@ TEMPLATE = """<title>__TITLE__</title>
     if (filter === 'new' && !r.new) return false;
     if (filter === 'remote' && !r.remote) return false;
     if (filter === 'easy' && !r.easy) return false;
-    if (filter === 'todo' && applied[r.id]) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
     // Posted is a separate axis, so "remote" and "2 days" combine rather than
     // replacing each other. A row with no readable date is excluded whenever a
     // date filter is on - it cannot be shown to satisfy it.
@@ -461,9 +466,21 @@ TEMPLATE = """<title>__TITLE__</title>
     return true;
   }
 
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
   function rowHtml(r) {
-    const done = !!applied[r.id];
+    const done = !!applied[r.id] || r.status === 'applied';
     const tags = [
+      statusTag(r),
       r.new ? '<span class="tag new">New</span>' : '',
       r.remote ? '<span class="tag remote">Remote</span>' : '',
       r.easy ? '<span class="tag easy">One-click</span>' : '',
@@ -507,7 +524,7 @@ TEMPLATE = """<title>__TITLE__</title>
 
   function stats() {
     const n = (id, v) => document.getElementById(id).textContent = v;
-    const doneCount = ROWS.filter(r => applied[r.id]).length;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
     n('s-total', ROWS.length);
     n('s-new', ROWS.filter(r => r.new).length);
     n('s-remote', ROWS.filter(r => r.remote).length);

@@ -10,6 +10,7 @@ Sub-commands:
   score              add resume match scores to an existing run
   render             (re)build report.html from an existing run
   merge              add jobs found elsewhere (JSON list) into a run, re-score, re-render
+  apply              apply to a run's LinkedIn postings (Easy Apply) via the Naukri screener's applier
   fallback-queries   print the web-search plan for platforms that block scripts (Indeed, Naukri, ...)
   sources            list available sources and whether they are enabled
   countries          list supported countries
@@ -205,7 +206,69 @@ def do_score(run_dir, meta, jobs, resume_path, log):
     return info
 
 
+def latest_run_dir(root=None):
+    """The newest run under ~/Documents/JobHunt (or `root`), or None."""
+    root = os.path.abspath(os.path.expanduser(root or DEFAULT_OUT_ROOT))
+    if not os.path.isdir(root):
+        return None
+    runs = [os.path.join(root, d) for d in os.listdir(root)
+            if os.path.isfile(os.path.join(root, d, "run.json"))]
+    return max(runs, key=os.path.getmtime) if runs else None
+
+
+def apply_like_last(args, log):
+    """Fill --role/--experience/--countries/--resume from the newest run."""
+    last = latest_run_dir(args.out_root)
+    if not last:
+        raise SystemExit("--like-last: no earlier run found under " + os.path.abspath(os.path.expanduser(args.out_root or DEFAULT_OUT_ROOT)))
+    _, meta, _, _ = load_run(last)
+    args.role = args.role or list(meta.get("roles") or [])
+    args.experience = args.experience or meta.get("experience_label") or None
+    if not args.countries and meta.get("countries"):
+        args.countries = ",".join(meta["countries"])
+    if not getattr(args, "resume", None) and meta.get("resume_path") and os.path.exists(meta["resume_path"]):
+        args.resume = meta["resume_path"]
+    log(f"like-last: roles={args.role} experience={args.experience} countries={args.countries} resume={os.path.basename(args.resume or '') or '-'} (from {os.path.basename(last)})")
+    return args
+
+
+def apply_limit(args):
+    """--limit, else NAUKRI_APPLY_LIMIT (set per task by the scheduler)."""
+    if getattr(args, "limit", None) is not None:
+        return args.limit
+    raw = os.environ.get("NAUKRI_APPLY_LIMIT", "").strip()
+    return int(raw) if raw.isdigit() else None
+
+
+def do_apply(run_dir, meta, statuses, jobs, args, log):
+    from jobbot import autoapply
+    try:
+        autoapply.load_naukri()
+    except autoapply.ApplierUnavailable as e:
+        log(f"apply: {e}")
+        return None
+    limit = apply_limit(args)
+    dry = not getattr(args, "yes", False)
+    cards = autoapply.linkedin_cards(jobs, min_score=getattr(args, "min_score", None))
+    log(f"apply: {len(cards)} LinkedIn posting(s) in this run{'' if limit is None else f', at most {limit} this run'}{' (dry run - add --yes to send)' if dry else ''}")
+    outcomes = autoapply.apply_run(jobs, per_run=limit, dry_run=dry, min_score=getattr(args, "min_score", None))
+    marked = autoapply.mark_jobs(jobs, outcomes)
+    if marked:
+        save_run(run_dir, meta, statuses, jobs)
+        render(run_dir, meta, jobs, statuses)
+    text = autoapply.summarise(outcomes)
+    if text:
+        for line in text.strip("\n").splitlines():
+            log(line.strip())
+    return outcomes
+
+
 def cmd_run(args):
+    log0 = Logger(None, quiet=args.quiet)
+    if getattr(args, "like_last", False):
+        apply_like_last(args, log0)
+    if not args.role:
+        raise SystemExit("--role is required (or --like-last)")
     run_dir = make_run_dir(args)
     log = Logger(os.path.join(run_dir, "run.log"), quiet=args.quiet)
     meta, statuses, jobs = do_search(args, run_dir, log)
@@ -215,9 +278,26 @@ def cmd_run(args):
         save_run(run_dir, meta, statuses, jobs)
     report = render(run_dir, meta, jobs, statuses)
     summary(meta, jobs, statuses, report, log)
+    if getattr(args, "apply_found", False):
+        do_apply(run_dir, meta, statuses, jobs, args, log)
     print(json.dumps({"run_dir": run_dir, "report": report, "jobs": len(jobs), "fallback_plan": os.path.join(run_dir, "fallback_plan.json")}))
     if args.open:
         open_report(report)
+
+
+def cmd_apply(args):
+    run_dir = args.run or latest_run_dir(args.out_root)
+    if not run_dir:
+        raise SystemExit("no run found; pass --run <dir>")
+    run_dir, meta, statuses, jobs = load_run(run_dir)
+    log = Logger(os.path.join(run_dir, "run.log"), quiet=args.quiet)
+    outcomes = do_apply(run_dir, meta, statuses, jobs, args, log)
+    if outcomes is None:
+        sys.exit(2)
+    summary_ = outcomes.get("_summary", {})
+    print(json.dumps({"run_dir": run_dir, "report": os.path.join(run_dir, "report.html"),
+                      "linkedin": summary_.get("linkedin", {}), "dry_run": summary_.get("dry_run", True),
+                      "pending_questions": summary_.get("pending_questions", 0)}))
 
 
 def cmd_search(args):
@@ -375,11 +455,30 @@ def main(argv=None):
     sub = ap.add_subparsers(dest="cmd", required=True)
     sub.add_parser("wizard", help="interactive mode (same as running with no arguments)").set_defaults(fn=cmd_wizard)
 
-    p = sub.add_parser("run", help="search + score + render")
+    p = sub.add_parser("run", help="search + score + render (+ apply with --apply-found)")
     add_search_args(p)
     p.add_argument("--resume", help="resume file (.pdf/.docx/.txt) used only for match scoring")
     p.add_argument("--open", action="store_true", help="open the report in the browser")
+    p.add_argument("--like-last", action="store_true", dest="like_last",
+                   help="reuse the roles, experience, countries and resume of the newest run")
+    p.add_argument("--apply-found", action="store_true", dest="apply_found",
+                   help="after the search, apply to the LinkedIn postings (Easy Apply) through the "
+                        "Naukri screener's applier; dry run unless --yes")
+    p.add_argument("--yes", action="store_true", help="with --apply-found: really send applications")
+    p.add_argument("--limit", type=int, metavar="N",
+                   help="with --apply-found: at most N applications this run (default: NAUKRI_APPLY_LIMIT, else the daily cap)")
+    p.add_argument("--min-score", type=float, dest="min_score",
+                   help="with --apply-found: only postings scoring at least this against your resume")
     p.set_defaults(fn=cmd_run)
+
+    p = sub.add_parser("apply", help="apply to a run's LinkedIn postings (Easy Apply)")
+    p.add_argument("--run", help="run directory (default: the newest run)")
+    p.add_argument("--out-root", help="parent directory of runs, for the default")
+    p.add_argument("--yes", action="store_true", help="really send applications (default is a dry run)")
+    p.add_argument("--limit", type=int, metavar="N", help="at most N applications this run")
+    p.add_argument("--min-score", type=float, dest="min_score", help="only postings scoring at least this")
+    p.add_argument("--quiet", action="store_true")
+    p.set_defaults(fn=cmd_apply)
 
     p = sub.add_parser("search", help="search only")
     add_search_args(p)
@@ -427,8 +526,10 @@ def main(argv=None):
     p.set_defaults(fn=cmd_selftest)
 
     args = ap.parse_args(argv)
-    if args.cmd in ("run", "search") and not args.role:
+    if args.cmd == "search" and not args.role:
         ap.error("--role is required (e.g. --role \"python developer\")")
+    if args.cmd == "run" and not args.role and not getattr(args, "like_last", False):
+        ap.error("--role is required (e.g. --role \"python developer\"), or --like-last")
     args.fn(args)
 
 

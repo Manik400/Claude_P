@@ -15,6 +15,23 @@ Double-click `jobhunt.bat` and answer the questions, or run:
 Reports are saved in `Documents\JobHunt\<date>_<role>\report.html`.
 Other commands: `python scripts/job_bot.py -h`.
 
+## Applying (LinkedIn Easy Apply)
+The report's Apply buttons open each posting. LinkedIn postings can also be applied to for you:
+
+    python scripts/job_bot.py apply --run "%USERPROFILE%\Documents\JobHunt\<run>" --limit 5 --yes
+    python scripts/job_bot.py run --like-last --apply-found --yes          what jobhunt_apply.bat runs
+
+This reuses the Naukri screener next door (`../Profile_Naukri_Screener-main`): its LinkedIn login,
+its Easy Apply walker, the answers you keep in its dashboard (`dashboard.bat` there), its
+`data/jobs/questions.yaml` for questions it cannot answer, its applications log, and its daily
+LinkedIn cap - so both projects together never exceed `linkedin_max_applies_per_day`. Run it with
+that project's virtualenv (Playwright lives there); `jobhunt_apply.bat` does. The other boards (Seek,
+XING, Wellfound, JobsDB, TokyoDev ...) each have their own login and form and stay manual. Every
+application shows up in that project's dashboard tagged "via jobhunt", and the report marks the
+posting *Applied by agent* / *Needs your answer*. Schedule it with `scripts\schedule_jobhunt.ps1`
+(two small batches a day, hidden window). The phone/GitHub Actions run cannot apply - there is no
+LinkedIn session on the runner.
+
 ## Company career pages (careers bot)
 Reads the career pages of the companies in `assets/companies.txt` directly (Greenhouse, Lever, Ashby,
 SmartRecruiters, Recruitee and Workday boards), keeps the jobs that match your role, experience range and countries,

@@ -12,6 +12,10 @@
 ' Chrome window either. Everything the batch would have printed goes to
 ' logs\scheduled.log instead, since there is no console to show it in.
 '
+' An argument written NAME=VALUE (upper-case name) is set as an environment
+' variable for the batch instead of being passed to it. The scheduler uses
+' this for NAUKRI_APPLY_LIMIT=5, the per-run application cap.
+'
 ' To watch a run from a terminal instead, call the batch file directly.
 
 Option Explicit
@@ -36,7 +40,11 @@ End If
 
 args = ""
 For i = 1 To WScript.Arguments.Count - 1
-    args = args & " """ & WScript.Arguments(i) & """"
+    If IsEnvAssignment(WScript.Arguments(i)) Then
+        sh.Environment("PROCESS")(Split(WScript.Arguments(i), "=")(0)) = Mid(WScript.Arguments(i), InStr(WScript.Arguments(i), "=") + 1)
+    Else
+        args = args & " """ & WScript.Arguments(i) & """"
+    End If
 Next
 
 If Not fso.FolderExists(root & "\logs") Then fso.CreateFolder root & "\logs"
@@ -55,3 +63,15 @@ cmd = "cmd.exe /S /C """ & _
 ' exit code and Task Scheduler's own time limit still applies to the run.
 rc = sh.Run(cmd, 0, True)
 WScript.Quit rc
+
+Function IsEnvAssignment(arg)
+    Dim eq, name
+    eq = InStr(arg, "=")
+    IsEnvAssignment = False
+    If eq > 1 Then
+        name = Left(arg, eq - 1)
+        If name = UCase(name) Then
+            IsEnvAssignment = (InStr(name, " ") = 0 And InStr(name, "\") = 0 And InStr(name, ":") = 0)
+        End If
+    End If
+End Function

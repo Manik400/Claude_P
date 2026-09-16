@@ -89,18 +89,24 @@ def _submit_answer(page) -> bool:
         return False
 
 
-def _confirm_applied(page, allow_reload: bool = True) -> bool:
+def _confirm_applied(page, allow_reload: bool = True, patience: float = 10.0) -> bool:
     """Ask the job page itself whether the application landed.
 
     The chatbot does not reliably announce success - it may simply run out of
     questions and close. The page's own "Applied" badge is the ground truth,
-    so check that, reloading once if it has not repainted yet.
+    so poll for that, then reload once and poll again if it has not repainted.
+    Ten seconds each way: on 2026-09-16 eight headless applications all went
+    through and all came back "unconfirmed" because the badge took longer
+    than the two seconds this used to wait.
     """
     for attempt in range(2):
-        if _any_visible(page, S.APPLY_APPLIED_MARKERS, timeout=2000):
-            return True
-        if _any_visible(page, S.APPLY_SUCCESS, timeout=1000):
-            return True
+        deadline = time.time() + patience
+        while time.time() < deadline:
+            if _any_visible(page, S.APPLY_APPLIED_MARKERS, timeout=800):
+                return True
+            if _any_visible(page, S.APPLY_SUCCESS, timeout=500):
+                return True
+            page.wait_for_timeout(600)
         if not allow_reload or attempt:
             break
         try:
@@ -130,12 +136,15 @@ def _wait_for_question(page, previous: str | None, timeout: float = 15.0) -> str
     return None
 
 
-def _fill_questionnaire(page, facts: dict, max_questions: int = 15) -> tuple[str, str]:
+def _fill_questionnaire(page, facts: dict, max_questions: int = 15,
+                        capture: dict | None = None) -> tuple[str, str]:
     """Answer the screening questions, but only from facts.
 
     Stops at the first question that cannot be grounded in a fact and leaves
     the rest unanswered, so a partially-answerable questionnaire ends up in
-    your queue rather than half-submitted with a guess in it.
+    your queue rather than half-submitted with a guess in it. `capture`, if
+    given, receives that question and its options, so the caller can save it
+    for you to answer (questions.py).
 
     Two failure statuses, deliberately distinct:
       questionnaire         a genuine refusal - it asked something we cannot
@@ -147,6 +156,11 @@ def _fill_questionnaire(page, facts: dict, max_questions: int = 15) -> tuple[str
 
     answered: list[str] = []
     previous: str | None = None
+
+    def remember(question: str, options: list[str], answer, source: str) -> None:
+        if capture is not None:
+            capture.setdefault("answers", []).append(
+                {"question": question, "options": list(options), "answer": answer, "source": source})
 
     for _ in range(max_questions):
         if _any_visible(page, S.CHATBOT_SUCCESS, timeout=800):
@@ -161,14 +175,23 @@ def _fill_questionnaire(page, facts: dict, max_questions: int = 15) -> tuple[str
         log.debug("questionnaire asks %r with options %s", question[:80], options)
         answer, reason = answers_mod.resolve(question, options, facts)
         if answer is None:
+            if capture is not None and "you chose to skip" not in reason \
+                    and "keeps this one for you" not in reason:
+                capture.update(question=question, options=options, why=reason)
             _close_questionnaire(page)
             return "questionnaire", f"cannot answer '{question[:70]}' - {reason}"
 
         if options:
             choice = answers_mod.choose_option(answer, options)
             if choice is None:
+                # The fact is known but fits none of the chips on offer. That
+                # is a question for you too: pick the chip once and it is
+                # answered for good.
+                if capture is not None:
+                    capture.update(question=question, options=options,
+                                   why=f"resolved to {answer!r}, which matches none of the options")
                 _close_questionnaire(page)
-                return "questionnaire-failed", (
+                return "questionnaire", (
                     f"'{question[:50]}' - resolved to {answer!r}, "
                     f"which matches none of {options}"
                 )
@@ -182,6 +205,7 @@ def _fill_questionnaire(page, facts: dict, max_questions: int = 15) -> tuple[str
                     return "questionnaire-failed", f"could not select {choice!r}: {str(exc)[:80]}"
             page.wait_for_timeout(600)
             answered.append(f"{question[:40]} -> {choice}")
+            remember(question, options, choice, reason)
         else:
             box = _first_visible(page, [S.CHATBOT_TEXT_INPUT], timeout=3000)
             if box is None:
@@ -198,6 +222,7 @@ def _fill_questionnaire(page, facts: dict, max_questions: int = 15) -> tuple[str
                 return "questionnaire-failed", f"could not type answer: {str(exc)[:80]}"
             page.wait_for_timeout(500)
             answered.append(f"{question[:40]} -> {answer}")
+            remember(question, [], answer, reason)
 
         if not _submit_answer(page):
             _close_questionnaire(page)
@@ -227,7 +252,8 @@ def _close_questionnaire(page) -> None:
         pass
 
 
-def apply_to(page, job, dry_run: bool = True, facts: dict | None = None) -> tuple[str, str]:
+def apply_to(page, job, dry_run: bool = True, facts: dict | None = None,
+             capture: dict | None = None) -> tuple[str, str]:
     """Attempt one application. Returns (status, note).
 
     With dry_run the page is opened and the apply control inspected, but never
@@ -235,7 +261,8 @@ def apply_to(page, job, dry_run: bool = True, facts: dict | None = None) -> tupl
     sending anything.
 
     `facts` enables answering screening questions. Pass None (the default) and
-    any questionnaire is closed unanswered and queued for you.
+    any questionnaire is closed unanswered and queued for you. `capture`, if
+    given, receives the question that stopped a questionnaire.
     """
     try:
         page.goto(job.url, wait_until="domcontentloaded", timeout=60000)
@@ -246,8 +273,9 @@ def apply_to(page, job, dry_run: bool = True, facts: dict | None = None) -> tupl
     button = _first_visible(page, S.JOB_APPLY_BUTTON, timeout=6000)
     if button is None:
         # No apply control usually means the posting has closed or already
-        # carries an application.
-        if _any_visible(page, S.APPLY_SUCCESS):
+        # carries an application - once applied, the button is replaced by a
+        # plain "Applied" badge.
+        if _any_visible(page, S.APPLY_APPLIED_MARKERS, timeout=2500) or _any_visible(page, S.APPLY_SUCCESS):
             return "already", "no button; page shows an existing application"
         return "no-button", "no apply control found"
 
@@ -275,7 +303,7 @@ def apply_to(page, job, dry_run: bool = True, facts: dict | None = None) -> tupl
     while time.time() < deadline:
         if _any_visible(page, S.JOB_CHATBOT, timeout=700):
             if facts:
-                return _fill_questionnaire(page, facts)
+                return _fill_questionnaire(page, facts, capture=capture)
             _close_questionnaire(page)
             return "questionnaire", "screening questions opened; left for you to answer"
         if _any_visible(page, S.APPLY_SUCCESS, timeout=700):

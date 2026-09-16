@@ -13,6 +13,15 @@
 # at :00, and a run that always starts exactly at 09:00 is a more obvious
 # pattern than one that starts at 08:52.
 #
+# HOW MANY IT APPLIES TO. Each time carries its own cap, "HH:mm=N": at most N
+# applications per board in that run, spaced a minute or more apart. The
+# defaults are 5 in the morning, 5 in the afternoon, 10 in the evening, then
+# 10 more twice in the night, 4-5 hours apart - 40 a day per board, in small
+# batches, which is how a person applying by hand looks and how neither board
+# gets a burst to flag. What a run does not reach stays in the backlog and is
+# picked up by the next one. -NightTimes run jobs_scan.bat (scan + apply, no
+# interview prep) whatever -Mode says, so the night runs cost no tokens.
+#
 # NOTHING APPEARS ON SCREEN WHILE A RUN WORKS. The task does not start the
 # batch file directly - that would open a console window for the whole run -
 # but goes through scripts\run_hidden.vbs, which starts it with its window
@@ -37,7 +46,8 @@ param(
     [ValidateSet("scan", "scanprep", "scanpublish", "apply")]
     [string]$Mode = "scan",
     [switch]$Remove,
-    [string[]]$Times = @("08:52", "13:23", "18:11")
+    [string[]]$Times = @("08:52=5", "13:23=5", "18:11=10"),
+    [string[]]$NightTimes = @("23:07=10", "04:23=10")
 )
 
 $ErrorActionPreference = "Stop"
@@ -102,22 +112,36 @@ $settings = New-ScheduledTaskSettingsSet `
     -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
     -MultipleInstances IgnoreNew
 
+$scanOnly = Join-Path $root "jobs_scan.bat"
+$slots = @()
+foreach ($t in $Times)      { $slots += @{ spec = $t; batch = $batch;    mode = $Mode } }
+foreach ($t in $NightTimes) { $slots += @{ spec = $t; batch = $scanOnly; mode = "scan (night)" } }
+
 $i = 0
-foreach ($time in $Times) {
+foreach ($slot in $slots) {
     $i++
+    $time, $limit = $slot.spec -split "=", 2
+    if (-not $limit) { $limit = "" }
     $name = "$prefix-$i"
+    $argument = "//B //Nologo `"$launcher`" `"$($slot.batch)`""
+    if ($limit) { $argument += " NAUKRI_APPLY_LIMIT=$limit" }
+    $slotAction = New-ScheduledTaskAction `
+        -Execute "$env:SystemRoot\System32\wscript.exe" `
+        -Argument $argument `
+        -WorkingDirectory $root
     $trigger = New-ScheduledTaskTrigger -Daily -At $time
+    $capText = if ($limit) { "up to $limit applies per board" } else { "daily caps only" }
     Register-ScheduledTask `
         -TaskName $name `
-        -Action $action `
+        -Action $slotAction `
         -Trigger $trigger `
         -Settings $settings `
-        -Description "Naukri + LinkedIn job agent ($Mode) - run $i of $($Times.Count)." | Out-Null
-    Write-Host "Scheduled $name at $time  ($Mode)"
+        -Description "Naukri + LinkedIn job agent ($($slot.mode)) - run $i of $($slots.Count), $capText." | Out-Null
+    Write-Host "Scheduled $name at $time  ($($slot.mode), $capText)"
 }
 
 Write-Host ""
-Write-Host "Mode: $Mode  ->  $(Split-Path -Leaf $batch)"
+Write-Host "Mode: $Mode  ->  $(Split-Path -Leaf $batch)   night runs -> jobs_scan.bat"
 Write-Host "Check them with:   Get-ScheduledTask -TaskName '$prefix*'"
 Write-Host "Run one now with:  Start-ScheduledTask -TaskName '$prefix-1'"
 Write-Host "Stop them with:    ...\schedule_jobs_agent.ps1 -Remove"

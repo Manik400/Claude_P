@@ -130,6 +130,31 @@ answers:
   expected_ctc: ""          # e.g. "18 LPA"
   willing_to_relocate: true
   notice_buyout: false
+  phone: ""                 # LinkedIn Easy Apply asks for it; e.g. "9876543210"
+
+# ---------------------------------------------------------------------------
+# APPLYING FROM THE SCAN
+# ---------------------------------------------------------------------------
+#
+# `python main.py --jobs-export --apply-found --yes` (which is what the
+# scheduled jobs_scan.bat runs) applies to what the scan found: Naukri
+# one-click postings, Naukri questionnaire postings whose questions it can
+# answer, and LinkedIn Easy Apply postings. "Apply on company site" postings
+# are always left for you.
+#
+# A question it cannot answer from your profile, this file or your earlier
+# answers is saved to data/jobs/questions.yaml. Answer it once - with
+# `python main.py --answer-questions` or by editing the file - and every later
+# job that asks it is answered from data/jobs/answer_bank.yaml.
+#
+# Only Naukri jobs scoring at least this are applied to. 0 = every job the
+# scan listed (it has already dropped anything outside your field).
+scan_apply_min_score: 0
+
+# LinkedIn Easy Apply in the same pass. LinkedIn restricts accounts that
+# apply in bursts, so the daily cap is deliberately modest.
+linkedin_easy_apply: true
+linkedin_max_applies_per_day: 25
 
 # Your own answers to questions no profile field covers. Checked before any
 # built-in logic, so these are the final word.

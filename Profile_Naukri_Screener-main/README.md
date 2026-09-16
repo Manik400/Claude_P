@@ -151,6 +151,64 @@ python main.py --jobs          # dry run: search, score, report. Sends nothing.
 python main.py --jobs --yes    # live: applies to the strong matches.
 ```
 
+### Applying from the scan (what the schedule does)
+
+```bash
+python main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only --apply-found        # dry run
+python main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only --apply-found --yes  # what jobs_scan.bat runs
+```
+
+`--apply-found` walks the openings the scan just listed and clicks Apply on
+every one it can: Naukri one-click postings, Naukri questionnaire postings
+whose questions it can answer, and LinkedIn **Easy Apply** postings. "Apply
+on company site" postings are always left for you. Every row on the tracker
+page then carries its outcome — *Applied by agent*, *Needs your answer*,
+*Company site*.
+
+A screening question it cannot answer from your profile, `jobs.yaml` or your
+earlier answers stops that one job and is written to
+`data/jobs/questions.yaml`. Answer the day's questions once:
+
+```bash
+python main.py --answer-questions
+```
+
+(or type after `answer:` in the file). The next run absorbs them into
+`data/jobs/answer_bank.yaml`, re-attempts every job that was waiting, and
+answers the same question for every future job that asks it, on either
+board. `answer: skip` means never answer that one.
+
+**The dashboard.** `dashboard.bat` (or `python main.py --dashboard`) opens
+a local page at `http://127.0.0.1:8765` with four tabs. *My answers* is the
+common form: expected CTC, phone, notice period, years per skill, your
+Yes/No/ask-me position on every standard screening question (bond,
+third-party payroll, pay cut, work from office, shifts, travel, relocation,
+passport, immediate joining ...), and every free-text answer in the bank.
+Saved to `data/jobs/my_answers.yaml` and `data/jobs/answer_bank.yaml`, laid
+over `jobs.yaml` on the next run. *Questions waiting* answers what the last
+runs could not. *Applications* lists every application with its questions,
+answers and what came back - recruiter replies read from Gmail (viewed,
+shortlisted, interview, rejected) plus a status and note of your own.
+*Settings* holds the Gmail app password that makes the reply check work.
+
+**Every application is on record.** `data/jobs/applications.jsonl` gets one
+line per attempt: board, company, title, link, date and time, outcome, and
+every screening question with the answer given and where it came from. The
+readable version is `data/jobs/applications.html`, linked from the tracker
+page as *Applications sent*, and `python main.py --applications` prints the
+latest. Each answer names its source - a profile field, `jobs.yaml`, or
+`answer_bank.yaml` - so a wrong one is corrected there, once, for every later
+application.
+
+**Pace.** Both boards flag bursts, so applications go out in small batches,
+a minute or more apart, never all at once. Each scheduled run carries its own
+cap (`--apply-limit N`, or `NAUKRI_APPLY_LIMIT` set per task by the
+scheduler): 5 in the morning, 5 in the afternoon, 10 in the evening, then 10
+more twice overnight, 4-5 hours apart. Whatever a run does not reach stays
+in the backlog - the last two days' unsettled listings - and the next run
+continues from there. `max_auto_applies` (Naukri) and
+`linkedin_max_applies_per_day` in `jobs.yaml` are the daily ceilings on top.
+
 Criteria and thresholds live in `jobs.yaml`, copied from
 [jobs.example.yaml](jobs.example.yaml) — the real file is gitignored because it
 ends up holding your expected salary and the answers given to recruiters in
@@ -256,9 +314,11 @@ human present for 2FA, no password in this codebase. Cookies land in
 `data/linkedin_state.json`, which is gitignored and *is* your login.
 
 LinkedIn is stricter about automation than Naukri, and a restriction there
-costs you your professional network rather than one job board. So the LinkedIn
-side only ever **reads**: it navigates search pages in a browser at human
-pace and parses what renders. It never applies, messages or connects.
+costs you your professional network rather than one job board. The search
+side only reads: it navigates result pages at human pace and parses what
+renders. Applying is opt-in and limited to **Easy Apply** postings
+(`--apply-found`, `naukri/jobs/linkedin_apply.py`), paced like a person and
+capped by `linkedin_max_applies_per_day`. It never messages or connects.
 
 LinkedIn cards carry no skills list and no experience range - the two
 components worth 60 of the 100-point Naukri score - so they get their own tab
@@ -285,8 +345,9 @@ LinkedIn side; for Naukri the widest available is a national search.
 python main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only
 ```
 
-This is what `jobs_scan.bat` runs, and it answers "what came up since
-yesterday" rather than "what is open right now". Two independent cuts:
+This is what `jobs_scan.bat` runs (plus `--apply-found --yes`, see above),
+and it answers "what came up since yesterday" rather than "what is open right
+now". Two independent cuts:
 
 | Flag | Keeps |
 | --- | --- |
@@ -326,7 +387,7 @@ Posted axis (1 / 2 / 7 days) that combines with the others. When the scan was
 itself filtered, the page header says so - otherwise a deliberately narrow day
 reads as a thin one.
 
-### Three runs a day
+### Five runs a day
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1
@@ -514,7 +575,7 @@ LICENSE                MIT
 jobs.example.yaml      template for jobs.yaml (yours is gitignored)
 changes.example.yaml   template for --apply
 daily_refresh.bat      scheduled profile nudge
-jobs_scan.bat          daily scan -> openings page + spreadsheet
+jobs_scan.bat          daily scan -> openings page + spreadsheet, then applies (--apply-found --yes)
 interview_prep.bat     Top 10 -> skill matrix + 100 Q&A study page
 
 roles/                 THE FIELD VOCABULARY - one file per career

@@ -241,7 +241,9 @@ def _add_notes_sheet(workbook, jobs: list) -> None:
 def run(locations: list[str], top: int = 30, headless: bool = False,
         include_applied: bool = False, include_linkedin: bool = False,
         worldwide: bool = False, posted_days: float | None = None,
-        new_only: bool = False) -> tuple[Path, list, list]:
+        new_only: bool = False, apply: bool = False, dry_run: bool = True,
+        apply_report: dict | None = None,
+        apply_limit: int | None = None) -> tuple[Path, list, list]:
     """Search the given cities, rank, and write the spreadsheet.
 
     `posted_days` restricts the run to listings posted inside that window
@@ -249,6 +251,11 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
     then enforced again on the results. `new_only` drops anything that has
     already appeared on an earlier day's tracker page, so a daily scan reports
     what changed since yesterday instead of re-listing the same postings.
+
+    `apply` runs autoapply over what was found - Naukri applies and LinkedIn
+    Easy Apply - before the page is written, so every row carries its outcome.
+    A dry run reports what it would send; `dry_run=False` sends it. Outcomes
+    are copied into `apply_report` if a dict is passed.
     """
     from playwright.sync_api import sync_playwright
 
@@ -356,6 +363,24 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
             # A LinkedIn failure must not cost you the Naukri sheet.
             log.warning("LinkedIn search skipped: %s", str(exc)[:200])
 
+    if apply:
+        from . import autoapply
+        outcomes = autoapply.run(kept, cards, config, profile, headless=headless,
+                                 dry_run=dry_run, per_run=apply_limit)
+        if apply_report is not None:
+            apply_report.update(outcomes)
+        # The ledger was rewritten by the apply pass; reload so the sheet and
+        # the page show the same picture.
+        ledger = Ledger()
+        for job in kept:
+            hit = outcomes.get(f"naukri:{job.job_id}")
+            if hit:
+                job.apply_status, job.apply_note = hit["status"], hit["note"]
+        for card in cards:
+            hit = outcomes.get(f"linkedin:{card.get('job_id')}")
+            if hit:
+                card["apply_status"], card["apply_note"] = hit["status"], hit["note"]
+
     path = JOBS_DIR / f"job-matches-{date.today().isoformat()}.xlsx"
     to_excel(kept, path, ledger, linkedin_cards=cards, config=config)
 
@@ -370,7 +395,9 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         "new_only": new_only,
         "naukri": [
             dict(job.to_dict(), score=job.score,
-                 matched_skills=getattr(job, "matched_skills", []))
+                 matched_skills=getattr(job, "matched_skills", []),
+                 apply_status=getattr(job, "apply_status", ""),
+                 apply_note=getattr(job, "apply_note", ""))
             for job in kept
         ],
         "linkedin": cards,

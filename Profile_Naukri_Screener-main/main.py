@@ -11,6 +11,11 @@
     python main.py --jobs-export write a ranked .xlsx of matches to apply by hand
     python main.py --linkedin-login  sign in to LinkedIn once, save the session
     python main.py --interview-prep  100 Q&A for today's Top 10, as a study page
+    python main.py --jobs-export --apply-found --yes   scan, then apply to what it found
+    python main.py --answer-questions            answer the screening questions it saved for you
+    python main.py --applications                every application it sent, with the answers given
+    python main.py --dashboard                   local page: edit your answers, answer waiting
+                                                 questions, follow applications and Gmail replies
 """
 from __future__ import annotations
 
@@ -55,6 +60,16 @@ def _setup_logging(verbose: bool) -> None:
     )
 
 
+def _apply_limit(args) -> int | None:
+    """--apply-limit, else NAUKRI_APPLY_LIMIT (set per task by the scheduler)."""
+    if args.apply_limit is not None:
+        return args.apply_limit
+    raw = os.environ.get("NAUKRI_APPLY_LIMIT", "").strip()
+    if raw.isdigit():
+        return int(raw)
+    return None
+
+
 def prep_errors():
     """The interview module's expected refusals, imported lazily.
 
@@ -92,6 +107,15 @@ def main() -> int:
     action.add_argument("--interview-repair", action="store_true", dest="interview_repair",
                         help="Re-validate a saved preparation set and regenerate only the "
                              "questions that fail, without re-running the whole analysis")
+    action.add_argument("--dashboard", action="store_true",
+                        help="Open the local dashboard (http://127.0.0.1:8765): the common answers "
+                             "form, questions waiting for you, every application with its replies")
+    action.add_argument("--applications", action="store_true",
+                        help="List every application the agent attempted, with each screening "
+                             "answer and where it came from, and rebuild data/jobs/applications.html")
+    action.add_argument("--answer-questions", action="store_true", dest="answer_questions",
+                        help="Answer the screening questions that stopped applications "
+                             "(data/jobs/questions.yaml); the next run applies with them")
 
     parser.add_argument("--show", action="store_true", help="Run with a visible browser")
     parser.add_argument("--background", action="store_true",
@@ -99,7 +123,20 @@ def main() -> int:
                              "falling back to an off-screen window if Naukri refuses it. "
                              "The scheduled runs get this from scripts\\run_hidden.vbs. "
                              "Same as setting NAUKRI_BACKGROUND=1.")
-    parser.add_argument("--yes", action="store_true", help="With --apply or --jobs: actually do it (default is a dry run)")
+    parser.add_argument("--yes", action="store_true",
+                        help="With --apply, --jobs or --jobs-export --apply: actually do it (default is a dry run)")
+    parser.add_argument("--apply-found", action="store_true", dest="apply_found",
+                        help="With --jobs-export: after the scan, apply to what it found - "
+                             "Naukri one-click and questionnaire postings, LinkedIn Easy Apply. "
+                             "Questions it cannot answer are saved for you. Dry run unless --yes.")
+    parser.add_argument("--port", type=int, default=8765,
+                        help="With --dashboard: port to serve on (default 8765)")
+    parser.add_argument("--no-open", action="store_true", dest="no_open",
+                        help="With --dashboard: do not open the browser automatically")
+    parser.add_argument("--apply-limit", type=int, metavar="N", dest="apply_limit",
+                        help="With --apply-found: at most N applications per board this run "
+                             "(default: NAUKRI_APPLY_LIMIT from the environment, which the "
+                             "scheduler sets to 5 or 10, else only the daily caps)")
     parser.add_argument("--url", help="With --jobs-probe: probe this job URL instead of the top queued one")
     parser.add_argument("--limit", type=int, metavar="N",
                         help="With --jobs: attempt at most N applications this run")
@@ -189,16 +226,39 @@ def main() -> int:
 
         if args.jobs_export:
             locations = [c.strip() for c in args.locations.split(",") if c.strip()]
+            apply_report: dict = {}
             path, jobs, cards = jobs_export.run(
                 locations, top=args.top, headless=False,
                 include_applied=args.include_applied,
                 include_linkedin=not args.no_linkedin,
                 worldwide=args.worldwide,
                 posted_days=args.posted_days,
-                new_only=args.new_only)
+                new_only=args.new_only,
+                apply=args.apply_found, dry_run=not args.yes,
+                apply_report=apply_report,
+                apply_limit=_apply_limit(args))
             print(jobs_export.summarise(path, jobs, locations, cards,
                                         posted_days=args.posted_days,
                                         new_only=args.new_only))
+            if args.apply_found:
+                from naukri.jobs import autoapply
+                print(autoapply.summarise(apply_report))
+            return 0
+
+        if args.answer_questions:
+            from naukri.jobs import questions as questions_mod
+            questions_mod.answer_interactively()
+            return 0
+
+        if args.applications:
+            from naukri.jobs import applications as applications_mod
+            print(applications_mod.summarise())
+            applications_mod.build_page()
+            return 0
+
+        if args.dashboard:
+            from naukri.jobs import dashboard as dashboard_mod
+            dashboard_mod.serve(port=args.port, open_browser=not args.no_open)
             return 0
 
         if args.jobs_probe:

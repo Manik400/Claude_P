@@ -19,8 +19,17 @@ rem standing list:
 rem
 rem     python main.py --jobs-export --worldwide --top 60
 rem
-rem This run SENDS NOTHING. It finds jobs and reports them; you apply.
-rem For the version that also applies, see jobs_agent.bat.
+rem THIS RUN APPLIES. After the scan it clicks Apply on every Naukri posting
+rem it listed (one-click ones, and questionnaire ones it can answer from your
+rem profile, jobs.yaml and data\jobs\answer_bank.yaml) and Easy Apply on every
+rem LinkedIn posting that offers it. "Apply on company site" postings are left
+rem for you. A screening question it cannot answer is saved to
+rem data\jobs\questions.yaml - answer those at the end of the day with
+rem     python main.py --answer-questions
+rem and the next run applies to the jobs that were waiting on them.
+rem
+rem To scan without applying, drop the two flags at the bottom:
+rem     python main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only
 rem
 rem To prepare for what it finds, run interview_prep.bat afterwards - it takes
 rem this scan's Top 10 and builds a study page of 100 interview questions.
@@ -37,4 +46,4 @@ set "PY=python"
 if exist "..\venv\Scripts\python.exe" set "PY=..\venv\Scripts\python.exe"
 if exist ".venv\Scripts\python.exe" set "PY=.venv\Scripts\python.exe"
 
-"%PY%" main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only
+"%PY%" main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only --apply-found --yes
