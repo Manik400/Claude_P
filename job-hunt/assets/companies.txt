@@ -1,0 +1,82 @@
+# Companies whose career pages the careers bot reads (phone page -> Careers tab, or careers_bot.py).
+#
+# One company per line:   Name | ats | board | note
+#
+#   ats     greenhouse | lever | ashby | smartrecruiters | recruitee | workday
+#   board   the company's id on that job board:
+#             greenhouse       boards.greenhouse.io/<board>          e.g. agoda
+#             lever            jobs.lever.co/<board>                 e.g. spotify
+#             ashby            jobs.ashbyhq.com/<board>              e.g. supercell
+#             smartrecruiters  jobs.smartrecruiters.com/<board>      e.g. grab
+#             recruitee        <board>.recruitee.com                 e.g. bunq
+#             workday          <host>/<tenant>/<site> from the careers URL
+#                              e.g. nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
+#   note    free text shown on the phone (hubs, anything you want to remember)
+#
+# Not sure which board a company uses?  python job-hunt/scripts/careers_bot.py find "<company>"
+# Check the whole list still works:      python job-hunt/scripts/careers_bot.py check
+#
+# Not supported yet (own career sites, no public job-board API): Booking.com, Zalando, Revolut, Atlassian, Shopify.
+
+# ---- Asia / Middle East / Oceania
+Agoda            | greenhouse      | agoda          | Bangkok hub; many roles say "relocation provided" + visa
+Grab             | smartrecruiters | grab           | Singapore, Kuala Lumpur, Jakarta
+PayPay           | greenhouse      | paypay         | Tokyo
+Careem           | greenhouse      | careem         | Dubai, Karachi
+Canva            | smartrecruiters | canva          | Sydney, Melbourne
+
+# ---- Netherlands
+Adyen            | greenhouse      | adyen          | Amsterdam
+bunq             | recruitee       | bunq           | Amsterdam
+Mollie           | ashby           | mollie         | Amsterdam
+Miro             | ashby           | miro           | Amsterdam, Berlin
+JetBrains        | greenhouse      | jetbrains      | Amsterdam, Prague, Munich
+
+# ---- Germany / Austria / Switzerland
+N26              | greenhouse      | n26            | Berlin, Barcelona
+Delivery Hero    | smartrecruiters | deliveryhero   | Berlin
+HelloFresh       | greenhouse      | hellofresh     | Berlin
+GetYourGuide     | greenhouse      | getyourguide   | Berlin, Zurich
+AUTO1 Group      | smartrecruiters | auto1          | Berlin
+Raisin           | greenhouse      | raisin         | Berlin
+Forto            | ashby           | forto          | Berlin
+SumUp            | greenhouse      | sumup          | Berlin, London, Sofia
+Celonis          | greenhouse      | celonis        | Munich
+Flix             | greenhouse      | flix           | Munich
+trivago          | greenhouse      | trivago        | Düsseldorf
+Bitpanda         | greenhouse      | bitpanda       | Vienna
+
+# ---- Nordics
+Spotify          | lever           | spotify        | Stockholm, London
+Supercell        | ashby           | supercell      | Helsinki
+Wolt             | greenhouse      | wolt           | Helsinki, Berlin
+Pleo             | ashby           | pleo           | Copenhagen
+
+# ---- UK / Ireland / France / Portugal
+Wise             | smartrecruiters | wise           | London, Tallinn
+Monzo            | greenhouse      | monzo          | London
+Deliveroo        | ashby           | deliveroo      | London
+Stripe           | greenhouse      | stripe         | Dublin
+Datadog          | greenhouse      | datadog        | Paris, Dublin
+Cloudflare       | greenhouse      | cloudflare     | Lisbon, London
+
+# ---- Global tech (offices in many countries)
+Databricks       | greenhouse      | databricks     | Amsterdam, Tokyo, Bengaluru
+GitLab           | greenhouse      | gitlab         | remote-first
+Airbnb           | greenhouse      | airbnb
+Coinbase         | greenhouse      | coinbase
+Binance          | lever           | binance
+Figma            | greenhouse      | figma
+Notion           | ashby           | notion
+Plaid            | ashby           | plaid
+Vercel           | greenhouse      | vercel
+Reddit           | greenhouse      | reddit
+Pinterest        | greenhouse      | pinterest
+Dropbox          | greenhouse      | dropbox
+Twilio           | greenhouse      | twilio
+Elastic          | greenhouse      | elastic
+Epic Games       | greenhouse      | epicgames
+Riot Games       | greenhouse      | riotgames
+NVIDIA           | workday         | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
+Salesforce       | workday         | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site
+Adobe            | workday         | adobe.wd5.myworkdayjobs.com/adobe/external_experienced
