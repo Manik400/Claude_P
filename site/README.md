@@ -28,6 +28,25 @@ so you see a job the day the company posts it, including ones that never reach L
   `python job-hunt/scripts/careers_bot.py find "<company>"` tells you what to write, `... check` tests the whole list.
   Tap **Company list** on the phone to see it or open it in GitHub's editor.
 
+## Auto-apply from the phone
+
+Open a worldwide report's **auto-apply** chip under Reports. It lists the report's LinkedIn postings with a
+checkbox each and two buttons: **Apply to all** and **Apply to selected**. Tapping one starts the
+`apply.yml` workflow, which only *queues* the request (encrypted, on `gh-pages`). The applying is done by
+your PC: `site\phone_apply.bat`, scheduled every 30 minutes by `site\schedule_phone_apply.ps1`, reads
+the queue, applies with your LinkedIn login through the Naukri screener's Easy Apply walker (same
+answers, same pacing, same daily cap, a few per poll), and publishes each posting's status back, so the
+panel shows *applied* / *needs your answer* / *apply on company site*. Screening questions it could not
+answer appear in the same panel; answer them there and the PC re-applies on its next check.
+
+GitHub's runners never apply: they have no LinkedIn session, and a datacenter IP on your account is what
+gets it restricted. So the PC has to be on (the lock screen is fine) for requests to be carried out.
+
+```
+phone ──auto-apply──▶ apply.yml ──▶ data/apply/queue/*.enc ──▶ PC (phone_apply.bat, every 30 min) ──▶ LinkedIn
+                                                                          └──▶ data/apply/status.enc ──▶ phone
+```
+
 ## Privacy
 
 The repo is public, so every report is encrypted (AES-256-GCM, key from your passphrase) before it is committed.
@@ -69,6 +88,9 @@ Add them with `gh secret set NAME` and the GitHub runs pick them up.
 | `tools/pages_git.py` | Clone/refresh/push the `gh-pages` branch, creating it if missing. |
 | `tools/run_jobhunt.py` | What the GitHub Actions run executes. |
 | `tools/run_careers.py` | What the careers run executes (career-page search → encrypted JSON). |
+| `tools/run_apply_queue.py` | What `apply.yml` executes: writes the phone's request to the queue. |
+| `tools/phone_apply.py` | PC-side poller: carries out queued requests, publishes status. |
+| `../.github/workflows/apply.yml` | The auto-apply request (`workflow_dispatch`). |
 | `tools/phone_publish.py` | PC-side publisher used by the `.bat` files. |
 | `tools/setup_phone.py` | One-time setup. |
 | `../.github/workflows/jobhunt.yml` | The search run (`workflow_dispatch`). |

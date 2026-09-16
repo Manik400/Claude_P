@@ -1,0 +1,63 @@
+name: Auto-apply request (phone)
+run-name: "Apply request: ${{ inputs.action }} · ${{ inputs.report || inputs.note || '' }}"
+
+# Started from the phone page (Reports -> a worldwide report -> Auto-apply).
+# Writes an encrypted request to data/apply/queue/ on the gh-pages branch.
+# It does NOT apply itself: GitHub's runners have no LinkedIn login, and a
+# datacenter IP on your account is what gets it restricted. Your PC polls the
+# queue (site\phone_apply.bat, scheduled by site\schedule_phone_apply.ps1),
+# applies from home with the real session, and publishes the status back.
+
+on:
+  workflow_dispatch:
+    inputs:
+      action:
+        description: "apply = queue postings to apply to; answers = answers to screening questions"
+        type: choice
+        options: [apply, answers]
+        default: apply
+      report:
+        description: "Report id (from data/index.json) whose LinkedIn postings to apply to"
+        required: false
+        default: ""
+      jobs:
+        description: "LinkedIn job ids, comma-separated, or 'all'"
+        required: false
+        default: "all"
+      answers:
+        description: "JSON object {question: answer} (action = answers)"
+        required: false
+        default: ""
+      note:
+        description: "Optional note"
+        required: false
+        default: ""
+
+permissions:
+  contents: write
+
+concurrency:
+  group: gh-pages
+  cancel-in-progress: false
+
+jobs:
+  queue:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+      - name: Install
+        run: python -m pip install -q cryptography
+      - name: Queue the request
+        env:
+          INPUT_ACTION: ${{ inputs.action }}
+          INPUT_REPORT: ${{ inputs.report }}
+          INPUT_JOBS: ${{ inputs.jobs }}
+          INPUT_ANSWERS: ${{ inputs.answers }}
+          INPUT_NOTE: ${{ inputs.note }}
+          SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
+          PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
+        run: python site/tools/run_apply_queue.py

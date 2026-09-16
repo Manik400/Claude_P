@@ -113,6 +113,7 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 
 ### Automation (optional)
 
+- `powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1` (from the repo root) makes the PC check every 30 minutes for auto-apply requests made from the phone and carry them out.
 - `powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1` schedules 5 runs a day (08:52, 13:23, 18:11, 23:07, 04:23) applying to at most 5, 5, 10, 10 and 10 jobs per board, a minute or more apart, so the boards never see a burst. The night runs skip interview prep. Runs put nothing on screen (no console, no browser window; output in `logs\scheduled.log`). Stay logged in to Windows anyway - the lock screen is fine.
 - `jobs_agent.bat` applies **live** with no limit. Don't use it until you trust the scores.
 

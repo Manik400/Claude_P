@@ -43,6 +43,15 @@ def save_index(pages, idx):
         json.dump(idx, f, ensure_ascii=False, indent=1)
 
 
+def _remove_files(pages, item):
+    for rel in (item.get("file"), (item.get("meta") or {}).get("jobs_file")):
+        if not rel:
+            continue
+        p = os.path.join(pages, rel)
+        if os.path.exists(p):
+            os.remove(p)
+
+
 def publish_report(a):
     sys.path.insert(0, HERE)
     import vault
@@ -62,22 +71,28 @@ def publish_report(a):
     for kv in a.meta or []:
         k, _, v = kv.partition("=")
         meta[k] = v
+    if getattr(a, "attach", None) and os.path.exists(a.attach):
+        # The run's job list, encrypted next to the report, so the phone's
+        # Auto-apply panel can list the LinkedIn postings and the PC poller
+        # can look them up by id.
+        rel_jobs = "data/%s/%s.jobs.enc" % (a.kind, rid)
+        with open(a.attach, "rb") as f:
+            jobs_raw = f.read()
+        with open(os.path.join(a.pages, rel_jobs), "wb") as f:
+            f.write(vault.encrypt_bytes(jobs_raw, passphrase))
+        meta["jobs_file"] = rel_jobs
     idx = load_index(a.pages)
     # A re-published file with the same title on the same day replaces the earlier copy (Naukri re-runs).
     if a.replace_same_title:
         for old in [i for i in idx["items"] if i["kind"] == a.kind and i["title"] == a.title]:
             idx["items"].remove(old)
-            p = os.path.join(a.pages, old["file"])
-            if os.path.exists(p):
-                os.remove(p)
+            _remove_files(a.pages, old)
     idx["items"].append({"id": rid, "kind": a.kind, "title": a.title, "when": now.strftime("%Y-%m-%dT%H:%M:%SZ"),
                          "file": rel, "bytes": len(raw), "meta": meta})
     same = sorted([i for i in idx["items"] if i["kind"] == a.kind], key=lambda i: i["when"], reverse=True)
     for old in same[KEEP.get(a.kind, 30):]:
         idx["items"].remove(old)
-        p = os.path.join(a.pages, old["file"])
-        if os.path.exists(p):
-            os.remove(p)
+        _remove_files(a.pages, old)
     save_index(a.pages, idx)
     print('publish: %s (%d bytes) as "%s"' % (rel, len(raw), a.title))
 
@@ -101,6 +116,7 @@ def main(argv=None):
     r.add_argument("--title", required=True)
     r.add_argument("--file", required=True)
     r.add_argument("--meta", action="append")
+    r.add_argument("--attach", help="the run's jobs.json, stored encrypted next to the report for auto-apply")
     r.add_argument("--replace-same-title", action="store_true", dest="replace_same_title")
     r.set_defaults(fn=publish_report)
     s = sub.add_parser("site")

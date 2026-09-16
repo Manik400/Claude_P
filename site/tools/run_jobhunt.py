@@ -81,8 +81,11 @@ def main():
     py = [sys.executable]
     subprocess.run(py + [os.path.join(HERE, "pages_git.py"), "checkout", pages], check=True)
     subprocess.run(py + [os.path.join(HERE, "publish.py"), "site", "--pages", pages], check=True)
+    attach = []
+    if os.path.exists(os.path.join(run_dir, "jobs.json")):
+        attach = ["--attach", os.path.join(run_dir, "jobs.json")]
     subprocess.run(py + [os.path.join(HERE, "publish.py"), "report", "--pages", pages, "--kind", "jobhunt",
-                         "--title", title, "--file", report,
+                         "--title", title, "--file", report] + attach + [
                          "--meta", "jobs=%s" % summary.get("jobs", ""),
                          "--meta", "countries=%s" % countries,
                          "--meta", "experience=%s" % env("INPUT_EXPERIENCE"),

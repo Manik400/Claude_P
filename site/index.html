@@ -228,6 +228,7 @@
   <div class="bar"><button class="ghost" id="btn-close">‹ Back</button><b id="v-title"></b></div>
   <div class="frame" id="v-box"><iframe id="v-frame" title="report"></iframe></div>
   <div class="frame" id="c-box" hidden></div>
+  <div class="frame" id="a-box" hidden></div>
 </div>
 
 <script>
@@ -377,11 +378,15 @@
             if (m.relocation) sub.push(m.relocation + " with relocation");
             if (m.countries && m.countries !== "default countries") sub.push(m.countries);
             if (m.experience) sub.push(m.experience + " yrs");
+            var applyChip = (kind === "jobhunt" && m.jobs_file) ? '<span class="chip ok" data-apply="' + esc(i.id) + '">auto-apply</span>' : "";
             return '<div class="item" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" +
-              esc(sub.join(" · ")) + '</span></div><span class="chip">open</span></div>';
+              esc(sub.join(" · ")) + '</span></div>' + applyChip + '<span class="chip">open</span></div>';
           }).join("");
           box.querySelectorAll(".item").forEach(function (el) {
             el.addEventListener("click", function () { openReport(el.dataset.id); });
+          });
+          box.querySelectorAll("[data-apply]").forEach(function (el) {
+            el.addEventListener("click", function (ev) { ev.stopPropagation(); openApply(el.dataset.apply); });
           });
         });
         $("index-updated").textContent = j.updated ? "Last update " + ago(j.updated) : "";
@@ -426,12 +431,114 @@
     // Links inside the report open in a new tab; the report itself stays in the frame.
     if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
     $("v-title").textContent = title;
-    $("v-box").hidden = false; $("c-box").hidden = true;
+    $("v-box").hidden = false; $("c-box").hidden = true; $("a-box").hidden = true;
     $("v-frame").srcdoc = html;
     $("viewer").classList.add("on");
     history.pushState({ viewer: 1 }, "");
   }
-  function closeViewer() { $("viewer").classList.remove("on"); $("v-frame").srcdoc = ""; $("c-box").innerHTML = ""; }
+  function closeViewer() { $("viewer").classList.remove("on"); $("v-frame").srcdoc = ""; $("c-box").innerHTML = ""; $("a-box").innerHTML = ""; $("a-box").hidden = true; }
+
+  // ---- auto-apply (Reports -> worldwide report -> auto-apply)
+  // The phone only queues a request (workflow apply.yml writes it to the site
+  // branch); the PC polls the queue, applies with its LinkedIn login and the
+  // same answers, pace and daily cap as its own runs, and publishes the
+  // status back here as data/apply/status.enc.
+  var applyStatus = null, applyStatusAt = 0, applyJobs = [], applyItem = null;
+  var APPLY_LABELS = { applied: "applied", queued: "queued", "questionnaire-pending": "needs your answer",
+    "questionnaire-declined": "skipped (your rule)", skipped: "applied earlier / closed", offsite: "apply on company site",
+    unconfirmed: "unconfirmed", error: "error", "questionnaire-failed": "form failed", "would-apply": "would apply" };
+  function applyCls(st) { return st === "applied" ? "ok" : (st === "questionnaire-pending" || st === "queued" ? "warn" : (st === "error" || st === "questionnaire-failed" ? "bad" : "")); }
+  function loadStatus(force) {
+    var s = settings();
+    if (!s.pass) return Promise.resolve(null);
+    if (!force && applyStatus && Date.now() - applyStatusAt < 60000) return Promise.resolve(applyStatus);
+    return fetch("data/apply/status.enc?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) return null; return r.json().then(function (o) { return decrypt(o, s.pass); }).then(JSON.parse); })
+      .then(function (st) { applyStatus = st; applyStatusAt = Date.now(); return st; })
+      .catch(function () { return applyStatus; });
+  }
+  function linkedinId(url) { var m = /linkedin\.com\/jobs\/view\/(\d+)/.exec(url || ""); return m ? m[1] : null; }
+  function openApply(id) {
+    var s = settings();
+    if (!s.pass) { showTab("settings"); $("s-pass").focus(); return; }
+    if (!s.token) { showTab("settings"); $("s-token").focus(); return; }
+    applyItem = (index.items || []).filter(function (i) { return i.id === id; })[0];
+    if (!applyItem || !(applyItem.meta || {}).jobs_file) return;
+    $("v-title").textContent = "Auto-apply · " + applyItem.title;
+    $("v-box").hidden = true; $("c-box").hidden = true; $("a-box").hidden = false;
+    $("a-box").innerHTML = '<div class="card"><span class="spin"></span> Loading postings…</div>';
+    $("viewer").classList.add("on");
+    history.pushState({ viewer: 1 }, "");
+    Promise.all([
+      fetch(applyItem.meta.jobs_file, { cache: "force-cache" }).then(function (r) { if (!r.ok) throw new Error("job list missing (" + r.status + ")"); return r.json(); })
+        .then(function (o) { return decrypt(o, s.pass); }).then(JSON.parse),
+      loadStatus(true)
+    ]).then(function (res) {
+      applyJobs = (res[0] || []).filter(function (j) { return linkedinId(j.url) && j.fit !== "no"; })
+        .map(function (j) { j._id = linkedinId(j.url); return j; })
+        .sort(function (a, b) { return (b.score || 0) - (a.score || 0); });
+      renderApply();
+    }).catch(function (e) {
+      $("a-box").innerHTML = '<div class="card msg bad">' + esc(e.name === "OperationError" ? "Wrong passphrase. Check Settings." : e.message) + "</div>";
+    });
+  }
+  function renderApply() {
+    var st = applyStatus || {}, jobsSt = st.jobs || {}, pend = st.pending_questions || [];
+    var counts = st.counts || {};
+    var open = applyJobs.filter(function (j) { var x = jobsSt[j._id]; return !x || x.status === "queued" || x.status === "error" || x.status === "unconfirmed" || x.status === "questionnaire-failed"; });
+    var head = '<div class="card">' +
+      '<div class="muted">' + applyJobs.length + ' LinkedIn postings in this report can be applied to for you (' + open.length + ' not yet requested). ' +
+      'Your PC does the applying with your LinkedIn login - it checks for requests every 30 minutes while it is on, a few at a time, ' +
+      (counts.cap ? 'never more than ' + counts.cap + ' a day' : 'within the daily cap') + '. Other boards stay manual: open the report and tap Apply.</div>' +
+      '<div class="row" style="margin-top:10px"><button class="primary" id="a-all"' + (open.length ? "" : " disabled") + '>Apply to all (' + open.length + ')</button>' +
+      '<button class="ghost" id="a-sel" disabled>Apply to selected (0)</button></div>' +
+      '<div class="muted" style="margin-top:8px" id="a-status">' + (st.updated ? "PC last checked " + ago(st.updated) + (counts.applied_today != null ? " · " + counts.applied_today + " applied today" : "") : "The PC has not checked in yet.") + '</div>' +
+      '<div id="a-msg"></div></div>';
+    var list = '<div class="card"><div class="muted" style="margin-bottom:6px"><label class="check"><input type="checkbox" id="a-selall"> select all not yet requested</label></div>' +
+      applyJobs.map(function (j) {
+        var x = jobsSt[j._id], chip = x ? '<span class="chip ' + applyCls(x.status) + '" title="' + esc(x.note || "") + '">' + esc(APPLY_LABELS[x.status] || x.status) + '</span>' : "";
+        var can = open.indexOf(j) >= 0;
+        return '<div class="item" style="cursor:default"><input type="checkbox" data-sel="' + esc(j._id) + '"' + (can ? "" : " disabled") + '><div class="t"><b>' + esc(j.title) + '</b><span>' +
+          esc([j.company, j.location, (j.score != null ? j.score + "% match" : "")].filter(Boolean).join(" · ")) + '</span></div>' + chip + '</div>';
+      }).join("") + '</div>';
+    var qs = '';
+    if (pend.length) {
+      qs = '<div class="card"><h2>Questions waiting for you (' + pend.length + ')</h2><div class="muted">The agent could not answer these from your profile. Answer here; the PC picks the answers up on its next check, re-applies to the jobs that were waiting, and remembers them.</div>' +
+        pend.map(function (q, i) {
+          var input = q.options && q.options.length
+            ? '<select data-q="' + i + '"><option value="">choose</option>' + q.options.map(function (o) { return '<option>' + esc(o) + '</option>'; }).join("") + '<option value="skip">skip - never answer</option></select>'
+            : '<input data-q="' + i + '" placeholder="your answer (or skip)" autocapitalize="none">';
+          return '<div style="margin-top:10px"><b>' + esc(q.question) + '</b><div class="muted">' + esc((q.jobs || []).map(function (j) { return j.title + " - " + j.company; }).join("; ")) + '</div>' + input + '</div>';
+        }).join("") + '<button class="primary" id="a-send" style="margin-top:10px">Send answers</button><div id="a-qmsg"></div></div>';
+    }
+    $("a-box").innerHTML = head + list + qs;
+    function selected() { return Array.prototype.slice.call(document.querySelectorAll("[data-sel]:checked")).map(function (c) { return c.dataset.sel; }); }
+    function refreshSel() { var n = selected().length; $("a-sel").disabled = !n; $("a-sel").textContent = "Apply to selected (" + n + ")"; }
+    document.querySelectorAll("[data-sel]").forEach(function (c) { c.addEventListener("change", refreshSel); });
+    $("a-selall").addEventListener("change", function () { document.querySelectorAll("[data-sel]:not(:disabled)").forEach(function (c) { c.checked = $("a-selall").checked; }); refreshSel(); });
+    $("a-all").addEventListener("click", function () { requestApply("all", open.length); });
+    $("a-sel").addEventListener("click", function () { var ids = selected(); requestApply(ids.join(","), ids.length); });
+    if ($("a-send")) $("a-send").addEventListener("click", function () {
+      var answers = {};
+      document.querySelectorAll("[data-q]").forEach(function (el) { var v = el.value.trim(); if (v) answers[pend[+el.dataset.q].question] = v; });
+      if (!Object.keys(answers).length) { msg("a-qmsg", "Type at least one answer.", "bad"); return; }
+      $("a-send").disabled = true;
+      gh("/actions/workflows/apply.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: settings().ref, inputs: { action: "answers", answers: JSON.stringify(answers) } }) })
+        .then(function () { msg("a-qmsg", "Sent. The PC applies with these on its next check.", "ok"); })
+        .catch(function (e) { msg("a-qmsg", "Could not send: " + e.message, "bad"); $("a-send").disabled = false; });
+    });
+  }
+  function requestApply(jobs, n) {
+    if (!n) return;
+    $("a-all").disabled = true; $("a-sel").disabled = true;
+    msg("a-msg", "Queuing " + n + " posting(s)…");
+    gh("/actions/workflows/apply.yml/dispatches", { method: "POST",
+       body: JSON.stringify({ ref: settings().ref, inputs: { action: "apply", report: applyItem.id, jobs: jobs } }) })
+      .then(function () {
+        msg("a-msg", "Queued " + n + " posting(s). Your PC applies to them on its next check (every 30 min while on), a few at a time; each one shows its status here.", "ok");
+      })
+      .catch(function (e) { msg("a-msg", "Could not queue: " + e.message, "bad"); $("a-all").disabled = false; });
+  }
   $("btn-close").addEventListener("click", function () { if (history.state && history.state.viewer) history.back(); else closeViewer(); });
   window.addEventListener("popstate", closeViewer);
 
@@ -576,6 +683,7 @@
   }
 
   function showCareers(title, data) {
+    $("a-box").hidden = true; $("a-box").innerHTML = "";
     CV = { data: data, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60 };
     $("v-title").textContent = title;
     $("v-box").hidden = true; $("c-box").hidden = false;

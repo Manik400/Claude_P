@@ -82,7 +82,8 @@ One URL for everything, hosted on GitHub Pages. Setup is one double-click on the
    The result shows each job's resume match, experience fit and the sentence that promises relocation, a country filter ranked by
    chance of getting hired, and **Contacts**: LinkedIn / Google searches for the CTO, engineering managers, senior engineers and
    recruiters at that company in that city. Add companies by editing the list (tap **Company list** → *Edit the list on GitHub*).
-5. **Reports** tab: worldwide reports, plus Naukri openings and interview-prep pages pushed from the PC by `Profile_Naukri_Screener-main\publish_to_phone.bat` (or on a schedule with `jobs_scan_and_publish.bat`).
+5. **Auto-apply** from the phone: under Reports, tap **auto-apply** on a worldwide report, tick jobs (or Apply to all). The request is queued and your PC, when on, applies with your LinkedIn login a few at a time and sends each job's status back to the phone. Screening questions it could not answer show up in the same panel for you to answer.
+6. **Reports** tab: worldwide reports, plus Naukri openings and interview-prep pages pushed from the PC by `Profile_Naukri_Screener-main\publish_to_phone.bat` (or on a schedule with `jobs_scan_and_publish.bat`).
 
 Everything published is encrypted with your passphrase, so the public repo shows nothing readable.
 

@@ -56,13 +56,15 @@ def pages_dir(cfg):
     return d
 
 
-def publish(cfg, pages, kind, path, title, replace=False):
+def publish(cfg, pages, kind, path, title, replace=False, attach=None):
     env = dict(os.environ)
     env.setdefault("SITE_PASSPHRASE", cfg.get("passphrase", ""))
     args = PY + [os.path.join(HERE, "publish.py"), "report", "--pages", pages, "--kind", kind,
                  "--title", title, "--file", path]
     if replace:
         args.append("--replace-same-title")
+    if attach and os.path.exists(attach):
+        args += ["--attach", attach]
     run(args, env=env)
 
 
@@ -106,7 +108,8 @@ def cmd_jobhunt(a):
     cfg = load_config()
     pages = pages_dir(cfg)
     title = a.title or os.path.basename(os.path.dirname(os.path.abspath(a.report)))
-    publish(cfg, pages, "jobhunt", a.report, title)
+    jobs_json = os.path.join(os.path.dirname(os.path.abspath(a.report)), "jobs.json")
+    publish(cfg, pages, "jobhunt", a.report, title, attach=jobs_json)
     push(pages, "job-hunt report (PC): %s" % title)
 
 
