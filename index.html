@@ -181,6 +181,10 @@
   .job a.btn2:hover, .job button.btn2:hover { background: var(--card2); border-color: var(--muted); }
   .job button.btn.done { background: var(--ok-bg); color: var(--ok); cursor: default; }
   .job .head { display: flex; gap: 10px; align-items: flex-start; }
+  .job .acts .icon { flex: 0 0 44px; padding: 9px 0; }
+  .job.applied { border-color: var(--ok); }
+  .job.removed { opacity: .55; }
+  .sect { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; margin: 20px 4px 10px; }
   .contacts { margin-top: 10px; font-size: 14px; }
   .contacts div { margin: 5px 0; }
   .person { padding: 6px 0; border-top: 1px solid var(--line2); }
@@ -409,6 +413,26 @@
   function chip(cls, text) { return '<span class="chip ' + (cls || "") + '">' + esc(text) + "</span>"; }
   function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : "#"; }
   function ext(href, text, cls) { return '<a href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener"' + (cls ? ' class="' + cls + '"' : "") + ">" + esc(text) + "</a>"; }
+  // ---- per-browser marks on postings: "applied" moves a job to the Applied section at the
+  // bottom, "removed" takes it off the list (restorable). Opening a posting counts as applying.
+  var marks = (function () { try { return JSON.parse(store.get("marks", "") || "{}"); } catch (e) { return {}; } })();
+  marks.applied = marks.applied || {}; marks.removed = marks.removed || {};
+  function setMark(kind, id, on) { if (on) marks[kind][id] = marks[kind][id] || Date.now(); else delete marks[kind][id]; store.set("marks", JSON.stringify(marks)); }
+  function openLink(href, text, cls, id) { return '<a href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener" class="' + cls + '" data-open="' + esc(id) + '">' + esc(text) + "</a>"; }
+  function markBtns(id, applied) {
+    return (applied ? '<button class="btn2" data-unapply="' + esc(id) + '" title="Move back to the to-do list">Undo</button>' : "") +
+      (marks.removed[id] ? '<button class="btn2 icon" data-restore="' + esc(id) + '" title="Put back in the list" aria-label="Put back in the list">↺</button>'
+        : '<button class="btn2 icon" data-remove="' + esc(id) + '" title="Remove from list" aria-label="Remove from list">🗑</button>');
+  }
+  function bindMarks(box, rerender) {
+    box.querySelectorAll("[data-open]").forEach(function (a) { a.addEventListener("click", function () { if (!marks.applied[a.dataset.open]) { setMark("applied", a.dataset.open, true); setTimeout(rerender, 400); } }); });
+    box.querySelectorAll("[data-unapply]").forEach(function (b) { b.addEventListener("click", function () { setMark("applied", b.dataset.unapply, false); rerender(); }); });
+    box.querySelectorAll("[data-remove]").forEach(function (b) { b.addEventListener("click", function () { setMark("removed", b.dataset.remove, true); toast("Removed from the list"); rerender(); }); });
+    box.querySelectorAll("[data-restore]").forEach(function (b) { b.addEventListener("click", function () { setMark("removed", b.dataset.restore, false); rerender(); }); });
+    var t = box.querySelector("[data-showremoved]");
+    if (t) t.addEventListener("click", function (e) { e.preventDefault(); rerender(true); });
+  }
+  function removedHint(n, showing) { return n ? '<div class="hint" style="text-align:center">' + n + " removed · " + '<a href="#" data-showremoved="1">' + (showing ? "hide them" : "show them") + "</a></div>" : ""; }
   function flag(cc) {
     if (cc === "REMOTE") return "🌐";
     if (!/^[A-Z]{2}$/.test(cc || "")) return "";
@@ -860,7 +884,7 @@
     $("v-report").addEventListener("click", function () { openReport(item); });
     Promise.all([fetchEnc(item.meta.jobs_file, { cache: "force-cache" }).then(JSON.parse), loadQueue(true)]).then(function (res) {
       var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; return j; });
-      JV = { item: item, jobs: jobs, board: "all", country: "", min: 0, sel: {}, open: {}, limit: 50, sort: "score" };
+      JV = { item: item, jobs: jobs, board: "all", country: "", min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false };
       renderJobs();
       $("j-box").scrollTop = 0;
     }).catch(function (e) { $("j-box").innerHTML = '<div class="card msg bad">' + esc(errText(e)) + "</div>"; });
@@ -868,6 +892,7 @@
   function jobsFiltered() {
     return JV.jobs.filter(function (j) {
       if (j.fit === "no") return false;
+      if (marks.removed[j._key] && !JV.showRemoved) return false;
       if (JV.board !== "all" && j._board !== JV.board) return false;
       if (JV.country && (j.country || "??") !== JV.country) return false;
       if (JV.min && !((j.score || 0) >= JV.min)) return false;
@@ -876,7 +901,10 @@
   }
   function renderJobs() {
     var box = $("j-box"), top = box.scrollTop, keys = queueKeys(), jobs = jobsFiltered();
-    var notQueued = jobs.filter(function (j) { return !keys[j._key]; });
+    var isApplied = function (j) { var q = keys[j._key]; return !!marks.applied[j._key] || !!(q && /^(applied|submitted)$/.test(q.status)); };
+    var todo = jobs.filter(function (j) { return !isApplied(j); }), done = jobs.filter(isApplied);
+    var nRemoved = JV.jobs.filter(function (j) { return j.fit !== "no" && marks.removed[j._key]; }).length;
+    var notQueued = todo.filter(function (j) { return !keys[j._key]; });
     var selected = Object.keys(JV.sel).filter(function (k) { return JV.sel[k]; });
     var counts = { linkedin: 0, naukri: 0, web: 0 }, cc = {};
     JV.jobs.forEach(function (j) { if (j.fit !== "no") { counts[j._board] = (counts[j._board] || 0) + 1; var c = j.country || "??"; cc[c] = (cc[c] || 0) + 1; } });
@@ -890,9 +918,14 @@
       '<div class="chips small" style="margin-top:6px" id="jf-cc"><button type="button" data-cc=""' + (JV.country ? "" : ' class="on"') + ">All countries</button>" + Object.keys(cc).sort(function (a, b) { return cc[b] - cc[a]; }).map(function (c) { return '<button type="button" data-cc="' + esc(c) + '"' + (JV.country === c ? ' class="on"' : "") + ">" + (flag(c) ? flag(c) + " " : "") + esc(c === "??" ? "not stated" : (c === "REMOTE" ? "Remote" : (NAMES[c] || c))) + " · " + cc[c] + "</button>"; }).join("") + "</div>" +
       '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div></div>";
-    h += jobs.length ? '<div class="jobs">' + jobs.slice(0, JV.limit).map(function (j) { return jobCard(j, keys[j._key]); }).join("") + "</div>" : '<div class="card muted">No jobs match these filters.</div>';
-    if (jobs.length > JV.limit) h += '<button class="primary" id="jf-more">Show more (' + (jobs.length - JV.limit) + " left)</button>";
+    if (!jobs.length) h += '<div class="card muted">No jobs match these filters.</div>';
+    else if (!todo.length) h += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
+    else h += '<div class="jobs">' + todo.slice(0, JV.limit).map(function (j) { return jobCard(j, keys[j._key], false); }).join("") + "</div>";
+    if (todo.length > JV.limit) h += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
+    if (done.length) h += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + done.map(function (j) { return jobCard(j, keys[j._key], true); }).join("") + "</div>";
+    h += removedHint(nRemoved, JV.showRemoved);
     box.innerHTML = h; box.scrollTop = top;
+    bindMarks(box, function (toggle) { if (toggle === true) JV.showRemoved = !JV.showRemoved; renderJobs(); });
     $("jq-all").addEventListener("click", function () { queueJobs(notQueued); });
     $("jq-sel").addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return JV.sel[j._key]; })); });
     $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) { JV.board = b.dataset.b; JV.limit = 50; renderJobs(); } });
@@ -904,7 +937,7 @@
     box.querySelectorAll("[data-q1]").forEach(function (b) { b.addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return j._key === b.dataset.q1; })); }); });
     box.querySelectorAll("[data-contacts]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); JV.open[b.dataset.contacts] = !JV.open[b.dataset.contacts]; renderJobs(); }); });
   }
-  function jobCard(j, q) {
+  function jobCard(j, q, applied) {
     var t = [];
     if (typeof j.score === "number") t.push(chip(j.score >= 65 ? "ok" : j.score >= 45 ? "warn" : "", "match " + Math.round(j.score) + "%"));
     t.push(chip("", j.source_name || j.source || ""));
@@ -913,12 +946,13 @@
     if (j.salary) t.push(chip("", j.salary));
     var qchip = q ? stChip(q.status, q.note) : "";
     var ex = j.extra || {}, c = ex.contacts, hasC = c && ((c.people || []).length || (c.emails || []).length);
-    var btn = q ? '<button class="btn done" disabled>' + (STATUS[q.status] || [0, q.status])[1] + "</button>" : '<button class="btn" data-q1="' + esc(j._key) + '">+ Queue</button>';
-    return '<div class="job"><div class="head">' + (q ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
+    var btn = q ? '<button class="btn done" disabled>' + (STATUS[q.status] || [0, q.status])[1] + "</button>" : (applied ? "" : '<button class="btn" data-q1="' + esc(j._key) + '">+ Queue</button>');
+    if (applied && !q) qchip = chip("ok", "✓ applied");
+    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
       '<div style="flex:1;min-width:0"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div></div>" + qchip + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" +
       (j.matched_skills && j.matched_skills.length ? '<div class="hint">✓ ' + esc(j.matched_skills.slice(0, 8).join(", ")) + "</div>" : "") +
-      '<div class="acts">' + ext(j.url, "Open", "btn2") + '<a href="#" class="btn2" data-contacts="' + esc(j._key) + '">' + (JV.open[j._key] ? "Hide contacts" : (hasC ? "Contacts ✓" : "Contacts")) + "</a>" + btn + "</div>" +
+      '<div class="acts">' + openLink(j.url, "Open", "btn2", j._key) + '<a href="#" class="btn2" data-contacts="' + esc(j._key) + '">' + (JV.open[j._key] ? "Hide contacts" : (hasC ? "Contacts ✓" : "Contacts")) + "</a>" + btn + (q ? markBtns(j._key, false) : markBtns(j._key, applied)) + "</div>" +
       (JV.open[j._key] ? '<div class="contacts">' + contactsBlock(j) + "</div>" : "") + "</div>";
   }
   function contactsBlock(j) {
@@ -1208,13 +1242,14 @@
   function expText(e) { if (e[1] === null || e[1] === undefined) return e[0] + "+ yrs"; return e[0] === e[1] ? e[0] + " yrs" : e[0] + "–" + e[1] + " yrs"; }
   function showCareers(title, data) {
     $("j-box").hidden = true; $("j-box").innerHTML = "";
-    CV = { data: data, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60 };
+    CV = { data: data, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false };
     $("v-title").textContent = title; $("v-right").innerHTML = "";
     $("v-box").hidden = true; $("c-box").hidden = false;
     renderCareers(); $("c-box").scrollTop = 0; openViewer();
   }
   function careersJobs(withCountry) {
     return (CV.data.jobs || []).filter(function (j) {
+      if (marks.removed["c:" + j.id] && !CV.showRemoved) return false;
       if (CV.reloc === "yes" && j.reloc !== "yes") return false;
       if (CV.reloc === "visa" && j.reloc !== "yes" && j.reloc !== "visa") return false;
       if (CV.min && !(j.score >= CV.min)) return false;
@@ -1249,20 +1284,30 @@
       '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) + '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
       '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div></div>";
     if (CV.view === "companies") h += companiesHtml(jobs);
-    else { h += jobs.length ? '<div class="jobs">' + jobs.slice(0, CV.limit).map(cJobHtml).join("") + "</div>" : '<div class="card muted">No jobs match these filters.</div>'; if (jobs.length > CV.limit) h += '<button class="primary" data-more="1">Show more (' + (jobs.length - CV.limit) + " left)</button>"; }
+    else {
+      var todo = jobs.filter(function (j) { return !marks.applied["c:" + j.id]; }), done = jobs.filter(function (j) { return marks.applied["c:" + j.id]; });
+      if (!jobs.length) h += '<div class="card muted">No jobs match these filters.</div>';
+      else if (!todo.length) h += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
+      else h += '<div class="jobs">' + todo.slice(0, CV.limit).map(cJobHtml).join("") + "</div>";
+      if (todo.length > CV.limit) h += '<button class="primary" data-more="1">Show more (' + (todo.length - CV.limit) + " left)</button>";
+      if (done.length) h += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + done.map(cJobHtml).join("") + "</div>";
+      h += removedHint(all.filter(function (j) { return marks.removed["c:" + j.id]; }).length, CV.showRemoved);
+    }
     box.innerHTML = h; box.scrollTop = top;
+    bindMarks(box, function (toggle) { if (toggle === true) CV.showRemoved = !CV.showRemoved; renderCareers(); });
   }
   function cJobHtml(j) {
-    var R = RELOC[j.reloc] || ["", j.reloc], F = FIT[j.fit] || ["", j.fit], t = [];
+    var R = RELOC[j.reloc] || ["", j.reloc], F = FIT[j.fit] || ["", j.fit], t = [], mk = "c:" + j.id, applied = !!marks.applied[mk];
+    if (applied) t.push(chip("ok", "✓ applied"));
     t.push(chip(j.chance >= 65 ? "ok" : j.chance >= 45 ? "warn" : "", "chance " + j.chance));
     if (typeof j.score === "number") t.push(chip(j.score >= 55 ? "ok" : j.score >= 35 ? "warn" : "bad", "match " + Math.round(j.score) + "%"));
     t.push(chip(R[0], R[1])); t.push(chip(F[0], F[1] + (j.exp && j.exp[0] !== null && j.exp[0] !== undefined ? " · asks " + expText(j.exp) : "")));
     var flags = (j.countries || []).map(flag).join(" "), skills = "";
     if (j.matched && j.matched.length) skills += '<div class="hint">✓ ' + esc(j.matched.join(", ")) + "</div>";
     if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
-    return '<div class="job"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
+    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + skills +
-      '<div class="acts">' + ext(j.url, "Open & apply", "btn") + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a></div>" +
+      '<div class="acts">' + openLink(j.url, applied ? "Open" : "Open & apply", applied ? "btn2" : "btn", mk) + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a>" + markBtns(mk, applied) + "</div>" +
       (CV.open[j.id] ? '<div class="contacts">' + contactsHtml(j.company, cityOf(j.location, CV.country || (j.countries || [])[0]), j.recruiter) + "</div>" : "") + "</div>";
   }
   function contactsHtml(company, city, recruiter) {
