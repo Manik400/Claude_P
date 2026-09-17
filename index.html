@@ -23,7 +23,7 @@
     --bad: #b91c1c; --bad-bg: rgba(185,28,28,.11);
     --man: #8a6a4a; --man-bg: rgba(138,106,74,.16);
     --chip: #ecebe7; --shadow: 0 1px 2px rgba(28,25,23,.05), 0 1px 8px rgba(28,25,23,.04);
-    --side-w: 232px; --content-w: 1180px;
+    --side-w: 232px; --content-w: 1180px; --list-w: 880px;
     color-scheme: light;
   }
   :root[data-theme="dark"] {
@@ -165,9 +165,25 @@
   .acts2 { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 12px; }
   .acts2 button { margin-top: 0; padding: 12px 8px; font-size: 15px; font-weight: 600; border-radius: 12px; }
 
-  /* job cards: one column on phones, a grid on wide screens */
-  .jobs { display: grid; grid-template-columns: 1fr; gap: 12px; margin-bottom: 12px; }
-  @media (min-width: 1000px) { .jobs { grid-template-columns: 1fr 1fr; } }
+  /* job cards: always one column, full width of the (narrower) list column */
+  .jobs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: 12px; }
+  /* report filters: a collapsible card; the body scrolls if tall, chip rows scroll sideways on phones */
+  details.filters { padding: 0; }
+  details.filters > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 12px 16px; min-height: 48px; }
+  details.filters > summary::-webkit-details-marker { display: none; }
+  details.filters > summary b { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; flex: none; }
+  details.filters > summary .sum { flex: 1; min-width: 0; font-size: 13px; color: var(--fg); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  details.filters > summary::after { content: "▾"; color: var(--muted); flex: none; transition: transform .15s; }
+  details.filters[open] > summary::after { transform: rotate(180deg); }
+  details.filters .fbody { border-top: 1px solid var(--line2); padding: 4px 16px 14px; max-height: 60vh; overflow-y: auto; overscroll-behavior: contain; }
+  details.filters .fbody label:first-child { margin-top: 8px; }
+  .chips button.zero { opacity: .5; }
+  .chips button.zero.on { opacity: 1; }
+  .chips button.lock { cursor: default; }
+  @media (max-width: 599px) {
+    details.filters .chips { flex-wrap: nowrap; overflow-x: auto; padding-bottom: 4px; scrollbar-width: thin; }
+    details.filters .chips button { flex: none; }
+  }
   .job { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px 16px; box-shadow: var(--shadow); display: flex; flex-direction: column; }
   .job h3 { font-size: 16px; margin: 0 0 2px; line-height: 1.3; }
   .job .sub { font-size: 13px; color: var(--muted); }
@@ -195,6 +211,8 @@
   /* ---------- full-screen viewer (report / job list / careers) */
   #viewer { position: fixed; inset: 0; z-index: 20; background: var(--bg); display: none; flex-direction: column; }
   #viewer.on { display: flex; }
+  /* the viewer covers the page and scrolls its own .frame; lock the page behind it so only one scrollbar shows */
+  html.viewer-on, html.viewer-on body { overflow: hidden; }
   @media (min-width: 900px) { #viewer { left: var(--side-w); } }
   #viewer .vbar { display: flex; align-items: center; gap: 10px; padding: calc(8px + env(safe-area-inset-top)) 14px 8px;
     background: var(--card); border-bottom: 1px solid var(--line); }
@@ -203,7 +221,7 @@
   #viewer iframe { width: 100%; height: 100%; border: 0; display: block; background: #fff; }
   #c-box, #j-box { padding: 14px 16px calc(30px + env(safe-area-inset-bottom)); }
   @media (min-width: 900px) { #c-box, #j-box { padding: 22px 28px 40px; } }
-  #c-box > *, #j-box > * { max-width: var(--content-w); margin-left: auto; margin-right: auto; }
+  #c-box > *, #j-box > * { max-width: var(--list-w); margin-left: auto; margin-right: auto; }
   .sticky-acts { position: sticky; bottom: 0; background: var(--card); padding: 8px 0 4px; z-index: 2; }
   .qitem { padding: 12px 0; border-top: 1px solid var(--line2); }
   .qitem .top { display: flex; align-items: flex-start; gap: 8px; }
@@ -265,7 +283,7 @@
           <div><label>Your experience (years)</label><input id="f-exp" placeholder="3 or 2-4" inputmode="numeric"></div>
           <div><label>Posted in last N days</label><input id="f-days" value="14" inputmode="numeric"></div>
         </div>
-        <label>Countries <span class="muted">(tap to pick; India first)</span></label>
+        <label>Countries <span class="muted">(India is always included; tap to add or drop the others)</span></label>
         <div class="chips" id="f-countries"></div>
         <input id="f-more" placeholder="Other countries: Estonia, Brazil…" autocapitalize="none" style="margin-top:8px">
         <label class="check"><input type="checkbox" id="f-remote" checked> Include remote job boards</label>
@@ -369,7 +387,7 @@
       <div class="muted" style="font-size:14px">
         <p><b>India results:</b> <code>gh secret set APIFY_TOKEN</code> — the search then rents real Naukri / Indeed / LinkedIn scrapers on Apify (a few cents per search). Repo variable <code>APIFY_SOURCES</code> picks them (default <code>naukri,indeed</code>; add <code>linkedin</code> to get the job poster as a contact).</p>
         <p><b>Recruiter / hiring-manager contacts on every report:</b> any of <code>SIGNALHIRE_API_KEY</code>, <code>HUNTER_API_KEY</code>, <code>APOLLO_API_KEY</code> as repo secrets. Without keys you still get the emails the postings mention plus ready-made LinkedIn people searches.</p>
-        <p><b>Company-site applications:</b> on the PC run <code>site\tools\offsite_apply.py --setup</code> once (Simplify Copilot must be installed in Chrome), then pick a mode in Queue → Settings.</p>
+        <p><b>Company-site applications:</b> by default the PC opens the career page and fills and submits the form from your details, skipping sites that need a login / account or show a CAPTCHA (those are marked "by hand"). To use Simplify instead, run <code>site\tools\offsite_apply.py --setup</code> once on the PC (Simplify Copilot must be installed in Chrome) and pick a mode in Queue → Rules.</p>
         <p>Full guide: <a href="https://github.com/" id="s-docs" target="_blank" rel="noopener">AUTO_APPLY.md</a></p>
       </div>
     </div>
@@ -656,12 +674,12 @@
     openViewer();
   }
   function openViewer() {
-    $("viewer").classList.add("on");
+    $("viewer").classList.add("on"); document.documentElement.classList.add("viewer-on");
     if (!(history.state && history.state.viewer)) history.pushState({ viewer: 1 }, "");
   }
   function closeViewer() {
     if (!$("viewer").classList.contains("on")) return;
-    $("viewer").classList.remove("on"); $("v-box").innerHTML = ""; $("c-box").innerHTML = ""; $("j-box").innerHTML = ""; $("v-right").innerHTML = "";
+    $("viewer").classList.remove("on"); document.documentElement.classList.remove("viewer-on"); $("v-box").innerHTML = ""; $("c-box").innerHTML = ""; $("j-box").innerHTML = ""; $("v-right").innerHTML = "";
   }
   $("btn-close").addEventListener("click", function () { var pushed = history.state && history.state.viewer; closeViewer(); if (pushed) history.back(); });
   window.addEventListener("popstate", function () { if (!(history.state && history.state.viewer)) closeViewer(); });
@@ -670,7 +688,8 @@
   var queue = null, queueAt = 0;
   var STATUS = {
     queued: ["warn", "queued"], retry: ["warn", "retrying"], requested: ["warn", "sent - waits for PC"],
-    applied: ["ok", "applied"], submitted: ["ok", "submitted (company site)"],
+    applied: ["ok", "applied"], submitted: ["ok", "applied on company site"],
+    "login-required": ["man", "needs login - apply by hand"], "career-incomplete": ["man", "form needs you - apply by hand"],
     "questionnaire-pending": ["bad", "needs your answer"], "questionnaire-declined": ["", "skipped (your rule)"],
     skipped: ["", "applied earlier / closed"], offsite: ["man", "company site - apply by hand"], manual: ["man", "company site - apply by hand"],
     prefilled: ["man", "form pre-filled - finish on PC"], unconfirmed: ["bad", "unconfirmed"], error: ["bad", "error"],
@@ -792,7 +811,7 @@
     if (f === "todo") return st === "queued" || st === "retry" || st === "requested";
     if (f === "applied") return st === "applied" || st === "submitted";
     if (f === "waiting") return st === "questionnaire-pending";
-    if (f === "manual") return st === "offsite" || st === "manual" || st === "prefilled";
+    if (f === "manual") return st === "offsite" || st === "manual" || st === "prefilled" || st === "login-required" || st === "career-incomplete";
     if (f === "failed") return st === "failed" || st === "error" || st === "unconfirmed" || st === "questionnaire-failed" || st === "offsite-error";
     return true;
   }
@@ -807,14 +826,14 @@
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
     h += '<div class="card"><h2>Rules <span class="r" id="q-rules-toggle">' + (store.get("q.rules", "") ? "hide" : "edit") + "</span></h2>" +
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
-      " Company-site postings: " + ({ manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "manual"]) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
+      " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
       '<div id="q-rules"' + (store.get("q.rules", "") ? "" : " hidden") + '>' +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Per board per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
       '<label>Boards</label><div class="chips small" id="r-boards">' + ["linkedin", "naukri", "web"].map(function (b) { return '<button type="button" data-b="' + b + '"' + ((dirty["r-boards"] || auto.boards || []).indexOf(b) >= 0 ? ' class="on"' : "") + ">" + ({ linkedin: "LinkedIn", naukri: "Naukri", web: "Company sites" }[b]) + "</button>"; }).join("") + "</div>" +
-      '<label>Company-site postings</label><select id="r-offsite"><option value="manual"' + ((st.offsite || "manual") === "manual" ? " selected" : "") + '>Leave for me (open from the report)</option><option value="simplify"' + (st.offsite === "simplify" ? " selected" : "") + '>Simplify fills the form, I submit on the PC</option><option value="simplify-submit"' + (st.offsite === "simplify-submit" ? " selected" : "") + ">Simplify fills and submits (experimental)</option></select>" +
-      ((q.pc || {}).simplify_ready ? "" : '<div class="hint">Simplify modes need a one-time setup on the PC: <code>python site\\tools\\offsite_apply.py --setup</code>.</div>') +
+      '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify", "Simplify fills the form, I submit on the PC"], ["simplify-submit", "Simplify fills and submits (experimental)"]]) +
+      '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify modes need a one-time setup on the PC: <code>python site\\tools\\offsite_apply.py --setup</code>.') + "</div>" +
       '<button class="primary" id="r-save">Save rules</button></div></div>';
     h += '<div class="card"><h2>' + items.length + " job" + (items.length !== 1 ? "s" : "") + " in the queue</h2>" +
       '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>" +
@@ -851,7 +870,7 @@
     var src = i.source || {}, board = { linkedin: "LinkedIn", naukri: "Naukri", web: "Company site" }[i.board] || i.board || "";
     var sub = [i.company, i.location, board, i.score != null ? Math.round(i.score) + "% match" : ""].filter(Boolean).join(" · ");
     var when = i.at || i.added_at;
-    var canRetry = /^(failed|error|unconfirmed|questionnaire-failed|offsite-error|manual|offsite)$/.test(i.status) && !i.local;
+    var canRetry = /^(failed|error|unconfirmed|questionnaire-failed|offsite-error|manual|offsite|login-required|career-incomplete)$/.test(i.status) && !i.local;
     var canRemove = !i.local && !/^(applied|submitted)$/.test(i.status);
     return '<div class="qitem"><div class="top"><div class="t"><b>' + esc(i.title) + '</b><span class="sub">' + esc(sub) + "</span></div>" + stChip(i.status, i.note) + "</div>" +
       (i.note ? '<div class="note">' + esc(i.note) + "</div>" : "") +
@@ -874,6 +893,21 @@
   // Same cheap hash as the PC (phone_apply.job_key), so both sides name a
   // company-site posting identically.
   function sha1short(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return ("00000000" + (h >>> 0).toString(16)).slice(-8) + "x"; }
+  // Every board job_bot searches (job-hunt/scripts/jobbot/sources/__init__.py ALL_SOURCES, same order),
+  // as [filter key, label, job.source keys]. Apify / web-search twins fold into their board.
+  var BOARDS = [["linkedin", "LinkedIn", "linkedin apify-linkedin linkedin_web"], ["naukri", "Naukri", "naukri apify-naukri"], ["indeed", "Indeed", "indeed apify-indeed"],
+    ["seek", "Seek / JobsDB / JobStreet", "seek"], ["xing", "XING", "xing"], ["arbeitnow", "Arbeitnow", "arbeitnow"], ["duunitori", "Duunitori", "duunitori"],
+    ["tecnoempleo", "Tecnoempleo", "tecnoempleo"], ["infojobs", "InfoJobs", "infojobs"], ["wellfound", "Wellfound", "wellfound wellfound_web"], ["tokyodev", "TokyoDev", "tokyodev"],
+    ["japandev", "Japan Dev", "japandev"], ["daijob", "Daijob", "daijob"], ["wantedly", "Wantedly", "wantedly"], ["jobthai", "JobThai", "jobthai"], ["themuse", "The Muse", "themuse"],
+    ["landingjobs", "Landing.jobs", "landingjobs"], ["relocateme", "Relocate.me", "relocateme"], ["instahyre", "Instahyre", "instahyre"], ["remotive", "Remotive", "remotive"],
+    ["remoteok", "RemoteOK", "remoteok"], ["jobicy", "Jobicy", "jobicy"], ["workingnomads", "Working Nomads", "workingnomads"], ["adzuna", "Adzuna", "adzuna"], ["jooble", "Jooble", "jooble"],
+    ["jsearch", "JSearch (Google Jobs)", "jsearch"], ["careers", "Company career pages", "greenhouse lever ashby smartrecruiters recruitee workday careers"]];
+  var BOARD_OF = {}; BOARDS.forEach(function (b) { b[2].split(" ").forEach(function (k) { BOARD_OF[k] = b[0]; }); });
+  function srcKey(j) { var s = String(j.source || "").toLowerCase(); return BOARD_OF[s] || s || "other"; }
+  // Countries you search (Search tab): India first, then job_bot's DEFAULT_COUNTRIES, then Remote.
+  var CC_CORE = ["IN", "DE", "NL", "ES", "FI", "AU", "JP", "TH"];
+  function ccLabel(c) { return c === "??" ? "not stated" : (c === "REMOTE" ? "Remote" : (NAMES[c] || c)); }
+  function onKeys(o) { return Object.keys(o).filter(function (k) { return o[k]; }); }
   function openJobs(item) {
     var s = settings();
     if (!s.pass) { showTab("settings"); $("s-pass").focus(); return; }
@@ -883,8 +917,8 @@
     openViewer();
     $("v-report").addEventListener("click", function () { openReport(item); });
     Promise.all([fetchEnc(item.meta.jobs_file, { cache: "force-cache" }).then(JSON.parse), loadQueue(true)]).then(function (res) {
-      var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; return j; });
-      JV = { item: item, jobs: jobs, board: "all", country: "", min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false };
+      var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; j._src = srcKey(j); return j; });
+      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false };
       renderJobs();
       $("j-box").scrollTop = 0;
     }).catch(function (e) { $("j-box").innerHTML = '<div class="card msg bad">' + esc(errText(e)) + "</div>"; });
@@ -893,8 +927,8 @@
     return JV.jobs.filter(function (j) {
       if (j.fit === "no") return false;
       if (marks.removed[j._key] && !JV.showRemoved) return false;
-      if (JV.board !== "all" && j._board !== JV.board) return false;
-      if (JV.country && (j.country || "??") !== JV.country) return false;
+      if (onKeys(JV.boards).length && !JV.boards[j._src]) return false;
+      if (onKeys(JV.countries).length && !JV.countries[j.country || "??"]) return false;
       if (JV.min && !((j.score || 0) >= JV.min)) return false;
       return true;
     }).sort(function (a, b) { return JV.sort === "new" ? String(b.posted || "").localeCompare(String(a.posted || "")) : (b.score || 0) - (a.score || 0); });
@@ -906,30 +940,56 @@
     var nRemoved = JV.jobs.filter(function (j) { return j.fit !== "no" && marks.removed[j._key]; }).length;
     var notQueued = todo.filter(function (j) { return !keys[j._key]; });
     var selected = Object.keys(JV.sel).filter(function (k) { return JV.sel[k]; });
-    var counts = { linkedin: 0, naukri: 0, web: 0 }, cc = {};
-    JV.jobs.forEach(function (j) { if (j.fit !== "no") { counts[j._board] = (counts[j._board] || 0) + 1; var c = j.country || "??"; cc[c] = (cc[c] || 0) + 1; } });
+    var counts = { linkedin: 0, naukri: 0, web: 0 }, cc = {}, bc = {}, bname = {};
+    JV.jobs.forEach(function (j) { if (j.fit !== "no") { counts[j._board] = (counts[j._board] || 0) + 1; var c = j.country || "??"; cc[c] = (cc[c] || 0) + 1; bc[j._src] = (bc[j._src] || 0) + 1; bname[j._src] = bname[j._src] || j.source_name || j.source || "Other"; } });
     var tally = {}; JV.jobs.forEach(function (j) { var q = keys[j._key]; if (q) tally[q.status] = (tally[q.status] || 0) + 1; });
+    // boards: every registry board (dimmed at 0), then any other source found in this report
+    var boards = BOARDS.map(function (b) { return [b[0], b[1]]; });
+    Object.keys(bc).forEach(function (k) { if (!BOARDS.some(function (b) { return b[0] === k; })) boards.push([k, bname[k]]); });
+    // countries: India + the default set, what this search asked for, what you pick in Search, then anything else found
+    var ccs = [], addCc = function (c) { if (c && ccs.indexOf(c) < 0) ccs.push(c); };
+    CC_CORE.forEach(addCc); ((JV.item.meta || {}).countries || "").split(",").forEach(function (x) { x = x.trim().toUpperCase(); if (NAMES[x]) addCc(x); });
+    wPicked().forEach(addCc); addCc("REMOTE");
+    Object.keys(cc).sort(function (a, b) { return cc[b] - cc[a]; }).forEach(function (c) { if (c !== "??") addCc(c); }); if (cc["??"]) addCc("??");
+    var fb = onKeys(JV.boards), fc = onKeys(JV.countries), off = ((queue || {}).settings || {}).offsite || "career";
+    var labelOf = function (list, k) { return (list.filter(function (b) { return b[0] === k; })[0] || [k, k])[1]; };
+    var fsum = [fb.length === 0 ? "All boards" : fb.length === 1 ? labelOf(boards, fb[0]) : fb.length + " boards",
+      fc.length === 0 ? "All countries" : fc.length === 1 ? ccLabel(fc[0]) : fc.length + " countries",
+      JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sort === "new" ? "newest first" : "best match first"].join(" · ");
+    var fchip = function (attr, k, label, n, on) { return '<button type="button" data-' + attr + '="' + esc(k) + '" class="' + (on ? "on" : "") + (n ? "" : " zero") + '">' + label + " · " + n + "</button>"; };
     var h = '<div class="card"><div class="muted">' + JV.jobs.length + " postings · " + counts.linkedin + " LinkedIn · " + counts.naukri + " Naukri · " + counts.web + " other boards / company sites</div>" +
       (Object.keys(tally).length ? '<div class="chips small" style="margin-top:6px">' + Object.keys(tally).map(function (k) { var st = STATUS[k] || ["", k]; return chip(st[0], tally[k] + " " + st[1]); }).join("") + "</div>" : "") +
       '<div class="acts2 sticky-acts"><button class="primary" id="jq-all"' + (notQueued.length ? "" : " disabled") + ">Queue all shown (" + notQueued.length + ")</button>" +
       '<button class="ghost" id="jq-sel"' + (selected.length ? "" : " disabled") + ">Queue selected (" + selected.length + ")</button></div>" +
-      '<div class="hint">LinkedIn Easy Apply and Naukri postings are applied to by your PC. Other boards and company sites are ' + (((queue || {}).settings || {}).offsite === "manual" || !((queue || {}).settings || {}).offsite ? 'marked "by hand" for you (change under Queue → Rules once Simplify is set up)' : "handed to Simplify on the PC") + ".</div>" +
-      '<div class="chips small" style="margin-top:8px" id="jf-board">' + [["all", "All boards"], ["linkedin", "LinkedIn"], ["naukri", "Naukri"], ["web", "Other"]].map(function (b) { return '<button type="button" data-b="' + b[0] + '"' + (JV.board === b[0] ? ' class="on"' : "") + ">" + b[1] + "</button>"; }).join("") + "</div>" +
-      '<div class="chips small" style="margin-top:6px" id="jf-cc"><button type="button" data-cc=""' + (JV.country ? "" : ' class="on"') + ">All countries</button>" + Object.keys(cc).sort(function (a, b) { return cc[b] - cc[a]; }).map(function (c) { return '<button type="button" data-cc="' + esc(c) + '"' + (JV.country === c ? ' class="on"' : "") + ">" + (flag(c) ? flag(c) + " " : "") + esc(c === "??" ? "not stated" : (c === "REMOTE" ? "Remote" : (NAMES[c] || c))) + " · " + cc[c] + "</button>"; }).join("") + "</div>" +
-      '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
-      '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div></div>";
+      '<div class="hint">LinkedIn Easy Apply and Naukri postings are applied to by your PC. Company career sites are ' +
+        ({ career: 'filled and submitted by the PC when they don\'t need a login; otherwise marked "by hand"', manual: 'marked "by hand" for you (change under Queue → Rules)',
+           simplify: "filled by Simplify on the PC; you submit", "simplify-submit": "filled and submitted by Simplify on the PC" }[off] || 'marked "by hand"') + ".</div></div>" +
+      '<details class="card filters" id="jf"' + (store.get("jf.open", "") ? " open" : "") + '><summary><b>Filters</b><span class="sum">' + esc(fsum) + "</span></summary><div class=\"fbody\">" +
+      '<label>Boards <span class="muted">(tap several)</span></label><div class="chips small" id="jf-board">' + '<button type="button" data-b=""' + (fb.length ? "" : ' class="on"') + ">All boards · " + JV.jobs.filter(function (j) { return j.fit !== "no"; }).length + "</button>" +
+        boards.map(function (b) { return fchip("b", b[0], esc(b[1]), bc[b[0]] || 0, JV.boards[b[0]]); }).join("") + "</div>" +
+      '<label>Countries <span class="muted">(India first; tap several)</span></label><div class="chips small" id="jf-cc"><button type="button" data-cc=""' + (fc.length ? "" : ' class="on"') + ">All countries</button>" +
+        ccs.map(function (c) { return fchip("cc", c, (flag(c) ? flag(c) + " " : "") + esc(ccLabel(c)), cc[c] || 0, JV.countries[c]); }).join("") + "</div>" +
+      '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 60, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
+      '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div>" +
+      (fb.length || fc.length || JV.min ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : "") + "</div></details>";
     if (!jobs.length) h += '<div class="card muted">No jobs match these filters.</div>';
     else if (!todo.length) h += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
     else h += '<div class="jobs">' + todo.slice(0, JV.limit).map(function (j) { return jobCard(j, keys[j._key], false); }).join("") + "</div>";
     if (todo.length > JV.limit) h += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
     if (done.length) h += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + done.map(function (j) { return jobCard(j, keys[j._key], true); }).join("") + "</div>";
     h += removedHint(nRemoved, JV.showRemoved);
+    // keep the filter panel's own scroll (and sideways chip-row scroll) across the re-render
+    var keep = ["#jf .fbody", "#jf-board", "#jf-cc"].map(function (s) { var el = box.querySelector(s); return el ? [el.scrollTop, el.scrollLeft] : [0, 0]; });
     box.innerHTML = h; box.scrollTop = top;
+    ["#jf .fbody", "#jf-board", "#jf-cc"].forEach(function (s, i) { var el = box.querySelector(s); if (el) { el.scrollTop = keep[i][0]; el.scrollLeft = keep[i][1]; } });
     bindMarks(box, function (toggle) { if (toggle === true) JV.showRemoved = !JV.showRemoved; renderJobs(); });
     $("jq-all").addEventListener("click", function () { queueJobs(notQueued); });
     $("jq-sel").addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return JV.sel[j._key]; })); });
-    $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) { JV.board = b.dataset.b; JV.limit = 50; renderJobs(); } });
-    $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) { JV.country = b.dataset.cc; JV.limit = 50; renderJobs(); } });
+    var toggleIn = function (set, k) { if (!k) Object.keys(set).forEach(function (x) { delete set[x]; }); else if (set[k]) delete set[k]; else set[k] = 1; JV.limit = 50; renderJobs(); };
+    $("jf").addEventListener("toggle", function () { store.set("jf.open", $("jf").open ? "1" : ""); });
+    $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) toggleIn(JV.boards, b.dataset.b); });
+    $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) toggleIn(JV.countries, b.dataset.cc); });
+    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.limit = 50; renderJobs(); });
     $("jf-min").addEventListener("change", function (e) { JV.min = +e.target.value; renderJobs(); });
     $("jf-sort").addEventListener("change", function (e) { JV.sort = e.target.value; renderJobs(); });
     if ($("jf-more")) $("jf-more").addEventListener("click", function () { JV.limit += 50; renderJobs(); });
@@ -985,7 +1045,7 @@
     if (!jobs.length) return;
     var keys = jobs.map(function (j) { return j._key; });
     // the PC expands "all" / keys from the report's own job list, so the payload stays small
-    var all = jobsFiltered().length === jobs.length && JV.board === "all" && !JV.country && !JV.min && jobs.length === JV.jobs.filter(function (j) { return j.fit !== "no"; }).length;
+    var all = jobsFiltered().length === jobs.length && !onKeys(JV.boards).length && !onKeys(JV.countries).length && !JV.min && jobs.length === JV.jobs.filter(function (j) { return j.fit !== "no"; }).length;
     var payload = { report: JV.item.id, kind: JV.item.kind, jobs: all ? "all" : keys.map(function (k) { return k.indexOf("web:") === 0 ? null : k; }).filter(Boolean) };
     var webJobs = jobs.filter(function (j) { return j._board === "web"; });
     if (!all && webJobs.length) payload.items = webJobs.map(function (j) { return { url: j.url, title: j.title, company: j.company, location: j.location, score: j.score, source: j.source, extra: { company_site: (j.extra || {}).company_site } }; });
@@ -1000,8 +1060,9 @@
   // ---- Track: your answers, every application with its Q&A and replies, editable.
   var track = null, trackBank = [], trackSkills = {};
   var T_LABELS = { applied: "applied", already: "applied earlier", offsite: "company site", questionnaire: "needs your answer",
-    "questionnaire-failed": "form failed", unconfirmed: "unconfirmed", "no-button": "no apply button", error: "error" };
-  function tCls(st) { return st === "applied" || st === "already" ? "ok" : (st === "questionnaire" || st === "offsite" ? "warn" : (st === "error" || st === "questionnaire-failed" || st === "unconfirmed" ? "bad" : "")); }
+    "questionnaire-failed": "form failed", unconfirmed: "unconfirmed", "no-button": "no apply button", error: "error",
+    submitted: "applied on company site", "login-required": "needs login - apply by hand", "career-incomplete": "form needs you - apply by hand" };
+  function tCls(st) { return st === "applied" || st === "already" || st === "submitted" ? "ok" : (st === "login-required" || st === "career-incomplete" ? "man" : st === "questionnaire" || st === "offsite" ? "warn" : (st === "error" || st === "questionnaire-failed" || st === "unconfirmed" ? "bad" : "")); }
   function kCls(k) { return k === "rejected" ? "bad" : (k === "interview" || k === "shortlisted" || k === "offer" ? "ok" : (k === "viewed" ? "warn" : "")); }
   function loadTrack() {
     var s = settings();
@@ -1069,14 +1130,14 @@
   function renderTrackApps() {
     var q = ($("t-q").value || "").trim().toLowerCase();
     var all = track.applications || [];
-    var groups = [["all", "All", all.length], ["applied", "Applied", all.filter(function (x) { return x.status === "applied"; }).length],
+    var groups = [["all", "All", all.length], ["applied", "Applied", all.filter(function (x) { return x.status === "applied" || x.status === "submitted"; }).length],
       ["replied", "Replied", all.filter(function (x) { return x.response; }).length], ["questionnaire", "Needs answer", all.filter(function (x) { return x.status === "questionnaire"; }).length],
       ["offsite", "Company site", all.filter(function (x) { return x.status === "offsite"; }).length], ["phone", "From phone", all.filter(function (x) { return x.project === "phone"; }).length]];
     $("t-status").innerHTML = groups.map(function (g) { return '<button type="button" data-ts2="' + g[0] + '"' + (tStatus === g[0] ? ' class="on"' : "") + ">" + g[1] + (g[2] ? " · " + g[2] : "") + "</button>"; }).join("");
     $("t-status").querySelectorAll("[data-ts2]").forEach(function (b) { b.addEventListener("click", function () { tStatus = b.dataset.ts2; renderTrackApps(); }); });
     var apps = all.filter(function (x) {
       if (q && (x.title + " " + x.company).toLowerCase().indexOf(q) < 0) return false;
-      if (tStatus === "applied") return x.status === "applied";
+      if (tStatus === "applied") return x.status === "applied" || x.status === "submitted";
       if (tStatus === "replied") return !!x.response;
       if (tStatus === "questionnaire") return x.status === "questionnaire";
       if (tStatus === "offsite") return x.status === "offsite";
@@ -1114,13 +1175,16 @@
     GB: "United Kingdom", JP: "Japan", AU: "Australia", CA: "Canada", SE: "Sweden", FI: "Finland", DK: "Denmark", EE: "Estonia",
     ES: "Spain", PT: "Portugal", PL: "Poland", MY: "Malaysia", CH: "Switzerland", AT: "Austria", FR: "France", NZ: "New Zealand",
     US: "United States", NO: "Norway", IT: "Italy", BE: "Belgium", HK: "Hong Kong", KR: "South Korea" };
-  function wPicked() { return (store.get("f.cc", W_DEFAULT) || "").split(",").filter(Boolean); }
+  // India is always searched: it is locked on, always first, and always sent to jobhunt.yml.
+  function wPicked() { return ["IN"].concat((store.get("f.cc", W_DEFAULT) || "").split(",").filter(function (c) { return c && c !== "IN"; })); }
   function renderWCountries() {
     var picked = wPicked();
-    $("f-countries").innerHTML = W_CHOICES.map(function (cc) { return '<button type="button" data-cc="' + cc + '"' + (picked.indexOf(cc) >= 0 ? ' class="on"' : "") + ">" + flag(cc) + " " + NAMES[cc] + "</button>"; }).join("");
+    $("f-countries").innerHTML = W_CHOICES.map(function (cc) { return cc === "IN" ? '<button type="button" data-cc="IN" class="on lock" aria-pressed="true" title="India is always included">' + flag(cc) + " India · always</button>"
+      : '<button type="button" data-cc="' + cc + '"' + (picked.indexOf(cc) >= 0 ? ' class="on"' : "") + ">" + flag(cc) + " " + NAMES[cc] + "</button>"; }).join("");
   }
   $("f-countries").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-cc]"); if (!b) return;
+    if (b.dataset.cc === "IN") { toast("India is always included in every search."); return; }
     var picked = wPicked(), i = picked.indexOf(b.dataset.cc);
     if (i >= 0) picked.splice(i, 1); else picked.push(b.dataset.cc);
     store.set("f.cc", picked.join(",")); renderWCountries();
