@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-16T19:07:56Z",
+ "updated": "2026-09-17T06:08:51Z",
  "items": [
+  {
+   "id": "jobhunt-20260917-060851-software-engineer",
+   "kind": "jobhunt",
+   "title": "software engineer",
+   "when": "2026-09-17T06:08:51Z",
+   "file": "data/jobhunt/jobhunt-20260917-060851-software-engineer.enc",
+   "bytes": 595952,
+   "meta": {
+    "jobs": "178",
+    "countries": "IN",
+    "experience": "0",
+    "days": "14",
+    "jobs_file": "data/jobhunt/jobhunt-20260917-060851-software-engineer.jobs.enc"
+   }
+  },
   {
    "id": "naukri-20260916-190755-naukri-openings-2026-09-15-run-3",
    "kind": "naukri",
