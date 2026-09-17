@@ -140,6 +140,15 @@
   .chips button:hover { border-color: var(--muted); }
   .chips button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
   .chips.small button { padding: 5px 10px; font-size: 13px; min-height: 32px; }
+  /* long chip rows (platforms): wrap on wide screens, scroll sideways in 3 rows on phones */
+  .chips.strip { margin-top: 6px; }
+  @media (max-width: 599px) {
+    .chips.strip { display: grid; grid-auto-flow: column; grid-auto-columns: max-content; grid-template-rows: repeat(3, auto);
+      overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; scrollbar-width: thin; }
+  }
+  /* "Posted within": a number and its unit side by side */
+  .win { display: grid; grid-template-columns: minmax(0, 1fr) 104px; gap: 8px; }
+  .win select { padding-right: 30px; }
   .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--accent);
     border-radius: 50%; animation: s 1s linear infinite; vertical-align: -2px; }
   @keyframes s { to { transform: rotate(360deg); } }
@@ -281,11 +290,24 @@
         <input id="f-role" placeholder="python developer, backend engineer" autocapitalize="none">
         <div class="row">
           <div><label>Your experience (years)</label><input id="f-exp" placeholder="3 or 2-4" inputmode="numeric"></div>
-          <div><label>Posted in last N days</label><input id="f-days" value="14" inputmode="numeric"></div>
+          <div><label>Posted within <span class="muted" id="f-win-sum"></span></label>
+            <div class="win">
+              <input id="f-win-n" value="7" inputmode="decimal" aria-label="Posted within, how many">
+              <select id="f-win-u" aria-label="hours or days"><option value="h">hours</option><option value="d" selected>days</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="chips small" id="f-win-quick"></div>
+        <div id="f-win-note" hidden>
+          <label class="check"><input type="checkbox" id="f-undated"> Include postings with no time on them</label>
+          <div class="hint">Under a day, a posting the board gave no time for is skipped — it cannot be shown to be inside the window, so "last 2 hours" really means it. Turn this on to keep them anyway.</div>
         </div>
         <label>Countries <span class="muted">(India is always included; tap to add or drop the others)</span></label>
         <div class="chips" id="f-countries"></div>
         <input id="f-more" placeholder="Other countries: Estonia, Brazil…" autocapitalize="none" style="margin-top:8px">
+        <label>Platforms <span class="muted" id="f-plat-sum">All platforms</span></label>
+        <div class="chips small strip" id="f-platforms"></div>
+        <div class="hint">Nothing picked = every platform that is set up. The ones marked 🔑 only run when their API key is a repo secret (Settings → Coverage), so they stay out unless you tap them.</div>
         <label class="check"><input type="checkbox" id="f-remote" checked> Include remote job boards</label>
         <details class="hint"><summary>Advanced</summary>
           <div class="row">
@@ -638,6 +660,8 @@
     if (m.relocation) sub.push(m.relocation + " with relocation");
     if (m.countries && m.countries !== "default countries") sub.push(m.countries);
     if (m.experience) sub.push(m.experience + " yrs");
+    var win = windowLabel(m); if (win) sub.push(win);
+    if (i.kind === "jobhunt" && m.platforms_asked) sub.push(platformsLabel(m));
     var right = (i.kind === "jobhunt" || i.kind === "naukri")
       ? (m.jobs_file ? chip("acc", "jobs ›") : chip("", "report ›"))
       : chip("", "open ›");
@@ -957,7 +981,9 @@
       fc.length === 0 ? "All countries" : fc.length === 1 ? ccLabel(fc[0]) : fc.length + " countries",
       JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sort === "new" ? "newest first" : "best match first"].join(" · ");
     var fchip = function (attr, k, label, n, on) { return '<button type="button" data-' + attr + '="' + esc(k) + '" class="' + (on ? "on" : "") + (n ? "" : " zero") + '">' + label + " · " + n + "</button>"; };
+    var jm = JV.item.meta || {}, jwin = windowLabel(jm);
     var h = '<div class="card"><div class="muted">' + JV.jobs.length + " postings · " + counts.linkedin + " LinkedIn · " + counts.naukri + " Naukri · " + counts.web + " other boards / company sites</div>" +
+      '<div class="muted" style="margin-top:4px">' + esc([jwin || "any age", platformsLabel(jm), (jm.experience ? jm.experience + " yrs" : "")].filter(Boolean).join(" · ")) + "</div>" +
       (Object.keys(tally).length ? '<div class="chips small" style="margin-top:6px">' + Object.keys(tally).map(function (k) { var st = STATUS[k] || ["", k]; return chip(st[0], tally[k] + " " + st[1]); }).join("") + "</div>" : "") +
       '<div class="acts2 sticky-acts"><button class="primary" id="jq-all"' + (notQueued.length ? "" : " disabled") + ">Queue all shown (" + notQueued.length + ")</button>" +
       '<button class="ghost" id="jq-sel"' + (selected.length ? "" : " disabled") + ">Queue selected (" + selected.length + ")</button></div>" +
@@ -1189,13 +1215,111 @@
     if (i >= 0) picked.splice(i, 1); else picked.push(b.dataset.cc);
     store.set("f.cc", picked.join(",")); renderWCountries();
   });
-  ["role", "exp", "days", "fit", "extra", "more"].forEach(function (k) {
+  ["role", "exp", "fit", "extra", "more"].forEach(function (k) {
     var el = $("f-" + k); el.value = store.get("f." + k, el.value);
     var save = function () { store.set("f." + k, el.value); };
     el.addEventListener("input", save); el.addEventListener("change", save);
   });
   $("f-remote").checked = store.get("f.remote", "1") === "1";
   $("f-remote").addEventListener("change", function () { store.set("f.remote", $("f-remote").checked ? "1" : ""); });
+
+  // ---- Search: "posted within" (a number + hours / days). Default 7 days.
+  // Under a day job_bot drops postings the board gave no time for, so the window stays
+  // honest; the switch below maps to --allow-undated.
+  var WIN_QUICK = [["2", "h"], ["6", "h"], ["12", "h"], ["24", "h"], ["3", "d"], ["7", "d"], ["14", "d"], ["30", "d"]];
+  function num(v) { var n = parseFloat(String(v == null ? "" : v).replace(",", ".")); return isFinite(n) && n > 0 ? n : 0; }
+  function trimNum(n) { return String(Math.round(n * 100) / 100); }
+  function winValue() {  // what the form currently says
+    var u = $("f-win-u").value === "h" ? "h" : "d", n = num($("f-win-n").value);
+    return { n: n || (u === "h" ? 24 : 7), u: u };
+  }
+  function winHours(w) { return w.u === "h" ? w.n : w.n * 24; }
+  function renderWinQuick() {
+    var w = winValue();
+    $("f-win-quick").innerHTML = WIN_QUICK.map(function (q) {
+      var on = q[1] === w.u && num(q[0]) === w.n;
+      return '<button type="button" data-win="' + q[0] + q[1] + '"' + (on ? ' class="on"' : "") + ">" + q[0] + q[1] + "</button>";
+    }).join("");
+  }
+  function renderWindow() {
+    var w = winValue(), h = winHours(w);
+    $("f-win-sum").textContent = w.u === "h" ? "(" + trimNum(w.n) + " h)" : "(" + trimNum(w.n) + (w.n === 1 ? " day)" : " days)");
+    $("f-win-note").hidden = !(h < 24);
+    renderWinQuick();
+  }
+  function saveWindow() {
+    try {
+      store.set("f.win.n", $("f-win-n").value);
+      store.set("f.win.u", $("f-win-u").value);
+      store.set("f.undated", $("f-undated").checked ? "1" : "");
+    } catch (e) {}
+    renderWindow();
+  }
+  (function initWindow() {
+    try {
+      var oldDays = store.get("f.days", "");  // runs made before the hours window existed
+      $("f-win-n").value = store.get("f.win.n", oldDays || "7");
+      $("f-win-u").value = store.get("f.win.u", "d") === "h" ? "h" : "d";
+      $("f-undated").checked = store.get("f.undated", "") === "1";
+    } catch (e) {}
+    renderWindow();
+  })();
+  ["f-win-n", "f-win-u"].forEach(function (id) {
+    $(id).addEventListener("input", saveWindow); $(id).addEventListener("change", saveWindow);
+  });
+  $("f-undated").addEventListener("change", saveWindow);
+  $("f-win-quick").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-win]"); if (!b) return;
+    var v = b.dataset.win;
+    $("f-win-n").value = v.slice(0, -1); $("f-win-u").value = v.slice(-1);
+    saveWindow();
+  });
+
+  // ---- Search: which platforms to ask (jobbot/sources/__init__.py ALL_SOURCES).
+  // Nothing picked = every platform that is set up. 🔑 = needs an API key as a repo secret.
+  var PLATFORMS = [
+    ["linkedin", "LinkedIn"], ["seek", "Seek / JobsDB"], ["xing", "XING"], ["arbeitnow", "Arbeitnow"],
+    ["duunitori", "Duunitori"], ["tecnoempleo", "Tecnoempleo"], ["infojobs", "InfoJobs"], ["wellfound", "Wellfound"],
+    ["tokyodev", "TokyoDev"], ["japandev", "Japan Dev"], ["daijob", "Daijob"], ["wantedly", "Wantedly"],
+    ["jobthai", "JobThai"], ["themuse", "The Muse"], ["landingjobs", "Landing.jobs"], ["relocateme", "Relocate.me"],
+    ["instahyre", "Instahyre"], ["remotive", "Remotive"], ["remoteok", "RemoteOK"], ["jobicy", "Jobicy"],
+    ["workingnomads", "Working Nomads"],
+    ["adzuna", "Adzuna", 1], ["jooble", "Jooble", 1], ["jsearch", "JSearch (Google Jobs)", 1], ["firecrawl", "Web search (Firecrawl)", 1],
+    ["apify-naukri", "Naukri (Apify)", 1], ["apify-indeed", "Indeed (Apify)", 1], ["apify-linkedin", "LinkedIn (Apify)", 1]
+  ];
+  function platName(k) { var p = PLATFORMS.filter(function (x) { return x[0] === k; })[0]; return p ? p[1] : k; }
+  function platPicked() { return (store.get("f.plat", "") || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean); }
+  function platSummary(list) { return !list.length ? "All platforms" : list.length === 1 ? platName(list[0]) : list.length + " platforms"; }
+  function renderPlatforms() {
+    var picked = platPicked();
+    $("f-plat-sum").textContent = platSummary(picked);
+    $("f-platforms").innerHTML = '<button type="button" data-p=""' + (picked.length ? "" : ' class="on"') + ">All platforms</button>" +
+      PLATFORMS.map(function (p) {
+        return '<button type="button" data-p="' + p[0] + '"' + (picked.indexOf(p[0]) >= 0 ? ' class="on"' : "") +
+          (p[2] ? ' title="Needs an API key as a repo secret"' : "") + ">" + esc(p[1]) + (p[2] ? " 🔑" : "") + "</button>";
+      }).join("");
+  }
+  $("f-platforms").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-p]"); if (!b) return;
+    var k = b.dataset.p, picked = platPicked(), i = picked.indexOf(k);
+    if (!k) picked = []; else if (i >= 0) picked.splice(i, 1); else picked.push(k);
+    try { store.set("f.plat", picked.join(",")); } catch (e2) {}
+    renderPlatforms();
+  });
+
+  // ---- how a finished run describes the window / platforms it was given
+  function windowLabel(m) {
+    m = m || {};
+    var h = num(m.hours), wh = num(m.window_hours), d = num(m.days);
+    if (h) return "posted within " + trimNum(h) + " h";
+    if (wh && wh < 24) return "posted within " + trimNum(wh) + " h";
+    if (d) return "last " + trimNum(d) + (d === 1 ? " day" : " days");
+    if (wh) return "last " + trimNum(wh / 24) + " days";
+    return "";
+  }
+  function platformsLabel(m) {
+    return platSummary(String((m || {}).platforms_asked || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean));
+  }
   $("btn-run").addEventListener("click", function () {
     var s = settings();
     if (!s.token || !s.repo) { showTab("settings"); return; }
@@ -1203,7 +1327,13 @@
     if (!role) { msg("run-msg", "Type at least one job title.", "bad"); return; }
     var countries = wPicked().concat($("f-more").value.split(",").map(function (x) { return x.trim(); }).filter(Boolean));
     var extra = $("f-extra").value.trim() + ($("f-remote").checked ? "" : " --no-remote");
-    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: countries.join(","), days: $("f-days").value.trim() || "14", fit: $("f-fit").value, extra: extra.trim() };
+    var w = winValue(), hours = winHours(w), picked = platPicked();
+    // jobhunt.yml inputs: days always (job_bot's own window), hours only when the window is in hours
+    // (it wins over days there), allow_undated only with it, platforms empty = all.
+    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: countries.join(","),
+                   days: String(Math.max(1, Math.ceil(hours / 24))),
+                   fit: $("f-fit").value, extra: extra.trim(), platforms: picked.join(",") };
+    if (w.u === "h") { inputs.hours = trimNum(w.n); inputs.allow_undated = !!$("f-undated").checked; }
     $("btn-run").disabled = true; msg("run-msg", "Starting…");
     gh("/actions/workflows/jobhunt.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
       .then(function () { msg("run-msg", "Started. 5–15 minutes; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
@@ -1415,7 +1545,7 @@
   });
 
   // ---- boot
-  fillSettings(); renderWCountries(); renderCountryPicker();
+  fillSettings(); renderWCountries(); renderPlatforms(); renderCountryPicker();
   if (store.get("s.seg", "world") === "careers") { $("s-seg").querySelector('[data-s="careers"]').click(); }
   var hashTab = location.hash.slice(1);
   showTab(TABS.indexOf(hashTab) >= 0 ? hashTab : store.get("tab", "home"));
