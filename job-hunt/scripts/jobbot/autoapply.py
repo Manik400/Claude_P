@@ -123,20 +123,45 @@ def apply_run(jobs, per_run: int | None = None, dry_run: bool = True,
     profile = config_mod.load_profile()
     config = config_mod.load(profile=profile)
     cards = linkedin_cards(jobs, min_score=min_score)
-    if not cards:
+    web = web_postings(jobs, min_score=min_score)
+    if not cards and not web:
         return {"_summary": {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "per_run": per_run,
                              "questions_saved": 0, "retried": 0, "pending_questions": 0,
-                             "backlog": 0, "note": "no LinkedIn postings in this run"}}
+                             "backlog": 0, "note": "no postings to apply to in this run"}}
     return autoapply.run([], cards, config, profile, headless=headless, dry_run=dry_run,
-                         per_run=per_run, include_backlog=False, project="jobhunt")
+                         per_run=per_run, include_backlog=False, project="jobhunt", web_jobs=web)
+
+
+def web_postings(jobs, min_score: float | None = None) -> list[dict]:
+    """Every non-LinkedIn posting, for the company-site applier (best first).
+
+    It opens each one, skips it when the site wants a login or shows a
+    CAPTCHA, and otherwise fills and submits the form - see the Naukri
+    screener's naukri/jobs/career_apply.py.
+    """
+    out = []
+    for job in jobs:
+        url = getattr(job, "url", "") or ""
+        if not url or linkedin_id(url) or getattr(job, "fit", "") == "no":
+            continue
+        score = getattr(job, "score", None)
+        if min_score is not None and (score is None or score < min_score):
+            continue
+        out.append({"url": url, "title": getattr(job, "title", "") or "", "company": getattr(job, "company", "") or "",
+                    "score": score or 0, "_run_id": getattr(job, "id", "")})
+    out.sort(key=lambda w: -(w["score"] or 0))
+    return out
 
 
 def mark_jobs(jobs, outcomes: dict) -> int:
     """Write each outcome into the job's `extra`, so the report can show it."""
+    import hashlib
     marked = 0
     for job in jobs:
-        job_id = linkedin_id(getattr(job, "url", ""))
-        hit = outcomes.get(f"linkedin:{job_id}") if job_id else None
+        url = getattr(job, "url", "") or ""
+        job_id = linkedin_id(url)
+        hit = outcomes.get(f"linkedin:{job_id}") if job_id else \
+            outcomes.get("web:" + hashlib.sha1(url.split("#")[0].lower().encode("utf-8")).hexdigest()[:16])
         if not hit:
             continue
         extra = getattr(job, "extra", None)

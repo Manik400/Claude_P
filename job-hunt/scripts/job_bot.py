@@ -226,6 +226,10 @@ def apply_like_last(args, log):
     args.experience = args.experience or meta.get("experience_label") or None
     if not args.countries and meta.get("countries"):
         args.countries = ",".join(meta["countries"])
+    # India is always part of the search (same rule as the phone and jobhunt.yml).
+    if args.countries and "IN" not in [c.strip().upper() for c in args.countries.split(",")] \
+            and "india" not in args.countries.lower():
+        args.countries = "IN," + args.countries
     if not getattr(args, "resume", None) and meta.get("resume_path") and os.path.exists(meta["resume_path"]):
         args.resume = meta["resume_path"]
     log(f"like-last: roles={args.role} experience={args.experience} countries={args.countries} resume={os.path.basename(args.resume or '') or '-'} (from {os.path.basename(last)})")
@@ -250,7 +254,8 @@ def do_apply(run_dir, meta, statuses, jobs, args, log):
     limit = apply_limit(args)
     dry = not getattr(args, "yes", False)
     cards = autoapply.linkedin_cards(jobs, min_score=getattr(args, "min_score", None))
-    log(f"apply: {len(cards)} LinkedIn posting(s) in this run{'' if limit is None else f', at most {limit} this run'}{' (dry run - add --yes to send)' if dry else ''}")
+    web = autoapply.web_postings(jobs, min_score=getattr(args, "min_score", None))
+    log(f"apply: {len(cards)} LinkedIn + {len(web)} company-site / other-board posting(s) in this run{'' if limit is None else f', at most {limit} this run'}{' (dry run - add --yes to send)' if dry else ''}")
     outcomes = autoapply.apply_run(jobs, per_run=limit, dry_run=dry, min_score=getattr(args, "min_score", None))
     marked = autoapply.mark_jobs(jobs, outcomes)
     if marked:

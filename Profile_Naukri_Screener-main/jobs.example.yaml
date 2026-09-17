@@ -156,6 +156,28 @@ scan_apply_min_score: 0
 linkedin_easy_apply: true
 linkedin_max_applies_per_day: 25
 
+# Company career sites (Naukri "Apply on company site", LinkedIn's plain
+# Apply, and the worldwide search's other boards): naukri/jobs/career_apply.py
+# opens each one, leaves it for you when it wants a login / account or shows a
+# CAPTCHA, and otherwise fills the form from your details and submits it. A
+# required question it cannot answer from your facts stops that form.
+career_apply: true
+career_max_per_run: 5
+career_max_per_day: 25
+
+# Your details for those forms. Left out, each is read from your resume's
+# header and data/profile.json.
+# applicant:
+#   name: ""
+#   email: ""
+#   phone: ""
+#   linkedin: ""
+#   github: ""
+#   location: ""
+#   resume: ""              # the file uploaded to career forms
+#   how_did_you_hear: "Job board"
+#   cover_letter: ""
+
 # Your own answers to questions no profile field covers. Checked before any
 # built-in logic, so these are the final word.
 #

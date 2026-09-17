@@ -17,9 +17,9 @@ on:
         required: false
         default: ""
       countries:
-        description: "Countries (names or ISO2), comma-separated, e.g. India,DE,NL. Empty = DE,NL,ES,FI,AU,JP,TH + Remote"
+        description: "Countries (names or ISO2), comma-separated, e.g. IN,DE,NL. India (IN) is always added. Empty = IN,DE,NL,ES,FI,AU,JP,TH + Remote"
         required: false
-        default: ""
+        default: "IN,DE,NL,ES,FI,AU,JP,TH"
       days:
         description: "Only jobs posted in the last N days"
         required: false
@@ -81,4 +81,15 @@ jobs:
           SIGNALHIRE_API_KEY: ${{ secrets.SIGNALHIRE_API_KEY }}
           HUNTER_API_KEY: ${{ secrets.HUNTER_API_KEY }}
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
-        run: python site/tools/run_jobhunt.py
+        shell: bash
+        run: |
+          # India is always searched: put IN first unless the list already names it.
+          C="$(printf '%s' "$INPUT_COUNTRIES" | sed 's/^[ ,]*//; s/[ ,]*$//')"
+          [ -n "$C" ] || C="DE,NL,ES,FI,AU,JP,TH"
+          case ",$(printf '%s' "$C" | tr '[:upper:]' '[:lower:]' | sed 's/ *[,;] */,/g')," in
+            *,in,*|*,india,*|*,bharat,*) ;;
+            *) C="IN,$C" ;;
+          esac
+          export INPUT_COUNTRIES="$C"
+          echo "countries: $INPUT_COUNTRIES"
+          python site/tools/run_jobhunt.py

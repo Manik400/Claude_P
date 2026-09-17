@@ -1,40 +1,76 @@
-# Schedule the worldwide job hunt to search and apply, silently, twice a day.
+﻿# Run the job hunt (worldwide search + Naukri scan; LinkedIn Easy Apply, Naukri and company sites) over and over,
+# silently: each round starts -Gap minutes after the previous one FINISHED.
 #
-#   powershell -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1
-#   powershell -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1 -Times @("11:47=5","21:19=5")
+#   powershell -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1                  start now, then 30 min after each round
+#   powershell -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1 -Gap 30 -Limit 5
 #   powershell -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1 -Remove
+#   powershell -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1 -Show           when is the next round
 #
-# Each run repeats your last search (same roles, experience, countries and
-# resume) and then applies to the LinkedIn postings it found - at most N per
-# run ("HH:mm=N"), a minute or more apart. The two default slots sit between
-# the Naukri screener's runs (08:52, 13:23, 18:11, 23:07, 04:23), and the
-# LinkedIn daily cap in that project's jobs.yaml bounds both projects
-# together, so LinkedIn never sees more than that in a day from either.
+# How the "gap after it finishes" works: the task JobHuntApply has a one-time
+# trigger that jobhunt_hourly.bat moves forward at the end of every round (to
+# finish time + Gap). At the start of a round it is set to start + MaxMinutes
+# + Gap as a backstop, so a round that crashes or is killed still gets a next
+# one. A logon trigger restarts the chain after a reboot.
 #
-# Nothing appears on screen: the task goes through the Naukri screener's
-# scripts\run_hidden.vbs (hidden console, headless browser). Output lands in
-# ..\Profile_Naukri_Screener-main\logs\scheduled.log. The tasks run only when
-# you are logged on - the headless browser needs a desktop session to fall
-# back to if LinkedIn ever refuses it.
+# Each round repeats your last worldwide search, then runs the Naukri scan, and
+# applies to at most -Limit postings per board (Naukri, LinkedIn Easy Apply,
+# company sites that need no login), each apply pass stopping new applications
+# after -ApplyMinutes. The LinkedIn daily cap in
+# ..\Profile_Naukri_Screener-main\jobs.yaml still bounds the day. Nothing
+# appears on screen (run_hidden.vbs, headless browser); output goes to
+# ..\Profile_Naukri_Screener-main\logs\scheduled.log. Runs only while you are
+# logged on and the PC is awake.
 
 param(
     [switch]$Remove,
-    [string[]]$Times = @("11:47=5", "21:19=5")
+    [switch]$Rearm,
+    [switch]$Backstop,
+    [switch]$Show,
+    [int]$Gap = 30,
+    [int]$Limit = 5,
+    [int]$ApplyMinutes = 25,
+    [int]$MaxMinutes = 120
 )
 
 $ErrorActionPreference = "Stop"
 
 $root     = Split-Path -Parent $PSScriptRoot
-$prefix   = "JobHuntApply"
-$batch    = Join-Path $root "jobhunt_apply.bat"
+$name     = "JobHuntApply"
+$batch    = Join-Path $root "jobhunt_hourly.bat"
 $sibling  = Join-Path (Split-Path -Parent $root) "Profile_Naukri_Screener-main"
 $launcher = Join-Path $sibling "scripts\run_hidden.vbs"
+
+function Show-Next {
+    $t = Get-ScheduledTask -TaskName $name -ErrorAction SilentlyContinue
+    if (-not $t) { Write-Host "$name is not scheduled."; return }
+    $i = $t | Get-ScheduledTaskInfo
+    Write-Host "${name}  state=$($t.State)  last run=$($i.LastRunTime)  last result=$($i.LastTaskResult)  next run=$($i.NextRunTime)"
+    Write-Host "  $($t.Description)"
+}
+
+if ($Show) { Show-Next; return }
+
+if ($Rearm) {
+    # Called by jobhunt_hourly.bat: move the one-time trigger, keep the logon one.
+    $task = Get-ScheduledTask -TaskName $name -ErrorAction SilentlyContinue
+    if (-not $task) { return }
+    $gapMin = $Gap; $maxMin = $MaxMinutes
+    if ($task.Description -match "gap=(\d+) max=(\d+)") { $gapMin = [int]$Matches[1]; $maxMin = [int]$Matches[2] }
+    $minutes = if ($Backstop) { $maxMin + $gapMin } else { $gapMin }
+    $next    = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes($minutes)
+    $logon   = $task.Triggers | Where-Object { $_.CimClass.CimClassName -eq "MSFT_TaskLogonTrigger" }
+    Set-ScheduledTask -TaskName $name -Trigger @(@($next) + @($logon)) | Out-Null
+    Write-Host ("[{0}] {1}: next round at {2}{3}" -f (Get-Date -Format HH:mm:ss), $name,
+        (Get-Date).AddMinutes($minutes).ToString("HH:mm"), $(if ($Backstop) { " (backstop, moved when this round ends)" } else { "" }))
+    return
+}
 
 foreach ($path in @($batch, $launcher)) {
     if (-not (Test-Path $path)) { throw "Cannot find $path" }
 }
 
-Get-ScheduledTask -TaskName "$prefix*" -ErrorAction SilentlyContinue |
+# The old fixed daily slots (JobHuntApply-1, -2) and any earlier JobHuntApply.
+Get-ScheduledTask -TaskName "$name*" -ErrorAction SilentlyContinue |
     ForEach-Object {
         Write-Host "Removing existing task $($_.TaskName)"
         Unregister-ScheduledTask -TaskName $_.TaskName -Confirm:$false
@@ -52,34 +88,29 @@ $settings = New-ScheduledTaskSettingsSet `
     -DontStopOnIdleEnd `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `
-    -ExecutionTimeLimit (New-TimeSpan -Hours 1) `
+    -ExecutionTimeLimit (New-TimeSpan -Minutes $MaxMinutes) `
     -MultipleInstances IgnoreNew
 
-$i = 0
-foreach ($spec in $Times) {
-    $i++
-    $time, $limit = $spec -split "=", 2
-    if (-not $limit) { $limit = "" }
-    $name = "$prefix-$i"
-    $argument = "//B //Nologo `"$launcher`" `"$batch`""
-    if ($limit) { $argument += " NAUKRI_APPLY_LIMIT=$limit" }
-    $action = New-ScheduledTaskAction `
-        -Execute "$env:SystemRoot\System32\wscript.exe" `
-        -Argument $argument `
-        -WorkingDirectory $root
-    $trigger = New-ScheduledTaskTrigger -Daily -At $time
-    $capText = if ($limit) { "up to $limit applies" } else { "daily cap only" }
-    Register-ScheduledTask `
-        -TaskName $name `
-        -Action $action `
-        -Trigger $trigger `
-        -Settings $settings `
-        -Description "Worldwide job hunt: search like last run, then LinkedIn Easy Apply - run $i of $($Times.Count), $capText." | Out-Null
-    Write-Host "Scheduled $name at $time  ($capText)"
-}
+$action = New-ScheduledTaskAction `
+    -Execute "$env:SystemRoot\System32\wscript.exe" `
+    -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=$Limit APPLY_MAX_MINUTES=$ApplyMinutes" `
+    -WorkingDirectory $root
 
+$first = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds(30)
+$logon = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$logon.Delay = "PT5M"
+
+Register-ScheduledTask `
+    -TaskName $name `
+    -Action $action `
+    -Trigger @($first, $logon) `
+    -Settings $settings `
+    -Description "Job hunt: worldwide search + Naukri scan, apply up to $Limit per board (Naukri, LinkedIn Easy Apply, company sites without login), then again $Gap min after it finishes. gap=$Gap max=$MaxMinutes" | Out-Null
+
+Write-Host "Scheduled ${name}: first round in 30 s, then $Gap min after each round finishes (and 5 min after logon)."
+Write-Host "Up to $Limit applies per board per round, no new applies after $ApplyMinutes min, hard stop at $MaxMinutes min."
 Write-Host ""
-Write-Host "Check them with:   Get-ScheduledTask -TaskName '$prefix*'"
-Write-Host "Run one now with:  Start-ScheduledTask -TaskName '$prefix-1'"
-Write-Host "Stop them with:    ...\schedule_jobhunt.ps1 -Remove"
-Write-Host "Output:            ..\Profile_Naukri_Screener-main\logs\scheduled.log"
+Write-Host "Next round:  ...\schedule_jobhunt.ps1 -Show"
+Write-Host "Run now:     Start-ScheduledTask -TaskName '$name'"
+Write-Host "Stop it:     ...\schedule_jobhunt.ps1 -Remove"
+Write-Host "Output:      ..\Profile_Naukri_Screener-main\logs\scheduled.log"

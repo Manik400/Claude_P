@@ -49,6 +49,10 @@ Next
 
 If Not fso.FolderExists(root & "\logs") Then fso.CreateFolder root & "\logs"
 logFile = root & "\logs\scheduled.log"
+' A run killed by its task's time limit can leave its batch behind with the
+' shared log still open. Every other task would then fail at the first
+' "echo >> log" and never start, so write to a log of our own instead.
+If Not CanAppend(logFile) Then logFile = root & "\logs\" & fso.GetBaseName(batch) & ".log"
 
 sh.Environment("PROCESS")("NAUKRI_BACKGROUND") = "1"
 sh.CurrentDirectory = fso.GetParentFolderName(batch)
@@ -63,6 +67,16 @@ cmd = "cmd.exe /S /C """ & _
 ' exit code and Task Scheduler's own time limit still applies to the run.
 rc = sh.Run(cmd, 0, True)
 WScript.Quit rc
+
+Function CanAppend(path)
+    Dim t
+    On Error Resume Next
+    Set t = fso.OpenTextFile(path, 8, True)
+    CanAppend = (Err.Number = 0)
+    If CanAppend Then t.Close
+    Err.Clear
+    On Error GoTo 0
+End Function
 
 Function IsEnvAssignment(arg)
     Dim eq, name

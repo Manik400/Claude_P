@@ -29,14 +29,17 @@ batches drain the list overnight instead of dropping it.
 """
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
+import os
 import random
 import time
 from datetime import date, timedelta
 from pathlib import Path
 
 from . import answers as answers_mod
+from . import career_apply as career_mod
 from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, questions
 from .ledger import Ledger
 from .model import Job
@@ -49,6 +52,16 @@ JOBS_DIR = ROOT / "data" / "jobs"
 # Seconds between two applications. Long and uneven on purpose - see PACE.
 NAUKRI_PAUSE = (35.0, 80.0)
 LINKEDIN_PAUSE = (50.0, 110.0)
+# After a posting where nothing was submitted (no Easy Apply button, offsite,
+# already applied) a long pause only burns the run: a run of 198 such postings
+# took five hours and outlived its scheduled task.
+SHORT_PAUSE = (6.0, 14.0)
+NOTHING_SENT = {"offsite", "no-button", "already", "would-apply",
+                "login-required", "captcha", "no-form", "career-error", "career-incomplete"}
+# A run stops starting new applications after this many minutes
+# (APPLY_MAX_MINUTES overrides; 0 = no limit) so it always ends before the
+# scheduler's time limit and never leaves a browser running behind it.
+DEFAULT_MAX_MINUTES = 40
 
 # Ledger statuses that mean "leave this job alone".
 DONE = {"applied", "skipped", "offsite", "questionnaire-declined"}
@@ -100,6 +113,20 @@ def backlog(days: int = 2) -> tuple[list[Job], list[dict]]:
     return list(jobs.values()), list(cards.values())
 
 
+def _deadline() -> float | None:
+    """time.monotonic() after which no new application starts, or None."""
+    raw = os.environ.get("APPLY_MAX_MINUTES", "").strip()
+    minutes = float(raw) if raw.replace(".", "", 1).isdigit() else DEFAULT_MAX_MINUTES
+    return time.monotonic() + minutes * 60 if minutes > 0 else None
+
+
+def _out_of_time(deadline: float | None, board: str, left: int) -> bool:
+    if deadline is None or time.monotonic() < deadline:
+        return False
+    log.info("%s: run time limit reached; %d job(s) left for the next run", board, left)
+    return True
+
+
 def _card_job(card: dict) -> Job:
     """A ledger-able record for a LinkedIn card."""
     raw = str(card.get("job_id") or "")
@@ -135,10 +162,23 @@ def _record(ledger: Ledger, job, status: str, note: str, board: str, capture: di
         ledger.record(job, status, note)
 
 
+def _press(page, candidates) -> bool:
+    """Click the first visible element among `candidates` (selectors)."""
+    for selector in candidates:
+        try:
+            el = page.locator(selector).first
+            if el.count() and el.is_visible(timeout=2500):
+                el.click(timeout=8000)
+                return True
+        except Exception:
+            continue
+    return False
+
+
 def run(kept: list, cards: list[dict], config: dict, profile: dict,
         headless: bool = False, dry_run: bool = True,
         per_run: int | None = None, include_backlog: bool = True,
-        project: str = "naukri") -> dict:
+        project: str = "naukri", web_jobs: list[dict] | None = None) -> dict:
     """Apply across both boards. Returns {row_id: {status, note}} plus
     a "_summary" entry with the counts.
 
@@ -148,18 +188,65 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     daily caps apply). `include_backlog` adds the last two days' unsettled
     listings after this scan's own, so small runs drain the list over time.
     `project` tags the applications log with which search found the jobs.
+
+    Postings that apply on the company's own site (Naukri "Apply on company
+    site", LinkedIn's plain Apply) and `web_jobs` ({url, title, company,
+    score, job_id?} from other boards) go to career_apply: skipped when the
+    site wants a login or shows a CAPTCHA, otherwise filled and submitted.
+    `career_apply: false` in jobs.yaml turns that off; at most `per_run`
+    (else `career_max_per_run`, 5) company-site submissions per run.
     """
     from playwright.sync_api import sync_playwright
 
-    from ..session import DEFAULT_STATE, open_profile
+    from .. import selectors as S
+    from ..session import DEFAULT_STATE, launch_browser, new_context, open_profile
 
+    deadline = _deadline()
     facts = answers_mod.build_facts(profile, config)
     facts["_bank"] = questions.load_bank()
     phone = str(facts.get("stated_phone") or "").strip() or None
     ledger = Ledger()
     outcomes: dict[str, dict] = {}
-    summary = {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "questions_saved": 0,
+    summary = {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "questions_saved": 0,
                "retried": 0, "pending_questions": 0, "per_run": per_run, "backlog": 0}
+
+    # ---------------------------------------------------------- company sites
+    career_on = bool(config.get("career_apply", True))
+    who = career_mod.applicant(profile, config) if career_on else {}
+    if career_on and career_mod.missing_details(who):
+        log.warning("Company-site applies off: missing %s (set applicant: in jobs.yaml)",
+                    ", ".join(career_mod.missing_details(who)))
+        career_on = False
+    career_today = sum(1 for e in ledger.entries.values()
+                       if e.get("status") == "applied" and str(e.get("note", "")).startswith(career_mod.TRIED)
+                       and str(e.get("at", "")).startswith(date.today().isoformat()))
+    career_left = [min(per_run if per_run is not None else int(config.get("career_max_per_run") or 5),
+                       max(0, int(config.get("career_max_per_day") or 25) - career_today))]
+    if career_on and career_left[0] <= 0:
+        log.info("Company sites: today's cap of %s submissions is reached",
+                 config.get("career_max_per_day") or 25)
+
+    def career_ready() -> bool:
+        return career_on and career_left[0] > 0 and not (deadline and time.monotonic() >= deadline)
+
+    def career_untried(job_id: str) -> bool:
+        entry = ledger.entries.get(job_id) or {}
+        return entry.get("status") == "offsite" and not str(entry.get("note", "")).startswith(career_mod.TRIED)
+
+    def try_career(page, job, board: str, offsite_click=None) -> tuple[str, str]:
+        capture: dict = {}
+        status, note = career_mod.apply_from_page(
+            page, {"title": job.title, "company": job.company, "url": job.url}, who, facts,
+            dry_run=dry_run, capture=capture, offsite_click=offsite_click)
+        if status == "submitted":
+            career_left[0] -= 1
+        if not dry_run and status != "would-apply" and not career_mod.transient(status, note):
+            ledger.record(job, career_mod.ledger_status(status), career_mod.TRIED + note)
+            applications.record(board, job, "applied" if status == "submitted" else "offsite",
+                                career_mod.TRIED + note, capture, dry_run=False, per_run=per_run, project=project)
+        summary["career"][status] = summary["career"].get(status, 0) + 1
+        log.info("[company site %s] %s @ %s - %s", status, job.title, job.company, note)
+        return status, note
 
     if include_backlog:
         old_jobs, old_cards = backlog()
@@ -193,7 +280,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     naukri_jobs = []
     for job in sorted(kept, key=lambda j: getattr(j, "score", 0) or 0, reverse=True):
         status = ledger.status(job.job_id)
-        if status in DONE or status == WAITING:
+        if (status in DONE or status == WAITING) and not (career_on and career_untried(job.job_id)):
             continue
         if (getattr(job, "score", 0) or 0) < min_score:
             continue
@@ -212,21 +299,34 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         with sync_playwright() as p:
             browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
             try:
-                for job in naukri_jobs:
-                    if budget <= 0:
+                for n, job in enumerate(naukri_jobs):
+                    if budget <= 0 or _out_of_time(deadline, "Naukri", len(naukri_jobs) - n):
                         break
+                    if career_untried(job.job_id) and not career_ready():
+                        continue            # already settled as offsite; nothing new to do this run
                     capture: dict = {}
-                    if getattr(job, "company_apply", False):
-                        status, note = "offsite", "applies on the company's own site"
+                    naukri_offsite = lambda: _press(page, S.JOB_APPLY_BUTTON)  # noqa: E731
+                    if getattr(job, "company_apply", False) or career_untried(job.job_id):
+                        if career_ready():
+                            try:
+                                page.goto(job.url, wait_until="domcontentloaded", timeout=60000)
+                                page.wait_for_timeout(random.uniform(2200, 4200))
+                                status, note = try_career(page, job, "naukri", naukri_offsite)
+                            except Exception as exc:
+                                status, note = "offsite", f"company site not reached: {str(exc)[:100]}"
+                        else:
+                            status, note = "offsite", "applies on the company's own site"
                     else:
                         status, note = applier.apply_to(page, job, dry_run=dry_run,
                                                         facts=facts, capture=capture)
                         _record(ledger, job, status, note, "naukri", capture)
                         if status == "questionnaire" and capture.get("question"):
                             summary["questions_saved"] += 1
-                    if status == "offsite":
+                        if status == "offsite" and career_ready():
+                            status, note = try_career(page, job, "naukri", naukri_offsite)
+                    if status == "offsite" and not dry_run:
                         ledger.record(job, "offsite", note)
-                    if not dry_run:
+                    if not dry_run and status not in career_mod.STATUSES:
                         applications.record("naukri", job, status, note, capture,
                                             dry_run=False, per_run=per_run, project=project)
                     counts[status] = counts.get(status, 0) + 1
@@ -234,8 +334,8 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                     log.info("[naukri %s] %s @ %s - %s", status, job.title, job.company, note)
                     if status in ("applied", "would-apply"):
                         budget -= 1
-                    if not dry_run and status not in ("offsite",) and budget > 0:
-                        time.sleep(random.uniform(*NAUKRI_PAUSE))
+                    if not dry_run and budget > 0 and not getattr(job, "company_apply", False):
+                        time.sleep(random.uniform(*(SHORT_PAUSE if status in NOTHING_SENT else NAUKRI_PAUSE)))
             finally:
                 browser.close()
         if not dry_run:
@@ -257,7 +357,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             if job.job_id in seen_ids:
                 continue
             status = ledger.status(job.job_id)
-            if status in DONE:
+            if status in DONE and not (career_on and career_untried(job.job_id)):
                 continue
             if status == WAITING and job.job_id not in {c["job_id"] for c in retry_cards}:
                 continue
@@ -273,16 +373,23 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                 with sync_playwright() as p:
                     browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
                     try:
-                        for card, job in li_cards:
-                            if li_budget <= 0:
+                        for n, (card, job) in enumerate(li_cards):
+                            if li_budget <= 0 or _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
                                 break
+                            if career_untried(job.job_id) and not career_ready():
+                                continue
                             capture = {}
                             status, note = linkedin_apply.apply_to(
                                 page, card, facts, dry_run=dry_run, phone=phone, capture=capture)
-                            _record(ledger, job, status, note, "linkedin", capture)
+                            if status == "offsite" and career_ready():
+                                status, note = try_career(
+                                    page, job, "linkedin",
+                                    lambda: _press(page, [linkedin_apply.ANY_APPLY_BUTTON]))
+                            else:
+                                _record(ledger, job, status, note, "linkedin", capture)
                             if status == "questionnaire" and capture.get("question"):
                                 summary["questions_saved"] += 1
-                            if not dry_run:
+                            if not dry_run and status not in career_mod.STATUSES:
                                 applications.record("linkedin", job, status, note, capture,
                                                     dry_run=False, per_run=per_run, project=project)
                             counts[status] = counts.get(status, 0) + 1
@@ -291,7 +398,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                             if status in ("applied", "would-apply"):
                                 li_budget -= 1
                             if not dry_run and li_budget > 0:
-                                time.sleep(random.uniform(*LINKEDIN_PAUSE))
+                                time.sleep(random.uniform(*(SHORT_PAUSE if status in NOTHING_SENT else LINKEDIN_PAUSE)))
                     finally:
                         browser.close()
             except linkedin_mod.NotLoggedIn as exc:
@@ -299,6 +406,59 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                 counts["skipped-not-logged-in"] = len(li_cards)
             if not dry_run:
                 ledger.save()
+
+    # ------------------------------------------- other boards' / career pages
+    web = []
+    for item in web_jobs or []:
+        url = (item.get("url") or "").strip()
+        if not url:
+            continue
+        job_id = item.get("job_id") or "web:" + hashlib.sha1(url.split("#")[0].lower().encode("utf-8")).hexdigest()[:16]
+        if ledger.status(job_id) and not item.get("retry"):
+            continue
+        job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
+        job.score = item.get("score") or 0
+        web.append(job)
+    web.sort(key=lambda j: -(j.score or 0))
+    if web and career_ready():
+        log.info("Company sites: up to %d submission(s) from %d posting(s)%s", career_left[0], len(web),
+                 " (dry run)" if dry_run else "")
+        with sync_playwright() as p:
+            browser = launch_browser(p, headless=headless, offscreen=not headless)
+            context = new_context(browser, viewport={"width": 1366, "height": 900})
+            try:
+                for n, job in enumerate(web):
+                    if not career_ready():
+                        _out_of_time(deadline, "Company sites", len(web) - n)
+                        break
+                    if any(h in job.url for h in career_mod.LOGIN_HOSTS):
+                        status, note = "login-required", "this board needs its own account"
+                        summary["career"][status] = summary["career"].get(status, 0) + 1
+                        log.info("[company site %s] %s @ %s - %s", status, job.title, job.company, note)
+                        if not dry_run:
+                            ledger.record(job, "offsite", career_mod.TRIED + note)
+                    else:
+                        page = context.new_page()
+                        try:
+                            page.goto(job.url, wait_until="domcontentloaded", timeout=45000)
+                            page.wait_for_timeout(random.uniform(2500, 4000))
+                            status, note = try_career(page, job, "web")
+                        except Exception as exc:
+                            status, note = "career-error", f"page did not open: {str(exc)[:100]}"
+                            if not dry_run and not career_mod.transient(status, note):
+                                ledger.record(job, "offsite", career_mod.TRIED + note)
+                        finally:
+                            try:
+                                page.close()
+                            except Exception:
+                                pass
+                    outcomes[job.job_id] = {"status": status, "note": note}
+                    if status == "submitted" and not dry_run:
+                        time.sleep(random.uniform(*SHORT_PAUSE))
+            finally:
+                browser.close()
+        if not dry_run:
+            ledger.save()
 
     summary["pending_questions"] = questions.pending_count()
     summary["new_questions"] = max(0, summary["pending_questions"] - before)
@@ -325,6 +485,10 @@ def summarise(outcomes: dict) -> str:
         return f"  {board}: {verb} {sent}" + (f"  ({rest})" if rest else "")
 
     lines = ["", "  Auto-apply:", line("Naukri", summary["naukri"]), line("LinkedIn", summary["linkedin"])]
+    career = dict(summary.get("career") or {})
+    if career:
+        career["applied"] = career.pop("submitted", 0)
+        lines.append(line("Company sites", career))
     if summary.get("per_run") is not None:
         lines.append(f"  Limit this run: {summary['per_run']} per board"
                      f" (backlog from earlier scans: {summary.get('backlog', 0)} listing(s))")

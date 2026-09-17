@@ -58,13 +58,16 @@ DONE = {"applied", "skipped", "questionnaire-declined", "submitted", "removed", 
 WAITING = "questionnaire-pending"
 RETRYABLE = {"error", "unconfirmed", "questionnaire-failed", "offsite-error"}
 MAX_ATTEMPTS = 3
-HEARTBEAT_HOURS = 2
+HEARTBEAT_HOURS = 1   # the phone calls the PC "off" after 1.25 h without a push
 
 DEFAULT_SETTINGS = {
     "auto": {"enabled": False, "min_score": 60, "boards": ["linkedin", "naukri"]},
     "limit": 5,
-    "offsite": "manual",        # manual | simplify | simplify-submit
+    "offsite": "career",        # career | manual | simplify | simplify-submit
 }
+# "career": the PC opens the company's page, skips it when it wants a login or
+# shows a CAPTCHA, otherwise fills the form from your details and submits
+# (Profile_Naukri_Screener-main/naukri/jobs/career_apply.py).
 
 
 def log(msg: str) -> None:
@@ -340,8 +343,13 @@ def progress_of(queue: dict) -> dict:
 # ------------------------------------------------------------------ apply
 
 def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoapply, config_mod, NaukriJob) -> dict:
+    mode = settings.get("offsite", "career")
+    # Company-site postings left "by hand" before the career applier existed
+    # get one go at it.
+    career_again = [i for i in queue["items"] if mode == "career" and not i.get("career_tried")
+                    and i["status"] in ("manual", "offsite")]
     todo = [i for i in queue["items"] if i["status"] in ("queued", "retry") or
-            (i["status"] in RETRYABLE and i.get("attempts", 0) < MAX_ATTEMPTS)]
+            (i["status"] in RETRYABLE and i.get("attempts", 0) < MAX_ATTEMPTS)] + career_again
     if queue.get("paused"):
         log("apply: queue paused from the phone (%d waiting)" % len(todo))
         return {}
@@ -364,16 +372,28 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
     profile = config_mod.load_profile()
     config = dict(config_mod.load(profile=profile))
     config["scan_apply_min_score"] = 0        # queued by you: no score gate
-    log("apply: %d Naukri + %d LinkedIn queued, at most %d each this run%s"
-        % (len(naukri_jobs), len(cards), limit, " (dry run)" if dry_run else ""))
-    outcomes = {}
-    if naukri_jobs or cards:
-        outcomes = autoapply.run(naukri_jobs, cards, config, profile, headless=True, dry_run=dry_run,
-                                 per_run=limit, include_backlog=False, project="phone")
-    # Company-site postings: Simplify-assisted browser, if set up.
+    config["career_apply"] = mode == "career" and config.get("career_apply", True)
     web = [i for i in todo if i["board"] == "web"]
-    mode = settings.get("offsite", "manual")
-    if web:
+    web_jobs = [{"job_id": i["key"], "url": i["url"], "title": i["title"], "company": i["company"],
+                 "score": i.get("score"), "retry": i.get("attempts", 0) > 1 or i["status"] in ("queued", "retry")}
+                for i in web] if mode == "career" else []
+    log("apply: %d Naukri + %d LinkedIn + %d company-site queued, at most %d each this run%s"
+        % (len(naukri_jobs), len(cards), len(web_jobs), limit, " (dry run)" if dry_run else ""))
+    outcomes = {}
+    if naukri_jobs or cards or web_jobs:
+        outcomes = autoapply.run(naukri_jobs, cards, config, profile, headless=True, dry_run=dry_run,
+                                 per_run=limit, include_backlog=False, project="phone", web_jobs=web_jobs)
+    # Company-site postings: the career applier's outcomes, or Simplify / by hand.
+    if mode == "career":
+        import naukri.jobs.career_apply as career_mod
+        for it in todo:
+            hit = outcomes.get(it["key"] if it["board"] != "naukri" else "naukri:" + it["job_id"])
+            if not hit:
+                continue
+            it["career_tried"] = it.get("career_tried") or hit["status"] in career_mod.STATUSES or it["board"] != "web"
+            if it["board"] == "web":
+                it.update(status=career_mod.queue_status(hit["status"]), note=hit["note"], at=now_iso())
+    elif web:
         if mode == "manual":
             for it in web:
                 it.update(status="manual", note="company site - open it from the report and apply by hand",
@@ -426,6 +446,12 @@ def main(argv=None) -> int:
 
     queue = load_queue(queue_path, passphrase)
     before = json.dumps(queue, sort_keys=True)
+    # Once: company-site postings switch from "by hand" to the career applier
+    # (the old default was written into the queue's settings on every run).
+    if not cfg.get("career_default_set"):
+        if (queue.get("settings") or {}).get("offsite") in (None, "manual"):
+            queue.setdefault("settings", {})["offsite"] = "career"
+        cfg["career_default_set"] = True
 
     # 2. The phone's requests.
     requests_ = []
@@ -487,7 +513,7 @@ def main(argv=None) -> int:
         "updated": now_iso(),
         "pc": {"last_seen": now_iso(), "host": os.environ.get("COMPUTERNAME", ""), "limit": limit,
                "applied_today": applied_today, "caps": caps, "dry_run": args.dry_run,
-               "offsite": settings.get("offsite", "manual"),
+               "offsite": settings.get("offsite", "career"),
                "simplify_ready": os.path.exists(os.path.join(config_dir(), "simplify-profile"))},
         "settings": settings,
         "progress": progress_of(queue),

@@ -30,7 +30,7 @@ There are two job-search tools in this repo:
    ```
 3. A full run takes about 3–8 minutes. The report opens in your browser when it finishes.
 4. Reports are saved to `Documents\JobHunt\<date>_<role>\report.html`.
-5. In the report, click **Apply** on a job. For LinkedIn postings the bot can apply for you: `jobhunt_apply.bat` (or `python scripts\job_bot.py apply --limit 5 --yes`) uses the Naukri screener's LinkedIn login, answers and dashboard, so both projects share one set of answers, one applications log and one daily LinkedIn cap. `scripts\schedule_jobhunt.ps1` schedules two small batches a day. Other boards stay manual.
+5. In the report, click **Apply** on a job. For LinkedIn postings the bot can apply for you: `jobhunt_apply.bat` (or `python scripts\job_bot.py apply --limit 5 --yes`) uses the Naukri screener's LinkedIn login, answers and dashboard, so both projects share one set of answers, one applications log and one daily LinkedIn cap. `scripts\schedule_jobhunt.ps1` runs a small batch now and again one hour after each batch finishes (`-Gap 60 -Limit 5`; `-Show` for the next run). Other boards stay manual.
 
 ### Useful flags
 

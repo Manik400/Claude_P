@@ -5,7 +5,7 @@
 **What it is:** on the phone site (<https://manik400.github.io/Claude_P/>) every worldwide report and
 every Naukri scan opens as a job list. Tap **Queue all** (or tick a few and **Queue selected**) and the
 jobs go into **one queue**. Your PC works through that queue every 30 minutes with your own LinkedIn and
-Naukri logins, and the phone shows the progress: `75% · 9 of 12 settled · 5 applied · 1 needs your
+Naukri logins, and fills in company career forms where no login is needed, and the phone shows the progress: `75% · 9 of 12 settled · 5 applied · 1 needs your
 answer · 2 by hand · 1 failed`. The phone never applies by itself and GitHub never does either - it only
 carries the request home.
 
@@ -33,7 +33,8 @@ phone ──Queue all / +Queue / retry / remove / rules / answers──▶ apply
                                    ▼
         PC: site\phone_apply.bat  (every 30 min + 2 min after logon; site\schedule_phone_apply.ps1)
                                    │  folds requests into THE queue, auto-queues strong matches,
-                                   │  applies on Naukri + LinkedIn (Simplify for company sites, optional)
+                                   │  applies on Naukri + LinkedIn + company career sites
+                                   │  (career_apply.py; Simplify optional)
                                    │  writes  data/apply/queue.enc    (every item, status, %, questions, PC heartbeat)
                                    │  writes  data/apply/profile.enc  (Track tab)
                                    ▼
@@ -60,10 +61,15 @@ every job that was waiting on it, and remembers it for later applications (same
 **...an application fails.** It is retried on the next two runs; after three tries it shows
 *failed - tap retry* and waits for you. *Retry* puts it back in the queue.
 
-**...the posting is on the company's own site.** With the default rule it is marked *company site -
-apply by hand* and the job stays in the list with an **open** link. With Simplify set up (below) the PC
-opens it in a browser that has the Simplify Copilot extension, lets it fill the form, screenshots it, and
-either stops (*form pre-filled - finish on PC*) or presses Submit (*submitted*).
+**...the posting is on the company's own site.** The PC opens the career page itself
+(`naukri/jobs/career_apply.py`). If the site wants a login or an account, or shows a CAPTCHA, it stops
+there and the job says *needs login - apply by hand* with an **open** link. Otherwise it fills the form
+from your details (name, email, phone, links, location, resume file; screening questions through the same
+answer rules and answer bank the Naukri and LinkedIn walkers use; "prefer not to say" on voluntary
+diversity questions; the privacy box) and presses Submit: *applied on company site*. A required question
+it cannot answer from your facts stops the form unsent - *form needs you* - and the note says which
+question. Every attempt leaves a screenshot in `data/jobs/career_shots/`. Queue → Rules switches this to
+*leave for me* or to Simplify.
 
 **...I want it fully automatic.** Queue → Rules → **Auto-queue jobs from every new report**, pick a
 minimum resume match (say 60%) and the boards. From then on every new worldwide report and every Naukri
@@ -82,6 +88,9 @@ applying without losing anything; *Resume* continues.
 | `needs your answer` | stopped at a screening question; answer it on Home / Queue |
 | `skipped (your rule)` | a question you marked "skip - never answer" |
 | `applied earlier / closed` | already applied through the screener, or the posting is closed |
+| `applied on company site` | the PC filled the career form and submitted it |
+| `needs login - apply by hand` | the career site wants an account, or shows a CAPTCHA |
+| `form needs you - apply by hand` | a required question no fact of yours answers; nothing was sent |
 | `company site - apply by hand` | not one-click; open it from the list (or set up Simplify) |
 | `form pre-filled - finish on PC` / `submitted` | Simplify modes |
 | `unconfirmed` / `error` / `form failed` | retried twice more, then `failed - tap retry` |
@@ -94,7 +103,8 @@ applying without losing anything; *Resume* continues.
 | `.github/workflows/apply.yml` | carries a request from the phone to the branch (`queue`, `remove`, `retry`, `pause`, `resume`, `settings`, `answers`, `profile`, `notes`) |
 | `site/tools/run_apply_queue.py` | what that workflow runs |
 | `site/tools/phone_apply.py` | the PC worker: the only writer of `data/apply/queue.enc` |
-| `site/tools/offsite_apply.py` | Simplify-assisted browser for company-site postings (experimental) |
+| `Profile_Naukri_Screener-main/naukri/jobs/career_apply.py` | company career sites: skip the ones needing a login, fill and submit the rest |
+| `site/tools/offsite_apply.py` | Simplify-assisted browser for company-site postings (experimental alternative) |
 | `site/tools/phone_publish.py` | publishes Naukri scan pages **with their job list** so the phone can queue them; contacts on the way |
 | `site/phone_apply.bat`, `site/schedule_phone_apply.ps1` | run / schedule the worker (every 30 min + at logon, hidden) |
 | `job-hunt/scripts/jobbot/sources/apify.py` | Naukri / Indeed / LinkedIn through Apify (`APIFY_TOKEN`) |
@@ -113,7 +123,10 @@ applying without losing anything; *Resume* continues.
 6. Optional, for contacts on every report: any of `gh secret set SIGNALHIRE_API_KEY`, `HUNTER_API_KEY`,
    `APOLLO_API_KEY`. For Naukri scans (made on the PC) put the same keys in
    `%LOCALAPPDATA%\JobHuntPhone\config.json` under `"env": {...}`.
-7. Optional, for company-site postings: install Simplify Copilot in Chrome, complete your Simplify
+7. Nothing to do for company career sites - the PC fills and submits them by default and skips the ones
+   that want a login. Check `Profile_Naukri_Screener-main\jobs.yaml` → `applicant:` if the details it
+   reads from your resume need correcting, and `data\jobs\career_shots\` for what it sent.
+8. Optional, to use Simplify for company-site postings instead: install Simplify Copilot in Chrome, complete your Simplify
    profile, run `python site\tools\offsite_apply.py --setup` (sign in once), then Queue → Rules →
    Company-site postings → *Simplify fills the form, I submit on the PC*. Try *fills and submits* only
    after a few good screenshots in `%LOCALAPPDATA%\JobHuntPhone\shots`.
