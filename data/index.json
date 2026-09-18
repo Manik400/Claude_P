@@ -1,6 +1,39 @@
 {
- "updated": "2026-09-18T04:16:37Z",
+ "updated": "2026-09-18T06:16:40Z",
  "items": [
+  {
+   "id": "naukri-20260918-061640-naukri-openings-2026-09-18-run-13",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 13",
+   "when": "2026-09-18T06:16:40Z",
+   "file": "data/naukri/naukri-20260918-061640-naukri-openings-2026-09-18-run-13.enc",
+   "bytes": 50248,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-061640-naukri-openings-2026-09-18-run-13.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260918-061639-naukri-openings-2026-09-18-run-11",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 11",
+   "when": "2026-09-18T06:16:39Z",
+   "file": "data/naukri/naukri-20260918-061639-naukri-openings-2026-09-18-run-11.enc",
+   "bytes": 51780,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-061639-naukri-openings-2026-09-18-run-11.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260918-061639-naukri-openings-2026-09-18-run-12",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 12",
+   "when": "2026-09-18T06:16:39Z",
+   "file": "data/naukri/naukri-20260918-061639-naukri-openings-2026-09-18-run-12.enc",
+   "bytes": 48110,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-061639-naukri-openings-2026-09-18-run-12.jobs.enc"
+   }
+  },
   {
    "id": "naukri-20260918-041637-naukri-openings-2026-09-18-run-9",
    "kind": "naukri",
@@ -21,17 +54,6 @@
    "bytes": 51851,
    "meta": {
     "jobs_file": "data/naukri/naukri-20260918-041637-naukri-openings-2026-09-18-run-10.jobs.enc"
-   }
-  },
-  {
-   "id": "naukri-20260918-041637-naukri-openings-2026-09-18-run-11",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-18 run 11",
-   "when": "2026-09-18T04:16:37Z",
-   "file": "data/naukri/naukri-20260918-041637-naukri-openings-2026-09-18-run-11.enc",
-   "bytes": 51676,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260918-041637-naukri-openings-2026-09-18-run-11.jobs.enc"
    }
   },
   {
