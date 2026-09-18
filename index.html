@@ -234,21 +234,24 @@
   table.jt tbody tr.on { background: var(--accent-bg); box-shadow: inset 3px 0 0 var(--accent); }
   table.jt tbody tr.done td { opacity: .62; }
   table.jt tbody tr.gone td { opacity: .42; }
-  table.jt td.num { font-variant-numeric: tabular-nums; font-weight: 700; }
+  table.jt td .chip { white-space: normal; }  /* a long status must wrap, not spill into the next column */
+  table.jt td.num { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+  table.jt td.when { white-space: nowrap; }
   .s-hi { color: var(--ok); } .s-mid { color: var(--warn); } .s-lo { color: var(--muted); }
   .job.sel { border-color: var(--accent); }
+  .job[data-job] { cursor: pointer; }
   table.jt td.dim { color: var(--muted); }
   table.jt td.pos a { font-weight: 600; text-decoration: none; color: var(--fg); }
   table.jt tbody tr:hover td.pos a { color: var(--accent); }
   table.jt tr.sep td { background: var(--card2); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .07em; font-weight: 600; cursor: default; }
   table.jt tr.sep:hover td { background: var(--card2); }
-  .tacts { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tacts { display: flex; gap: 4px; flex-wrap: nowrap; }
   .tacts button, .tacts a { border: 1px solid var(--line); background: var(--card2); color: var(--fg); border-radius: 8px;
-    padding: 3px 7px; font-size: 12px; line-height: 1.5; cursor: pointer; text-decoration: none; display: inline-block; }
+    min-width: 26px; text-align: center; padding: 3px 6px; font-size: 13px; line-height: 1.5; cursor: pointer; text-decoration: none; display: inline-block; }
   .tacts button:hover, .tacts a:hover { border-color: var(--muted); }
   .tacts button.go { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
   .tacts button:disabled { opacity: .5; cursor: default; }
-  .clip { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .clip { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
   /* the detail: a card on the right at >=1100px, an accordion inline below that */
   .dt h3 { margin: 0 0 2px; font-size: 17px; line-height: 1.3; }
   .dt .dhead { display: flex; gap: 8px; align-items: flex-start; }
@@ -261,9 +264,9 @@
   .dt .note { font-size: 13px; color: var(--muted); margin-top: 4px; word-break: break-word; }
   .dt code { word-break: break-all; }
   @media (min-width: 1100px) {
-    #j-box > * { max-width: var(--wide-w); }
-    .jsplit { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 14px; align-items: start; }
-    .jsplit.narrow { grid-template-columns: minmax(0, 1fr) 380px; }
+    #viewer > #j-box > * { max-width: var(--wide-w); }  /* beats the narrow list width below */
+    .jsplit.open { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 14px; align-items: start; }
+    .jsplit.narrow.open { grid-template-columns: minmax(0, 1fr) 380px; }
     .jdetail { position: sticky; top: 0; max-height: calc(100vh - 96px); overflow-y: auto; overscroll-behavior: contain; }
     .jdetail .card { margin-bottom: 0; }
   }
@@ -366,11 +369,13 @@
         <div class="chips small strip" id="f-platforms"></div>
         <div class="hint">Nothing picked = every platform that is set up. The ones marked 🔑 only run when their API key is a repo secret (Settings → Coverage), so they stay out unless you tap them.</div>
         <label class="check"><input type="checkbox" id="f-remote" checked> Include remote job boards</label>
-        <details class="hint"><summary>Advanced</summary>
-          <div class="row">
-            <div><label>Experience filter</label>
-              <select id="f-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
-            <div><label>Extra flags</label><input id="f-extra" placeholder="--must python" autocapitalize="none"></div>
+        <details class="filters sub" id="sf-adv"><summary><b>Advanced</b><span class="sum" id="sf-adv-sum"></span></summary>
+          <div class="fbody">
+            <div class="row">
+              <div><label>Experience filter</label>
+                <select id="f-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
+              <div><label>Extra flags</label><input id="f-extra" placeholder="--must python" autocapitalize="none"></div>
+            </div>
           </div>
         </details>
         <button class="primary" id="btn-run">Start search</button>
@@ -780,6 +785,12 @@
   }
   $("btn-close").addEventListener("click", function () { var pushed = history.state && history.state.viewer; closeViewer(); if (pushed) history.back(); });
   window.addEventListener("popstate", function () { if (!(history.state && history.state.viewer)) closeViewer(); });
+  // Esc closes the open detail column (the viewer itself has its own Back button)
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (JV && JV.detail && !$("j-box").hidden && $("viewer").classList.contains("on")) { setDetail(null); return; }
+    if (AA.sel >= 0 && $("t-auto")) { AA.sel = -1; renderAuto(); }
+  });
 
   // ---- the queue (data/apply/queue.enc, written only by the PC)
   var queue = null, queueAt = 0;
@@ -921,19 +932,22 @@
     var h = '<div class="card"><h2>Progress</h2>' + progressHtml(q.progress) + pcHtml() +
       '<div class="acts2"><button class="ghost" id="q-pause">' + (q.paused ? "▶ Resume queue" : "⏸ Pause queue") + '</button><button class="ghost" id="q-refresh">↻ Refresh</button></div></div>';
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
-    h += '<div class="card"><h2>Rules <span class="r" id="q-rules-toggle">' + (store.get("q.rules", "") ? "hide" : "edit") + "</span></h2>" +
+    var rsum = (auto.enabled ? "auto-queue " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") : "auto-queue off") +
+      " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) +
+      " · " + (st.limit || 5) + " per board per run";
+    h += acc("qr", "Rules", rsum,
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
       " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
-      '<div id="q-rules"' + (store.get("q.rules", "") ? "" : " hidden") + '>' +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Per board per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
       '<label>Boards</label><div class="chips small" id="r-boards">' + ["linkedin", "naukri", "web"].map(function (b) { return '<button type="button" data-b="' + b + '"' + ((dirty["r-boards"] || auto.boards || []).indexOf(b) >= 0 ? ' class="on"' : "") + ">" + ({ linkedin: "LinkedIn", naukri: "Naukri", web: "Company sites" }[b]) + "</button>"; }).join("") + "</div>" +
       '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify", "Simplify fills the form, I submit on the PC"], ["simplify-submit", "Simplify fills and submits (experimental)"]]) +
       '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify modes need a one-time setup on the PC: <code>python site\\tools\\offsite_apply.py --setup</code>.') + "</div>" +
-      '<button class="primary" id="r-save">Save rules</button></div></div>';
+      '<button class="primary" id="r-save">Save rules</button>');
+    var qsum = (FILTERS.filter(function (f) { return f[0] === qFilter; })[0] || ["", "All"])[1] + " · " + items.filter(function (i) { return inFilter(i, qFilter); }).length + " shown";
     h += '<div class="card"><h2>' + items.length + " job" + (items.length !== 1 ? "s" : "") + " in the queue</h2>" +
-      '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>" +
+      acc("qf", "Filters", qsum, '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>", "sub") +
       '<div id="q-list">' + (items.filter(function (i) { return inFilter(i, qFilter); }).map(queueItemHtml).join("") || '<div class="muted" style="margin-top:8px">Nothing here.</div>') + "</div></div>";
     var hist = q.history || [];
     if (hist.length) h += '<div class="card"><h2>Recent runs on the PC</h2>' + hist.slice().reverse().slice(0, 8).map(function (r) {
@@ -944,7 +958,7 @@
     bindQuestions("qq", pend);
     $("q-pause").addEventListener("click", function () { request(q.paused ? "resume" : "pause", {}, q.paused ? "Resuming on the PC's next run." : "Pausing on the PC's next run."); });
     $("q-refresh").addEventListener("click", function () { loadQueue(true).then(renderQueue); });
-    $("q-rules-toggle").addEventListener("click", function () { store.set("q.rules", store.get("q.rules", "") ? "" : "1"); renderQueue(); });
+    bindAcc($("queue-body"));
     $("r-boards").addEventListener("click", function (e) {
       var b = e.target.closest("button"); if (!b) return; b.classList.toggle("on");
       dirty["r-boards"] = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (x) { return x.dataset.b; });
@@ -953,7 +967,7 @@
       var boards = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (b) { return b.dataset.b; });
       $("r-save").disabled = true;
       request("settings", { auto: { enabled: $("r-auto").checked, min_score: +$("r-min").value, boards: boards }, limit: +$("r-limit").value, offsite: $("r-offsite").value },
-        "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("q-rules")); delete dirty["r-boards"]; } });
+        "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("qr")); delete dirty["r-boards"]; } });
     });
     $("q-filters").addEventListener("click", function (e) { var b = e.target.closest("button[data-f]"); if (!b) return; qFilter = b.dataset.f; store.set("q.filter", qFilter); renderQueue(); });
     $("q-list").addEventListener("click", function (e) {
@@ -1072,7 +1086,7 @@
     h += (a.answers || []).length
       ? a.answers.map(function (y) {
         return '<div class="qa"><div class="q">' + esc(y.question) + (y.options && y.options.length ? " <span class=\"src\">(" + esc(y.options.join(" / ")) + ")</span>" : "") +
-          '</div><div class="a">' + esc(y.answer === "" || y.answer == null ? "—" : y.answer) + '</div><div class="src">from ' + esc(y.source || "unknown") + (y.fix ? " · change it at " + esc(y.fix) : "") + "</div></div>";
+          '</div><div class="a">' + esc(y.answer === "" || y.answer == null ? "—" : y.answer) + '</div><div class="src">source: ' + esc(y.source || "unknown") + (y.fix ? " · change it at " + esc(y.fix) : "") + "</div></div>";
       }).join("")
       : '<div class="muted" style="margin-top:6px">' + (done ? "One-click apply - the form asked nothing." : "No questions were filled in.") + "</div>";
     if (a.blocked) h += '<div class="msg warn">Stopped at: <b>' + esc(a.blocked.question) + "</b>" +
@@ -1205,10 +1219,11 @@
     }
     if (todo.length > JV.limit) body += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
     body += removedHint(nRemoved, JV.showRemoved);
+    // the detail is a second column only while a row is open, so the table keeps the
+    // whole width the rest of the time
     var det = JV.detail ? JV.jobs.filter(function (j) { return j._key === JV.detail; })[0] : null;
-    h += '<div class="jsplit"><div class="jmain">' + body + "</div>" +
-      (wide() ? '<aside class="jdetail">' + (det ? detailHtml(det, keys[det._key])
-        : '<div class="card muted">Click a row to see the posting, its skills and the form your PC filled in.</div>') + "</aside>" : "") + "</div>";
+    h += '<div class="jsplit' + (wide() && det ? " open" : "") + '"><div class="jmain">' + body + "</div>" +
+      (wide() && det ? '<aside class="jdetail">' + detailHtml(det, keys[det._key]) + "</aside>" : "") + "</div>";
     // keep the filter panel's own scroll (and sideways chip-row scroll) across the re-render
     var keep = ["#jf .fbody", "#jf-board", "#jf-cc"].map(function (s) { var el = box.querySelector(s); return el ? [el.scrollTop, el.scrollLeft] : [0, 0]; });
     box.innerHTML = h; box.scrollTop = top;
@@ -1235,10 +1250,10 @@
         renderJobs();
       });
     });
-    box.querySelectorAll("tr[data-job]").forEach(function (tr) {
-      tr.addEventListener("click", function (e) {
-        if (e.target.closest("button,a,input,label,summary,select")) return;
-        setDetail(JV.detail === tr.dataset.job ? null : tr.dataset.job);
+    box.querySelectorAll("[data-job]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        if (e.target.closest("button,a,input,label,summary,select,.dt")) return;
+        setDetail(JV.detail === el.dataset.job ? null : el.dataset.job);
       });
     });
     if ($("jt-all")) $("jt-all").addEventListener("change", function () {
@@ -1251,11 +1266,12 @@
   }
   function setDetail(key) { if (!JV) return; JV.detail = key; renderJobs(); }
   // ---- the dense table (>=1100px). Declared once so headings, sort keys and cells agree.
+  // widths are percentages so the table breathes with the window (table-layout: fixed)
   var JCOLS = [
-    { k: "sel", h: "", w: "36px" }, { k: "score", h: "Match", w: "76px" }, { k: "status", h: "Status", w: "120px" },
-    { k: "board", h: "Board", w: "108px" }, { k: "company", h: "Company", w: "150px" }, { k: "title", h: "Position", w: "230px" },
-    { k: "location", h: "Location", w: "150px" }, { k: "posted", h: "Posted", w: "94px" }, { k: "matched", h: "Matching skills" },
-    { k: "missing", h: "Missing", w: "140px" }, { k: "why", h: "Why / note" }, { k: "acts", h: "Actions", w: "168px" }
+    { k: "sel", h: "", w: "34px" }, { k: "score", h: "Match", w: "5%" }, { k: "status", h: "Status", w: "10%" },
+    { k: "board", h: "Board", w: "8%" }, { k: "company", h: "Company", w: "10%" }, { k: "title", h: "Position", w: "14%" },
+    { k: "location", h: "Location", w: "8%" }, { k: "posted", h: "Posted", w: "6%" }, { k: "matched", h: "Matching skills", w: "11%" },
+    { k: "missing", h: "Missing", w: "7%" }, { k: "why", h: "Why / note", w: "10%" }, { k: "acts", h: "Actions", w: "11%" }
   ];
   function jobTable(todo, done, keys) {
     var head = "<thead><tr>" + JCOLS.map(function (c) {
@@ -1275,12 +1291,12 @@
     var st = q ? stChip(q.status, q.note) : (applied ? chip("ok", "✓ applied") : '<span class="muted">—</span>');
     var why = (q && q.note) || j.snippet || "";
     var acts = '<div class="tacts">' +
-      (q ? '<button disabled title="' + esc((STATUS[q.status] || ["", q.status])[1]) + '">in queue</button>'
-         : (applied ? "" : '<button class="go" data-q1="' + esc(j._key) + '" title="Add to the auto-apply queue">+ queue</button>')) +
-      '<a href="' + esc(safeUrl(j.url)) + '" target="_blank" rel="noopener" data-open="' + esc(j._key) + '" title="Open the posting">open ↗</a>' +
-      '<button data-tc="' + esc(j._key) + '" title="Contacts at this company">contacts</button>' +
-      (marks.removed[j._key] ? '<button data-restore="' + esc(j._key) + '" title="Put back in the list">↺</button>'
-         : '<button data-remove="' + esc(j._key) + '" title="Remove from the list">🗑</button>') + "</div>";
+      (q ? '<button disabled title="Already in the queue: ' + esc((STATUS[q.status] || ["", q.status])[1]) + '" aria-label="in the queue">✓</button>'
+         : (applied ? "" : '<button class="go" data-q1="' + esc(j._key) + '" title="Add to the auto-apply queue" aria-label="queue this job">+</button>')) +
+      '<a href="' + esc(safeUrl(j.url)) + '" target="_blank" rel="noopener" data-open="' + esc(j._key) + '" title="Open the posting" aria-label="open the posting">↗</a>' +
+      '<button data-tc="' + esc(j._key) + '" title="Contacts at this company" aria-label="contacts">☏</button>' +
+      (marks.removed[j._key] ? '<button data-restore="' + esc(j._key) + '" title="Put back in the list" aria-label="put back">↺</button>'
+         : '<button data-remove="' + esc(j._key) + '" title="Remove from the list" aria-label="remove">🗑</button>') + "</div>";
     return '<tr data-job="' + esc(j._key) + '" class="' + (applied ? "done " : "") + (marks.removed[j._key] ? "gone " : "") + (JV.detail === j._key ? "on" : "") + '">' +
       "<td>" + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' title="select">') + "</td>" +
       '<td class="num ' + scCls + '">' + (sc == null ? "—" : sc + "%") + "</td>" +
@@ -1289,10 +1305,10 @@
       "<td>" + esc(j.company || "") + "</td>" +
       '<td class="pos">' + openLink(j.url, j.title || "(no title)", "", j._key) + "</td>" +
       '<td class="dim">' + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "") + "</td>" +
-      '<td class="dim">' + esc(j.posted ? ago(j.posted) : "") + "</td>" +
-      '<td class="dim clip">' + esc((j.matched_skills || []).join(", ")) + "</td>" +
-      '<td class="dim clip">' + esc((j.missing_skills || []).join(", ")) + "</td>" +
-      '<td class="dim clip">' + esc(why) + "</td>" +
+      '<td class="dim when">' + esc(j.posted ? ago(j.posted) : "") + "</td>" +
+      '<td class="dim"><div class="clip">' + esc((j.matched_skills || []).join(", ")) + "</div></td>" +
+      '<td class="dim"><div class="clip">' + esc((j.missing_skills || []).join(", ")) + "</div></td>" +
+      '<td class="dim"><div class="clip">' + esc(why) + "</div></td>" +
       "<td>" + acts + "</td></tr>";
   }
   function jobCard(j, q, applied) {
@@ -1306,7 +1322,7 @@
     var ex = j.extra || {}, c = ex.contacts, hasC = c && ((c.people || []).length || (c.emails || []).length);
     var btn = q ? '<button class="btn done" disabled>' + (STATUS[q.status] || [0, q.status])[1] + "</button>" : (applied ? "" : '<button class="btn" data-q1="' + esc(j._key) + '">+ Queue</button>');
     if (applied && !q) qchip = chip("ok", "✓ applied");
-    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + (JV.detail === j._key ? " sel" : "") + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
+    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + (JV.detail === j._key ? " sel" : "") + '" data-job="' + esc(j._key) + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
       '<div style="flex:1;min-width:0"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div></div>" + qchip + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" +
       (j.matched_skills && j.matched_skills.length ? '<div class="hint">✓ ' + esc(j.matched_skills.slice(0, 8).join(", ")) + "</div>" : "") +
@@ -1391,7 +1407,12 @@
       [["Applied", c.applied || 0], ["Today", c.applied_today || 0], ["Replies", replies]].map(function (x) { return '<div class="stat"><div class="big">' + x[1] + '</div><div class="muted">' + x[0] + "</div></div>"; }).join("") + "</div>" +
       '<div class="muted" style="margin-top:6px">' + (track.gmail && track.gmail.synced_at ? "Gmail replies checked " + ago(track.gmail.synced_at) : "Gmail replies: set an app password in the PC dashboard to see recruiter replies here") + "</div></div>";
     if (waiting.length) html += '<div class="card"><h2>Questions waiting for you (' + waiting.length + ")</h2>" + questionsHtml(waiting, "tq") + "</div>";
-    html += '<div class="card"><h2>Applications (' + apps.length + ')</h2><input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div class="chips small" id="t-status" style="margin-top:6px"></div><div id="t-apps"></div></div>';
+    html += '<div class="card"><h2>Applied by your PC (' + autoApps().length + ')</h2>' +
+      '<div class="muted">Every job the PC applied to by itself, newest first — LinkedIn and Naukri one-click applies and the company-site forms it filled and submitted. Tap one to see the form it sent.</div>' +
+      '<div id="t-auto"></div></div>';
+    html += '<div class="card"><h2>Applications (' + apps.length + ')</h2>' +
+      acc("tf", "Filters", "All", '<input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div class="chips small" id="t-status" style="margin-top:6px"></div>', "sub") +
+      '<div id="t-apps"></div></div>';
     html += '<div class="card"><details><summary><b>My answers</b> <span class="muted">— what the agent says on your behalf</span></summary>';
     html += '<div class="muted" style="margin-top:6px">Blank fields fall back to your Naukri profile or jobs.yaml (shown as the placeholder).</div>';
     (a.fields || []).forEach(function (f) {
@@ -1411,7 +1432,8 @@
     html += '<h2 style="margin-top:14px">Answers to specific questions</h2><div id="t-bank"></div><input id="t-bank-q" placeholder="question, as the recruiter words it" autocapitalize="none" style="margin-top:6px"><input id="t-bank-a" placeholder="answer" autocapitalize="none" style="margin-top:6px"><button class="ghost" id="t-bank-add" style="margin-top:6px">Add answer</button>';
     html += '<button class="primary" id="t-save">Save all answers</button><div id="t-msg"></div></details></div>';
     $("track-body").innerHTML = html;
-    renderTrackSkills(); renderTrackBank(); renderTrackApps(); restoreDirty($("track-body"));
+    renderTrackSkills(); renderTrackBank(); renderAuto(); renderTrackApps(); restoreDirty($("track-body"));
+    bindAcc($("track-body"));
     bindQuestions("tq", waiting);
     $("t-skill-add").addEventListener("click", function () { var n = $("t-skill-name").value.trim(), y = parseFloat($("t-skill-years").value); if (n && !isNaN(y)) { trackSkills[n] = y; $("t-skill-name").value = ""; $("t-skill-years").value = ""; renderTrackSkills(); } });
     $("t-bank-add").addEventListener("click", function () { var q = $("t-bank-q").value.trim(), an = $("t-bank-a").value.trim(); if (q && an) { trackBank.push({ question: q, answer: an, options: [] }); $("t-bank-q").value = ""; $("t-bank-a").value = ""; renderTrackBank(); } });
@@ -1427,6 +1449,64 @@
     });
   }
   var tStatus = "all";
+  // ---- "Applied by your PC": every application the PC itself sent, newest first, with the
+  // form it filled in. Reachable from Home in two taps (Track → the card at the top).
+  var AA = { filter: "all", sel: -1 };
+  var A_BOARD = { linkedin: "LinkedIn", naukri: "Naukri", web: "Company site", career: "Company site" };
+  function autoApps() {
+    return ((track || {}).applications || []).filter(function (a) { return /^(applied|submitted)$/.test(a.status) && !a.dry_run; });
+  }
+  function appJob(a) {  // an application entry seen as a posting, so the detail column can show it
+    var key = ""; try { key = jobKey({ url: a.url, job_id: a.job_id, source: a.board }).key; } catch (e) {}
+    return { title: a.title, company: a.company, location: a.location, url: a.url, score: a.score, posted: a.at,
+             source: a.board, source_name: A_BOARD[a.board] || a.board, _key: key };
+  }
+  function handMark(a) {  // did a human have to finish this one?
+    var list = appsFor(appJob(a)), i = list.indexOf(a);
+    return i >= 0 ? byHand(list, i) : byHand([a], 0);
+  }
+  var AA_FILTERS = [["all", "All"], ["auto", "Fully automatic"], ["hand", "You finished it"],
+                    ["linkedin", "LinkedIn"], ["naukri", "Naukri"], ["web", "Company sites"]];
+  function renderAuto() {
+    var box = $("t-auto"); if (!box) return;
+    var all = autoApps();
+    var keep = function (f, a) {
+      if (f === "auto") return !handMark(a);
+      if (f === "hand") return handMark(a);
+      if (f === "web") return a.board === "web" || a.board === "career";
+      if (f === "linkedin" || f === "naukri") return a.board === f;
+      return true;
+    };
+    var list = all.filter(function (a) { return keep(AA.filter, a); });
+    if (AA.sel >= list.length) AA.sel = -1;
+    var chips = '<div class="chips small" id="t-auto-f">' + AA_FILTERS.map(function (f) {
+      var n = all.filter(function (a) { return keep(f[0], a); }).length;
+      return '<button type="button" data-aaf="' + f[0] + '"' + (AA.filter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>";
+    }).join("") + "</div>";
+    var sum = (AA_FILTERS.filter(function (f) { return f[0] === AA.filter; })[0] || ["", "All"])[1] + " · " + list.length;
+    var keys = queueKeys();
+    var rows = list.map(function (a, i) {
+      var hand = handMark(a);
+      return '<div class="item" data-aa="' + i + '"' + (AA.sel === i ? ' style="background:var(--accent-bg)"' : "") + '><div class="t"><b>' + esc(a.title || "(no title)") + "</b><span>" +
+        esc([a.company, A_BOARD[a.board] || a.board, whenText(a.at)].filter(Boolean).join(" · ")) + "</span></div>" +
+        chip(hand ? "man" : "ok", hand ? "you finished it" : "automatic") +
+        (a.url ? ' <a class="ghost small" href="' + esc(safeUrl(a.url)) + '" target="_blank" rel="noopener" title="Open the posting">↗</a>' : "") + "</div>" +
+        (!wide() && AA.sel === i ? detailHtml(appJob(a), keys[appJob(a)._key], { noContacts: 1 }) : "");
+    }).join("") || '<div class="muted" style="margin-top:8px">Nothing here yet.</div>';
+    var selApp = AA.sel >= 0 ? list[AA.sel] : null;
+    box.innerHTML = acc("taf", "Filter", sum, chips, "sub") +
+      '<div class="jsplit narrow' + (wide() && selApp ? " open" : "") + '" style="margin-top:8px"><div class="jmain">' + rows + "</div>" +
+      (wide() && selApp ? '<aside class="jdetail">' + detailHtml(appJob(selApp), keys[appJob(selApp)._key], { noContacts: 1 }) + "</aside>" : "") + "</div>";
+    bindAcc(box);
+    $("t-auto-f").addEventListener("click", function (e) { var b = e.target.closest("button[data-aaf]"); if (!b) return; AA.filter = b.dataset.aaf; AA.sel = -1; renderAuto(); });
+    box.querySelectorAll("[data-aa]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        if (e.target.closest("a,button,input,.dt")) return;
+        AA.sel = AA.sel === +el.dataset.aa ? -1 : +el.dataset.aa; renderAuto();
+      });
+    });
+    box.querySelectorAll("[data-dclose]").forEach(function (b) { b.addEventListener("click", function () { AA.sel = -1; renderAuto(); }); });
+  }
   function renderTrackSkills() {
     $("t-skills").innerHTML = Object.keys(trackSkills).sort().map(function (n) {
       return '<div class="row" style="grid-template-columns:1fr 90px 70px;align-items:center;margin-top:4px"><div>' + esc(n) + '</div><input data-ts="' + esc(n) + '" value="' + esc(trackSkills[n]) + '" inputmode="decimal"><button class="ghost" data-tsdel="' + esc(n) + '">remove</button></div>'; }).join("") || '<div class="muted">None yet.</div>';
@@ -1454,6 +1534,7 @@
       if (tStatus === "phone") return x.project === "phone";
       return true;
     });
+    accSum("tf", (groups.filter(function (g) { return g[0] === tStatus; })[0] || ["", "All"])[1] + (q ? ' · "' + q + '"' : "") + " · " + apps.length + " shown");
     var statuses = track.manual_statuses || ["", "viewed", "shortlisted", "interview", "offer", "rejected", "withdrawn"];
     $("t-apps").innerHTML = apps.map(function (x, i) {
       var r = x.response, m = x.manual || {};
@@ -1499,11 +1580,13 @@
     if (i >= 0) picked.splice(i, 1); else picked.push(b.dataset.cc);
     store.set("f.cc", picked.join(",")); renderWCountries();
   });
+  function advSum() { accSum("sf-adv", "experience filter: " + $("f-fit").value + ($("f-extra").value.trim() ? " · " + $("f-extra").value.trim() : "")); }
   ["role", "exp", "fit", "extra", "more"].forEach(function (k) {
     var el = $("f-" + k); el.value = store.get("f." + k, el.value);
-    var save = function () { store.set("f." + k, el.value); };
+    var save = function () { store.set("f." + k, el.value); advSum(); };
     el.addEventListener("input", save); el.addEventListener("change", save);
   });
+  advSum();
   $("f-remote").checked = store.get("f.remote", "1") === "1";
   $("f-remote").addEventListener("change", function () { store.set("f.remote", $("f-remote").checked ? "1" : ""); });
 
@@ -1617,7 +1700,9 @@
     var inputs = { role: role, experience: $("f-exp").value.trim(), countries: countries.join(","),
                    days: String(Math.max(1, Math.ceil(hours / 24))),
                    fit: $("f-fit").value, extra: extra.trim(), platforms: picked.join(",") };
-    if (w.u === "h") { inputs.hours = trimNum(w.n); inputs.allow_undated = !!$("f-undated").checked; }
+    // hours wins over days in the workflow, so it is sent for any window under a day -
+    // including one typed in days ("0.5 days"), where the undated switch applies too.
+    if (hours < 24) { inputs.hours = trimNum(hours); inputs.allow_undated = $("f-undated").checked ? "true" : "false"; }
     $("btn-run").disabled = true; msg("run-msg", "Starting…");
     gh("/actions/workflows/jobhunt.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
       .then(function () { msg("run-msg", "Started. 5–15 minutes; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
@@ -1829,7 +1914,7 @@
   });
 
   // ---- boot
-  fillSettings(); renderWCountries(); renderPlatforms(); renderCountryPicker();
+  fillSettings(); renderWCountries(); renderPlatforms(); renderCountryPicker(); bindAcc(document);
   if (store.get("s.seg", "world") === "careers") { $("s-seg").querySelector('[data-s="careers"]').click(); }
   var hashTab = location.hash.slice(1);
   showTab(TABS.indexOf(hashTab) >= 0 ? hashTab : store.get("tab", "home"));
