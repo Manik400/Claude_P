@@ -1,6 +1,17 @@
 {
- "updated": "2026-09-18T10:51:59Z",
+ "updated": "2026-09-18T23:16:37Z",
  "items": [
+  {
+   "id": "naukri-20260918-231637-naukri-openings-2026-09-19-run-1",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-19 run 1",
+   "when": "2026-09-18T23:16:37Z",
+   "file": "data/naukri/naukri-20260918-231637-naukri-openings-2026-09-19-run-1.enc",
+   "bytes": 64378,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-231637-naukri-openings-2026-09-19-run-1.jobs.enc"
+   }
+  },
   {
    "id": "naukri-20260918-105159-naukri-openings-2026-09-18-run-17",
    "kind": "naukri",
