@@ -80,3 +80,282 @@ Riot Games       | greenhouse      | riotgames
 NVIDIA           | workday         | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
 Salesforce       | workday         | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site
 Adobe            | workday         | adobe.wd5.myworkdayjobs.com/adobe/external_experienced
+
+# ============================================================
+# GLOBAL HIGH-PAYING TECH COMPANIES
+# Format:
+# Company | ATS | ATS Slug / Board | Primary Locations / Notes
+# ============================================================
+
+# ---- AI / Data / Infrastructure
+Databricks       | greenhouse | databricks       | San Francisco, New York, Amsterdam, London, Bengaluru
+Anthropic        | greenhouse | anthropic        | San Francisco, Seattle, London, Tokyo
+OpenAI           | greenhouse | openai            | San Francisco, New York, London, Paris, Tokyo
+Scale AI         | greenhouse | scaleai           | San Francisco, New York, London
+Hugging Face     | greenhouse | huggingface       | New York, Paris, Remote
+Cohere           | greenhouse | cohere             | Toronto, New York, London
+Mistral AI       | ashby      | mistral            | Paris, London, Palo Alto
+Perplexity       | greenhouse | perplexity-ai      | San Francisco, New York
+xAI              | greenhouse | xai                | Palo Alto, Memphis, Remote
+Glean             | greenhouse | glean              | Palo Alto, Bengaluru, New York
+Weights & Biases | greenhouse | wandb              | San Francisco, London, Tokyo, Remote
+Pinecone         | greenhouse | pinecone           | New York, San Francisco, Remote
+Zilliz           | greenhouse | zilliz             | Redwood City, Shanghai, Remote
+Weaviate         | greenhouse | weaviate           | Amsterdam, New York, Remote
+Replicate        | greenhouse | replicate          | San Francisco, Remote
+Modal            | greenhouse | modal              | New York, San Francisco, Remote
+Together AI      | greenhouse | togetherai         | San Francisco, Remote
+Fireworks AI     | greenhouse | fireworksai        | Mountain View, Remote
+Baseten          | greenhouse | baseten            | San Francisco, New York
+Runway           | greenhouse | runwayml           | New York, San Francisco
+ElevenLabs       | greenhouse | elevenlabs         | New York, London, Warsaw
+Harvey           | greenhouse | harvey              | San Francisco, New York, Remote
+Cloudflare        | greenhouse | cloudflare         | San Francisco, Austin, London, Lisbon, Singapore, Remote
+Vercel            | greenhouse | vercel              | San Francisco, New York, London, Remote, India
+GitLab            | greenhouse | gitlab              | Remote-first, India, Europe, Americas
+GitHub            | greenhouse | github              | Remote, US, Europe, India
+GitLab            | greenhouse | gitlab              | Remote-first
+Docker             | greenhouse | docker              | Palo Alto, Remote, Europe
+HashiCorp          | greenhouse | hashicorp            | US, Canada, Europe, Remote
+Grafana Labs       | greenhouse | grafanalabs          | New York, London, Stockholm, Remote
+Elastic             | greenhouse | elastic              | Amsterdam, Mountain View, Bangalore, Remote
+Datadog             | greenhouse | datadog              | New York, Boston, Paris, Amsterdam, Tokyo
+MongoDB             | greenhouse | mongodb              | New York, London, Dublin, Bengaluru, Remote
+Confluent           | greenhouse | confluent             | Mountain View, London, Bengaluru, Remote
+Cockroach Labs      | greenhouse | cockroachlabs         | New York, Austin, Remote
+Redis               | greenhouse | redis                 | Mountain View, London, Tel Aviv, Remote
+ClickHouse          | greenhouse | clickhouse            | Amsterdam, London, New York, Remote
+Sentry              | greenhouse | sentry                | San Francisco, Vienna, Remote
+LaunchDarkly        | greenhouse | launchdarkly          | Oakland, London, Remote
+Sourcegraph         | greenhouse | sourcegraph           | Remote
+Temporal             | greenhouse | temporal              | Seattle, London, Remote
+CircleCI             | greenhouse | circleci              | Remote
+Harness              | greenhouse | harness               | San Francisco, Bengaluru, Remote
+Postman              | greenhouse | postman               | Bengaluru, San Francisco, Remote
+BrowserStack         | greenhouse | browserstack          | Mumbai, Bengaluru, New York, Amsterdam
+LambdaTest           | greenhouse | lambdatest            | Noida, Bengaluru, San Francisco, Remote
+Supabase             | greenhouse | supabase              | Remote, New York
+Neon                 | greenhouse | neon                   | San Francisco, Remote
+PlanetScale          | greenhouse | planetscale            | Remote
+Retool               | greenhouse | retool                 | San Francisco, New York, Remote
+
+# ---- Product / Consumer Tech
+Airbnb              | greenhouse | airbnb              | San Francisco, New York, Dublin, London
+Figma               | greenhouse | figma                | San Francisco, New York, London, Bengaluru
+Notion              | ashby      | notion               | San Francisco, New York, London, Amsterdam, Hyderabad, Tokyo
+Reddit              | greenhouse | reddit               | San Francisco, New York, Toronto, London, Amsterdam
+Pinterest           | greenhouse | pinterest            | San Francisco, New York, Seattle, London, Tokyo
+Dropbox             | greenhouse | dropbox              | San Francisco, New York, Austin, Dublin, Remote
+Discord             | greenhouse | discord              | San Francisco, Remote
+Spotify             | greenhouse | spotify              | Stockholm, London, New York, Bengaluru
+Snap                | greenhouse | snap                 | Santa Monica, Seattle, London, Paris
+TikTok / ByteDance  | greenhouse | bytedance             | Singapore, London, Dublin, New York, Los Angeles
+Roblox              | greenhouse | roblox               | San Mateo, San Francisco, London, Remote
+Unity               | greenhouse | unity                | San Francisco, Copenhagen, Stockholm, Remote
+Epic Games           | official   | epicgames             | Cary, Montreal, Vancouver, London, Porto Alegre
+Riot Games           | greenhouse | riotgames             | Los Angeles, Dublin, St. Louis, Remote
+Electronic Arts      | workday    | ea                    | Redwood City, Vancouver, Austin, Orlando
+Valve                | official   | valve                 | Bellevue, Remote
+Nintendo              | official   | nintendo              | Kyoto, Tokyo, Redmond
+PlayStation / Sony    | workday    | sony                  | San Diego, London, Tokyo
+
+# ---- Fintech / Crypto
+Coinbase             | greenhouse | coinbase              | Remote India, US, UK, Ireland, Singapore
+Binance              | lever      | binance               | Global Remote, Dubai, Singapore, Europe, India
+Stripe               | greenhouse | stripe                | San Francisco, New York, Dublin, London, Singapore, Bengaluru
+Plaid                | ashby      | plaid                 | San Francisco, New York, Washington DC, Remote
+Block / Square       | greenhouse | block                 | San Francisco, New York, London, Toronto
+Ramp                 | greenhouse | ramp                  | New York, Miami, Remote
+Brex                 | greenhouse | brex                  | San Francisco, New York, Vancouver
+Robinhood             | greenhouse | robinhood             | Menlo Park, New York, London
+Chime                 | greenhouse | chime                 | San Francisco, Chicago, Remote
+Revolut               | greenhouse | revolut               | London, Dublin, Berlin, Madrid, Paris
+Wise                  | greenhouse | wise                  | London, Tallinn, Singapore, New York
+Adyen                 | greenhouse | adyen                 | Amsterdam, London, Madrid, Singapore
+Checkout.com          | greenhouse | checkout              | London, Dubai, Singapore, Paris
+Klarna                | greenhouse | klarna                | Stockholm, London, Berlin, New York
+Nubank                | greenhouse | nubank                | Sao Paulo, Mexico City, Remote
+Affirm                | greenhouse | affirm                | San Francisco, New York, Remote
+Marqeta               | greenhouse | marqeta               | Oakland, London, Remote
+Mercury               | greenhouse | mercury               | San Francisco, New York, Remote
+Circle                | greenhouse | circle                | Boston, New York, London, Remote
+Ripple                | greenhouse | ripple                | San Francisco, London, Toronto
+Chainalysis            | greenhouse | chainalysis            | New York, London, Singapore, Remote
+Kraken                | greenhouse | kraken                | Remote, Europe, US
+OKX                   | greenhouse | okx                   | Hong Kong, Singapore, Dubai, Europe
+Gemini                | greenhouse | gemini                | New York, London, Singapore
+
+# ---- Big Tech / MNC
+Google                | workday    | google                | US, India, UK, Europe, Singapore, Japan
+Microsoft             | workday    | microsoft             | US, India, UK, Europe, Canada
+Amazon                | amazon     | amazonjobs            | Global
+Apple                 | workday    | apple                 | US, UK, Europe, India, Singapore
+Meta                  | greenhouse | meta                  | Menlo Park, New York, London, Singapore, India
+NVIDIA                | workday    | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | US, India, Europe, Asia
+Salesforce             | workday    | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | US, India, Europe, Singapore
+Adobe                  | workday    | adobe.wd5.myworkdayjobs.com/adobe/external_experienced | San Jose, Bengaluru, Noida, London
+Oracle                 | oracle     | oracle                 | US, India, Europe, Asia
+SAP                    | successfactors | sap | Germany, US, India, Europe
+IBM                    | workday    | ibm                   | Global
+Cisco                  | workday    | cisco                 | US, India, Europe, Singapore
+Intel                  | workday    | intel                 | US, India, Europe, Israel
+AMD                    | workday    | amd                   | US, Canada, India, Europe
+Qualcomm               | workday    | qualcomm              | San Diego, Bengaluru, Cambridge, Munich
+Broadcom               | workday    | broadcom               | US, India, Europe, Singapore
+ServiceNow              | workday    | servicenow             | Santa Clara, Bengaluru, Amsterdam, London
+VMware / Broadcom       | workday    | broadcom               | Palo Alto, Bengaluru, Europe
+Dell Technologies       | workday    | dell                   | Austin, Bengaluru, Round Rock, Europe
+Nutanix                 | greenhouse | nutanix                | San Jose, Bengaluru, Durham
+Intuit                  | workday    | intuit                 | Mountain View, Bengaluru, London
+Atlassian               | greenhouse | atlassian               | Sydney, Bengaluru, Austin, Remote
+Workday                 | workday    | workday                | Pleasanton, Dublin, Bengaluru
+Palantir                | greenhouse | palantir               | Denver, New York, London, Tokyo
+Snowflake               | greenhouse | snowflake              | San Mateo, New York, London, Bengaluru
+
+# ---- Enterprise / SaaS
+Freshworks              | greenhouse | freshworks             | San Mateo, Chennai, Bengaluru
+Chargebee               | greenhouse | chargebee              | San Francisco, Chennai, Bengaluru
+Whatfix                 | greenhouse | whatfix                | San Jose, Bengaluru, Pune
+Druva                   | greenhouse | druva                  | Sunnyvale, Pune, Bengaluru
+Gupshup                 | greenhouse | gupshup                | Mumbai, Bengaluru, London
+HighRadius              | greenhouse | highradius             | Houston, Gurugram, Hyderabad
+Innovaccer               | greenhouse | innovaccer              | San Francisco, Noida, Bengaluru
+MoEngage                | greenhouse | moengage               | San Francisco, Bengaluru, Berlin
+CleverTap               | greenhouse | clevertap              | Mountain View, Mumbai, Bengaluru
+WebEngage               | greenhouse | webengage               | Mumbai, Bengaluru
+Mindtickle              | greenhouse | mindtickle              | San Francisco, Pune, Bengaluru
+Darwinbox               | greenhouse | darwinbox              | Hyderabad, Bengaluru, Singapore
+Uniphore                | greenhouse | uniphore               | Palo Alto, Chennai, Bengaluru
+Observe.AI              | greenhouse | observeai              | San Francisco, Bengaluru
+Yellow.ai               | greenhouse | yellowai               | San Mateo, Bengaluru
+Amagi                   | greenhouse | amagi                  | New York, Bengaluru
+Icertis                 | greenhouse | icertis                | Bellevue, Pune, Bengaluru
+Sprinklr                | greenhouse | sprinklr               | New York, Gurugram, London
+Contentful              | greenhouse | contentful             | Berlin, San Francisco, London
+Celonis                 | greenhouse | celonis                | Munich, New York, London, Bengaluru
+Personio                | greenhouse | personio               | Munich, London, Dublin
+Miro                    | greenhouse | miro                   | Amsterdam, Berlin, London, New York
+Canva                   | greenhouse | canva                  | Sydney, Austin, London, Bengaluru
+HubSpot                 | greenhouse | hubspot                | Cambridge, Dublin, Berlin, Remote
+Zendesk                 | greenhouse | zendesk                | San Francisco, Madison, Singapore, Remote
+Okta                    | greenhouse | okta                   | San Francisco, Bellevue, Bengaluru
+Twilio                  | greenhouse | twilio                 | San Francisco, Bengaluru, London, Remote
+Auth0                   | greenhouse | auth0                  | Remote, US, Europe
+Cloudinary              | greenhouse | cloudinary             | Santa Clara, London, Singapore, Remote
+
+# ---- Mobility / Commerce / Consumer
+Uber                    | greenhouse | uber                  | San Francisco, New York, Bengaluru, Amsterdam, London
+Lyft                    | greenhouse | lyft                  | San Francisco, New York, Remote
+DoorDash                | greenhouse | doordash              | San Francisco, New York, Toronto
+Instacart               | greenhouse | instacart             | San Francisco, Toronto, Remote
+Grab                    | greenhouse | grab                  | Singapore, Jakarta, Bangkok
+Sea / Shopee            | greenhouse | sea                   | Singapore, Taiwan, Indonesia
+Booking.com             | greenhouse | booking                | Amsterdam, London, Bengaluru
+Expedia Group           | workday    | expedia               | Seattle, London, Madrid, Bengaluru
+Delivery Hero           | greenhouse | deliveryhero          | Berlin, London, Singapore
+Zalando                 | greenhouse | zalando               | Berlin, Dublin, Helsinki
+GetYourGuide             | greenhouse | getyourguide           | Berlin, Zurich, Paris
+Airbnb                  | greenhouse | airbnb                | San Francisco, New York, Dublin, London
+Etsy                    | greenhouse | etsy                  | Brooklyn, Dublin, London
+eBay                    | workday    | ebay                  | San Jose, Bengaluru, London
+Walmart Global Tech     | workday    | walmart                | Bengaluru, Chennai, Sunnyvale
+Flipkart                | greenhouse | flipkart               | Bengaluru
+Meesho                  | greenhouse | meesho                 | Bengaluru
+Swiggy                  | greenhouse | swiggy                 | Bengaluru
+Zomato / Eternal        | greenhouse | eternal                | Gurugram
+Zepto                   | greenhouse | zepto                  | Bengaluru, Mumbai
+PhonePe                 | greenhouse | phonepe               | Bengaluru
+Razorpay                | greenhouse | razorpay              | Bengaluru
+CRED                    | greenhouse | cred                  | Bengaluru
+Groww                   | greenhouse | groww                 | Bengaluru
+Dream Sports            | greenhouse | dreamsports            | Mumbai
+Ather Energy             | greenhouse | ather                  | Bengaluru
+Ola Electric             | greenhouse | olaelectric             | Bengaluru
+
+# ---- Security
+CrowdStrike             | workday    | crowdstrike            | Austin, Sunnyvale, Bengaluru, Remote
+Palo Alto Networks      | workday    | paloaltonetworks       | Santa Clara, Bengaluru, Israel, Europe
+Wiz                    | greenhouse | wiz                   | New York, Tel Aviv, London, Bengaluru
+Snyk                   | greenhouse | snyk                  | London, Boston, Tel Aviv, Remote
+Zscaler                | workday    | zscaler               | San Jose, Bengaluru, London
+Cloudflare              | greenhouse | cloudflare             | Global / Remote
+Okta                   | greenhouse | okta                  | San Francisco, Bengaluru, London
+1Password              | greenhouse | 1password              | Toronto, Remote
+Vanta                  | greenhouse | vanta                 | San Francisco, New York, Remote
+Abnormal Security      | greenhouse | abnormalsecurity       | San Francisco, New York, Remote
+Rubrik                 | greenhouse | rubrik                | Palo Alto, Bengaluru, New York
+Cohesity               | greenhouse | cohesity              | San Jose, Bengaluru, London
+Tanium                 | greenhouse | tanium                | Kirkland, London, Bengaluru
+Darktrace              | greenhouse | darktrace             | Cambridge, London, Bengaluru
+
+# ---- Hardware / Semiconductor
+NVIDIA                 | workday    | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | Santa Clara, Bengaluru, Pune, Taipei
+AMD                    | workday    | amd                     | Santa Clara, Bengaluru, Austin
+Qualcomm               | workday    | qualcomm                | San Diego, Bengaluru, Cambridge
+Broadcom               | workday    | broadcom                | Palo Alto, Bengaluru, Munich
+Intel                  | workday    | intel                   | Santa Clara, Bengaluru, Israel
+ARM                    | workday    | arm                     | Cambridge, Bengaluru, Austin
+MediaTek               | official   | mediatek                | Hsinchu, Bengaluru, Singapore
+Marvell                | workday    | marvell                 | Santa Clara, Bengaluru
+Micron                 | workday    | micron                  | Boise, Bengaluru, Hyderabad
+Cadence                | workday    | cadence                 | San Jose, Noida, Bengaluru
+Synopsys               | workday    | synopsys                | Sunnyvale, Bengaluru, Noida
+Applied Materials      | workday    | appliedmaterials        | Santa Clara, Bengaluru
+Lam Research           | workday    | lamresearch             | Fremont, Bengaluru
+
+# ---- Autonomous / EV / Robotics / Space
+Tesla                  | workday    | tesla                   | Austin, Palo Alto, Berlin, Amsterdam
+SpaceX                 | greenhouse | spacex                  | Hawthorne, Starbase, Seattle
+Waymo                  | greenhouse | waymo                   | Mountain View, San Francisco, Phoenix
+Zoox                   | greenhouse | zoox                    | Foster City, Seattle, San Francisco
+Aurora Innovation      | greenhouse | aurora                  | Pittsburgh, Mountain View, Dallas
+Rivian                 | workday    | rivian                  | Irvine, Palo Alto, Normal
+Anduril                | greenhouse | anduril                 | Costa Mesa, Irvine, Seattle
+Figure AI               | greenhouse | figureai                | Sunnyvale, San Francisco
+Skydio                 | greenhouse | skydio                  | San Mateo, Remote
+Cruise                 | greenhouse | cruise                  | San Francisco
+
+# ---- Europe High-Paying
+DeepMind               | greenhouse | deepmind                | London, Paris, Zurich
+Spotify                | greenhouse | spotify                 | Stockholm, London, New York
+Klarna                 | greenhouse | klarna                  | Stockholm, London, Berlin
+Revolut                | greenhouse | revolut                 | London, Dublin, Madrid, Berlin
+Wise                   | greenhouse | wise                    | London, Tallinn, Singapore
+Adyen                  | greenhouse | adyen                   | Amsterdam, London, Madrid
+Booking.com             | greenhouse | booking                 | Amsterdam, London, Bengaluru
+ASML                   | workday    | asml                    | Eindhoven, Veldhoven, Amsterdam
+N26                    | greenhouse | n26                     | Berlin, Barcelona
+Celonis                | greenhouse | celonis                 | Munich, London, New York
+Personio               | greenhouse | personio                | Munich, Dublin, London
+Zalando                | greenhouse | zalando                 | Berlin, Dublin, Helsinki
+Delivery Hero           | greenhouse | deliveryhero            | Berlin, Singapore, London
+DeepL                   | greenhouse | deepl                   | Cologne, Berlin, London
+Mistral AI              | ashby      | mistral                 | Paris, London
+Hugging Face            | greenhouse | huggingface             | Paris, New York
+Back Market             | greenhouse | backmarket              | Paris, Bordeaux, New York
+Doctolib                | greenhouse | doctolib                | Paris, Berlin, Milan
+BlaBlaCar               | greenhouse | blablacar               | Paris, Amsterdam
+Qonto                   | greenhouse | qonto                   | Paris, Berlin, Milan
+Contentsquare           | greenhouse | contentsquare           | Paris, London, New York
+OVHcloud                | greenhouse | ovhcloud                | France, UK, Germany, Canada
+Criteo                 | greenhouse | criteo                  | Paris, London, New York
+Checkout.com             | greenhouse | checkout                | London, Paris, Dubai
+SumUp                   | greenhouse | sumup                   | Berlin, London, Sofia
+
+# ---- Japan / Singapore / APAC
+Rakuten                 | official   | rakuten                 | Tokyo, Singapore
+Mercari                 | greenhouse | mercari                 | Tokyo, Palo Alto
+LINE Yahoo              | official   | line-yahoo              | Tokyo
+Preferred Networks      | official   | preferred-networks      | Tokyo
+Toyota                  | workday    | toyota                  | Tokyo, US, Europe
+Sony                    | workday    | sony                    | Tokyo, US, Europe
+Nintendo                | official   | nintendo                | Kyoto, Tokyo
+ByteDance               | greenhouse | bytedance               | Singapore, Tokyo, London, US
+Grab                    | greenhouse | grab                    | Singapore, Jakarta, Bangkok
+Sea Group               | greenhouse | sea                     | Singapore
+Shopee                  | greenhouse | sea                     | Singapore, Taiwan
+Agoda                   | greenhouse | agoda                   | Bangkok, Singapore
+DBS                     | workday    | dbs                     | Singapore, India, Hong Kong
+Standard Chartered      | workday    | standardchartered       | London, Singapore, India
+Visa                    | workday    | visa                    | San Francisco, Singapore, Bengaluru
+Mastercard              | workday    | mastercard              | New York, Bengaluru, Singapore
