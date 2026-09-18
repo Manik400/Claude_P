@@ -1,6 +1,25 @@
 {
- "updated": "2026-09-18T07:46:38Z",
+ "updated": "2026-09-18T08:00:22Z",
  "items": [
+  {
+   "id": "jobhunt-20260918-080022-software-engineer",
+   "kind": "jobhunt",
+   "title": "software engineer",
+   "when": "2026-09-18T08:00:22Z",
+   "file": "data/jobhunt/jobhunt-20260918-080022-software-engineer.enc",
+   "bytes": 602504,
+   "meta": {
+    "jobs": "176",
+    "countries": "IN",
+    "experience": "1",
+    "days": "7",
+    "hours": "",
+    "window_hours": "168",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads",
+    "jobs_file": "data/jobhunt/jobhunt-20260918-080022-software-engineer.jobs.enc"
+   }
+  },
   {
    "id": "naukri-20260918-074638-naukri-openings-2026-09-18-run-13",
    "kind": "naukri",
