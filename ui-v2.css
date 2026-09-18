@@ -1,0 +1,162 @@
+/* Job Hunt - UI v2: the portfolio's look (manik400.github.io/portfolio).
+ *
+ * A skin, not a second site: the same markup, the same behaviour, one attribute
+ * away. Everything here is scoped to :root[data-ui="v2"], so the classic UI is
+ * untouched when the toggle is off, and both themes still follow --data-theme.
+ *
+ * Paper and ink, Archivo Black headings over JetBrains Mono labels, square
+ * corners, 2-3px borders, hard offset shadows instead of blur, one red accent
+ * for what you act on.
+ */
+
+:root[data-ui="v2"] {
+  --bg: #E9EAE4; --card: #FFFFFF; --card2: #F5F6F2; --fg: #11151A; --muted: #4E575F;
+  --line: #11151A; --line2: #C9CCC3;
+  --accent: #EE3D28; --accent-hi: #D22F1C; --accent-fg: #FFFFFF; --accent-bg: rgba(238,61,40,.12);
+  --ok: #1FA971; --ok-bg: rgba(31,169,113,.16);
+  --warn: #B07400; --warn-bg: rgba(255,180,0,.24);
+  --bad: #EE3D28; --bad-bg: rgba(238,61,40,.14);
+  --man: #1B3FA0; --man-bg: rgba(27,63,160,.14);
+  --chip: #F5F6F2; --shadow: 4px 4px 0 #11151A;
+  --v2-hard: 4px 4px 0 var(--line); --v2-soft: 2px 2px 0 var(--line);
+  --v2-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace;
+  --v2-display: 'Archivo Black', Impact, system-ui, sans-serif;
+}
+
+:root[data-ui="v2"][data-theme="dark"] {
+  --bg: #0D1114; --card: #151A1F; --card2: #1B2228; --fg: #ECEEE9; --muted: #98A4AC;
+  --line: #2B333A; --line2: #232A30;
+  --accent: #FF5F49; --accent-hi: #FF7A66; --accent-fg: #11151A; --accent-bg: rgba(255,95,73,.16);
+  --ok: #31CE88; --ok-bg: rgba(49,206,136,.16);
+  --warn: #FFC42E; --warn-bg: rgba(255,196,46,.16);
+  --bad: #FF5F49; --bad-bg: rgba(255,95,73,.16);
+  --man: #5B7BE0; --man-bg: rgba(91,123,224,.18);
+  --chip: #1B2228; --shadow: 4px 4px 0 #000000;
+  --v2-hard: 4px 4px 0 #000000; --v2-soft: 2px 2px 0 #000000;
+}
+
+/* ---------- type ---------- */
+:root[data-ui="v2"] body,
+:root[data-ui="v2"] button,
+:root[data-ui="v2"] input,
+:root[data-ui="v2"] select,
+:root[data-ui="v2"] textarea {
+  font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+}
+:root[data-ui="v2"] h1,
+:root[data-ui="v2"] h2,
+:root[data-ui="v2"] h3,
+:root[data-ui="v2"] .big,
+:root[data-ui="v2"] .score,
+:root[data-ui="v2"] .job h3 {
+  font-family: var(--v2-display); font-weight: 400; letter-spacing: -.015em; line-height: 1.05;
+}
+:root[data-ui="v2"] .muted,
+:root[data-ui="v2"] .sub,
+:root[data-ui="v2"] .hint,
+:root[data-ui="v2"] .legend,
+:root[data-ui="v2"] .note,
+:root[data-ui="v2"] th,
+:root[data-ui="v2"] label,
+:root[data-ui="v2"] code,
+:root[data-ui="v2"] .pc,
+:root[data-ui="v2"] nav.tabs button,
+:root[data-ui="v2"] .chips button {
+  font-family: var(--v2-mono); letter-spacing: .01em;
+}
+:root[data-ui="v2"] label,
+:root[data-ui="v2"] th,
+:root[data-ui="v2"] .sect {
+  text-transform: uppercase; letter-spacing: .13em; font-size: 10.5px; color: var(--muted);
+}
+
+/* ---------- surfaces: square, bordered, hard shadow ---------- */
+:root[data-ui="v2"] .card,
+:root[data-ui="v2"] .job,
+:root[data-ui="v2"] .qitem,
+:root[data-ui="v2"] .tablewrap,
+:root[data-ui="v2"] details.filters,
+:root[data-ui="v2"] .msg,
+:root[data-ui="v2"] .detail,
+:root[data-ui="v2"] .panel {
+  border-radius: 0 !important; border: 3px solid var(--line); box-shadow: var(--v2-hard); background: var(--card);
+}
+:root[data-ui="v2"] .qitem { box-shadow: none; border-width: 0 0 2px 0; }
+:root[data-ui="v2"] .msg.warn { background: var(--warn-bg); }
+:root[data-ui="v2"] .msg.bad { background: var(--bad-bg); }
+
+/* ---------- controls ---------- */
+:root[data-ui="v2"] button,
+:root[data-ui="v2"] input,
+:root[data-ui="v2"] select,
+:root[data-ui="v2"] textarea,
+:root[data-ui="v2"] .icon-btn,
+:root[data-ui="v2"] .pc,
+:root[data-ui="v2"] .chip,
+:root[data-ui="v2"] .pill {
+  border-radius: 0 !important;
+}
+:root[data-ui="v2"] button:not(.chips button):not(nav.tabs button):not(.r),
+:root[data-ui="v2"] .icon-btn {
+  border: 2px solid var(--line); background: var(--card); color: var(--fg);
+  font-family: var(--v2-mono); font-weight: 700; box-shadow: var(--v2-soft);
+  transition: transform .12s, box-shadow .12s;
+}
+:root[data-ui="v2"] button:not(.chips button):not(nav.tabs button):not(.r):hover,
+:root[data-ui="v2"] .icon-btn:hover { transform: translate(-1px, -1px); box-shadow: var(--v2-hard); }
+:root[data-ui="v2"] button:not(.chips button):not(nav.tabs button):not(.r):active { transform: translate(2px, 2px); box-shadow: 0 0 0 var(--line); }
+:root[data-ui="v2"] button.primary { background: var(--accent); color: #fff; border-color: var(--line); }
+:root[data-ui="v2"] input,
+:root[data-ui="v2"] select,
+:root[data-ui="v2"] textarea { border: 2px solid var(--line); background: var(--card); box-shadow: none; }
+
+/* chips: square outlines, the picked one inked in */
+:root[data-ui="v2"] .chips button {
+  border: 2px solid var(--line); background: var(--card); color: var(--fg);
+  font-size: 11.5px; font-weight: 700; box-shadow: var(--v2-soft);
+}
+:root[data-ui="v2"] .chips button.on { background: var(--accent); color: #fff; }
+:root[data-ui="v2"] .pill,
+:root[data-ui="v2"] .chip { border: 2px solid var(--line); font-family: var(--v2-mono); font-size: 10.5px; font-weight: 700; }
+
+/* ---------- shell ---------- */
+:root[data-ui="v2"] aside.side { background: var(--card2); border-color: var(--line); border-bottom-width: 3px; }
+:root[data-ui="v2"] .brand .logo { border-radius: 0; background: var(--accent); color: #fff; border: 2px solid var(--line); }
+:root[data-ui="v2"] .brand h1 { font-family: var(--v2-display); }
+:root[data-ui="v2"] nav.tabs button {
+  border-radius: 0; border: 0; border-bottom: 3px solid transparent; background: transparent;
+  color: var(--muted); font-weight: 700; font-size: 12.5px;
+}
+:root[data-ui="v2"] nav.tabs button.on,
+:root[data-ui="v2"] nav.tabs button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); background: transparent; }
+:root[data-ui="v2"] .pc { border: 2px solid var(--line); box-shadow: var(--v2-soft); }
+:root[data-ui="v2"] .pc.on { background: var(--ok); color: #06140E; }
+:root[data-ui="v2"] .pc.off { background: var(--warn); color: #11151A; }
+
+/* ---------- tables (the wide job list) ---------- */
+:root[data-ui="v2"] table { border-collapse: collapse; }
+:root[data-ui="v2"] th {
+  background: var(--fg); color: var(--bg); border-bottom: 3px solid var(--line);
+  text-transform: uppercase; letter-spacing: .13em;
+}
+:root[data-ui="v2"] td { border-bottom: 2px solid var(--line2); }
+:root[data-ui="v2"] tbody tr:hover { background: var(--warn-bg); }
+
+/* ---------- progress / meters ---------- */
+:root[data-ui="v2"] .bar,
+:root[data-ui="v2"] .meter { border-radius: 0; border: 2px solid var(--line); background: var(--card2); height: 14px; }
+:root[data-ui="v2"] .bar i,
+:root[data-ui="v2"] .meter i { border-radius: 0; }
+
+/* ---------- the toggle itself ---------- */
+.ui-switch {
+  display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
+  font: 700 11px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase;
+  padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--muted);
+}
+.ui-switch:hover { color: var(--accent); }
+:root[data-ui="v2"] .ui-switch {
+  border: 2px solid var(--line); border-radius: 0; box-shadow: var(--v2-soft);
+  background: var(--accent); color: #fff; font-family: var(--v2-mono);
+}
+@media (max-width: 599px) { .ui-switch span.ui-switch-label { display: none; } }

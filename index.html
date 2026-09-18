@@ -23,7 +23,7 @@
     --bad: #b91c1c; --bad-bg: rgba(185,28,28,.11);
     --man: #8a6a4a; --man-bg: rgba(138,106,74,.16);
     --chip: #ecebe7; --shadow: 0 1px 2px rgba(28,25,23,.05), 0 1px 8px rgba(28,25,23,.04);
-    --side-w: 232px; --content-w: 1180px; --list-w: 880px;
+    --side-w: 232px; --content-w: 1180px; --list-w: 880px; --wide-w: 1800px;
     color-scheme: light;
   }
   :root[data-theme="dark"] {
@@ -176,8 +176,13 @@
 
   /* job cards: always one column, full width of the (narrower) list column */
   .jobs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: 12px; }
-  /* report filters: a collapsible card; the body scrolls if tall, chip rows scroll sideways on phones */
+  /* filters: every filter block on the page is this same accordion - a summary line of
+     what is on, a body that scrolls if tall, chip rows that scroll sideways on phones.
+     .card = a block of its own (the report list); .sub = one nested inside a card. */
   details.filters { padding: 0; }
+  details.filters.sub { border: 1px solid var(--line); border-radius: 12px; background: var(--card2); margin-top: 12px; }
+  details.filters.sub > summary { padding: 10px 12px; min-height: 42px; }
+  details.filters.sub .fbody { padding: 4px 12px 12px; }
   details.filters > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 12px 16px; min-height: 48px; }
   details.filters > summary::-webkit-details-marker { display: none; }
   details.filters > summary b { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; flex: none; }
@@ -210,6 +215,58 @@
   .job.applied { border-color: var(--ok); }
   .job.removed { opacity: .55; }
   .sect { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; margin: 20px 4px 10px; }
+
+  /* ---------- wide screens: a dense table on the left, the job's detail on the right.
+     Below 1100px nothing here applies: the cards stay, and the detail opens as an
+     accordion under the tapped card. */
+  .jsplit { display: block; }
+  .tablewrap { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  table.jt { border-collapse: collapse; width: 100%; font-size: 13.5px; table-layout: fixed; }
+  table.jt th, table.jt td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line2); vertical-align: top; overflow-wrap: anywhere; }
+  table.jt tbody tr:last-child td { border-bottom: 0; }
+  table.jt thead th { position: sticky; top: 0; z-index: 2; background: var(--card2); color: var(--muted); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; font-weight: 600; white-space: nowrap; cursor: pointer; border-bottom: 1px solid var(--line); user-select: none; }
+  table.jt thead th:first-child { border-top-left-radius: 14px; } table.jt thead th:last-child { border-top-right-radius: 14px; }
+  table.jt thead th:hover { color: var(--accent); }
+  table.jt thead th .ar { color: var(--accent); }
+  table.jt tbody tr { cursor: pointer; }
+  table.jt tbody tr:hover { background: var(--card2); }
+  table.jt tbody tr.on { background: var(--accent-bg); box-shadow: inset 3px 0 0 var(--accent); }
+  table.jt tbody tr.done td { opacity: .62; }
+  table.jt tbody tr.gone td { opacity: .42; }
+  table.jt td.num { font-variant-numeric: tabular-nums; font-weight: 700; }
+  .s-hi { color: var(--ok); } .s-mid { color: var(--warn); } .s-lo { color: var(--muted); }
+  .job.sel { border-color: var(--accent); }
+  table.jt td.dim { color: var(--muted); }
+  table.jt td.pos a { font-weight: 600; text-decoration: none; color: var(--fg); }
+  table.jt tbody tr:hover td.pos a { color: var(--accent); }
+  table.jt tr.sep td { background: var(--card2); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .07em; font-weight: 600; cursor: default; }
+  table.jt tr.sep:hover td { background: var(--card2); }
+  .tacts { display: flex; gap: 4px; flex-wrap: wrap; }
+  .tacts button, .tacts a { border: 1px solid var(--line); background: var(--card2); color: var(--fg); border-radius: 8px;
+    padding: 3px 7px; font-size: 12px; line-height: 1.5; cursor: pointer; text-decoration: none; display: inline-block; }
+  .tacts button:hover, .tacts a:hover { border-color: var(--muted); }
+  .tacts button.go { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
+  .tacts button:disabled { opacity: .5; cursor: default; }
+  .clip { display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  /* the detail: a card on the right at >=1100px, an accordion inline below that */
+  .dt h3 { margin: 0 0 2px; font-size: 17px; line-height: 1.3; }
+  .dt .dhead { display: flex; gap: 8px; align-items: flex-start; }
+  .dt .dhead .t { flex: 1; min-width: 0; }
+  .dt .sect { margin: 14px 0 6px; }
+  .dt .qa { border-top: 1px solid var(--line2); padding: 7px 0; }
+  .dt .qa .q { color: var(--muted); font-size: 13px; }
+  .dt .qa .a { font-weight: 600; word-break: break-word; }
+  .dt .qa .src { color: var(--muted); font-size: 12px; }
+  .dt .note { font-size: 13px; color: var(--muted); margin-top: 4px; word-break: break-word; }
+  .dt code { word-break: break-all; }
+  @media (min-width: 1100px) {
+    #j-box > * { max-width: var(--wide-w); }
+    .jsplit { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 14px; align-items: start; }
+    .jsplit.narrow { grid-template-columns: minmax(0, 1fr) 380px; }
+    .jdetail { position: sticky; top: 0; max-height: calc(100vh - 96px); overflow-y: auto; overscroll-behavior: contain; }
+    .jdetail .card { margin-bottom: 0; }
+  }
   .contacts { margin-top: 10px; font-size: 14px; }
   .contacts div { margin: 5px 0; }
   .person { padding: 6px 0; border-top: 1px solid var(--line2); }
@@ -452,6 +509,22 @@
   function toast(text) { var t = $("toast"); t.textContent = text; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 2600); }
   function chip(cls, text) { return '<span class="chip ' + (cls || "") + '">' + esc(text) + "</span>"; }
   function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : "#"; }
+  // ---- accordions. Every filter block on the page is one of these: a title, a summary
+  // line of what is currently on, and a body. Open / closed is remembered per block
+  // (store.get / store.set are already try/catch'd, so a locked-down browser is fine).
+  function accOpen(id) { return !!store.get("acc." + id, ""); }
+  function acc(id, title, sum, body, cls) {
+    return '<details class="filters ' + (cls || "card") + '" id="' + id + '"' + (accOpen(id) ? " open" : "") +
+      "><summary><b>" + esc(title) + '</b><span class="sum" id="' + id + '-sum">' + esc(sum) + "</span></summary>" +
+      '<div class="fbody">' + body + "</div></details>";
+  }
+  function bindAcc(root) {
+    (root || document).querySelectorAll("details.filters[id]").forEach(function (d) {
+      if (d.dataset.accBound) return; d.dataset.accBound = "1";
+      d.addEventListener("toggle", function () { store.set("acc." + d.id, d.open ? "1" : ""); });
+    });
+  }
+  function accSum(id, text) { var el = $(id + "-sum"); if (el) el.textContent = text; }
   function ext(href, text, cls) { return '<a href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener"' + (cls ? ' class="' + cls + '"' : "") + ">" + esc(text) + "</a>"; }
   // ---- per-browser marks on postings: "applied" moves a job to the Applied section at the
   // bottom, "removed" takes it off the list (restorable). Opening a posting counts as applying.
@@ -917,6 +990,95 @@
   // Same cheap hash as the PC (phone_apply.job_key), so both sides name a
   // company-site posting identically.
   function sha1short(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return ("00000000" + (h >>> 0).toString(16)).slice(-8) + "x"; }
+
+  // ---- tying a posting to what the PC already did with it.
+  // track.applications (Track tab) is the record of every attempt, newest first. A job is
+  // matched to it by URL first (without query / hash), then by the same key the queue uses
+  // (linkedin id / naukri id / hashed URL), then by company + title. Nothing here assumes
+  // Track has loaded: with no data every lookup is simply empty.
+  function normUrl(u) { return String(u || "").split("#")[0].split("?")[0].toLowerCase().replace(/^https?:\/\/(www\.)?/, "").replace(/\/+$/, ""); }
+  function ctKey(company, title) { return (String(company || "") + "|" + String(title || "")).toLowerCase().replace(/\s+/g, " ").trim(); }
+  var appIdx = null, appIdxOf = null;
+  function appIndex() {
+    var apps = (track || {}).applications || [];
+    if (appIdx && appIdxOf === apps) return appIdx;
+    var ix = { url: {}, key: {}, ct: {} };
+    var put = function (m, k, a) { if (k) (m[k] = m[k] || []).push(a); };
+    apps.forEach(function (a) {
+      put(ix.url, normUrl(a.url), a);
+      try { put(ix.key, jobKey({ url: a.url, job_id: a.job_id, source: a.board }).key, a); } catch (e) {}
+      put(ix.ct, ctKey(a.company, a.title), a);
+    });
+    appIdx = ix; appIdxOf = apps;
+    return ix;
+  }
+  function appsFor(j) {  // every attempt at this posting, newest first
+    if (!j) return [];
+    var ix = appIndex(), key = j._key || (j.url || j.job_id ? jobKey(j).key : "");
+    return ix.url[normUrl(j.url)] || ix.key[key] || ix.ct[ctKey(j.company, j.title)] || [];
+  }
+  function whenText(iso) { return String(iso || "").slice(0, 16).replace("T", " "); }
+  function shotPath(note) { var m = /\(([^()]*\.png)\)/.exec(String(note || "")); return m ? m[1] : ""; }
+  // Was this application finished without you? An earlier attempt at the same job that
+  // stopped for a human (a question, a login, a half-filled career form) means you stepped in.
+  var HUMAN_STEP = /^(questionnaire|questionnaire-failed|career-incomplete|login-required|offsite|manual|prefilled)$/;
+  function byHand(apps, i) {
+    if (apps[i] && apps[i].blocked) return true;
+    for (var k = i + 1; k < apps.length; k++) if (HUMAN_STEP.test(apps[k].status)) return true;
+    return false;
+  }
+  // ---- the detail column: one posting, everything known about it, including the form the
+  // PC filled in. `j` is a report job or a stand-in built from an application entry.
+  function detailHtml(j, q, opts) {
+    opts = opts || {};
+    var apps = appsFor(j), t = [];
+    if (typeof j.score === "number") t.push(chip(j.score >= 65 ? "ok" : j.score >= 45 ? "warn" : "", "match " + Math.round(j.score) + "%"));
+    if (j.source_name || j.source) t.push(chip("", j.source_name || j.source));
+    if (j.fit && j.fit !== "unknown") t.push(chip(j.fit === "fit" ? "ok" : "warn", { fit: "experience fits", stretch: "stretch", over: "over-qualified" }[j.fit] || j.fit));
+    if ((j.extra || {}).company_apply) t.push(chip("", "company site"));
+    if (j.salary) t.push(chip("", j.salary));
+    if (q) t.push(stChip(q.status, q.note));
+    var h = '<div class="card dt"><div class="dhead"><div class="t"><h3>' + esc(j.title || "(no title)") + '</h3><div class="sub muted">' +
+      esc(j.company || "") + (j.location || j.country ? " · " + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "location not stated") : "") +
+      (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div></div>" +
+      '<button class="icon-btn" data-dclose="1" title="Close (Esc)" aria-label="Close">✕</button></div>' +
+      '<div class="tags" style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px">' + t.join("") + "</div>" +
+      (j.url ? '<div style="margin-top:8px">' + openLink(j.url, "Open the posting ↗", "ghost small", j._key || "") + "</div>" : "");
+    if (q && q.note) h += '<div class="note">' + esc(q.note) + "</div>";
+    if (j.matched_skills && j.matched_skills.length) h += '<div class="sect">Matching skills</div><div class="muted">' + esc(j.matched_skills.join(", ")) + "</div>";
+    if (j.missing_skills && j.missing_skills.length) h += '<div class="sect">Missing</div><div class="muted">' + esc(j.missing_skills.join(", ")) + "</div>";
+    var why = j.snippet || j.evidence || "";
+    if (why) h += '<div class="sect">Why</div><div class="muted">' + esc(why) + "</div>";
+    h += applicationHtml(apps, j);
+    if (!opts.noContacts && j.extra) h += '<div class="sect">Contacts</div><div class="contacts">' + contactsBlock(j) + "</div>";
+    return h + "</div>";
+  }
+  function applicationHtml(apps, j) {
+    if (!track) return '<div class="sect">Application</div><div class="muted">Open <b>Track</b> once to load what the PC sent.</div>';
+    if (!apps.length) return '<div class="sect">Application</div><div class="muted">Your PC has not applied to this one.</div>';
+    var h = '<div class="sect">The form your PC sent</div>' + attemptHtml(apps, 0);
+    if (apps.length > 1) h += "<details style=\"margin-top:10px\"><summary class=\"muted\">earlier attempts (" + (apps.length - 1) + ")</summary>" +
+      apps.slice(1).map(function (a, i) { return '<div style="margin-top:8px">' + attemptHtml(apps, i + 1) + "</div>"; }).join("") + "</details>";
+    return h;
+  }
+  function attemptHtml(apps, i) {
+    var a = apps[i], hand = byHand(apps, i), done = /^(applied|submitted)$/.test(a.status);
+    var h = '<div class="muted">' + chip("", a.board || "?") + " " + chip(tCls(a.status), T_LABELS[a.status] || a.status) + " " +
+      (done ? chip(hand ? "man" : "ok", hand ? "you finished it" : "fully automatic") + " " : "") +
+      esc(whenText(a.at)) + (a.project && a.project !== "naukri" ? " · via " + esc(a.project) : "") + (a.dry_run ? " · " + chip("bad", "dry run") : "") + "</div>";
+    if (a.note) h += '<div class="note">' + esc(a.note) + "</div>";
+    var shot = shotPath(a.note);
+    if (shot) h += '<div class="note">screenshot on the PC: <code>' + esc(shot) + "</code></div>";
+    h += (a.answers || []).length
+      ? a.answers.map(function (y) {
+        return '<div class="qa"><div class="q">' + esc(y.question) + (y.options && y.options.length ? " <span class=\"src\">(" + esc(y.options.join(" / ")) + ")</span>" : "") +
+          '</div><div class="a">' + esc(y.answer === "" || y.answer == null ? "—" : y.answer) + '</div><div class="src">from ' + esc(y.source || "unknown") + (y.fix ? " · change it at " + esc(y.fix) : "") + "</div></div>";
+      }).join("")
+      : '<div class="muted" style="margin-top:6px">' + (done ? "One-click apply - the form asked nothing." : "No questions were filled in.") + "</div>";
+    if (a.blocked) h += '<div class="msg warn">Stopped at: <b>' + esc(a.blocked.question) + "</b>" +
+      (a.blocked.options && a.blocked.options.length ? " (" + esc(a.blocked.options.join(" / ")) + ")" : "") + " — " + esc(a.blocked.why || "") + "</div>";
+    return h;
+  }
   // Every board job_bot searches (job-hunt/scripts/jobbot/sources/__init__.py ALL_SOURCES, same order),
   // as [filter key, label, job.source keys]. Apify / web-search twins fold into their board.
   var BOARDS = [["linkedin", "LinkedIn", "linkedin apify-linkedin linkedin_web"], ["naukri", "Naukri", "naukri apify-naukri"], ["indeed", "Indeed", "indeed apify-indeed"],
@@ -942,12 +1104,26 @@
     $("v-report").addEventListener("click", function () { openReport(item); });
     Promise.all([fetchEnc(item.meta.jobs_file, { cache: "force-cache" }).then(JSON.parse), loadQueue(true)]).then(function (res) {
       var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; j._src = srcKey(j); return j; });
-      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false };
+      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
       renderJobs();
       $("j-box").scrollTop = 0;
+      // the detail column shows the form the PC filled in; that lives in profile.enc
+      fetchTrack().then(function () { if (JV) renderJobs(); }, function () {});
     }).catch(function (e) { $("j-box").innerHTML = '<div class="card msg bad">' + esc(errText(e)) + "</div>"; });
   }
+  // >=1100px: dense table on the left, detail column on the right. Below: cards, and the
+  // detail opens as an accordion under the tapped card.
+  var wideQ = window.matchMedia ? window.matchMedia("(min-width: 1100px)") : null;
+  function wide() { return !!(wideQ && wideQ.matches); }
+  if (wideQ) {
+    var onWide = function () {
+      if (JV && !$("j-box").hidden) renderJobs();
+      if (track && !$("tab-track").hidden && $("t-auto")) renderAuto();
+    };
+    try { wideQ.addEventListener("change", onWide); } catch (e) { wideQ.addListener(onWide); }
+  }
   function jobsFiltered() {
+    var keys = queueKeys();
     return JV.jobs.filter(function (j) {
       if (j.fit === "no") return false;
       if (marks.removed[j._key] && !JV.showRemoved) return false;
@@ -955,7 +1131,25 @@
       if (onKeys(JV.countries).length && !JV.countries[j.country || "??"]) return false;
       if (JV.min && !((j.score || 0) >= JV.min)) return false;
       return true;
-    }).sort(function (a, b) { return JV.sort === "new" ? String(b.posted || "").localeCompare(String(a.posted || "")) : (b.score || 0) - (a.score || 0); });
+    }).sort(function (a, b) {
+      if (JV.tsort) {  // a column heading was clicked: that wins over the Sort box
+        var va = sortVal(JV.tsort.k, a, keys), vb = sortVal(JV.tsort.k, b, keys);
+        if (va < vb) return -JV.tsort.dir;
+        if (va > vb) return JV.tsort.dir;
+      }
+      return JV.sort === "new" ? String(b.posted || "").localeCompare(String(a.posted || "")) : (b.score || 0) - (a.score || 0);
+    });
+  }
+  function sortVal(k, j, keys) {
+    var q = (keys || {})[j._key];
+    if (k === "score") return typeof j.score === "number" ? j.score : -1;
+    if (k === "status") return q ? (STATUS[q.status] || ["", q.status])[1] : "~";  // "~" sorts last
+    if (k === "board") return String(j.source_name || j.source || "").toLowerCase();
+    if (k === "posted") return String(j.posted_at || j.posted || "");
+    if (k === "matched") return (j.matched_skills || []).length;
+    if (k === "missing") return (j.missing_skills || []).length;
+    if (k === "why") return String(j.snippet || (q && q.note) || "").toLowerCase();
+    return String(j[k] || "").toLowerCase();
   }
   function renderJobs() {
     var box = $("j-box"), top = box.scrollTop, keys = queueKeys(), jobs = jobsFiltered();
@@ -990,29 +1184,40 @@
       '<div class="hint">LinkedIn Easy Apply and Naukri postings are applied to by your PC. Company career sites are ' +
         ({ career: 'filled and submitted by the PC when they don\'t need a login; otherwise marked "by hand"', manual: 'marked "by hand" for you (change under Queue → Rules)',
            simplify: "filled by Simplify on the PC; you submit", "simplify-submit": "filled and submitted by Simplify on the PC" }[off] || 'marked "by hand"') + ".</div></div>" +
-      '<details class="card filters" id="jf"' + (store.get("jf.open", "") ? " open" : "") + '><summary><b>Filters</b><span class="sum">' + esc(fsum) + "</span></summary><div class=\"fbody\">" +
+      acc("jf", "Filters", fsum,
       '<label>Boards <span class="muted">(tap several)</span></label><div class="chips small" id="jf-board">' + '<button type="button" data-b=""' + (fb.length ? "" : ' class="on"') + ">All boards · " + JV.jobs.filter(function (j) { return j.fit !== "no"; }).length + "</button>" +
         boards.map(function (b) { return fchip("b", b[0], esc(b[1]), bc[b[0]] || 0, JV.boards[b[0]]); }).join("") + "</div>" +
       '<label>Countries <span class="muted">(India first; tap several)</span></label><div class="chips small" id="jf-cc"><button type="button" data-cc=""' + (fc.length ? "" : ' class="on"') + ">All countries</button>" +
         ccs.map(function (c) { return fchip("cc", c, (flag(c) ? flag(c) + " " : "") + esc(ccLabel(c)), cc[c] || 0, JV.countries[c]); }).join("") + "</div>" +
       '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 60, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div>" +
-      (fb.length || fc.length || JV.min ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : "") + "</div></details>";
-    if (!jobs.length) h += '<div class="card muted">No jobs match these filters.</div>';
-    else if (!todo.length) h += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
-    else h += '<div class="jobs">' + todo.slice(0, JV.limit).map(function (j) { return jobCard(j, keys[j._key], false); }).join("") + "</div>";
-    if (todo.length > JV.limit) h += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
-    if (done.length) h += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + done.map(function (j) { return jobCard(j, keys[j._key], true); }).join("") + "</div>";
-    h += removedHint(nRemoved, JV.showRemoved);
+      (fb.length || fc.length || JV.min ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
+    // the list itself: a table at >=1100px, the cards below that. The detail of the
+    // selected posting is the second column (wide) or an accordion under its card.
+    var shown = todo.slice(0, JV.limit), body = "";
+    if (!jobs.length) body += '<div class="card muted">No jobs match these filters.</div>';
+    else if (wide()) body += jobTable(shown, done, keys);
+    else {
+      var cards = function (list, ap) { return list.map(function (j) { return jobCard(j, keys[j._key], ap) + (JV.detail === j._key ? detailHtml(j, keys[j._key]) : ""); }).join(""); };
+      if (!todo.length) body += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
+      else body += '<div class="jobs">' + cards(shown, false) + "</div>";
+      if (done.length) body += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + cards(done, true) + "</div>";
+    }
+    if (todo.length > JV.limit) body += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
+    body += removedHint(nRemoved, JV.showRemoved);
+    var det = JV.detail ? JV.jobs.filter(function (j) { return j._key === JV.detail; })[0] : null;
+    h += '<div class="jsplit"><div class="jmain">' + body + "</div>" +
+      (wide() ? '<aside class="jdetail">' + (det ? detailHtml(det, keys[det._key])
+        : '<div class="card muted">Click a row to see the posting, its skills and the form your PC filled in.</div>') + "</aside>" : "") + "</div>";
     // keep the filter panel's own scroll (and sideways chip-row scroll) across the re-render
     var keep = ["#jf .fbody", "#jf-board", "#jf-cc"].map(function (s) { var el = box.querySelector(s); return el ? [el.scrollTop, el.scrollLeft] : [0, 0]; });
     box.innerHTML = h; box.scrollTop = top;
     ["#jf .fbody", "#jf-board", "#jf-cc"].forEach(function (s, i) { var el = box.querySelector(s); if (el) { el.scrollTop = keep[i][0]; el.scrollLeft = keep[i][1]; } });
     bindMarks(box, function (toggle) { if (toggle === true) JV.showRemoved = !JV.showRemoved; renderJobs(); });
+    bindAcc(box);
     $("jq-all").addEventListener("click", function () { queueJobs(notQueued); });
     $("jq-sel").addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return JV.sel[j._key]; })); });
     var toggleIn = function (set, k) { if (!k) Object.keys(set).forEach(function (x) { delete set[x]; }); else if (set[k]) delete set[k]; else set[k] = 1; JV.limit = 50; renderJobs(); };
-    $("jf").addEventListener("toggle", function () { store.set("jf.open", $("jf").open ? "1" : ""); });
     $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) toggleIn(JV.boards, b.dataset.b); });
     $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) toggleIn(JV.countries, b.dataset.cc); });
     if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.limit = 50; renderJobs(); });
@@ -1022,6 +1227,73 @@
     box.querySelectorAll("[data-sel]").forEach(function (c) { c.addEventListener("change", function () { JV.sel[c.dataset.sel] = c.checked; renderJobs(); }); });
     box.querySelectorAll("[data-q1]").forEach(function (b) { b.addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return j._key === b.dataset.q1; })); }); });
     box.querySelectorAll("[data-contacts]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); JV.open[b.dataset.contacts] = !JV.open[b.dataset.contacts]; renderJobs(); }); });
+    // the table: sort by a heading, open a row's detail, select everything shown
+    box.querySelectorAll("th[data-sort]").forEach(function (th) {
+      th.addEventListener("click", function () {
+        var k = th.dataset.sort, num = /^(score|posted|matched|missing)$/.test(k);
+        if (JV.tsort && JV.tsort.k === k) JV.tsort.dir = -JV.tsort.dir; else JV.tsort = { k: k, dir: num ? -1 : 1 };
+        renderJobs();
+      });
+    });
+    box.querySelectorAll("tr[data-job]").forEach(function (tr) {
+      tr.addEventListener("click", function (e) {
+        if (e.target.closest("button,a,input,label,summary,select")) return;
+        setDetail(JV.detail === tr.dataset.job ? null : tr.dataset.job);
+      });
+    });
+    if ($("jt-all")) $("jt-all").addEventListener("change", function () {
+      var on = $("jt-all").checked;
+      box.querySelectorAll("tbody [data-sel]").forEach(function (c) { JV.sel[c.dataset.sel] = on; });
+      renderJobs();
+    });
+    box.querySelectorAll("[data-tc]").forEach(function (b) { b.addEventListener("click", function () { JV.open[b.dataset.tc] = true; setDetail(b.dataset.tc); }); });
+    box.querySelectorAll("[data-dclose]").forEach(function (b) { b.addEventListener("click", function () { setDetail(null); }); });
+  }
+  function setDetail(key) { if (!JV) return; JV.detail = key; renderJobs(); }
+  // ---- the dense table (>=1100px). Declared once so headings, sort keys and cells agree.
+  var JCOLS = [
+    { k: "sel", h: "", w: "36px" }, { k: "score", h: "Match", w: "76px" }, { k: "status", h: "Status", w: "120px" },
+    { k: "board", h: "Board", w: "108px" }, { k: "company", h: "Company", w: "150px" }, { k: "title", h: "Position", w: "230px" },
+    { k: "location", h: "Location", w: "150px" }, { k: "posted", h: "Posted", w: "94px" }, { k: "matched", h: "Matching skills" },
+    { k: "missing", h: "Missing", w: "140px" }, { k: "why", h: "Why / note" }, { k: "acts", h: "Actions", w: "168px" }
+  ];
+  function jobTable(todo, done, keys) {
+    var head = "<thead><tr>" + JCOLS.map(function (c) {
+      var on = JV.tsort && JV.tsort.k === c.k, fixed = c.k === "sel" || c.k === "acts";
+      return "<th" + (fixed ? "" : ' data-sort="' + c.k + '" title="Sort by ' + esc(c.h) + '"') + (c.w ? ' style="width:' + c.w + '"' : "") + ">" +
+        (c.k === "sel" ? '<input type="checkbox" class="box" id="jt-all" title="Select everything shown">' : esc(c.h)) +
+        (on ? ' <span class="ar">' + (JV.tsort.dir < 0 ? "▼" : "▲") + "</span>" : "") + "</th>";
+    }).join("") + "</tr></thead>";
+    var rows = todo.map(function (j) { return jobRow(j, keys[j._key], false); }).join("");
+    if (done.length) rows += '<tr class="sep"><td colspan="' + JCOLS.length + '">Applied · ' + done.length + "</td></tr>" +
+      done.map(function (j) { return jobRow(j, keys[j._key], true); }).join("");
+    return '<div class="tablewrap"><table class="jt">' + head + "<tbody>" + rows + "</tbody></table></div>";
+  }
+  function jobRow(j, q, applied) {
+    var sc = typeof j.score === "number" ? Math.round(j.score) : null;
+    var scCls = sc == null ? "dim" : sc >= 65 ? "s-hi" : sc >= 45 ? "s-mid" : "s-lo";
+    var st = q ? stChip(q.status, q.note) : (applied ? chip("ok", "✓ applied") : '<span class="muted">—</span>');
+    var why = (q && q.note) || j.snippet || "";
+    var acts = '<div class="tacts">' +
+      (q ? '<button disabled title="' + esc((STATUS[q.status] || ["", q.status])[1]) + '">in queue</button>'
+         : (applied ? "" : '<button class="go" data-q1="' + esc(j._key) + '" title="Add to the auto-apply queue">+ queue</button>')) +
+      '<a href="' + esc(safeUrl(j.url)) + '" target="_blank" rel="noopener" data-open="' + esc(j._key) + '" title="Open the posting">open ↗</a>' +
+      '<button data-tc="' + esc(j._key) + '" title="Contacts at this company">contacts</button>' +
+      (marks.removed[j._key] ? '<button data-restore="' + esc(j._key) + '" title="Put back in the list">↺</button>'
+         : '<button data-remove="' + esc(j._key) + '" title="Remove from the list">🗑</button>') + "</div>";
+    return '<tr data-job="' + esc(j._key) + '" class="' + (applied ? "done " : "") + (marks.removed[j._key] ? "gone " : "") + (JV.detail === j._key ? "on" : "") + '">' +
+      "<td>" + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' title="select">') + "</td>" +
+      '<td class="num ' + scCls + '">' + (sc == null ? "—" : sc + "%") + "</td>" +
+      "<td>" + st + "</td>" +
+      '<td class="dim">' + esc(j.source_name || j.source || "") + "</td>" +
+      "<td>" + esc(j.company || "") + "</td>" +
+      '<td class="pos">' + openLink(j.url, j.title || "(no title)", "", j._key) + "</td>" +
+      '<td class="dim">' + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "") + "</td>" +
+      '<td class="dim">' + esc(j.posted ? ago(j.posted) : "") + "</td>" +
+      '<td class="dim clip">' + esc((j.matched_skills || []).join(", ")) + "</td>" +
+      '<td class="dim clip">' + esc((j.missing_skills || []).join(", ")) + "</td>" +
+      '<td class="dim clip">' + esc(why) + "</td>" +
+      "<td>" + acts + "</td></tr>";
   }
   function jobCard(j, q, applied) {
     var t = [];
@@ -1034,7 +1306,7 @@
     var ex = j.extra || {}, c = ex.contacts, hasC = c && ((c.people || []).length || (c.emails || []).length);
     var btn = q ? '<button class="btn done" disabled>' + (STATUS[q.status] || [0, q.status])[1] + "</button>" : (applied ? "" : '<button class="btn" data-q1="' + esc(j._key) + '">+ Queue</button>');
     if (applied && !q) qchip = chip("ok", "✓ applied");
-    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
+    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + (JV.detail === j._key ? " sel" : "") + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
       '<div style="flex:1;min-width:0"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div></div>" + qchip + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" +
       (j.matched_skills && j.matched_skills.length ? '<div class="hint">✓ ' + esc(j.matched_skills.slice(0, 8).join(", ")) + "</div>" : "") +
@@ -1044,7 +1316,7 @@
   function contactsBlock(j) {
     var c = (j.extra || {}).contacts || {}, company = j.company || "", city = (j.location || "").split(",")[0].trim();
     if (/^(remote|hybrid|anywhere|worldwide|india)$/i.test(city)) city = "";
-    var role = (((JV.item || {}).title) || "software engineer").split(",")[0];
+    var role = (((JV && JV.item || {}).title) || "software engineer").split(",")[0];
     var h = "";
     if (c.people && c.people.length) h += "<div><b>People at " + esc(company) + "</b></div>" + c.people.map(function (p) {
       return '<div class="person"><b>' + esc(p.name) + "</b>" + (p.title ? '<span class="muted">' + esc(p.title) + (p.location ? " · " + esc(p.location) : "") + "</span><br>" : "") +
@@ -1090,13 +1362,25 @@
     submitted: "applied on company site", "login-required": "needs login - apply by hand", "career-incomplete": "form needs you - apply by hand" };
   function tCls(st) { return st === "applied" || st === "already" || st === "submitted" ? "ok" : (st === "login-required" || st === "career-incomplete" ? "man" : st === "questionnaire" || st === "offsite" ? "warn" : (st === "error" || st === "questionnaire-failed" || st === "unconfirmed" ? "bad" : "")); }
   function kCls(k) { return k === "rejected" ? "bad" : (k === "interview" || k === "shortlisted" || k === "offer" ? "ok" : (k === "viewed" ? "warn" : "")); }
+  // profile.enc holds the applications the Jobs table's detail column also needs, so the
+  // fetch is separate from the Track tab's rendering.
+  var trackAt = 0, trackWait = null;
+  function fetchTrack(force) {
+    if (!settings().pass) return Promise.reject(new Error("no passphrase"));
+    if (!force && track && Date.now() - trackAt < 45000) return Promise.resolve(track);
+    if (trackWait) return trackWait;
+    trackWait = fetchEnc("data/apply/profile.enc?t=" + Date.now()).then(JSON.parse)
+      .then(function (t) { track = t; trackAt = Date.now(); appIdx = null; trackWait = null; return t; },
+            function (e) { trackWait = null; throw e; });
+    return trackWait;
+  }
   function loadTrack() {
     var s = settings();
     if (!s.pass) { $("track-body").innerHTML = ""; return; }
     if (!track) $("track-body").innerHTML = '<div class="card"><span class="spin"></span> Loading…</div>';
     else if (typing("tab-track")) return;  // do not rebuild the form under the user's fingers
-    fetchEnc("data/apply/profile.enc?t=" + Date.now()).then(JSON.parse)
-      .then(function (t) { track = t; trackBank = (t.bank || []).slice(); trackSkills = Object.assign({}, (t.answers || {}).skill_years || {}); renderTrack(); })
+    fetchTrack(true)
+      .then(function (t) { trackBank = (t.bank || []).slice(); trackSkills = Object.assign({}, (t.answers || {}).skill_years || {}); renderTrack(); })
       .catch(function (e) { $("track-body").innerHTML = '<div class="card msg ' + (e.name === "OperationError" ? "bad" : "info") + '">' + esc(e.name === "OperationError" ? errText(e) : "Nothing published yet - the PC writes this on its next run (every 30 min while on).") + "</div>"; });
   }
   function renderTrack() {
