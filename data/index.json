@@ -1,6 +1,39 @@
 {
- "updated": "2026-09-18T08:01:53Z",
+ "updated": "2026-09-18T08:16:47Z",
  "items": [
+  {
+   "id": "naukri-20260918-081647-naukri-openings-2026-09-18-run-15",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 15",
+   "when": "2026-09-18T08:16:47Z",
+   "file": "data/naukri/naukri-20260918-081647-naukri-openings-2026-09-18-run-15.enc",
+   "bytes": 54140,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-081647-naukri-openings-2026-09-18-run-15.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260918-081647-naukri-openings-2026-09-18-run-16",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 16",
+   "when": "2026-09-18T08:16:47Z",
+   "file": "data/naukri/naukri-20260918-081647-naukri-openings-2026-09-18-run-16.enc",
+   "bytes": 50585,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-081647-naukri-openings-2026-09-18-run-16.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260918-081646-naukri-openings-2026-09-18-run-14",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 14",
+   "when": "2026-09-18T08:16:46Z",
+   "file": "data/naukri/naukri-20260918-081646-naukri-openings-2026-09-18-run-14.enc",
+   "bytes": 53715,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-081646-naukri-openings-2026-09-18-run-14.jobs.enc"
+   }
+  },
   {
    "id": "careers-20260918-080153-software-engineer",
    "kind": "careers",
@@ -44,28 +77,6 @@
    "bytes": 50352,
    "meta": {
     "jobs_file": "data/naukri/naukri-20260918-074638-naukri-openings-2026-09-18-run-13.jobs.enc"
-   }
-  },
-  {
-   "id": "naukri-20260918-074638-naukri-openings-2026-09-18-run-14",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-18 run 14",
-   "when": "2026-09-18T07:46:38Z",
-   "file": "data/naukri/naukri-20260918-074638-naukri-openings-2026-09-18-run-14.enc",
-   "bytes": 53663,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260918-074638-naukri-openings-2026-09-18-run-14.jobs.enc"
-   }
-  },
-  {
-   "id": "naukri-20260918-074638-naukri-openings-2026-09-18-run-15",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-18 run 15",
-   "when": "2026-09-18T07:46:38Z",
-   "file": "data/naukri/naukri-20260918-074638-naukri-openings-2026-09-18-run-15.enc",
-   "bytes": 54088,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260918-074638-naukri-openings-2026-09-18-run-15.jobs.enc"
    }
   },
   {
