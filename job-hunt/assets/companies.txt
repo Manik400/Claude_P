@@ -359,3 +359,564 @@ DBS                     | workday    | dbs                     | Singapore, Indi
 Standard Chartered      | workday    | standardchartered       | London, Singapore, India
 Visa                    | workday    | visa                    | San Francisco, Singapore, Bengaluru
 Mastercard              | workday    | mastercard              | New York, Bengaluru, Singapore
+
+
+
+Google | workday | google | https://www.google.com/about/careers/applications/
+Microsoft | workday | microsoft | https://jobs.careers.microsoft.com/
+Amazon | amazon | amazonjobs | https://www.amazon.jobs/
+Apple | workday | apple | https://jobs.apple.com/
+Meta | greenhouse | meta | https://www.metacareers.com/
+NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+Microsoft Azure | workday | microsoft | https://jobs.careers.microsoft.com/
+Amazon AWS | amazon | amazonjobs | https://www.amazon.jobs/
+IBM | workday | ibm | https://www.ibm.com/careers
+Oracle | oracle | oracle | https://careers.oracle.com/
+Salesforce | workday | salesforce.wd12.myworkdayjobs.com/External_Career_Site | https://salesforce.wd12.myworkdayjobs.com/External_Career_Site
+Adobe | workday | adobe.wd5.myworkdayjobs.com/external_experienced | https://adobe.wd5.myworkdayjobs.com/external_experienced
+Cisco | workday | cisco | https://jobs.cisco.com/
+Intel | workday | intel | https://jobs.intel.com/
+AMD | workday | amd | https://careers.amd.com/
+Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
+Broadcom | workday | broadcom | https://broadcom.wd1.myworkdayjobs.com/External_Career
+ServiceNow | workday | servicenow | https://careers.servicenow.com/
+SAP | successfactors | sap | https://jobs.sap.com/
+Dell Technologies | workday | dell | https://jobs.dell.com/
+HP | workday | hp | https://jobs.hp.com/
+HPE | workday | hpe | https://careers.hpe.com/
+Lenovo | workday | lenovo | https://jobs.lenovo.com/
+VMware / Broadcom | workday | broadcom | https://broadcom.wd1.myworkdayjobs.com/
+Atlassian | greenhouse | atlassian | https://www.atlassian.com/company/careers
+LinkedIn | greenhouse | linkedin | https://www.linkedin.com/jobs/
+Intuit | workday | intuit | https://jobs.intuit.com/
+Workday | workday | workday | https://www.workday.com/en-us/company/careers.html
+Palantir | greenhouse | palantir | https://www.palantir.com/careers/
+Snowflake | greenhouse | snowflake | https://careers.snowflake.com/
+Uber | greenhouse | uber | https://www.uber.com/careers/
+Airbnb | greenhouse | airbnb | https://careers.airbnb.com/
+Booking.com | greenhouse | booking | https://careers.booking.com/
+Expedia Group | workday | expedia | https://careers.expediagroup.com/
+Indeed | greenhouse | indeed | https://www.indeed.com/cmp/Indeed/jobs
+Wayfair | greenhouse | wayfair | https://www.wayfair.com/careers
+Coupang | greenhouse | coupang | https://www.coupang.jobs/
+Walmart Global Tech | workday | walmart | https://careers.walmart.com/
+Target | workday | target | https://corporate.target.com/careers
+Nike | workday | nike | https://jobs.nike.com/
+Samsung | workday | samsung | https://www.samsung.com/global/careers/
+Sony | workday | sony | https://www.sony.com/en/SonyInfo/Careers/
+Panasonic | workday | panasonic | https://holdings.panasonic/global/corporate/careers.html
+
+
+# ================================================================
+# HIGH-PAYING CLOUD / INFRASTRUCTURE
+# ================================================================
+
+Databricks | greenhouse | databricks | https://www.databricks.com/company/careers
+GitLab | greenhouse | gitlab | https://about.gitlab.com/jobs/
+GitHub | greenhouse | github | https://www.github.careers/
+Cloudflare | greenhouse | cloudflare | https://www.cloudflare.com/careers/
+Vercel | greenhouse | vercel | https://vercel.com/careers
+Elastic | greenhouse | elastic | https://www.elastic.co/careers
+Datadog | greenhouse | datadog | https://careers.datadoghq.com/
+MongoDB | greenhouse | mongodb | https://www.mongodb.com/careers
+Confluent | greenhouse | confluent | https://www.confluent.io/about/careers/
+Cockroach Labs | greenhouse | cockroachlabs | https://www.cockroachlabs.com/careers/
+Redis | greenhouse | redis | https://redis.io/careers/
+ClickHouse | greenhouse | clickhouse | https://clickhouse.com/company/careers
+Grafana Labs | greenhouse | grafanalabs | https://grafana.com/about/careers/
+HashiCorp | greenhouse | hashicorp | https://www.hashicorp.com/careers
+Docker | greenhouse | docker | https://www.docker.com/careers/
+Sentry | greenhouse | sentry | https://sentry.io/careers/
+New Relic | greenhouse | newrelic | https://newrelic.com/careers/
+Fastly | greenhouse | fastly | https://www.fastly.com/about/careers
+Akamai | workday | akamai | https://www.akamai.com/careers
+DigitalOcean | greenhouse | digitalocean | https://www.digitalocean.com/careers
+Pure Storage | greenhouse | purestorage | https://www.purestorage.com/company/careers.html
+Canonical | greenhouse | canonical | https://canonical.com/careers
+Red Hat | workday | redhat | https://www.redhat.com/en/jobs
+SUSE | greenhouse | suse | https://www.suse.com/careers/
+Veeam | greenhouse | veeam | https://www.veeam.com/company-careers.html
+JFrog | greenhouse | jfrog | https://www.jfrog.com/careers/
+Sonatype | greenhouse | sonatype | https://www.sonatype.com/careers
+CircleCI | greenhouse | circleci | https://circleci.com/careers/
+Buildkite | greenhouse | buildkite | https://buildkite.com/careers
+Pulumi | greenhouse | pulumi | https://www.pulumi.com/careers/
+Temporal | greenhouse | temporal | https://temporal.io/careers
+Aiven | greenhouse | aiven | https://aiven.io/careers
+ScyllaDB | greenhouse | scylladb | https://www.scylladb.com/careers/
+SingleStore | greenhouse | singlestore | https://www.singlestore.com/careers
+Timescale | greenhouse | timescale | https://www.timescale.com/careers
+Materialize | greenhouse | materialize | https://materialize.com/careers/
+PlanetScale | greenhouse | planetscale | https://planetscale.com/careers
+Neon | greenhouse | neon | https://neon.tech/careers
+Turso | official | turso | https://turso.tech/careers
+Oxide Computer | greenhouse | oxidecomputer | https://oxide.computer/careers
+Fly.io | official | fly | https://fly.io/careers
+Render | official | render | https://render.com/careers
+Railway | official | railway | https://railway.com/careers
+
+
+# ================================================================
+# DATABASE / DATA / DEVELOPER TOOLS
+# ================================================================
+
+Postman | greenhouse | postman | https://www.postman.com/company/careers/
+BrowserStack | greenhouse | browserstack | https://www.browserstack.com/careers
+LambdaTest | greenhouse | lambdatest | https://www.lambdatest.com/career
+Supabase | greenhouse | supabase | https://supabase.com/careers
+Weaviate | greenhouse | weaviate | https://weaviate.io/careers
+Pinecone | greenhouse | pinecone | https://www.pinecone.io/careers/
+Zilliz | greenhouse | zilliz | https://zilliz.com/careers
+Milvus / Zilliz | greenhouse | zilliz | https://zilliz.com/careers
+Neo4j | greenhouse | neo4j | https://neo4j.com/careers/
+PlanetScale | greenhouse | planetscale | https://planetscale.com/careers
+Couchbase | workday | couchbase | https://www.couchbase.com/careers/
+Cloudera | workday | cloudera | https://www.cloudera.com/about/careers.html
+DataStax | greenhouse | datastax | https://www.datastax.com/company/careers
+SingleStore | greenhouse | singlestore | https://www.singlestore.com/careers
+ClickHouse | greenhouse | clickhouse | https://clickhouse.com/company/careers
+ScyllaDB | greenhouse | scylladb | https://www.scylladb.com/careers/
+TigerBeetle | official | tigerbeetle | https://tigerbeetle.com/careers/
+Cockroach Labs | greenhouse | cockroachlabs | https://www.cockroachlabs.com/careers/
+Confluent | greenhouse | confluent | https://www.confluent.io/about/careers/
+Redis | greenhouse | redis | https://redis.io/careers/
+
+
+# ================================================================
+# AI / MACHINE LEARNING
+# ================================================================
+
+OpenAI | greenhouse | openai | https://openai.com/careers/
+Anthropic | greenhouse | anthropic | https://www.anthropic.com/careers
+xAI | greenhouse | xai | https://x.ai/careers
+Perplexity | greenhouse | perplexity-ai | https://www.perplexity.ai/hub/careers
+Scale AI | greenhouse | scaleai | https://scale.com/careers
+Hugging Face | greenhouse | huggingface | https://huggingface.co/jobs
+Cohere | greenhouse | cohere | https://cohere.com/careers
+Mistral AI | ashby | mistral | https://mistral.ai/careers
+Glean | greenhouse | glean | https://www.glean.com/cat/careers
+Weights & Biases | greenhouse | wandb | https://wandb.ai/site/careers
+Pinecone | greenhouse | pinecone | https://www.pinecone.io/careers/
+Replicate | greenhouse | replicate | https://replicate.com/careers
+Modal | greenhouse | modal | https://modal.com/careers
+Together AI | greenhouse | togetherai | https://www.together.ai/careers
+Fireworks AI | greenhouse | fireworksai | https://fireworks.ai/careers
+Baseten | greenhouse | baseten | https://www.baseten.co/careers
+Runway | greenhouse | runwayml | https://runwayml.com/careers/
+ElevenLabs | greenhouse | elevenlabs | https://elevenlabs.io/careers
+Harvey | greenhouse | harvey | https://www.harvey.ai/careers
+Sierra | greenhouse | sierra | https://sierra.ai/careers
+Decagon | greenhouse | decagon | https://decagon.ai/careers
+Character.AI | greenhouse | character | https://character.ai/careers
+Cursor / Anysphere | greenhouse | anysphere | https://www.cursor.com/careers
+Poolside | greenhouse | poolside | https://poolside.ai/careers
+Reka AI | greenhouse | reka | https://www.reka.ai/careers
+Luma AI | greenhouse | luma-ai | https://lumalabs.ai/careers
+Twelve Labs | greenhouse | twelvelabs | https://www.twelvelabs.io/careers
+AssemblyAI | greenhouse | assemblyai | https://www.assemblyai.com/careers
+DeepL | greenhouse | deepl | https://www.deepl.com/en/careers
+Contextual AI | greenhouse | contextual-ai | https://contextual.ai/careers
+Imbue | greenhouse | imbue | https://imbue.com/careers
+Magic | greenhouse | magic | https://magic.dev/careers
+Adept | greenhouse | adept | https://www.adept.ai/careers
+Sakana AI | greenhouse | sakanaai | https://sakana.ai/careers
+Thinking Machines | greenhouse | thinking-machines | https://thinkingmachines.ai/careers
+OctoAI | greenhouse | octoai | https://octo.ai/careers
+
+
+# ================================================================
+# FINTECH / PAYMENTS / CRYPTO
+# ================================================================
+
+Stripe | greenhouse | stripe | https://stripe.com/jobs
+Coinbase | greenhouse | coinbase | https://www.coinbase.com/careers
+Binance | lever | binance | https://jobs.lever.co/binance
+Plaid | ashby | plaid | https://plaid.com/careers/
+Block / Square | greenhouse | block | https://block.xyz/careers
+Ramp | greenhouse | ramp | https://ramp.com/careers
+Brex | greenhouse | brex | https://www.brex.com/careers
+Robinhood | greenhouse | robinhood | https://careers.robinhood.com/
+Chime | greenhouse | chime | https://www.chime.com/careers/
+Revolut | greenhouse | revolut | https://www.revolut.com/careers/
+Wise | greenhouse | wise | https://wise.jobs/
+Adyen | greenhouse | adyen | https://careers.adyen.com/
+Checkout.com | greenhouse | checkout | https://www.checkout.com/careers
+Klarna | greenhouse | klarna | https://www.klarna.com/careers/
+Nubank | greenhouse | nubank | https://www.nubank.com.br/careers/
+Affirm | greenhouse | affirm | https://www.affirm.com/careers
+Marqeta | greenhouse | marqeta | https://www.marqeta.com/company/careers
+Mercury | greenhouse | mercury | https://mercury.com/jobs
+Circle | greenhouse | circle | https://www.circle.com/en/careers
+Ripple | greenhouse | ripple | https://ripple.com/careers/
+Chainalysis | greenhouse | chainalysis | https://www.chainalysis.com/careers/
+Kraken | greenhouse | kraken | https://www.kraken.com/careers
+OKX | greenhouse | okx | https://www.okx.com/careers
+Gemini | greenhouse | gemini | https://www.gemini.com/careers
+Airwallex | greenhouse | airwallex | https://www.airwallex.com/careers
+Papaya Global | greenhouse | papaya-global | https://www.papayaglobal.com/careers/
+Melio | greenhouse | melio | https://meliopayments.com/careers/
+Tipalti | greenhouse | tipalti | https://tipalti.com/careers/
+
+
+# ================================================================
+# INDIAN UNICORNS / HIGH-PAYING PRODUCT COMPANIES
+# ================================================================
+
+Flipkart | greenhouse | flipkart | https://www.flipkartcareers.com/
+PhonePe | greenhouse | phonepe | https://www.phonepe.com/careers/
+Razorpay | greenhouse | razorpay | https://razorpay.com/jobs/
+CRED | greenhouse | cred | https://careers.cred.club/
+Groww | greenhouse | groww | https://groww.in/careers
+Meesho | greenhouse | meesho | https://www.meesho.io/jobs
+Zepto | greenhouse | zepto | https://www.zepto.in/careers
+Swiggy | greenhouse | swiggy | https://careers.swiggy.com/
+Zomato / Eternal | greenhouse | eternal | https://www.eternal.com/careers/
+Dream11 / Dream Sports | greenhouse | dreamsports | https://www.dreamsports.group/careers/
+Paytm | official | paytm | https://paytm.com/careers
+Myntra | greenhouse | myntra | https://careers.myntra.com/
+Ola | greenhouse | ola | https://www.olacabs.com/careers
+Ola Electric | greenhouse | olaelectric | https://www.olaelectric.com/careers
+Ather Energy | greenhouse | ather | https://www.atherenergy.com/careers
+Porter | greenhouse | porter | https://porter.in/careers
+Udaan | greenhouse | udaan | https://udaan.com/careers
+OfBusiness | greenhouse | ofbusiness | https://www.ofbusiness.com/careers
+Pine Labs | greenhouse | pinelabs | https://www.pinelabs.com/careers
+Juspay | greenhouse | juspay | https://juspay.in/careers
+Navi | greenhouse | navi | https://navi.com/careers
+CoinDCX | greenhouse | coindcx | https://coindcx.com/careers/
+CoinSwitch | greenhouse | coinswitch | https://coinswitch.co/careers
+Policybazaar | greenhouse | policybazaar | https://www.policybazaar.com/careers/
+ACKO | greenhouse | acko | https://www.acko.com/careers/
+Digit Insurance | greenhouse | go-digit | https://www.godigit.com/careers
+Slice | greenhouse | slice | https://sliceit.com/careers
+Yubi | greenhouse | yubi | https://www.go-yubi.com/careers
+Jupiter | greenhouse | jupiter | https://jupiter.money/careers
+Fi Money | greenhouse | fi | https://fi.money/careers
+Apna | greenhouse | apna | https://apna.co/careers
+Moglix | greenhouse | moglix | https://www.moglix.com/careers
+Zetwerk | greenhouse | zetwerk | https://www.zetwerk.com/careers
+Infra.Market | greenhouse | inframarket | https://infra.market/careers
+Ather | greenhouse | ather | https://www.atherenergy.com/careers
+
+
+# ================================================================
+# INDIAN SAAS
+# ================================================================
+
+Freshworks | greenhouse | freshworks | https://www.freshworks.com/company/careers/
+Postman | greenhouse | postman | https://www.postman.com/company/careers/
+BrowserStack | greenhouse | browserstack | https://www.browserstack.com/careers
+Chargebee | greenhouse | chargebee | https://www.chargebee.com/careers/
+Hasura | greenhouse | hasura | https://hasura.io/careers/
+Whatfix | greenhouse | whatfix | https://whatfix.com/careers/
+Druva | greenhouse | druva | https://www.druva.com/company/cassion/careers
+Gupshup | greenhouse | gupshup | https://www.gupshup.io/careers
+HighRadius | greenhouse | highradius | https://www.highradius.com/careers/
+Innovaccer | greenhouse | innovaccer | https://innovaccer.com/careers/
+MoEngage | greenhouse | moengage | https://www.moengage.com/careers/
+CleverTap | greenhouse | clevertap | https://clevertap.com/careers/
+WebEngage | greenhouse | webengage | https://webengage.com/careers/
+Mindtickle | greenhouse | mindtickle | https://www.mindtickle.com/careers/
+Darwinbox | greenhouse | darwinbox | https://darwinbox.com/careers/
+Uniphore | greenhouse | uniphore | https://www.uniphore.com/careers/
+Observe.AI | greenhouse | observeai | https://www.observe.ai/careers
+Yellow.ai | greenhouse | yellowai | https://yellow.ai/careers/
+Amagi | greenhouse | amagi | https://www.amagi.com/careers/
+Icertis | greenhouse | icertis | https://www.icertis.com/careers/
+Sprinklr | greenhouse | sprinklr | https://www.sprinklr.com/careers/
+Zenoti | greenhouse | zenoti | https://www.zenoti.com/careers
+LeadSquared | greenhouse | leadsquared | https://www.leadsquared.com/careers/
+Capillary Technologies | greenhouse | capillary | https://www.capillarytech.com/careers/
+Facilio | greenhouse | facilio | https://facilio.com/careers/
+Sirion | greenhouse | sirion | https://www.sirion.ai/careers/
+Kissflow | greenhouse | kissflow | https://kissflow.com/careers/
+Vymo | greenhouse | vymo | https://www.vymo.com/careers/
+Wingify | greenhouse | wingify | https://wingify.com/careers/
+Exotel | greenhouse | exotel | https://exotel.com/careers/
+
+
+# ================================================================
+# ENTERPRISE SAAS - GLOBAL
+# ================================================================
+
+ServiceTitan | greenhouse | servicetitan | https://www.servicetitan.com/careers
+Airtable | greenhouse | airtable | https://airtable.com/careers
+Asana | greenhouse | asana | https://asana.com/jobs
+Notion | ashby | notion | https://www.notion.com/careers
+Figma | greenhouse | figma | https://www.figma.com/careers/
+Miro | greenhouse | miro | https://miro.com/careers/
+Monday.com | greenhouse | monday | https://monday.com/careers
+ClickUp | greenhouse | clickup | https://clickup.com/careers
+Linear | greenhouse | linear | https://linear.app/careers
+Loom | greenhouse | loom | https://www.loom.com/careers
+Intercom | greenhouse | intercom | https://www.intercom.com/careers
+HubSpot | greenhouse | hubspot | https://www.hubspot.com/careers
+Zendesk | greenhouse | zendesk | https://jobs.zendesk.com/
+Okta | greenhouse | okta | https://www.okta.com/company/careers/
+Twilio | greenhouse | twilio | https://www.twilio.com/company/jobs
+DocuSign | greenhouse | docusign | https://careers.docusign.com/
+Box | greenhouse | box | https://www.box.com/en-us/careers
+Smartsheet | greenhouse | smartsheet | https://www.smartsheet.com/careers
+Amplitude | greenhouse | amplitude | https://amplitude.com/careers
+Mixpanel | greenhouse | mixpanel | https://mixpanel.com/careers/
+Braze | greenhouse | braze | https://www.braze.com/company/careers
+Iterable | greenhouse | iterable | https://iterable.com/careers/
+LaunchDarkly | greenhouse | launchdarkly | https://launchdarkly.com/careers/
+PagerDuty | greenhouse | pagerduty | https://www.pagerduty.com/careers/
+Contentful | greenhouse | contentful | https://www.contentful.com/careers/
+Celonis | greenhouse | celonis | https://www.celonis.com/careers/
+Personio | greenhouse | personio | https://www.personio.com/careers/
+Vanta | greenhouse | vanta | https://www.vanta.com/careers
+Rippling | greenhouse | rippling | https://www.rippling.com/careers
+Deel | greenhouse | deel | https://www.deel.com/careers
+Remote | greenhouse | remotecom | https://remote.com/careers
+Gusto | greenhouse | gusto | https://gusto.com/about/careers
+Retool | greenhouse | retool | https://retool.com/careers
+Airtable | greenhouse | airtable | https://airtable.com/careers
+Canva | greenhouse | canva | https://www.canva.com/careers/
+HubSpot | greenhouse | hubspot | https://www.hubspot.com/careers
+
+
+# ================================================================
+# SOCIAL / CONSUMER TECH
+# ================================================================
+
+Reddit | greenhouse | reddit | https://www.redditinc.com/careers
+Pinterest | greenhouse | pinterest | https://www.pinterestcareers.com/
+Dropbox | greenhouse | dropbox | https://jobs.dropbox.com/
+Discord | greenhouse | discord | https://discord.com/jobs
+Quora | greenhouse | quora | https://www.quora.com/careers
+Medium | official | medium | https://medium.com/jobs
+Substack | greenhouse | substack | https://substack.com/careers
+Patreon | greenhouse | patreon | https://www.patreon.com/careers
+Vimeo | greenhouse | vimeo | https://vimeo.com/jobs
+Automattic | official | automattic | https://automattic.com/work-with-us/
+WordPress.com | official | automattic | https://automattic.com/work-with-us/
+Buffer | official | buffer | https://buffer.com/journey
+Etsy | greenhouse | etsy | https://www.etsy.com/careers
+Snap | greenhouse | snap | https://www.snap.com/en-US/careers
+Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
+TikTok / ByteDance | greenhouse | bytedance | https://lifeattiktok.com/
+Roblox | greenhouse | roblox | https://careers.roblox.com/
+Twitch | amazon | amazonjobs | https://www.amazon.jobs/en/teams/twitch
+Whatnot | greenhouse | whatnot | https://careers.whatnot.com/
+
+
+# ================================================================
+# E-COMMERCE / MARKETPLACE
+# ================================================================
+
+DoorDash | greenhouse | doordash | https://careers.doordash.com/
+Instacart | greenhouse | instacart | https://instacart.careers/
+Etsy | greenhouse | etsy | https://www.etsy.com/careers
+Wayfair | greenhouse | wayfair | https://www.wayfair.com/careers
+Chewy | workday | chewy | https://careers.chewy.com/
+Gopuff | greenhouse | gopuff | https://www.gopuff.com/go/careers
+Mercari | greenhouse | mercari | https://careers.mercari.com/
+Poshmark | greenhouse | poshmark | https://careers.poshmark.com/
+Faire | greenhouse | faire | https://www.faire.com/careers
+StockX | greenhouse | stockx | https://careers.stockx.com/
+GOAT | greenhouse | goat | https://www.goat.com/careers
+
+
+# ================================================================
+# MOBILITY / TRAVEL
+# ================================================================
+
+Uber | greenhouse | uber | https://www.uber.com/careers/
+Lyft | greenhouse | lyft | https://www.lyft.com/careers
+Grab | greenhouse | grab | https://www.grab.careers/
+Booking.com | greenhouse | booking | https://careers.booking.com/
+Expedia Group | workday | expedia | https://careers.expediagroup.com/
+Delivery Hero | greenhouse | deliveryhero | https://careers.deliveryhero.com/
+Zalando | greenhouse | zalando | https://jobs.zalando.com/
+GetYourGuide | greenhouse | getyourguide | https://www.getyourguide.careers/
+BlaBlaCar | greenhouse | blablacar | https://jobs.blablacar.com/
+Doctolib | greenhouse | doctolib | https://about.doctolib.com/careers/
+
+
+# ================================================================
+# CYBERSECURITY
+# ================================================================
+
+CrowdStrike | workday | crowdstrike | https://www.crowdstrike.com/careers/
+Palo Alto Networks | workday | paloaltonetworks | https://jobs.paloaltonetworks.com/
+Zscaler | workday | zscaler | https://www.zscaler.com/careers
+Wiz | greenhouse | wiz | https://www.wiz.io/careers
+Snyk | greenhouse | snyk | https://snyk.io/careers/
+Rubrik | greenhouse | rubrik | https://www.rubrik.com/company/careers/
+Cohesity | greenhouse | cohesity | https://www.cohesity.com/careers/
+Tenable | greenhouse | tenable | https://www.tenable.com/careers
+SentinelOne | greenhouse | sentinelone | https://www.sentinelone.com/careers/
+Abnormal Security | greenhouse | abnormalsecurity | https://abnormalsecurity.com/careers
+Arctic Wolf | greenhouse | arcticwolf | https://arcticwolf.com/careers/
+Tailscale | greenhouse | tailscale | https://tailscale.com/careers
+1Password | greenhouse | 1password | https://1password.com/jobs
+Keeper Security | greenhouse | keepersecurity | https://www.keepersecurity.com/careers.html
+SailPoint | workday | sailpoint | https://www.sailpoint.com/company/careers/
+Darktrace | greenhouse | darktrace | https://careers.darktrace.com/
+
+
+# ================================================================
+# QUANT / HFT / TRADING
+# ================================================================
+
+Jane Street | official | janestreet | https://www.janestreet.com/join-jane-street/
+Hudson River Trading | official | hrt | https://www.hudsonrivertrading.com/careers/
+Citadel | official | citadel | https://www.citadel.com/careers/
+Citadel Securities | official | citadel-securities | https://www.citadelsecurities.com/careers/
+Two Sigma | official | twosigma | https://www.twosigma.com/careers/
+Jump Trading | official | jumptrading | https://www.jumptrading.com/careers/
+DRW | official | drw | https://www.drw.com/careers/
+IMC Trading | official | imc | https://www.imc.com/careers/
+Optiver | official | optiver | https://www.optiver.com/working-at-optiver/career-opportunities/
+Akuna Capital | official | akuna | https://akunacapital.com/careers/
+Five Rings | official | fiverings | https://fiverings.com/careers/
+Tower Research | official | tower-research | https://www.tower-research.com/careers/
+D.E. Shaw | official | deshaw | https://www.deshaw.com/careers
+SIG | official | sig | https://sig.com/careers/
+Virtu Financial | official | virtu | https://www.virtu.com/careers/
+Flow Traders | official | flowtraders | https://www.flowtraders.com/careers/
+
+
+# ================================================================
+# SEMICONDUCTOR / HARDWARE
+# ================================================================
+
+NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+AMD | workday | amd | https://careers.amd.com/
+Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
+Broadcom | workday | broadcom | https://broadcom.wd1.myworkdayjobs.com/External_Career
+Intel | workday | intel | https://jobs.intel.com/
+ARM | workday | arm | https://careers.arm.com/
+Marvell | workday | marvell | https://marvell.wd1.myworkdayjobs.com/
+MediaTek | official | mediatek | https://corp.mediatek.com/careers
+Micron | workday | micron | https://micron.wd1.myworkdayjobs.com/
+Cadence | workday | cadence | https://cadence.wd1.myworkdayjobs.com/
+Synopsys | workday | synopsys | https://careers.synopsys.com/
+Applied Materials | workday | appliedmaterials | https://amat.wd1.myworkdayjobs.com/
+Lam Research | workday | lamresearch | https://careers.lamresearch.com/
+ASML | workday | asml | https://www.asml.com/en/careers
+
+
+# ================================================================
+# AUTONOMOUS / ROBOTICS / EV
+# ================================================================
+
+Tesla | workday | tesla | https://www.tesla.com/careers
+Waymo | greenhouse | waymo | https://waymo.com/careers/
+Zoox | greenhouse | zoox | https://zoox.com/careers/
+Aurora | greenhouse | aurora | https://aurora.tech/careers
+Nuro | greenhouse | nuro | https://www.nuro.ai/careers
+Figure AI | greenhouse | figure | https://www.figure.ai/careers
+Skydio | greenhouse | skydio | https://www.skydio.com/careers
+Anduril | greenhouse | anduril | https://www.anduril.com/careers/
+Shield AI | greenhouse | shieldai | https://shield.ai/careers/
+Zipline | greenhouse | zipline | https://www.flyzipline.com/careers
+Archer Aviation | greenhouse | archer | https://www.archer.com/careers
+Joby Aviation | greenhouse | joby | https://www.jobyaviation.com/careers/
+Rivian | workday | rivian | https://rivian.com/careers
+Lucid Motors | workday | lucid | https://www.lucidmotors.com/careers
+Polestar | workday | polestar | https://www.polestar.com/global/careers/
+Cruise | greenhouse | cruise | https://www.getcruise.com/careers/
+
+
+# ================================================================
+# SPACE / DEFENCE
+# ================================================================
+
+SpaceX | greenhouse | spacex | https://www.spacex.com/careers/
+Relativity Space | greenhouse | relativity | https://www.relativityspace.com/careers
+Rocket Lab | greenhouse | rocketlab | https://www.rocketlabusa.com/careers/
+Vast | greenhouse | vast | https://www.vastspace.com/careers
+Astranis | greenhouse | astranis | https://www.astranis.com/careers
+Axiom Space | greenhouse | axiomspace | https://www.axiomspace.com/careers
+Varda Space | greenhouse | varda | https://www.varda.com/careers
+Stoke Space | greenhouse | stokespace | https://www.stokespace.com/careers
+Anduril | greenhouse | anduril | https://www.anduril.com/careers/
+
+
+# ================================================================
+# VIDEO / STREAMING / MEDIA
+# ================================================================
+
+Netflix | workday | netflix | https://jobs.netflix.com/
+Roku | greenhouse | roku | https://www.roku.com/jobs
+Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
+Tubi | lever | tubi | https://jobs.lever.co/tubi
+Disney | workday | disney | https://jobs.disneycareers.com/
+Hulu | workday | disney | https://jobs.disneycareers.com/
+Paramount | workday | paramount | https://careers.paramount.com/
+Warner Bros Discovery | workday | wbd | https://careers.wbd.com/
+Comcast | workday | comcast | https://jobs.comcast.com/
+Fubo | greenhouse | fubo | https://careers.fubo.tv/
+
+
+# ================================================================
+# GAMING
+# ================================================================
+
+Epic Games | official | epicgames | https://www.epicgames.com/site/en-US/careers/jobs
+Riot Games | greenhouse | riotgames | https://www.riotgames.com/en/work-with-us/jobs
+Valve | official | valve | https://www.valvesoftware.com/en/jobs
+Roblox | greenhouse | roblox | https://careers.roblox.com/
+Unity | greenhouse | unity | https://unity.com/careers
+Electronic Arts | workday | ea | https://jobs.ea.com/
+Activision Blizzard | workday | activision | https://careers.activision.com/
+Take-Two Interactive | workday | taketwo | https://www.take2games.com/careers
+Zynga | greenhouse | zynga | https://www.zynga.com/careers
+Supercell | greenhouse | supercell | https://supercell.com/en/careers/
+King | workday | king | https://www.king.com/en/careers
+
+
+# ================================================================
+# EUROPEAN TECH
+# ================================================================
+
+DeepMind | greenhouse | deepmind | https://deepmind.google/careers/
+Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
+Klarna | greenhouse | klarna | https://www.klarna.com/careers/
+Revolut | greenhouse | revolut | https://www.revolut.com/careers/
+Wise | greenhouse | wise | https://wise.jobs/
+Adyen | greenhouse | adyen | https://careers.adyen.com/
+ASML | workday | asml | https://www.asml.com/en/careers
+N26 | greenhouse | n26 | https://n26.com/en-eu/careers
+Celonis | greenhouse | celonis | https://www.celonis.com/careers/
+Personio | greenhouse | personio | https://www.personio.com/careers/
+Zalando | greenhouse | zalando | https://jobs.zalando.com/
+Delivery Hero | greenhouse | deliveryhero | https://careers.deliveryhero.com/
+DeepL | greenhouse | deepl | https://www.deepl.com/en/careers
+Mistral AI | ashby | mistral | https://mistral.ai/careers
+Hugging Face | greenhouse | huggingface | https://huggingface.co/jobs
+Back Market | greenhouse | backmarket | https://www.backmarket.com/en-us/careers
+Doctolib | greenhouse | doctolib | https://about.doctolib.com/careers
+BlaBlaCar | greenhouse | blablacar | https://jobs.blablacar.com/
+Qonto | greenhouse | qonto | https://qonto.com/en/careers
+Contentsquare | greenhouse | contentsquare | https://contentsquare.com/careers/
+OVHcloud | greenhouse | ovhcloud | https://www.ovhcloud.com/en/careers/
+Criteo | greenhouse | criteo | https://careers.criteo.com/
+Checkout.com | greenhouse | checkout | https://www.checkout.com/careers
+SumUp | greenhouse | sumup | https://www.sumup.com/careers/
+
+
+# ================================================================
+# ASIA / APAC
+# ================================================================
+
+Grab | greenhouse | grab | https://www.grab.careers/
+Sea Group | greenhouse | sea | https://www.sea.com/careers
+Shopee | greenhouse | sea | https://www.sea.com/careers
+ByteDance | greenhouse | bytedance | https://jobs.bytedance.com/
+TikTok | greenhouse | bytedance | https://lifeattiktok.com/
+Agoda | greenhouse | agoda | https://careersatagoda.com/
+Rakuten | official | rakuten | https://global.rakuten.com/corp/careers/
+Mercari | greenhouse | mercari | https://careers.mercari.com/
+Preferred Networks | official | preferred-networks | https://www.preferred.jp/en/careers/
+LINE Yahoo | official | line-yahoo | https://www.lycorp.co.jp/en/recruit/
+Toyota | workday | toyota | https://careers.toyota.com/
+Sony | workday | sony | https://www.sony.com/en/SonyInfo/Careers/
+Nintendo | official | nintendo | https://www.nintendo.co.jp/jobs/
+DBS | workday | dbs | https://www.dbs.com/careers
+Standard Chartered | workday | standardchartered | https://www.sc.com/en/careers/
+Visa | workday | visa | https://usa.visa.com/careers.html
+Mastercard | workday | mastercard | https://careers.mastercard.com/
