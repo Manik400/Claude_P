@@ -1068,7 +1068,8 @@
     return h + "</div>";
   }
   function applicationHtml(apps, j) {
-    if (!track) return '<div class="sect">Application</div><div class="muted">Open <b>Track</b> once to load what the PC sent.</div>';
+    if (!track) return '<div class="sect">Application</div><div class="muted">' +
+      (trackErr ? "What the PC sent could not be loaded: " + esc(trackErr) : "Loading what the PC sent…") + "</div>";
     if (!apps.length) return '<div class="sect">Application</div><div class="muted">Your PC has not applied to this one.</div>';
     var h = '<div class="sect">The form your PC sent</div>' + attemptHtml(apps, 0);
     if (apps.length > 1) h += "<details style=\"margin-top:10px\"><summary class=\"muted\">earlier attempts (" + (apps.length - 1) + ")</summary>" +
@@ -1380,14 +1381,14 @@
   function kCls(k) { return k === "rejected" ? "bad" : (k === "interview" || k === "shortlisted" || k === "offer" ? "ok" : (k === "viewed" ? "warn" : "")); }
   // profile.enc holds the applications the Jobs table's detail column also needs, so the
   // fetch is separate from the Track tab's rendering.
-  var trackAt = 0, trackWait = null;
+  var trackAt = 0, trackWait = null, trackErr = "";
   function fetchTrack(force) {
     if (!settings().pass) return Promise.reject(new Error("no passphrase"));
     if (!force && track && Date.now() - trackAt < 45000) return Promise.resolve(track);
     if (trackWait) return trackWait;
     trackWait = fetchEnc("data/apply/profile.enc?t=" + Date.now()).then(JSON.parse)
-      .then(function (t) { track = t; trackAt = Date.now(); appIdx = null; trackWait = null; return t; },
-            function (e) { trackWait = null; throw e; });
+      .then(function (t) { track = t; trackAt = Date.now(); appIdx = null; trackWait = null; trackErr = ""; return t; },
+            function (e) { trackWait = null; trackErr = errText(e); throw e; });
     return trackWait;
   }
   function loadTrack() {
