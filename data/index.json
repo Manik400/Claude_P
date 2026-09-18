@@ -1,6 +1,39 @@
 {
- "updated": "2026-09-18T02:16:37Z",
+ "updated": "2026-09-18T02:46:37Z",
  "items": [
+  {
+   "id": "naukri-20260918-024637-naukri-openings-2026-09-18-run-6",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 6",
+   "when": "2026-09-18T02:46:37Z",
+   "file": "data/naukri/naukri-20260918-024637-naukri-openings-2026-09-18-run-6.enc",
+   "bytes": 51273,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-024637-naukri-openings-2026-09-18-run-6.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260918-024637-naukri-openings-2026-09-18-run-7",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 7",
+   "when": "2026-09-18T02:46:37Z",
+   "file": "data/naukri/naukri-20260918-024637-naukri-openings-2026-09-18-run-7.enc",
+   "bytes": 51981,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-024637-naukri-openings-2026-09-18-run-7.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260918-024637-naukri-openings-2026-09-18-run-8",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-18 run 8",
+   "when": "2026-09-18T02:46:37Z",
+   "file": "data/naukri/naukri-20260918-024637-naukri-openings-2026-09-18-run-8.enc",
+   "bytes": 48191,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260918-024637-naukri-openings-2026-09-18-run-8.jobs.enc"
+   }
+  },
   {
    "id": "naukri-20260918-021637-naukri-openings-2026-09-18-run-5",
    "kind": "naukri",
@@ -10,28 +43,6 @@
    "bytes": 40173,
    "meta": {
     "jobs_file": "data/naukri/naukri-20260918-021637-naukri-openings-2026-09-18-run-5.jobs.enc"
-   }
-  },
-  {
-   "id": "naukri-20260918-021637-naukri-openings-2026-09-18-run-6",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-18 run 6",
-   "when": "2026-09-18T02:16:37Z",
-   "file": "data/naukri/naukri-20260918-021637-naukri-openings-2026-09-18-run-6.enc",
-   "bytes": 51223,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260918-021637-naukri-openings-2026-09-18-run-6.jobs.enc"
-   }
-  },
-  {
-   "id": "naukri-20260918-021637-naukri-openings-2026-09-18-run-7",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-18 run 7",
-   "when": "2026-09-18T02:16:37Z",
-   "file": "data/naukri/naukri-20260918-021637-naukri-openings-2026-09-18-run-7.enc",
-   "bytes": 51931,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260918-021637-naukri-openings-2026-09-18-run-7.jobs.enc"
    }
   },
   {
