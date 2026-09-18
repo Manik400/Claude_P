@@ -130,16 +130,26 @@ Read `data/profile.json`, decide what should change, put it in `changes.yaml`
 - **Employment bullets** — numbers beat duties. "Cut regression suite runtime
   from 40 to 9 minutes" outperforms "responsible for automation testing".
 
-### 4. Refresh, daily
+### 4. Refresh, every 45 minutes
 
 Recruiter search ranks heavily on when a profile was last modified. An
 untouched profile sinks below otherwise identical ones edited today.
 `--refresh` toggles a trailing full stop on your headline: a real edit that
 bumps the timestamp and changes nothing a human reads.
 
-Schedule `daily_refresh.bat` once a day via Task Scheduler. More often gains
-nothing and only makes the traffic look automated. Outcomes append to
-`data/refresh_log.json` so a silently-broken job is visible.
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1
+```
+
+That registers **NaukriProfileRefresh**, which runs `refresh_profile.bat`
+every 45 minutes, around the clock, hidden (no console, no browser window),
+and again a few minutes after you log on so a reboot does not break the chain.
+See [Keeping the profile fresh](#keeping-the-profile-fresh) below for the log,
+the next run time and how to remove it.
+
+The three scan runs still refresh as their step 2, but this task is now the
+primary one — a refresh that only happens when a scan happens leaves the
+profile untouched for hours at a stretch.
 
 ## Daily job agent
 
@@ -417,6 +427,47 @@ output goes to `logs\scheduled.log`. The tasks are still registered as "run
 only when the user is logged on", because the off-screen fallback (used only
 if Naukri refuses the headless browser) needs a desktop session.
 
+## Keeping the profile fresh
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1
+```
+
+**What it does.** Registers one Task Scheduler entry, `NaukriProfileRefresh`,
+that runs `refresh_profile.bat` — `main.py --refresh`, the trailing-full-stop
+edit that bumps your last-modified timestamp. Nothing else on the profile
+moves.
+
+**How often.** Every 45 minutes, indefinitely, plus three minutes after each
+logon so a reboot restarts the chain. `-Every 30` changes the interval. One
+run takes about ten seconds and is hard-stopped at 20 minutes, well under the
+interval, so a hung browser can never still hold the slot when the next run is
+due; `IgnoreNew` drops a second instance rather than queueing it. This task,
+not step 2 of `jobs_scan_and_prep.bat`, is now what keeps the timestamp fresh.
+
+**Where the log is.** `logs\refresh.log` — one line per run, successes
+included:
+
+```
+2026-09-18 09:52:22  ok  profile timestamp bumped (12.3s)
+2026-09-18 10:37:14  FAILED  session expired - run python main.py --login (6.1s)
+```
+
+Every run first trims that file to the last 24 hours, so it never grows. The
+full console output of each run still goes to `logs\scheduled.log`, and
+`data/refresh_log.json` still gets the refresher's own record. A `FAILED
+session expired` line means exactly what it says: run `python main.py --login`
+once and the next run is green again.
+
+**Next run, and removing it.**
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1 -Show    # state, last run, last result, next run, last 5 log lines
+Get-ScheduledTaskInfo -TaskName 'NaukriProfileRefresh'                         # the same from Windows
+Start-ScheduledTask -TaskName 'NaukriProfileRefresh'                           # run one now
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1 -Remove  # unschedule
+```
+
 ## AI interview preparation
 
 ```powershell
@@ -574,7 +625,8 @@ main.py                CLI
 LICENSE                MIT
 jobs.example.yaml      template for jobs.yaml (yours is gitignored)
 changes.example.yaml   template for --apply
-daily_refresh.bat      scheduled profile nudge
+refresh_profile.bat    the profile nudge on its own 45-minute task -> logs\refresh.log
+daily_refresh.bat      the same nudge, unscheduled, for a once-a-day task of your own
 jobs_scan.bat          daily scan -> openings page + spreadsheet, then applies (--apply-found --yes)
 interview_prep.bat     Top 10 -> skill matrix + 100 Q&A study page
 

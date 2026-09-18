@@ -26,9 +26,6 @@ class Remotive(Source):
                 tags = [t for t in (it.get("tags") or []) if t]
                 if ctx.relevance(title, " ".join(tags) + " " + desc[:600]) <= 0:
                     continue
-                posted = parse_date(it.get("publication_date"))
-                if not ctx.fresh(posted):
-                    continue
                 loc = normalize_ws(it.get("candidate_required_location") or "")
                 code, eligible = assign_country(loc, ctx)
                 if code is None:
@@ -40,7 +37,8 @@ class Remotive(Source):
                     country=code,
                     location=f"Remote · {loc}" if loc else "Remote",
                     remote=True,
-                    posted=posted,
+                    posted=parse_date(it.get("publication_date")),
+                    posted_raw=it.get("publication_date") or "",   # ISO timestamp with a time
                     salary=normalize_ws(it.get("salary") or ""),
                     snippet=desc[:400],
                     description=desc,
@@ -49,7 +47,11 @@ class Remotive(Source):
                     query=kw,
                 )
                 j.extra["eligible"] = eligible
-                out.append(j.finalize())
+                j.finalize()
+                ok, why = ctx.fresh_job(j)
+                if not ok and why == "old":
+                    continue
+                out.append(j)
                 if len(out) >= ctx.max_per_source:
                     return out
         return out

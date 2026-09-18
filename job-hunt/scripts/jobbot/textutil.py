@@ -68,6 +68,27 @@ ROLE_SYNONYMS = {
 }
 
 
+# Words that make a title a software role even when it never says
+# "developer" or "engineer" ("Backend (m/w/d)", "SDE-2", "Platform, Java").
+TECH_ROLE_WORDS = {
+    "backend", "back-end", "frontend", "front-end", "fullstack", "full-stack", "sde", "sde1", "sde2", "sde3",
+    "devops", "sre", "platform", "infrastructure", "cloud", "data", "ml", "ai", "qa", "sdet", "test",
+    "automation", "mobile", "android", "ios", "web", "api", "microservices", "embedded", "firmware",
+    "java", "python", "golang", "node", "nodejs", "react", "angular", "vue", ".net", "dotnet", "c#", "c++",
+    "php", "ruby", "rust", "scala", "kotlin", "swift", "typescript", "javascript", "django", "spring",
+}
+
+# A title with one of these and no role match is a different profession: the
+# search asked for engineering, the board returned its own idea of "related".
+OFF_FIELD_WORDS = {
+    "sales", "account executive", "business development", "marketing", "recruiter", "recruitment",
+    "talent acquisition", "hr ", "human resources", "accountant", "accounting", "finance manager",
+    "nurse", "teacher", "tutor", "driver", "chef", "waiter", "barista", "cleaner", "security guard",
+    "customer service", "call center", "call centre", "telecaller", "insurance", "real estate",
+    "receptionist", "warehouse", "delivery", "mechanic", "electrician", "plumber", "beautician",
+}
+
+
 def tokens(text):
     return [t.lower() for t in _TOKEN_RE.findall(text or "")]
 
@@ -157,6 +178,80 @@ def days_old(iso_date):
         return (today() - d).days
     except Exception:
         return None
+
+
+# Minutes / hours in the languages the boards in this bot answer in. A window
+# measured in hours is only honest when the source says the time, so this is
+# kept apart from parse_date: it returns the exact moment ONLY when there was
+# one to read (an epoch, a timestamp, "3 hours ago"), never midnight.
+_MIN_WORDS = r"min|mins|minute|minutes|minuten|minuto|minutos|minuutti|minuuttia|นาที|分"
+_HOUR_WORDS = r"h|hr|hrs|hour|hours|stunde|stunden|hora|horas|heure|heures|uur|tunti|tuntia|ชั่วโมง|時間"
+
+
+def parse_when(value):
+    """(iso_date, iso_datetime | None) for anything a board calls a posting time.
+
+    The second value is present only when the moment is actually known, so an
+    "last 2 hours" search never has to guess what time a date-only posting went
+    up. Timestamps are returned in UTC, e.g. "2026-09-18T04:12:00+00:00".
+    """
+    if value is None or value == "":
+        return None, None
+    # epoch seconds / milliseconds
+    try:
+        if isinstance(value, (int, float)) or (isinstance(value, str) and re.fullmatch(r"\d{9,13}", value.strip())):
+            v = float(value)
+            if v > 1e12:
+                v /= 1000.0
+            dt = datetime.fromtimestamp(v, tz=timezone.utc)
+            return iso(dt), dt.isoformat()
+    except Exception:
+        pass
+    s = str(value).strip()
+    low = s.lower()
+    now = datetime.now(timezone.utc)
+    # ISO timestamp with a time in it
+    m = re.match(r"(\d{4})-(\d{2})-(\d{2})[T ](\d{2}):(\d{2})(?::(\d{2}))?(\.\d+)?\s*(Z|[+-]\d{2}:?\d{2})?", s)
+    if m:
+        try:
+            dt = datetime(int(m.group(1)), int(m.group(2)), int(m.group(3)),
+                          int(m.group(4)), int(m.group(5)), int(m.group(6) or 0), tzinfo=timezone.utc)
+            off = m.group(8)
+            if off and off not in ("Z", "z"):
+                sign = 1 if off[0] == "+" else -1
+                hh, mm = off[1:].replace(":", "")[:2], off[1:].replace(":", "")[2:4] or "00"
+                dt -= timedelta(minutes=sign * (int(hh) * 60 + int(mm)))
+            return iso(dt), dt.isoformat()
+        except ValueError:
+            pass
+    # "just now" / "posted moments ago"
+    if re.search(r"just (now|posted)|moments? ago|right now|(?<![a-z])now(?![a-z])|juuri|ahora mismo|gerade eben", low):
+        return iso(now), now.isoformat()
+    # "45 minutes ago" / "vor 45 Minuten" / "hace 45 minutos"
+    m = re.search(r"(\d+)\s*(?:" + _MIN_WORDS + r")(?![a-z])", low)
+    if m:
+        dt = now - timedelta(minutes=int(m.group(1)))
+        return iso(dt), dt.isoformat()
+    # "3 hours ago" / "vor 3 Stunden" / "hace 3 horas" / "3h"
+    m = re.search(r"(\d+)\s*(?:" + _HOUR_WORDS + r")(?![a-z])", low)
+    if m:
+        dt = now - timedelta(hours=int(m.group(1)))
+        return iso(dt), dt.isoformat()
+    # anything else is a date at best
+    return parse_date(value), None
+
+
+def hours_old(iso_datetime):
+    """Hours since an ISO timestamp, or None when it cannot be read."""
+    if not iso_datetime:
+        return None
+    try:
+        dt = datetime.fromisoformat(str(iso_datetime).replace("Z", "+00:00"))
+    except ValueError:
+        return None
+    if dt.tzinfo is None:
+        dt = dt.replace(tzinfo=timezone.utc)
+    return (datetime.now(timezone.utc) - dt).total_seconds() / 3600.0
 
 
 def clean_company(s):

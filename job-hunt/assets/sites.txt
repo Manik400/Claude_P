@@ -1,0 +1,63 @@
+# The job sites this bot searches - the platform list, next to the company list
+# in companies.txt. Turn one off here and no run touches it again; turn it back
+# on and the next search includes it. No code change either way.
+#
+# One site per line:   key | on/off | note
+#
+#   key      what the code calls it (`python scripts/job_bot.py sources`)
+#   on/off   off = never searched, whatever else asks for it
+#   note     free text: what it covers, what it needs
+#
+# A search can also pick platforms for one run without editing this file:
+#   python scripts/job_bot.py run --sources "linkedin,instahyre,seek" ...
+# and on the phone, the Platforms chips under Search. An explicit pick wins
+# over this file; "off" here only sets the default.
+#
+# Times: boards marked "no posting time" publish a date at best, so an
+# "in the last N hours" search leaves them out (they cannot be shown to be
+# inside the window) unless you tick "include postings with no time".
+
+# ---- worldwide / multi-country
+linkedin       | on  | LinkedIn guest search. Exact times on fresh cards ("2 hours ago"); asks the board for the window itself
+wellfound      | on  | Wellfound (AngelList). Startups; no posting time published
+themuse        | on  | The Muse. Exact times; city-based
+relocateme     | on  | Relocate.me. Roles that pay to move you; no posting time
+jsearch        | on  | JSearch (Google Jobs) - needs RAPIDAPI_KEY. Exact times
+jooble         | on  | Jooble - needs JOOBLE_API_KEY. Exact times
+adzuna         | on  | Adzuna - needs ADZUNA_APP_ID + ADZUNA_APP_KEY. Exact times
+firecrawl      | on  | Web search fallback - needs FIRECRAWL_API_KEY. For boards that block scripts
+
+# ---- India
+instahyre      | on  | Instahyre. India only; no posting time published
+apify-naukri   | on  | Naukri through Apify - needs APIFY_TOKEN. Exact times
+apify-indeed   | on  | Indeed through Apify - needs APIFY_TOKEN. Exact times
+apify-linkedin | on  | LinkedIn through Apify - needs APIFY_TOKEN. Exact times; also gives the job poster as a contact
+
+# ---- Europe
+xing           | on  | XING. DE/AT/CH; no posting time published
+arbeitnow      | on  | Arbeitnow. Germany; exact times
+duunitori      | on  | Duunitori. Finland; date only
+tecnoempleo    | on  | Tecnoempleo. Spain; exact times on recent cards ("Hace 3 horas")
+infojobs       | on  | InfoJobs. Spain; exact times on recent cards
+landingjobs    | on  | Landing.jobs. EU tech, relocation-friendly; exact times
+
+# ---- Asia / Pacific
+seek           | on  | Seek / JobsDB / JobStreet. AU, TH, SG, MY, HK, NZ; exact times
+tokyodev       | on  | TokyoDev. Japan, English-speaking roles; no posting time
+japandev       | on  | Japan Dev. Japan; no posting time
+daijob         | on  | Daijob. Japan, bilingual; no posting time
+wantedly       | on  | Wantedly. Japan; exact times
+jobthai        | on  | JobThai. Thailand; exact times
+
+# ---- remote-only boards
+remotive       | on  | Remotive. Exact times
+remoteok       | on  | RemoteOK. Exact times
+jobicy         | on  | Jobicy. Exact times
+workingnomads  | on  | Working Nomads. Exact times
+
+# ---- blocked for scripts: reached through search links / Apify instead
+# Indeed, Glassdoor, Naukri, StepStone, Hirist, Jobly, CareerCross, GaijinPot and
+# Nationale Vacaturebank refuse scripted requests. Each run writes ready-made
+# search links for them (fallback_plan.json, and the "Direct searches" block in
+# the report); Naukri, Indeed and LinkedIn also have real scrapers above through
+# Apify when APIFY_TOKEN is set.

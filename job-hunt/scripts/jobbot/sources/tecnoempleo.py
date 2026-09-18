@@ -5,6 +5,8 @@ from ..textutil import clean_company, clean_title, normalize_ws, parse_date, sou
 from .base import Source
 
 URL = "https://www.tecnoempleo.com/ofertas-trabajo/"
+# "Hace 3 horas" / "Hace 45 minutos" - the only wording on the card that pins a time
+REL_TIME = re.compile(r"hace\s*\d+\s*(?:h|hr|hora|horas|min|minuto|minutos)\b", re.I)
 
 
 class Tecnoempleo(Source):
@@ -25,7 +27,8 @@ class Tecnoempleo(Source):
                     if j.id in seen:
                         continue
                     seen.add(j.id)
-                    if ctx.fresh(j.posted):
+                    ok, why = ctx.fresh_job(j)
+                    if ok or why != "old":
                         out.append(j)
                     new += 1
                 if new == 0 or len(cards) < 20:
@@ -46,6 +49,7 @@ class Tecnoempleo(Source):
             small = card.select_one("span.d-block.d-lg-none")
             small_text = normalize_ws(small.get_text(" ", strip=True)) if small else ""
             date = parse_date(right_text) or parse_date(small_text)
+            rel = REL_TIME.search(right_text + " " + small_text)
             loc = ""
             b = (right or card).select_one("b")
             if b:
@@ -64,6 +68,7 @@ class Tecnoempleo(Source):
                 country=country,
                 location=loc or "Spain",
                 posted=date,
+                posted_raw=rel.group(0) if rel else "",
                 snippet=snippet[:400],
                 skills=badges,
                 remote=True if mode and mode.group(1).lower() in ("remoto", "teletrabajo") else None,

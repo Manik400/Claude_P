@@ -23,7 +23,7 @@
     --bad: #b91c1c; --bad-bg: rgba(185,28,28,.11);
     --man: #8a6a4a; --man-bg: rgba(138,106,74,.16);
     --chip: #ecebe7; --shadow: 0 1px 2px rgba(28,25,23,.05), 0 1px 8px rgba(28,25,23,.04);
-    --side-w: 232px; --content-w: 1180px; --list-w: 880px;
+    --side-w: 232px; --content-w: 1180px; --list-w: 880px; --wide-w: 1800px;
     color-scheme: light;
   }
   :root[data-theme="dark"] {
@@ -140,6 +140,15 @@
   .chips button:hover { border-color: var(--muted); }
   .chips button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
   .chips.small button { padding: 5px 10px; font-size: 13px; min-height: 32px; }
+  /* long chip rows (platforms): wrap on wide screens, scroll sideways in 3 rows on phones */
+  .chips.strip { margin-top: 6px; }
+  @media (max-width: 599px) {
+    .chips.strip { display: grid; grid-auto-flow: column; grid-auto-columns: max-content; grid-template-rows: repeat(3, auto);
+      overflow-x: auto; overscroll-behavior-x: contain; padding-bottom: 6px; scrollbar-width: thin; }
+  }
+  /* "Posted within": a number and its unit side by side */
+  .win { display: grid; grid-template-columns: minmax(0, 1fr) 104px; gap: 8px; }
+  .win select { padding-right: 30px; }
   .spin { display: inline-block; width: 14px; height: 14px; border: 2px solid var(--line); border-top-color: var(--accent);
     border-radius: 50%; animation: s 1s linear infinite; vertical-align: -2px; }
   @keyframes s { to { transform: rotate(360deg); } }
@@ -167,8 +176,13 @@
 
   /* job cards: always one column, full width of the (narrower) list column */
   .jobs { display: grid; grid-template-columns: minmax(0, 1fr); gap: 12px; margin-bottom: 12px; }
-  /* report filters: a collapsible card; the body scrolls if tall, chip rows scroll sideways on phones */
+  /* filters: every filter block on the page is this same accordion - a summary line of
+     what is on, a body that scrolls if tall, chip rows that scroll sideways on phones.
+     .card = a block of its own (the report list); .sub = one nested inside a card. */
   details.filters { padding: 0; }
+  details.filters.sub { border: 1px solid var(--line); border-radius: 12px; background: var(--card2); margin-top: 12px; }
+  details.filters.sub > summary { padding: 10px 12px; min-height: 42px; }
+  details.filters.sub .fbody { padding: 4px 12px 12px; }
   details.filters > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 12px 16px; min-height: 48px; }
   details.filters > summary::-webkit-details-marker { display: none; }
   details.filters > summary b { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; flex: none; }
@@ -201,6 +215,61 @@
   .job.applied { border-color: var(--ok); }
   .job.removed { opacity: .55; }
   .sect { font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; margin: 20px 4px 10px; }
+
+  /* ---------- wide screens: a dense table on the left, the job's detail on the right.
+     Below 1100px nothing here applies: the cards stay, and the detail opens as an
+     accordion under the tapped card. */
+  .jsplit { display: block; }
+  .tablewrap { background: var(--card); border: 1px solid var(--line); border-radius: 14px; box-shadow: var(--shadow); margin-bottom: 12px; }
+  table.jt { border-collapse: collapse; width: 100%; font-size: 13.5px; table-layout: fixed; }
+  table.jt th, table.jt td { padding: 8px 10px; text-align: left; border-bottom: 1px solid var(--line2); vertical-align: top; overflow-wrap: anywhere; }
+  table.jt tbody tr:last-child td { border-bottom: 0; }
+  table.jt thead th { position: sticky; top: 0; z-index: 2; background: var(--card2); color: var(--muted); font-size: 11px;
+    text-transform: uppercase; letter-spacing: .06em; font-weight: 600; white-space: nowrap; cursor: pointer; border-bottom: 1px solid var(--line); user-select: none; }
+  table.jt thead th:first-child { border-top-left-radius: 14px; } table.jt thead th:last-child { border-top-right-radius: 14px; }
+  table.jt thead th:hover { color: var(--accent); }
+  table.jt thead th .ar { color: var(--accent); }
+  table.jt tbody tr { cursor: pointer; }
+  table.jt tbody tr:hover { background: var(--card2); }
+  table.jt tbody tr.on { background: var(--accent-bg); box-shadow: inset 3px 0 0 var(--accent); }
+  table.jt tbody tr.done td { opacity: .62; }
+  table.jt tbody tr.gone td { opacity: .42; }
+  table.jt td .chip { white-space: normal; }  /* a long status must wrap, not spill into the next column */
+  table.jt td.num { font-variant-numeric: tabular-nums; font-weight: 700; white-space: nowrap; }
+  table.jt td.when { white-space: nowrap; }
+  .s-hi { color: var(--ok); } .s-mid { color: var(--warn); } .s-lo { color: var(--muted); }
+  .job.sel { border-color: var(--accent); }
+  .job[data-job] { cursor: pointer; }
+  table.jt td.dim { color: var(--muted); }
+  table.jt td.pos a { font-weight: 600; text-decoration: none; color: var(--fg); }
+  table.jt tbody tr:hover td.pos a { color: var(--accent); }
+  table.jt tr.sep td { background: var(--card2); color: var(--muted); font-size: 11px; text-transform: uppercase; letter-spacing: .07em; font-weight: 600; cursor: default; }
+  table.jt tr.sep:hover td { background: var(--card2); }
+  .tacts { display: flex; gap: 4px; flex-wrap: nowrap; }
+  .tacts button, .tacts a { border: 1px solid var(--line); background: var(--card2); color: var(--fg); border-radius: 8px;
+    min-width: 26px; text-align: center; padding: 3px 6px; font-size: 13px; line-height: 1.5; cursor: pointer; text-decoration: none; display: inline-block; }
+  .tacts button:hover, .tacts a:hover { border-color: var(--muted); }
+  .tacts button.go { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
+  .tacts button:disabled { opacity: .5; cursor: default; }
+  .clip { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+  /* the detail: a card on the right at >=1100px, an accordion inline below that */
+  .dt h3 { margin: 0 0 2px; font-size: 17px; line-height: 1.3; }
+  .dt .dhead { display: flex; gap: 8px; align-items: flex-start; }
+  .dt .dhead .t { flex: 1; min-width: 0; }
+  .dt .sect { margin: 14px 0 6px; }
+  .dt .qa { border-top: 1px solid var(--line2); padding: 7px 0; }
+  .dt .qa .q { color: var(--muted); font-size: 13px; }
+  .dt .qa .a { font-weight: 600; word-break: break-word; }
+  .dt .qa .src { color: var(--muted); font-size: 12px; }
+  .dt .note { font-size: 13px; color: var(--muted); margin-top: 4px; word-break: break-word; }
+  .dt code { word-break: break-all; }
+  @media (min-width: 1100px) {
+    #viewer > #j-box > * { max-width: var(--wide-w); }  /* beats the narrow list width below */
+    .jsplit.open { display: grid; grid-template-columns: minmax(0, 1fr) 420px; gap: 14px; align-items: start; }
+    .jsplit.narrow.open { grid-template-columns: minmax(0, 1fr) 380px; }
+    .jdetail { position: sticky; top: 0; max-height: calc(100vh - 96px); overflow-y: auto; overscroll-behavior: contain; }
+    .jdetail .card { margin-bottom: 0; }
+  }
   .contacts { margin-top: 10px; font-size: 14px; }
   .contacts div { margin: 5px 0; }
   .person { padding: 6px 0; border-top: 1px solid var(--line2); }
@@ -238,6 +307,10 @@
   .toast.on { opacity: .97; }
   @media (min-width: 900px) { .toast { left: calc(var(--side-w) + (100vw - var(--side-w)) / 2); } }
 </style>
+<!-- UI v2: the portfolio's look, one button away. The skin is scoped to
+     data-ui="v2", so nothing here changes the classic page. -->
+<link rel="stylesheet" href="ui-v2.css">
+<script src="ui-v2.js" defer></script>
 </head>
 <body>
 <div class="shell">
@@ -281,17 +354,32 @@
         <input id="f-role" placeholder="python developer, backend engineer" autocapitalize="none">
         <div class="row">
           <div><label>Your experience (years)</label><input id="f-exp" placeholder="3 or 2-4" inputmode="numeric"></div>
-          <div><label>Posted in last N days</label><input id="f-days" value="14" inputmode="numeric"></div>
+          <div><label>Posted within <span class="muted" id="f-win-sum"></span></label>
+            <div class="win">
+              <input id="f-win-n" value="7" inputmode="decimal" aria-label="Posted within, how many">
+              <select id="f-win-u" aria-label="hours or days"><option value="h">hours</option><option value="d" selected>days</option></select>
+            </div>
+          </div>
+        </div>
+        <div class="chips small" id="f-win-quick"></div>
+        <div id="f-win-note" hidden>
+          <label class="check"><input type="checkbox" id="f-undated"> Include postings with no time on them</label>
+          <div class="hint">Under a day, a posting the board gave no time for is skipped — it cannot be shown to be inside the window, so "last 2 hours" really means it. Turn this on to keep them anyway.</div>
         </div>
         <label>Countries <span class="muted">(India is always included; tap to add or drop the others)</span></label>
         <div class="chips" id="f-countries"></div>
         <input id="f-more" placeholder="Other countries: Estonia, Brazil…" autocapitalize="none" style="margin-top:8px">
+        <label>Platforms <span class="muted" id="f-plat-sum">All platforms</span></label>
+        <div class="chips small strip" id="f-platforms"></div>
+        <div class="hint">Nothing picked = every platform that is set up. The ones marked 🔑 only run when their API key is a repo secret (Settings → Coverage), so they stay out unless you tap them.</div>
         <label class="check"><input type="checkbox" id="f-remote" checked> Include remote job boards</label>
-        <details class="hint"><summary>Advanced</summary>
-          <div class="row">
-            <div><label>Experience filter</label>
-              <select id="f-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
-            <div><label>Extra flags</label><input id="f-extra" placeholder="--must python" autocapitalize="none"></div>
+        <details class="filters sub" id="sf-adv"><summary><b>Advanced</b><span class="sum" id="sf-adv-sum"></span></summary>
+          <div class="fbody">
+            <div class="row">
+              <div><label>Experience filter</label>
+                <select id="f-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
+              <div><label>Extra flags</label><input id="f-extra" placeholder="--must python" autocapitalize="none"></div>
+            </div>
           </div>
         </details>
         <button class="primary" id="btn-run">Start search</button>
@@ -430,6 +518,22 @@
   function toast(text) { var t = $("toast"); t.textContent = text; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 2600); }
   function chip(cls, text) { return '<span class="chip ' + (cls || "") + '">' + esc(text) + "</span>"; }
   function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : "#"; }
+  // ---- accordions. Every filter block on the page is one of these: a title, a summary
+  // line of what is currently on, and a body. Open / closed is remembered per block
+  // (store.get / store.set are already try/catch'd, so a locked-down browser is fine).
+  function accOpen(id) { return !!store.get("acc." + id, ""); }
+  function acc(id, title, sum, body, cls) {
+    return '<details class="filters ' + (cls || "card") + '" id="' + id + '"' + (accOpen(id) ? " open" : "") +
+      "><summary><b>" + esc(title) + '</b><span class="sum" id="' + id + '-sum">' + esc(sum) + "</span></summary>" +
+      '<div class="fbody">' + body + "</div></details>";
+  }
+  function bindAcc(root) {
+    (root || document).querySelectorAll("details.filters[id]").forEach(function (d) {
+      if (d.dataset.accBound) return; d.dataset.accBound = "1";
+      d.addEventListener("toggle", function () { store.set("acc." + d.id, d.open ? "1" : ""); });
+    });
+  }
+  function accSum(id, text) { var el = $(id + "-sum"); if (el) el.textContent = text; }
   function ext(href, text, cls) { return '<a href="' + esc(safeUrl(href)) + '" target="_blank" rel="noopener"' + (cls ? ' class="' + cls + '"' : "") + ">" + esc(text) + "</a>"; }
   // ---- per-browser marks on postings: "applied" moves a job to the Applied section at the
   // bottom, "removed" takes it off the list (restorable). Opening a posting counts as applying.
@@ -638,6 +742,8 @@
     if (m.relocation) sub.push(m.relocation + " with relocation");
     if (m.countries && m.countries !== "default countries") sub.push(m.countries);
     if (m.experience) sub.push(m.experience + " yrs");
+    var win = windowLabel(m); if (win) sub.push(win);
+    if (i.kind === "jobhunt" && m.platforms_asked) sub.push(platformsLabel(m));
     var right = (i.kind === "jobhunt" || i.kind === "naukri")
       ? (m.jobs_file ? chip("acc", "jobs ›") : chip("", "report ›"))
       : chip("", "open ›");
@@ -683,6 +789,12 @@
   }
   $("btn-close").addEventListener("click", function () { var pushed = history.state && history.state.viewer; closeViewer(); if (pushed) history.back(); });
   window.addEventListener("popstate", function () { if (!(history.state && history.state.viewer)) closeViewer(); });
+  // Esc closes the open detail column (the viewer itself has its own Back button)
+  document.addEventListener("keydown", function (e) {
+    if (e.key !== "Escape") return;
+    if (JV && JV.detail && !$("j-box").hidden && $("viewer").classList.contains("on")) { setDetail(null); return; }
+    if (AA.sel >= 0 && $("t-auto")) { AA.sel = -1; renderAuto(); }
+  });
 
   // ---- the queue (data/apply/queue.enc, written only by the PC)
   var queue = null, queueAt = 0;
@@ -824,19 +936,22 @@
     var h = '<div class="card"><h2>Progress</h2>' + progressHtml(q.progress) + pcHtml() +
       '<div class="acts2"><button class="ghost" id="q-pause">' + (q.paused ? "▶ Resume queue" : "⏸ Pause queue") + '</button><button class="ghost" id="q-refresh">↻ Refresh</button></div></div>';
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
-    h += '<div class="card"><h2>Rules <span class="r" id="q-rules-toggle">' + (store.get("q.rules", "") ? "hide" : "edit") + "</span></h2>" +
+    var rsum = (auto.enabled ? "auto-queue " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") : "auto-queue off") +
+      " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) +
+      " · " + (st.limit || 5) + " per board per run";
+    h += acc("qr", "Rules", rsum,
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
       " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
-      '<div id="q-rules"' + (store.get("q.rules", "") ? "" : " hidden") + '>' +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Per board per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
       '<label>Boards</label><div class="chips small" id="r-boards">' + ["linkedin", "naukri", "web"].map(function (b) { return '<button type="button" data-b="' + b + '"' + ((dirty["r-boards"] || auto.boards || []).indexOf(b) >= 0 ? ' class="on"' : "") + ">" + ({ linkedin: "LinkedIn", naukri: "Naukri", web: "Company sites" }[b]) + "</button>"; }).join("") + "</div>" +
       '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify", "Simplify fills the form, I submit on the PC"], ["simplify-submit", "Simplify fills and submits (experimental)"]]) +
       '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify modes need a one-time setup on the PC: <code>python site\\tools\\offsite_apply.py --setup</code>.') + "</div>" +
-      '<button class="primary" id="r-save">Save rules</button></div></div>';
+      '<button class="primary" id="r-save">Save rules</button>');
+    var qsum = (FILTERS.filter(function (f) { return f[0] === qFilter; })[0] || ["", "All"])[1] + " · " + items.filter(function (i) { return inFilter(i, qFilter); }).length + " shown";
     h += '<div class="card"><h2>' + items.length + " job" + (items.length !== 1 ? "s" : "") + " in the queue</h2>" +
-      '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>" +
+      acc("qf", "Filters", qsum, '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>", "sub") +
       '<div id="q-list">' + (items.filter(function (i) { return inFilter(i, qFilter); }).map(queueItemHtml).join("") || '<div class="muted" style="margin-top:8px">Nothing here.</div>') + "</div></div>";
     var hist = q.history || [];
     if (hist.length) h += '<div class="card"><h2>Recent runs on the PC</h2>' + hist.slice().reverse().slice(0, 8).map(function (r) {
@@ -847,7 +962,7 @@
     bindQuestions("qq", pend);
     $("q-pause").addEventListener("click", function () { request(q.paused ? "resume" : "pause", {}, q.paused ? "Resuming on the PC's next run." : "Pausing on the PC's next run."); });
     $("q-refresh").addEventListener("click", function () { loadQueue(true).then(renderQueue); });
-    $("q-rules-toggle").addEventListener("click", function () { store.set("q.rules", store.get("q.rules", "") ? "" : "1"); renderQueue(); });
+    bindAcc($("queue-body"));
     $("r-boards").addEventListener("click", function (e) {
       var b = e.target.closest("button"); if (!b) return; b.classList.toggle("on");
       dirty["r-boards"] = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (x) { return x.dataset.b; });
@@ -856,7 +971,7 @@
       var boards = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (b) { return b.dataset.b; });
       $("r-save").disabled = true;
       request("settings", { auto: { enabled: $("r-auto").checked, min_score: +$("r-min").value, boards: boards }, limit: +$("r-limit").value, offsite: $("r-offsite").value },
-        "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("q-rules")); delete dirty["r-boards"]; } });
+        "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("qr")); delete dirty["r-boards"]; } });
     });
     $("q-filters").addEventListener("click", function (e) { var b = e.target.closest("button[data-f]"); if (!b) return; qFilter = b.dataset.f; store.set("q.filter", qFilter); renderQueue(); });
     $("q-list").addEventListener("click", function (e) {
@@ -893,6 +1008,96 @@
   // Same cheap hash as the PC (phone_apply.job_key), so both sides name a
   // company-site posting identically.
   function sha1short(s) { var h = 5381; for (var i = 0; i < s.length; i++) h = ((h << 5) + h + s.charCodeAt(i)) | 0; return ("00000000" + (h >>> 0).toString(16)).slice(-8) + "x"; }
+
+  // ---- tying a posting to what the PC already did with it.
+  // track.applications (Track tab) is the record of every attempt, newest first. A job is
+  // matched to it by URL first (without query / hash), then by the same key the queue uses
+  // (linkedin id / naukri id / hashed URL), then by company + title. Nothing here assumes
+  // Track has loaded: with no data every lookup is simply empty.
+  function normUrl(u) { return String(u || "").split("#")[0].split("?")[0].toLowerCase().replace(/^https?:\/\/(www\.)?/, "").replace(/\/+$/, ""); }
+  function ctKey(company, title) { return (String(company || "") + "|" + String(title || "")).toLowerCase().replace(/\s+/g, " ").trim(); }
+  var appIdx = null, appIdxOf = null;
+  function appIndex() {
+    var apps = (track || {}).applications || [];
+    if (appIdx && appIdxOf === apps) return appIdx;
+    var ix = { url: {}, key: {}, ct: {} };
+    var put = function (m, k, a) { if (k) (m[k] = m[k] || []).push(a); };
+    apps.forEach(function (a) {
+      put(ix.url, normUrl(a.url), a);
+      try { put(ix.key, jobKey({ url: a.url, job_id: a.job_id, source: a.board }).key, a); } catch (e) {}
+      put(ix.ct, ctKey(a.company, a.title), a);
+    });
+    appIdx = ix; appIdxOf = apps;
+    return ix;
+  }
+  function appsFor(j) {  // every attempt at this posting, newest first
+    if (!j) return [];
+    var ix = appIndex(), key = j._key || (j.url || j.job_id ? jobKey(j).key : "");
+    return ix.url[normUrl(j.url)] || ix.key[key] || ix.ct[ctKey(j.company, j.title)] || [];
+  }
+  function whenText(iso) { return String(iso || "").slice(0, 16).replace("T", " "); }
+  function shotPath(note) { var m = /\(([^()]*\.png)\)/.exec(String(note || "")); return m ? m[1] : ""; }
+  // Was this application finished without you? An earlier attempt at the same job that
+  // stopped for a human (a question, a login, a half-filled career form) means you stepped in.
+  var HUMAN_STEP = /^(questionnaire|questionnaire-failed|career-incomplete|login-required|offsite|manual|prefilled)$/;
+  function byHand(apps, i) {
+    if (apps[i] && apps[i].blocked) return true;
+    for (var k = i + 1; k < apps.length; k++) if (HUMAN_STEP.test(apps[k].status)) return true;
+    return false;
+  }
+  // ---- the detail column: one posting, everything known about it, including the form the
+  // PC filled in. `j` is a report job or a stand-in built from an application entry.
+  function detailHtml(j, q, opts) {
+    opts = opts || {};
+    var apps = appsFor(j), t = [];
+    if (typeof j.score === "number") t.push(chip(j.score >= 65 ? "ok" : j.score >= 45 ? "warn" : "", "match " + Math.round(j.score) + "%"));
+    if (j.source_name || j.source) t.push(chip("", j.source_name || j.source));
+    if (j.fit && j.fit !== "unknown") t.push(chip(j.fit === "fit" ? "ok" : "warn", { fit: "experience fits", stretch: "stretch", over: "over-qualified" }[j.fit] || j.fit));
+    if ((j.extra || {}).company_apply) t.push(chip("", "company site"));
+    if (j.salary) t.push(chip("", j.salary));
+    if (q) t.push(stChip(q.status, q.note));
+    var h = '<div class="card dt"><div class="dhead"><div class="t"><h3>' + esc(j.title || "(no title)") + '</h3><div class="sub muted">' +
+      esc(j.company || "") + (j.location || j.country ? " · " + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "location not stated") : "") +
+      (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div></div>" +
+      '<button class="icon-btn" data-dclose="1" title="Close (Esc)" aria-label="Close">✕</button></div>' +
+      '<div class="tags" style="display:flex;flex-wrap:wrap;gap:6px;margin:10px 0 4px">' + t.join("") + "</div>" +
+      (j.url ? '<div style="margin-top:8px">' + openLink(j.url, "Open the posting ↗", "ghost small", j._key || "") + "</div>" : "");
+    if (q && q.note) h += '<div class="note">' + esc(q.note) + "</div>";
+    if (j.matched_skills && j.matched_skills.length) h += '<div class="sect">Matching skills</div><div class="muted">' + esc(j.matched_skills.join(", ")) + "</div>";
+    if (j.missing_skills && j.missing_skills.length) h += '<div class="sect">Missing</div><div class="muted">' + esc(j.missing_skills.join(", ")) + "</div>";
+    var why = j.snippet || j.evidence || "";
+    if (why) h += '<div class="sect">Why</div><div class="muted">' + esc(why) + "</div>";
+    h += applicationHtml(apps, j);
+    if (!opts.noContacts && j.extra) h += '<div class="sect">Contacts</div><div class="contacts">' + contactsBlock(j) + "</div>";
+    return h + "</div>";
+  }
+  function applicationHtml(apps, j) {
+    if (!track) return '<div class="sect">Application</div><div class="muted">' +
+      (trackErr ? "What the PC sent could not be loaded: " + esc(trackErr) : "Loading what the PC sent…") + "</div>";
+    if (!apps.length) return '<div class="sect">Application</div><div class="muted">Your PC has not applied to this one.</div>';
+    var h = '<div class="sect">The form your PC sent</div>' + attemptHtml(apps, 0);
+    if (apps.length > 1) h += "<details style=\"margin-top:10px\"><summary class=\"muted\">earlier attempts (" + (apps.length - 1) + ")</summary>" +
+      apps.slice(1).map(function (a, i) { return '<div style="margin-top:8px">' + attemptHtml(apps, i + 1) + "</div>"; }).join("") + "</details>";
+    return h;
+  }
+  function attemptHtml(apps, i) {
+    var a = apps[i], hand = byHand(apps, i), done = /^(applied|submitted)$/.test(a.status);
+    var h = '<div class="muted">' + chip("", a.board || "?") + " " + chip(tCls(a.status), T_LABELS[a.status] || a.status) + " " +
+      (done ? chip(hand ? "man" : "ok", hand ? "you finished it" : "fully automatic") + " " : "") +
+      esc(whenText(a.at)) + (a.project && a.project !== "naukri" ? " · via " + esc(a.project) : "") + (a.dry_run ? " · " + chip("bad", "dry run") : "") + "</div>";
+    if (a.note) h += '<div class="note">' + esc(a.note) + "</div>";
+    var shot = shotPath(a.note);
+    if (shot) h += '<div class="note">screenshot on the PC: <code>' + esc(shot) + "</code></div>";
+    h += (a.answers || []).length
+      ? a.answers.map(function (y) {
+        return '<div class="qa"><div class="q">' + esc(y.question) + (y.options && y.options.length ? " <span class=\"src\">(" + esc(y.options.join(" / ")) + ")</span>" : "") +
+          '</div><div class="a">' + esc(y.answer === "" || y.answer == null ? "—" : y.answer) + '</div><div class="src">source: ' + esc(y.source || "unknown") + (y.fix ? " · change it at " + esc(y.fix) : "") + "</div></div>";
+      }).join("")
+      : '<div class="muted" style="margin-top:6px">' + (done ? "One-click apply - the form asked nothing." : "No questions were filled in.") + "</div>";
+    if (a.blocked) h += '<div class="msg warn">Stopped at: <b>' + esc(a.blocked.question) + "</b>" +
+      (a.blocked.options && a.blocked.options.length ? " (" + esc(a.blocked.options.join(" / ")) + ")" : "") + " — " + esc(a.blocked.why || "") + "</div>";
+    return h;
+  }
   // Every board job_bot searches (job-hunt/scripts/jobbot/sources/__init__.py ALL_SOURCES, same order),
   // as [filter key, label, job.source keys]. Apify / web-search twins fold into their board.
   var BOARDS = [["linkedin", "LinkedIn", "linkedin apify-linkedin linkedin_web"], ["naukri", "Naukri", "naukri apify-naukri"], ["indeed", "Indeed", "indeed apify-indeed"],
@@ -918,12 +1123,26 @@
     $("v-report").addEventListener("click", function () { openReport(item); });
     Promise.all([fetchEnc(item.meta.jobs_file, { cache: "force-cache" }).then(JSON.parse), loadQueue(true)]).then(function (res) {
       var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; j._src = srcKey(j); return j; });
-      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false };
+      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
       renderJobs();
       $("j-box").scrollTop = 0;
+      // the detail column shows the form the PC filled in; that lives in profile.enc
+      fetchTrack().then(function () { if (JV) renderJobs(); }, function () {});
     }).catch(function (e) { $("j-box").innerHTML = '<div class="card msg bad">' + esc(errText(e)) + "</div>"; });
   }
+  // >=1100px: dense table on the left, detail column on the right. Below: cards, and the
+  // detail opens as an accordion under the tapped card.
+  var wideQ = window.matchMedia ? window.matchMedia("(min-width: 1100px)") : null;
+  function wide() { return !!(wideQ && wideQ.matches); }
+  if (wideQ) {
+    var onWide = function () {
+      if (JV && !$("j-box").hidden) renderJobs();
+      if (track && !$("tab-track").hidden && $("t-auto")) renderAuto();
+    };
+    try { wideQ.addEventListener("change", onWide); } catch (e) { wideQ.addListener(onWide); }
+  }
   function jobsFiltered() {
+    var keys = queueKeys();
     return JV.jobs.filter(function (j) {
       if (j.fit === "no") return false;
       if (marks.removed[j._key] && !JV.showRemoved) return false;
@@ -931,7 +1150,25 @@
       if (onKeys(JV.countries).length && !JV.countries[j.country || "??"]) return false;
       if (JV.min && !((j.score || 0) >= JV.min)) return false;
       return true;
-    }).sort(function (a, b) { return JV.sort === "new" ? String(b.posted || "").localeCompare(String(a.posted || "")) : (b.score || 0) - (a.score || 0); });
+    }).sort(function (a, b) {
+      if (JV.tsort) {  // a column heading was clicked: that wins over the Sort box
+        var va = sortVal(JV.tsort.k, a, keys), vb = sortVal(JV.tsort.k, b, keys);
+        if (va < vb) return -JV.tsort.dir;
+        if (va > vb) return JV.tsort.dir;
+      }
+      return JV.sort === "new" ? String(b.posted || "").localeCompare(String(a.posted || "")) : (b.score || 0) - (a.score || 0);
+    });
+  }
+  function sortVal(k, j, keys) {
+    var q = (keys || {})[j._key];
+    if (k === "score") return typeof j.score === "number" ? j.score : -1;
+    if (k === "status") return q ? (STATUS[q.status] || ["", q.status])[1] : "~";  // "~" sorts last
+    if (k === "board") return String(j.source_name || j.source || "").toLowerCase();
+    if (k === "posted") return String(j.posted_at || j.posted || "");
+    if (k === "matched") return (j.matched_skills || []).length;
+    if (k === "missing") return (j.missing_skills || []).length;
+    if (k === "why") return String(j.snippet || (q && q.note) || "").toLowerCase();
+    return String(j[k] || "").toLowerCase();
   }
   function renderJobs() {
     var box = $("j-box"), top = box.scrollTop, keys = queueKeys(), jobs = jobsFiltered();
@@ -957,36 +1194,50 @@
       fc.length === 0 ? "All countries" : fc.length === 1 ? ccLabel(fc[0]) : fc.length + " countries",
       JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sort === "new" ? "newest first" : "best match first"].join(" · ");
     var fchip = function (attr, k, label, n, on) { return '<button type="button" data-' + attr + '="' + esc(k) + '" class="' + (on ? "on" : "") + (n ? "" : " zero") + '">' + label + " · " + n + "</button>"; };
+    var jm = JV.item.meta || {}, jwin = windowLabel(jm);
     var h = '<div class="card"><div class="muted">' + JV.jobs.length + " postings · " + counts.linkedin + " LinkedIn · " + counts.naukri + " Naukri · " + counts.web + " other boards / company sites</div>" +
+      '<div class="muted" style="margin-top:4px">' + esc([jwin || "any age", platformsLabel(jm), (jm.experience ? jm.experience + " yrs" : "")].filter(Boolean).join(" · ")) + "</div>" +
       (Object.keys(tally).length ? '<div class="chips small" style="margin-top:6px">' + Object.keys(tally).map(function (k) { var st = STATUS[k] || ["", k]; return chip(st[0], tally[k] + " " + st[1]); }).join("") + "</div>" : "") +
       '<div class="acts2 sticky-acts"><button class="primary" id="jq-all"' + (notQueued.length ? "" : " disabled") + ">Queue all shown (" + notQueued.length + ")</button>" +
       '<button class="ghost" id="jq-sel"' + (selected.length ? "" : " disabled") + ">Queue selected (" + selected.length + ")</button></div>" +
       '<div class="hint">LinkedIn Easy Apply and Naukri postings are applied to by your PC. Company career sites are ' +
         ({ career: 'filled and submitted by the PC when they don\'t need a login; otherwise marked "by hand"', manual: 'marked "by hand" for you (change under Queue → Rules)',
            simplify: "filled by Simplify on the PC; you submit", "simplify-submit": "filled and submitted by Simplify on the PC" }[off] || 'marked "by hand"') + ".</div></div>" +
-      '<details class="card filters" id="jf"' + (store.get("jf.open", "") ? " open" : "") + '><summary><b>Filters</b><span class="sum">' + esc(fsum) + "</span></summary><div class=\"fbody\">" +
+      acc("jf", "Filters", fsum,
       '<label>Boards <span class="muted">(tap several)</span></label><div class="chips small" id="jf-board">' + '<button type="button" data-b=""' + (fb.length ? "" : ' class="on"') + ">All boards · " + JV.jobs.filter(function (j) { return j.fit !== "no"; }).length + "</button>" +
         boards.map(function (b) { return fchip("b", b[0], esc(b[1]), bc[b[0]] || 0, JV.boards[b[0]]); }).join("") + "</div>" +
       '<label>Countries <span class="muted">(India first; tap several)</span></label><div class="chips small" id="jf-cc"><button type="button" data-cc=""' + (fc.length ? "" : ' class="on"') + ">All countries</button>" +
         ccs.map(function (c) { return fchip("cc", c, (flag(c) ? flag(c) + " " : "") + esc(ccLabel(c)), cc[c] || 0, JV.countries[c]); }).join("") + "</div>" +
       '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 60, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div>" +
-      (fb.length || fc.length || JV.min ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : "") + "</div></details>";
-    if (!jobs.length) h += '<div class="card muted">No jobs match these filters.</div>';
-    else if (!todo.length) h += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
-    else h += '<div class="jobs">' + todo.slice(0, JV.limit).map(function (j) { return jobCard(j, keys[j._key], false); }).join("") + "</div>";
-    if (todo.length > JV.limit) h += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
-    if (done.length) h += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + done.map(function (j) { return jobCard(j, keys[j._key], true); }).join("") + "</div>";
-    h += removedHint(nRemoved, JV.showRemoved);
+      (fb.length || fc.length || JV.min ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
+    // the list itself: a table at >=1100px, the cards below that. The detail of the
+    // selected posting is the second column (wide) or an accordion under its card.
+    var shown = todo.slice(0, JV.limit), body = "";
+    if (!jobs.length) body += '<div class="card muted">No jobs match these filters.</div>';
+    else if (wide()) body += jobTable(shown, done, keys);
+    else {
+      var cards = function (list, ap) { return list.map(function (j) { return jobCard(j, keys[j._key], ap) + (JV.detail === j._key ? detailHtml(j, keys[j._key]) : ""); }).join(""); };
+      if (!todo.length) body += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
+      else body += '<div class="jobs">' + cards(shown, false) + "</div>";
+      if (done.length) body += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + cards(done, true) + "</div>";
+    }
+    if (todo.length > JV.limit) body += '<button class="primary" id="jf-more">Show more (' + (todo.length - JV.limit) + " left)</button>";
+    body += removedHint(nRemoved, JV.showRemoved);
+    // the detail is a second column only while a row is open, so the table keeps the
+    // whole width the rest of the time
+    var det = JV.detail ? JV.jobs.filter(function (j) { return j._key === JV.detail; })[0] : null;
+    h += '<div class="jsplit' + (wide() && det ? " open" : "") + '"><div class="jmain">' + body + "</div>" +
+      (wide() && det ? '<aside class="jdetail">' + detailHtml(det, keys[det._key]) + "</aside>" : "") + "</div>";
     // keep the filter panel's own scroll (and sideways chip-row scroll) across the re-render
     var keep = ["#jf .fbody", "#jf-board", "#jf-cc"].map(function (s) { var el = box.querySelector(s); return el ? [el.scrollTop, el.scrollLeft] : [0, 0]; });
     box.innerHTML = h; box.scrollTop = top;
     ["#jf .fbody", "#jf-board", "#jf-cc"].forEach(function (s, i) { var el = box.querySelector(s); if (el) { el.scrollTop = keep[i][0]; el.scrollLeft = keep[i][1]; } });
     bindMarks(box, function (toggle) { if (toggle === true) JV.showRemoved = !JV.showRemoved; renderJobs(); });
+    bindAcc(box);
     $("jq-all").addEventListener("click", function () { queueJobs(notQueued); });
     $("jq-sel").addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return JV.sel[j._key]; })); });
     var toggleIn = function (set, k) { if (!k) Object.keys(set).forEach(function (x) { delete set[x]; }); else if (set[k]) delete set[k]; else set[k] = 1; JV.limit = 50; renderJobs(); };
-    $("jf").addEventListener("toggle", function () { store.set("jf.open", $("jf").open ? "1" : ""); });
     $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) toggleIn(JV.boards, b.dataset.b); });
     $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) toggleIn(JV.countries, b.dataset.cc); });
     if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.limit = 50; renderJobs(); });
@@ -996,6 +1247,74 @@
     box.querySelectorAll("[data-sel]").forEach(function (c) { c.addEventListener("change", function () { JV.sel[c.dataset.sel] = c.checked; renderJobs(); }); });
     box.querySelectorAll("[data-q1]").forEach(function (b) { b.addEventListener("click", function () { queueJobs(JV.jobs.filter(function (j) { return j._key === b.dataset.q1; })); }); });
     box.querySelectorAll("[data-contacts]").forEach(function (b) { b.addEventListener("click", function (e) { e.preventDefault(); JV.open[b.dataset.contacts] = !JV.open[b.dataset.contacts]; renderJobs(); }); });
+    // the table: sort by a heading, open a row's detail, select everything shown
+    box.querySelectorAll("th[data-sort]").forEach(function (th) {
+      th.addEventListener("click", function () {
+        var k = th.dataset.sort, num = /^(score|posted|matched|missing)$/.test(k);
+        if (JV.tsort && JV.tsort.k === k) JV.tsort.dir = -JV.tsort.dir; else JV.tsort = { k: k, dir: num ? -1 : 1 };
+        renderJobs();
+      });
+    });
+    box.querySelectorAll("[data-job]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        if (e.target.closest("button,a,input,label,summary,select,.dt")) return;
+        setDetail(JV.detail === el.dataset.job ? null : el.dataset.job);
+      });
+    });
+    if ($("jt-all")) $("jt-all").addEventListener("change", function () {
+      var on = $("jt-all").checked;
+      box.querySelectorAll("tbody [data-sel]").forEach(function (c) { JV.sel[c.dataset.sel] = on; });
+      renderJobs();
+    });
+    box.querySelectorAll("[data-tc]").forEach(function (b) { b.addEventListener("click", function () { JV.open[b.dataset.tc] = true; setDetail(b.dataset.tc); }); });
+    box.querySelectorAll("[data-dclose]").forEach(function (b) { b.addEventListener("click", function () { setDetail(null); }); });
+  }
+  function setDetail(key) { if (!JV) return; JV.detail = key; renderJobs(); }
+  // ---- the dense table (>=1100px). Declared once so headings, sort keys and cells agree.
+  // widths are percentages so the table breathes with the window (table-layout: fixed)
+  var JCOLS = [
+    { k: "sel", h: "", w: "34px" }, { k: "score", h: "Match", w: "5%" }, { k: "status", h: "Status", w: "10%" },
+    { k: "board", h: "Board", w: "8%" }, { k: "company", h: "Company", w: "10%" }, { k: "title", h: "Position", w: "14%" },
+    { k: "location", h: "Location", w: "8%" }, { k: "posted", h: "Posted", w: "6%" }, { k: "matched", h: "Matching skills", w: "11%" },
+    { k: "missing", h: "Missing", w: "7%" }, { k: "why", h: "Why / note", w: "10%" }, { k: "acts", h: "Actions", w: "11%" }
+  ];
+  function jobTable(todo, done, keys) {
+    var head = "<thead><tr>" + JCOLS.map(function (c) {
+      var on = JV.tsort && JV.tsort.k === c.k, fixed = c.k === "sel" || c.k === "acts";
+      return "<th" + (fixed ? "" : ' data-sort="' + c.k + '" title="Sort by ' + esc(c.h) + '"') + (c.w ? ' style="width:' + c.w + '"' : "") + ">" +
+        (c.k === "sel" ? '<input type="checkbox" class="box" id="jt-all" title="Select everything shown">' : esc(c.h)) +
+        (on ? ' <span class="ar">' + (JV.tsort.dir < 0 ? "▼" : "▲") + "</span>" : "") + "</th>";
+    }).join("") + "</tr></thead>";
+    var rows = todo.map(function (j) { return jobRow(j, keys[j._key], false); }).join("");
+    if (done.length) rows += '<tr class="sep"><td colspan="' + JCOLS.length + '">Applied · ' + done.length + "</td></tr>" +
+      done.map(function (j) { return jobRow(j, keys[j._key], true); }).join("");
+    return '<div class="tablewrap"><table class="jt">' + head + "<tbody>" + rows + "</tbody></table></div>";
+  }
+  function jobRow(j, q, applied) {
+    var sc = typeof j.score === "number" ? Math.round(j.score) : null;
+    var scCls = sc == null ? "dim" : sc >= 65 ? "s-hi" : sc >= 45 ? "s-mid" : "s-lo";
+    var st = q ? stChip(q.status, q.note) : (applied ? chip("ok", "✓ applied") : '<span class="muted">—</span>');
+    var why = (q && q.note) || j.snippet || "";
+    var acts = '<div class="tacts">' +
+      (q ? '<button disabled title="Already in the queue: ' + esc((STATUS[q.status] || ["", q.status])[1]) + '" aria-label="in the queue">✓</button>'
+         : (applied ? "" : '<button class="go" data-q1="' + esc(j._key) + '" title="Add to the auto-apply queue" aria-label="queue this job">+</button>')) +
+      '<a href="' + esc(safeUrl(j.url)) + '" target="_blank" rel="noopener" data-open="' + esc(j._key) + '" title="Open the posting" aria-label="open the posting">↗</a>' +
+      '<button data-tc="' + esc(j._key) + '" title="Contacts at this company" aria-label="contacts">☏</button>' +
+      (marks.removed[j._key] ? '<button data-restore="' + esc(j._key) + '" title="Put back in the list" aria-label="put back">↺</button>'
+         : '<button data-remove="' + esc(j._key) + '" title="Remove from the list" aria-label="remove">🗑</button>') + "</div>";
+    return '<tr data-job="' + esc(j._key) + '" class="' + (applied ? "done " : "") + (marks.removed[j._key] ? "gone " : "") + (JV.detail === j._key ? "on" : "") + '">' +
+      "<td>" + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' title="select">') + "</td>" +
+      '<td class="num ' + scCls + '">' + (sc == null ? "—" : sc + "%") + "</td>" +
+      "<td>" + st + "</td>" +
+      '<td class="dim">' + esc(j.source_name || j.source || "") + "</td>" +
+      "<td>" + esc(j.company || "") + "</td>" +
+      '<td class="pos">' + openLink(j.url, j.title || "(no title)", "", j._key) + "</td>" +
+      '<td class="dim">' + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "") + "</td>" +
+      '<td class="dim when">' + esc(j.posted ? ago(j.posted) : "") + "</td>" +
+      '<td class="dim"><div class="clip">' + esc((j.matched_skills || []).join(", ")) + "</div></td>" +
+      '<td class="dim"><div class="clip">' + esc((j.missing_skills || []).join(", ")) + "</div></td>" +
+      '<td class="dim"><div class="clip">' + esc(why) + "</div></td>" +
+      "<td>" + acts + "</td></tr>";
   }
   function jobCard(j, q, applied) {
     var t = [];
@@ -1008,7 +1327,7 @@
     var ex = j.extra || {}, c = ex.contacts, hasC = c && ((c.people || []).length || (c.emails || []).length);
     var btn = q ? '<button class="btn done" disabled>' + (STATUS[q.status] || [0, q.status])[1] + "</button>" : (applied ? "" : '<button class="btn" data-q1="' + esc(j._key) + '">+ Queue</button>');
     if (applied && !q) qchip = chip("ok", "✓ applied");
-    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
+    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[j._key] ? " removed" : "") + (JV.detail === j._key ? " sel" : "") + '" data-job="' + esc(j._key) + '"><div class="head">' + (q || applied ? "" : '<input type="checkbox" class="box" data-sel="' + esc(j._key) + '"' + (JV.sel[j._key] ? " checked" : "") + ' style="margin-top:2px" title="select">') +
       '<div style="flex:1;min-width:0"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div></div>" + qchip + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" +
       (j.matched_skills && j.matched_skills.length ? '<div class="hint">✓ ' + esc(j.matched_skills.slice(0, 8).join(", ")) + "</div>" : "") +
@@ -1018,7 +1337,7 @@
   function contactsBlock(j) {
     var c = (j.extra || {}).contacts || {}, company = j.company || "", city = (j.location || "").split(",")[0].trim();
     if (/^(remote|hybrid|anywhere|worldwide|india)$/i.test(city)) city = "";
-    var role = (((JV.item || {}).title) || "software engineer").split(",")[0];
+    var role = (((JV && JV.item || {}).title) || "software engineer").split(",")[0];
     var h = "";
     if (c.people && c.people.length) h += "<div><b>People at " + esc(company) + "</b></div>" + c.people.map(function (p) {
       return '<div class="person"><b>' + esc(p.name) + "</b>" + (p.title ? '<span class="muted">' + esc(p.title) + (p.location ? " · " + esc(p.location) : "") + "</span><br>" : "") +
@@ -1064,13 +1383,25 @@
     submitted: "applied on company site", "login-required": "needs login - apply by hand", "career-incomplete": "form needs you - apply by hand" };
   function tCls(st) { return st === "applied" || st === "already" || st === "submitted" ? "ok" : (st === "login-required" || st === "career-incomplete" ? "man" : st === "questionnaire" || st === "offsite" ? "warn" : (st === "error" || st === "questionnaire-failed" || st === "unconfirmed" ? "bad" : "")); }
   function kCls(k) { return k === "rejected" ? "bad" : (k === "interview" || k === "shortlisted" || k === "offer" ? "ok" : (k === "viewed" ? "warn" : "")); }
+  // profile.enc holds the applications the Jobs table's detail column also needs, so the
+  // fetch is separate from the Track tab's rendering.
+  var trackAt = 0, trackWait = null, trackErr = "";
+  function fetchTrack(force) {
+    if (!settings().pass) return Promise.reject(new Error("no passphrase"));
+    if (!force && track && Date.now() - trackAt < 45000) return Promise.resolve(track);
+    if (trackWait) return trackWait;
+    trackWait = fetchEnc("data/apply/profile.enc?t=" + Date.now()).then(JSON.parse)
+      .then(function (t) { track = t; trackAt = Date.now(); appIdx = null; trackWait = null; trackErr = ""; return t; },
+            function (e) { trackWait = null; trackErr = errText(e); throw e; });
+    return trackWait;
+  }
   function loadTrack() {
     var s = settings();
     if (!s.pass) { $("track-body").innerHTML = ""; return; }
     if (!track) $("track-body").innerHTML = '<div class="card"><span class="spin"></span> Loading…</div>';
     else if (typing("tab-track")) return;  // do not rebuild the form under the user's fingers
-    fetchEnc("data/apply/profile.enc?t=" + Date.now()).then(JSON.parse)
-      .then(function (t) { track = t; trackBank = (t.bank || []).slice(); trackSkills = Object.assign({}, (t.answers || {}).skill_years || {}); renderTrack(); })
+    fetchTrack(true)
+      .then(function (t) { trackBank = (t.bank || []).slice(); trackSkills = Object.assign({}, (t.answers || {}).skill_years || {}); renderTrack(); })
       .catch(function (e) { $("track-body").innerHTML = '<div class="card msg ' + (e.name === "OperationError" ? "bad" : "info") + '">' + esc(e.name === "OperationError" ? errText(e) : "Nothing published yet - the PC writes this on its next run (every 30 min while on).") + "</div>"; });
   }
   function renderTrack() {
@@ -1081,7 +1412,12 @@
       [["Applied", c.applied || 0], ["Today", c.applied_today || 0], ["Replies", replies]].map(function (x) { return '<div class="stat"><div class="big">' + x[1] + '</div><div class="muted">' + x[0] + "</div></div>"; }).join("") + "</div>" +
       '<div class="muted" style="margin-top:6px">' + (track.gmail && track.gmail.synced_at ? "Gmail replies checked " + ago(track.gmail.synced_at) : "Gmail replies: set an app password in the PC dashboard to see recruiter replies here") + "</div></div>";
     if (waiting.length) html += '<div class="card"><h2>Questions waiting for you (' + waiting.length + ")</h2>" + questionsHtml(waiting, "tq") + "</div>";
-    html += '<div class="card"><h2>Applications (' + apps.length + ')</h2><input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div class="chips small" id="t-status" style="margin-top:6px"></div><div id="t-apps"></div></div>';
+    html += '<div class="card"><h2>Applied by your PC (' + autoApps().length + ')</h2>' +
+      '<div class="muted">Every job the PC applied to by itself, newest first — LinkedIn and Naukri one-click applies and the company-site forms it filled and submitted. Tap one to see the form it sent.</div>' +
+      '<div id="t-auto"></div></div>';
+    html += '<div class="card"><h2>Applications (' + apps.length + ')</h2>' +
+      acc("tf", "Filters", "All", '<input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div class="chips small" id="t-status" style="margin-top:6px"></div>', "sub") +
+      '<div id="t-apps"></div></div>';
     html += '<div class="card"><details><summary><b>My answers</b> <span class="muted">— what the agent says on your behalf</span></summary>';
     html += '<div class="muted" style="margin-top:6px">Blank fields fall back to your Naukri profile or jobs.yaml (shown as the placeholder).</div>';
     (a.fields || []).forEach(function (f) {
@@ -1101,7 +1437,8 @@
     html += '<h2 style="margin-top:14px">Answers to specific questions</h2><div id="t-bank"></div><input id="t-bank-q" placeholder="question, as the recruiter words it" autocapitalize="none" style="margin-top:6px"><input id="t-bank-a" placeholder="answer" autocapitalize="none" style="margin-top:6px"><button class="ghost" id="t-bank-add" style="margin-top:6px">Add answer</button>';
     html += '<button class="primary" id="t-save">Save all answers</button><div id="t-msg"></div></details></div>';
     $("track-body").innerHTML = html;
-    renderTrackSkills(); renderTrackBank(); renderTrackApps(); restoreDirty($("track-body"));
+    renderTrackSkills(); renderTrackBank(); renderAuto(); renderTrackApps(); restoreDirty($("track-body"));
+    bindAcc($("track-body"));
     bindQuestions("tq", waiting);
     $("t-skill-add").addEventListener("click", function () { var n = $("t-skill-name").value.trim(), y = parseFloat($("t-skill-years").value); if (n && !isNaN(y)) { trackSkills[n] = y; $("t-skill-name").value = ""; $("t-skill-years").value = ""; renderTrackSkills(); } });
     $("t-bank-add").addEventListener("click", function () { var q = $("t-bank-q").value.trim(), an = $("t-bank-a").value.trim(); if (q && an) { trackBank.push({ question: q, answer: an, options: [] }); $("t-bank-q").value = ""; $("t-bank-a").value = ""; renderTrackBank(); } });
@@ -1117,6 +1454,64 @@
     });
   }
   var tStatus = "all";
+  // ---- "Applied by your PC": every application the PC itself sent, newest first, with the
+  // form it filled in. Reachable from Home in two taps (Track → the card at the top).
+  var AA = { filter: "all", sel: -1 };
+  var A_BOARD = { linkedin: "LinkedIn", naukri: "Naukri", web: "Company site", career: "Company site" };
+  function autoApps() {
+    return ((track || {}).applications || []).filter(function (a) { return /^(applied|submitted)$/.test(a.status) && !a.dry_run; });
+  }
+  function appJob(a) {  // an application entry seen as a posting, so the detail column can show it
+    var key = ""; try { key = jobKey({ url: a.url, job_id: a.job_id, source: a.board }).key; } catch (e) {}
+    return { title: a.title, company: a.company, location: a.location, url: a.url, score: a.score, posted: a.at,
+             source: a.board, source_name: A_BOARD[a.board] || a.board, _key: key };
+  }
+  function handMark(a) {  // did a human have to finish this one?
+    var list = appsFor(appJob(a)), i = list.indexOf(a);
+    return i >= 0 ? byHand(list, i) : byHand([a], 0);
+  }
+  var AA_FILTERS = [["all", "All"], ["auto", "Fully automatic"], ["hand", "You finished it"],
+                    ["linkedin", "LinkedIn"], ["naukri", "Naukri"], ["web", "Company sites"]];
+  function renderAuto() {
+    var box = $("t-auto"); if (!box) return;
+    var all = autoApps();
+    var keep = function (f, a) {
+      if (f === "auto") return !handMark(a);
+      if (f === "hand") return handMark(a);
+      if (f === "web") return a.board === "web" || a.board === "career";
+      if (f === "linkedin" || f === "naukri") return a.board === f;
+      return true;
+    };
+    var list = all.filter(function (a) { return keep(AA.filter, a); });
+    if (AA.sel >= list.length) AA.sel = -1;
+    var chips = '<div class="chips small" id="t-auto-f">' + AA_FILTERS.map(function (f) {
+      var n = all.filter(function (a) { return keep(f[0], a); }).length;
+      return '<button type="button" data-aaf="' + f[0] + '"' + (AA.filter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>";
+    }).join("") + "</div>";
+    var sum = (AA_FILTERS.filter(function (f) { return f[0] === AA.filter; })[0] || ["", "All"])[1] + " · " + list.length;
+    var keys = queueKeys();
+    var rows = list.map(function (a, i) {
+      var hand = handMark(a);
+      return '<div class="item" data-aa="' + i + '"' + (AA.sel === i ? ' style="background:var(--accent-bg)"' : "") + '><div class="t"><b>' + esc(a.title || "(no title)") + "</b><span>" +
+        esc([a.company, A_BOARD[a.board] || a.board, whenText(a.at)].filter(Boolean).join(" · ")) + "</span></div>" +
+        chip(hand ? "man" : "ok", hand ? "you finished it" : "automatic") +
+        (a.url ? ' <a class="ghost small" href="' + esc(safeUrl(a.url)) + '" target="_blank" rel="noopener" title="Open the posting">↗</a>' : "") + "</div>" +
+        (!wide() && AA.sel === i ? detailHtml(appJob(a), keys[appJob(a)._key], { noContacts: 1 }) : "");
+    }).join("") || '<div class="muted" style="margin-top:8px">Nothing here yet.</div>';
+    var selApp = AA.sel >= 0 ? list[AA.sel] : null;
+    box.innerHTML = acc("taf", "Filter", sum, chips, "sub") +
+      '<div class="jsplit narrow' + (wide() && selApp ? " open" : "") + '" style="margin-top:8px"><div class="jmain">' + rows + "</div>" +
+      (wide() && selApp ? '<aside class="jdetail">' + detailHtml(appJob(selApp), keys[appJob(selApp)._key], { noContacts: 1 }) + "</aside>" : "") + "</div>";
+    bindAcc(box);
+    $("t-auto-f").addEventListener("click", function (e) { var b = e.target.closest("button[data-aaf]"); if (!b) return; AA.filter = b.dataset.aaf; AA.sel = -1; renderAuto(); });
+    box.querySelectorAll("[data-aa]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        if (e.target.closest("a,button,input,.dt")) return;
+        AA.sel = AA.sel === +el.dataset.aa ? -1 : +el.dataset.aa; renderAuto();
+      });
+    });
+    box.querySelectorAll("[data-dclose]").forEach(function (b) { b.addEventListener("click", function () { AA.sel = -1; renderAuto(); }); });
+  }
   function renderTrackSkills() {
     $("t-skills").innerHTML = Object.keys(trackSkills).sort().map(function (n) {
       return '<div class="row" style="grid-template-columns:1fr 90px 70px;align-items:center;margin-top:4px"><div>' + esc(n) + '</div><input data-ts="' + esc(n) + '" value="' + esc(trackSkills[n]) + '" inputmode="decimal"><button class="ghost" data-tsdel="' + esc(n) + '">remove</button></div>'; }).join("") || '<div class="muted">None yet.</div>';
@@ -1144,6 +1539,7 @@
       if (tStatus === "phone") return x.project === "phone";
       return true;
     });
+    accSum("tf", (groups.filter(function (g) { return g[0] === tStatus; })[0] || ["", "All"])[1] + (q ? ' · "' + q + '"' : "") + " · " + apps.length + " shown");
     var statuses = track.manual_statuses || ["", "viewed", "shortlisted", "interview", "offer", "rejected", "withdrawn"];
     $("t-apps").innerHTML = apps.map(function (x, i) {
       var r = x.response, m = x.manual || {};
@@ -1189,13 +1585,113 @@
     if (i >= 0) picked.splice(i, 1); else picked.push(b.dataset.cc);
     store.set("f.cc", picked.join(",")); renderWCountries();
   });
-  ["role", "exp", "days", "fit", "extra", "more"].forEach(function (k) {
+  function advSum() { accSum("sf-adv", "experience filter: " + $("f-fit").value + ($("f-extra").value.trim() ? " · " + $("f-extra").value.trim() : "")); }
+  ["role", "exp", "fit", "extra", "more"].forEach(function (k) {
     var el = $("f-" + k); el.value = store.get("f." + k, el.value);
-    var save = function () { store.set("f." + k, el.value); };
+    var save = function () { store.set("f." + k, el.value); advSum(); };
     el.addEventListener("input", save); el.addEventListener("change", save);
   });
+  advSum();
   $("f-remote").checked = store.get("f.remote", "1") === "1";
   $("f-remote").addEventListener("change", function () { store.set("f.remote", $("f-remote").checked ? "1" : ""); });
+
+  // ---- Search: "posted within" (a number + hours / days). Default 7 days.
+  // Under a day job_bot drops postings the board gave no time for, so the window stays
+  // honest; the switch below maps to --allow-undated.
+  var WIN_QUICK = [["2", "h"], ["6", "h"], ["12", "h"], ["24", "h"], ["3", "d"], ["7", "d"], ["14", "d"], ["30", "d"]];
+  function num(v) { var n = parseFloat(String(v == null ? "" : v).replace(",", ".")); return isFinite(n) && n > 0 ? n : 0; }
+  function trimNum(n) { return String(Math.round(n * 100) / 100); }
+  function winValue() {  // what the form currently says
+    var u = $("f-win-u").value === "h" ? "h" : "d", n = num($("f-win-n").value);
+    return { n: n || (u === "h" ? 24 : 7), u: u };
+  }
+  function winHours(w) { return w.u === "h" ? w.n : w.n * 24; }
+  function renderWinQuick() {
+    var w = winValue();
+    $("f-win-quick").innerHTML = WIN_QUICK.map(function (q) {
+      var on = q[1] === w.u && num(q[0]) === w.n;
+      return '<button type="button" data-win="' + q[0] + q[1] + '"' + (on ? ' class="on"' : "") + ">" + q[0] + q[1] + "</button>";
+    }).join("");
+  }
+  function renderWindow() {
+    var w = winValue(), h = winHours(w);
+    $("f-win-sum").textContent = w.u === "h" ? "(" + trimNum(w.n) + " h)" : "(" + trimNum(w.n) + (w.n === 1 ? " day)" : " days)");
+    $("f-win-note").hidden = !(h < 24);
+    renderWinQuick();
+  }
+  function saveWindow() {
+    try {
+      store.set("f.win.n", $("f-win-n").value);
+      store.set("f.win.u", $("f-win-u").value);
+      store.set("f.undated", $("f-undated").checked ? "1" : "");
+    } catch (e) {}
+    renderWindow();
+  }
+  (function initWindow() {
+    try {
+      var oldDays = store.get("f.days", "");  // runs made before the hours window existed
+      $("f-win-n").value = store.get("f.win.n", oldDays || "7");
+      $("f-win-u").value = store.get("f.win.u", "d") === "h" ? "h" : "d";
+      $("f-undated").checked = store.get("f.undated", "") === "1";
+    } catch (e) {}
+    renderWindow();
+  })();
+  ["f-win-n", "f-win-u"].forEach(function (id) {
+    $(id).addEventListener("input", saveWindow); $(id).addEventListener("change", saveWindow);
+  });
+  $("f-undated").addEventListener("change", saveWindow);
+  $("f-win-quick").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-win]"); if (!b) return;
+    var v = b.dataset.win;
+    $("f-win-n").value = v.slice(0, -1); $("f-win-u").value = v.slice(-1);
+    saveWindow();
+  });
+
+  // ---- Search: which platforms to ask (jobbot/sources/__init__.py ALL_SOURCES).
+  // Nothing picked = every platform that is set up. 🔑 = needs an API key as a repo secret.
+  var PLATFORMS = [
+    ["linkedin", "LinkedIn"], ["seek", "Seek / JobsDB"], ["xing", "XING"], ["arbeitnow", "Arbeitnow"],
+    ["duunitori", "Duunitori"], ["tecnoempleo", "Tecnoempleo"], ["infojobs", "InfoJobs"], ["wellfound", "Wellfound"],
+    ["tokyodev", "TokyoDev"], ["japandev", "Japan Dev"], ["daijob", "Daijob"], ["wantedly", "Wantedly"],
+    ["jobthai", "JobThai"], ["themuse", "The Muse"], ["landingjobs", "Landing.jobs"], ["relocateme", "Relocate.me"],
+    ["instahyre", "Instahyre"], ["remotive", "Remotive"], ["remoteok", "RemoteOK"], ["jobicy", "Jobicy"],
+    ["workingnomads", "Working Nomads"],
+    ["adzuna", "Adzuna", 1], ["jooble", "Jooble", 1], ["jsearch", "JSearch (Google Jobs)", 1], ["firecrawl", "Web search (Firecrawl)", 1],
+    ["apify-naukri", "Naukri (Apify)", 1], ["apify-indeed", "Indeed (Apify)", 1], ["apify-linkedin", "LinkedIn (Apify)", 1]
+  ];
+  function platName(k) { var p = PLATFORMS.filter(function (x) { return x[0] === k; })[0]; return p ? p[1] : k; }
+  function platPicked() { return (store.get("f.plat", "") || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean); }
+  function platSummary(list) { return !list.length ? "All platforms" : list.length === 1 ? platName(list[0]) : list.length + " platforms"; }
+  function renderPlatforms() {
+    var picked = platPicked();
+    $("f-plat-sum").textContent = platSummary(picked);
+    $("f-platforms").innerHTML = '<button type="button" data-p=""' + (picked.length ? "" : ' class="on"') + ">All platforms</button>" +
+      PLATFORMS.map(function (p) {
+        return '<button type="button" data-p="' + p[0] + '"' + (picked.indexOf(p[0]) >= 0 ? ' class="on"' : "") +
+          (p[2] ? ' title="Needs an API key as a repo secret"' : "") + ">" + esc(p[1]) + (p[2] ? " 🔑" : "") + "</button>";
+      }).join("");
+  }
+  $("f-platforms").addEventListener("click", function (e) {
+    var b = e.target.closest("button[data-p]"); if (!b) return;
+    var k = b.dataset.p, picked = platPicked(), i = picked.indexOf(k);
+    if (!k) picked = []; else if (i >= 0) picked.splice(i, 1); else picked.push(k);
+    try { store.set("f.plat", picked.join(",")); } catch (e2) {}
+    renderPlatforms();
+  });
+
+  // ---- how a finished run describes the window / platforms it was given
+  function windowLabel(m) {
+    m = m || {};
+    var h = num(m.hours), wh = num(m.window_hours), d = num(m.days);
+    if (h) return "posted within " + trimNum(h) + " h";
+    if (wh && wh < 24) return "posted within " + trimNum(wh) + " h";
+    if (d) return "last " + trimNum(d) + (d === 1 ? " day" : " days");
+    if (wh) return "last " + trimNum(wh / 24) + " days";
+    return "";
+  }
+  function platformsLabel(m) {
+    return platSummary(String((m || {}).platforms_asked || "").split(",").map(function (x) { return x.trim(); }).filter(Boolean));
+  }
   $("btn-run").addEventListener("click", function () {
     var s = settings();
     if (!s.token || !s.repo) { showTab("settings"); return; }
@@ -1203,7 +1699,15 @@
     if (!role) { msg("run-msg", "Type at least one job title.", "bad"); return; }
     var countries = wPicked().concat($("f-more").value.split(",").map(function (x) { return x.trim(); }).filter(Boolean));
     var extra = $("f-extra").value.trim() + ($("f-remote").checked ? "" : " --no-remote");
-    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: countries.join(","), days: $("f-days").value.trim() || "14", fit: $("f-fit").value, extra: extra.trim() };
+    var w = winValue(), hours = winHours(w), picked = platPicked();
+    // jobhunt.yml inputs: days always (job_bot's own window), hours only when the window is in hours
+    // (it wins over days there), allow_undated only with it, platforms empty = all.
+    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: countries.join(","),
+                   days: String(Math.max(1, Math.ceil(hours / 24))),
+                   fit: $("f-fit").value, extra: extra.trim(), platforms: picked.join(",") };
+    // hours wins over days in the workflow, so it is sent for any window under a day -
+    // including one typed in days ("0.5 days"), where the undated switch applies too.
+    if (hours < 24) { inputs.hours = trimNum(hours); inputs.allow_undated = $("f-undated").checked ? "true" : "false"; }
     $("btn-run").disabled = true; msg("run-msg", "Starting…");
     gh("/actions/workflows/jobhunt.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
       .then(function () { msg("run-msg", "Started. 5–15 minutes; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
@@ -1415,7 +1919,7 @@
   });
 
   // ---- boot
-  fillSettings(); renderWCountries(); renderCountryPicker();
+  fillSettings(); renderWCountries(); renderPlatforms(); renderCountryPicker(); bindAcc(document);
   if (store.get("s.seg", "world") === "careers") { $("s-seg").querySelector('[data-s="careers"]').click(); }
   var hashTab = location.hash.slice(1);
   showTab(TABS.indexOf(hashTab) >= 0 ? hashTab : store.get("tab", "home"));

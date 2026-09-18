@@ -42,6 +42,7 @@ class Duunitori(Source):
                         country=country,
                         location=normalize_ws(it.get("municipality_name") or "Finland"),
                         posted=posted,
+                        posted_raw=it.get("date_posted") or "",
                         snippet=desc[:400],
                         description=desc,
                         query=q,

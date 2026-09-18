@@ -219,6 +219,36 @@ silent: no console window and no browser window (the task goes through
 registers them as "Run only when the user is logged on" on purpose — the
 off-screen fallback browser needs a desktop session — so stay logged in.
 
+## 12. Keep the profile fresh (do this one)
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1
+```
+
+Registers **NaukriProfileRefresh**: `refresh_profile.bat` every 45 minutes,
+for good, plus three minutes after each logon. Each run bumps your profile's
+last-modified timestamp — the one thing recruiter search ranks on — and takes
+about ten seconds, hidden, with a 20-minute hard stop and `IgnoreNew` so runs
+can never stack. Pass `-Every 30` for a different interval.
+
+One line per run, successes included, lands in `logs\refresh.log`:
+
+```
+2026-09-18 09:52:22  ok  profile timestamp bumped (12.3s)
+2026-09-18 10:37:14  FAILED  session expired - run python main.py --login (6.1s)
+```
+
+Every run trims that log to the last 24 hours first, so it stays small. If the
+lines say the session expired, run `python main.py --login` once.
+
+```powershell
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1 -Show    # state, last result, next run
+Start-ScheduledTask -TaskName 'NaukriProfileRefresh'                           # run one now
+powershell -ExecutionPolicy Bypass -File scripts\schedule_refresh.ps1 -Remove  # unschedule
+```
+
+The scan runs still refresh as their step 2, but this task is the primary one.
+
 ---
 
 ## Where things live

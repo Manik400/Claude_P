@@ -1,4 +1,6 @@
 """Seek family (Seek AU/NZ, JobsDB TH/HK, JobStreet SG/MY) - public JSON search API."""
+import math
+
 from ..config import COUNTRIES
 from ..textutil import clean_company, clean_title, normalize_ws, parse_date
 from .base import Source
@@ -21,8 +23,11 @@ class Seek(Source):
             while len(out) < ctx.max_per_source and page <= 8:
                 params = {"siteKey": site_key, "sourcesystem": "houston", "keywords": kw, "page": page,
                           "pageSize": 22, "locale": locale}
-                if ctx.days:
-                    params["daterange"] = min(int(ctx.days), 31)
+                if ctx.window_hours:
+                    # daterange is whole days, so an hours-long window still asks for one
+                    params["daterange"] = max(1, min(math.ceil(ctx.window_hours / 24), 31))
+                    if ctx.window_hours < 48:
+                        params["sortmode"] = "ListedDate"   # newest first
                 data = ctx.http.get_json(f"{base}/api/jobsearch/v5/search", params=params)
                 items = data.get("data") or []
                 if not items:
@@ -45,6 +50,7 @@ class Seek(Source):
                         country=country,
                         location=normalize_ws(f"{loc} {('· ' + arr) if arr else ''}"),
                         posted=parse_date(it.get("listingDate")),
+                        posted_raw=it.get("listingDate") or "",   # ISO timestamp, time included
                         salary=normalize_ws(it.get("salaryLabel") or ""),
                         snippet=" ".join([teaser] + bullets),
                         employment_type=", ".join(it.get("workTypes") or []),

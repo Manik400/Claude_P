@@ -20,6 +20,8 @@ class Job:
     location: str = ""
     remote: Optional[bool] = None
     posted: Optional[str] = None    # ISO date YYYY-MM-DD when known
+    posted_at: Optional[str] = None # ISO timestamp, UTC - ONLY when the board says the time
+    posted_raw: str = ""            # what the board actually said ("3 hours ago", an epoch, ...)
     salary: str = ""
     snippet: str = ""               # short plain-text teaser
     description: str = ""           # full plain-text description when available
@@ -38,7 +40,23 @@ class Job:
     id: str = ""
     extra: dict = field(default_factory=dict)
 
+    @property
+    def age_hours(self):
+        """Hours since it went up, or None when only the date (or nothing) is known."""
+        from .textutil import hours_old
+        return hours_old(self.posted_at)
+
     def finalize(self):
+        # A source may hand over the raw value instead of parsing it itself; the
+        # exact time is kept apart from the date, so an hours-long window is
+        # never satisfied by a date alone.
+        if self.posted_raw and not self.posted_at:
+            from .textutil import parse_when
+            date, at = parse_when(self.posted_raw)
+            self.posted = self.posted or date
+            self.posted_at = at
+        if self.posted_at and not self.posted:
+            self.posted = str(self.posted_at)[:10]
         self.title = re.sub(r"\s+", " ", self.title or "").strip()
         self.company = re.sub(r"\s+", " ", self.company or "").strip()
         self.location = re.sub(r"\s+", " ", self.location or "").strip()

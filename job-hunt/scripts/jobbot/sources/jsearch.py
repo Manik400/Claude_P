@@ -19,7 +19,10 @@ class JSearch(Source):
         out, seen = [], set()
         cname = COUNTRIES.get(country, {}).get("name", country)
         headers = {"X-RapidAPI-Key": os.environ["RAPIDAPI_KEY"], "X-RapidAPI-Host": "jsearch.p.rapidapi.com"}
-        date_posted = "month" if not ctx.days or ctx.days > 7 else "week"
+        # smallest bucket the API offers that still covers the window
+        h = ctx.window_hours
+        date_posted = ("today" if h and h <= 24 else "3days" if h and h <= 72
+                       else "week" if h and h <= 168 else "month")
         for kw in ctx.keywords():
             params = {"query": f"{kw} in {cname}", "country": country.lower(), "date_posted": date_posted,
                       "page": 1, "num_pages": 2}
@@ -41,6 +44,7 @@ class JSearch(Source):
                     location=normalize_ws(loc),
                     remote=bool(it.get("job_is_remote")) if it.get("job_is_remote") is not None else None,
                     posted=parse_date(it.get("job_posted_at_datetime_utc")),
+                    posted_raw=it.get("job_posted_at_datetime_utc") or "",
                     salary=salary,
                     snippet=normalize_ws(it.get("job_description") or "")[:400],
                     description=normalize_ws(it.get("job_description") or ""),

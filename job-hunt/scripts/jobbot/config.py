@@ -5,7 +5,7 @@ USER_AGENT = ("Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 "
               "(KHTML, like Gecko) Chrome/128.0.0.0 Safari/537.36")
 
 DEFAULT_COUNTRIES = ["DE", "NL", "ES", "FI", "AU", "JP", "TH"]
-DEFAULT_DAYS = 30            # ignore postings older than this when the date is known
+DEFAULT_DAYS = 7             # the default window; --hours narrows it to a few hours
 DEFAULT_MAX_PER_SOURCE = 60  # per source per country
 DEFAULT_DETAILS = 40         # how many jobs get their full description fetched
 DEFAULT_OUT_ROOT = os.path.join(os.path.expanduser("~"), "Documents", "JobHunt")

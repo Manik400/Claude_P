@@ -25,8 +25,11 @@ class LinkedIn(Source):
                 params = {"keywords": kw, "location": location, "start": start}
                 if codes:
                     params["f_E"] = codes
-                if ctx.days:
-                    params["f_TPR"] = f"r{int(ctx.days) * 86400}"
+                if ctx.recency_seconds:
+                    # f_TPR takes plain seconds, so "last 2 hours" really is r7200
+                    params["f_TPR"] = f"r{ctx.recency_seconds}"
+                if ctx.window_hours and ctx.window_hours < 48:
+                    params["sortBy"] = "DD"  # newest first when the window is short
                 r = ctx.http.get(SEARCH_URL, params=params)
                 if r.status_code != 200 or not r.text.strip():
                     break
@@ -64,6 +67,9 @@ class LinkedIn(Source):
             company = card.select_one("h4.base-search-card__subtitle")
             loc = card.select_one("span.job-search-card__location")
             date = card.select_one("time")
+            # the card's <time> text is the exact wording ("2 hours ago", "Just now");
+            # the datetime attribute only ever carries the day
+            when = normalize_ws(date.get_text(strip=True)) if date else ""
             salary = card.select_one("span.job-search-card__salary-info")
             j = self.job(
                 title=clean_title(title.get_text(" ", strip=True) if title else ""),
@@ -71,7 +77,8 @@ class LinkedIn(Source):
                 url=f"https://www.linkedin.com/jobs/view/{jid}",
                 country=country,
                 location=normalize_ws(loc.get_text(" ", strip=True) if loc else ""),
-                posted=parse_date(date.get("datetime") if date else None) or parse_date(date.get_text(strip=True) if date else None),
+                posted=parse_date(date.get("datetime") if date else None) or parse_date(when),
+                posted_raw=when or (date.get("datetime") if date else "") or "",
                 salary=normalize_ws(salary.get_text(" ", strip=True) if salary else ""),
                 query=kw,
                 id=f"li{jid}",

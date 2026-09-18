@@ -19,8 +19,20 @@ Get these from the conversation. Ask only for what is missing and matters; don't
 | Years of experience | strongly recommended (drives the fit filter) | none → fit shown as "unknown" |
 | Countries | optional | DE, NL, ES, FI, AU, JP, TH + a Remote tab |
 | Resume file (.pdf / .docx / .txt) | optional, only for match scores | no scores |
-| Recency | optional | last 30 days (`--days`) |
+| Recency | optional | last 7 days (`--days 7`); for a few hours use `--hours 2` |
+| Platforms | optional | every platform that is set up (`--sources linkedin,seek,…` to pick) |
 | Words to exclude / require in titles | optional | none (`--exclude`, `--must`) |
+
+**Recency in hours.** `--hours N` wins over `--days`. Under a day, a posting whose exact time the board
+never stated is dropped, because nothing proves it is inside the window — pass `--allow-undated` to keep
+those. Boards that can filter server-side (LinkedIn's `f_TPR`, Adzuna, JSearch, Jooble, Seek) are told the
+window, so a short search returns fresh postings rather than a page of old ones.
+
+**Platforms.** `--sources` (alias `--platforms`) takes keys or display names: `--sources "linkedin,The
+Muse,seek"`. `job_bot.py sources` lists them; keyed ones (Adzuna, Jooble, JSearch, Firecrawl, Apify) run
+only when their API key is set, in the environment or in `.env` (see `.env.example`). The standing list
+is `assets/sites.txt` (`key | on/off | note`, like `assets/companies.txt`): a site switched off there is
+never searched unless a run names it explicitly.
 
 If the user pastes a job description instead of a title, extract the role title and core skills from it and use the title as `--role` (add a second `--role` for a common synonym, e.g. "backend engineer" + "python developer").
 

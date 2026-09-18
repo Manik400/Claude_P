@@ -6,7 +6,8 @@ from concurrent.futures import ThreadPoolExecutor, as_completed
 from .config import REMOTE
 from .experience import annotate
 from .http import Blocked
-from .textutil import ROLE_SYNONYMS, GENERIC_ROLE_WORDS, strip_accents
+from .textutil import (OFF_FIELD_WORDS, ROLE_SYNONYMS, GENERIC_ROLE_WORDS, TECH_ROLE_WORDS,
+                       strip_accents)
 
 
 def _weak_match(ctx, text):
@@ -26,6 +27,37 @@ def _weak_match(ctx, text):
                 if syn in t:
                     return True
     return False
+
+
+def _tech_title(title):
+    """True when the title names a software role in words other than 'developer'."""
+    t = strip_accents(title or "").lower()
+    t = t.replace("/", " ").replace("-", " ").replace(",", " ")
+    return any(w in t.split() or w in t for w in TECH_ROLE_WORDS)
+
+
+def _off_field(title):
+    return any(w in (" " + strip_accents(title or "").lower() + " ") for w in OFF_FIELD_WORDS)
+
+
+def _title_verdict(ctx, job, min_rel):
+    """(keep, reason) from the TITLE first.
+
+    Boards pad results with whatever they think is related, and a description
+    that happens to contain "developer" is not evidence: what the posting is
+    for is in its title. The description only rescues a title that names a
+    software role in other words ("Backend (m/w/d)", "SDE-2, Java").
+    """
+    rel = ctx.relevance(job.title)
+    if rel >= max(min_rel, 0.7):
+        return True, ""
+    if _off_field(job.title) and rel < 0.7:
+        return False, "other field"
+    if rel >= min_rel:
+        return True, ""
+    if _tech_title(job.title) and _weak_match(ctx, job.text_blob()):
+        return True, ""
+    return False, "unrelated"
 
 
 def run_search(ctx, sources, log=print, workers=6):
@@ -103,19 +135,31 @@ def dedup(jobs):
 
 
 def postfilter(ctx, jobs, log=print):
-    kept, dropped_excl, dropped_rel, dropped_old = [], 0, 0, 0
+    kept, dropped_excl, dropped_rel, dropped_old, dropped_undated, dropped_field = [], 0, 0, 0, 0, 0
+    min_rel = getattr(ctx, "min_relevance", 0.4)
     for j in jobs:
         if ctx.excluded(j.title):
             dropped_excl += 1
             continue
-        if not ctx.fresh(j.posted):
-            dropped_old += 1
+        ok, why = ctx.fresh_job(j)
+        if not ok:
+            if why == "undated":
+                dropped_undated += 1
+            else:
+                dropped_old += 1
             continue
-        if not ctx.loose and not _weak_match(ctx, j.text_blob()):
-            dropped_rel += 1
-            continue
+        if not ctx.loose:
+            keep, reason = _title_verdict(ctx, j, min_rel)
+            if not keep:
+                if reason == "other field":
+                    dropped_field += 1
+                else:
+                    dropped_rel += 1
+                continue
         kept.append(j)
-    log(f"filter: kept {len(kept)}, dropped {dropped_rel} unrelated, {dropped_excl} excluded by term, {dropped_old} too old")
+    log(f"filter: kept {len(kept)}, dropped {dropped_rel} unrelated, {dropped_field} from other fields, "
+        f"{dropped_excl} excluded by term, {dropped_old} outside the window"
+        + (f", {dropped_undated} with no posting time (a window under a day needs one)" if dropped_undated else ""))
     return kept
 
 

@@ -1,4 +1,5 @@
 """Adzuna - aggregator API (free key: https://developer.adzuna.com). Set ADZUNA_APP_ID and ADZUNA_APP_KEY."""
+import math
 import os
 
 from ..textutil import clean_company, clean_title, normalize_ws, parse_date
@@ -22,8 +23,9 @@ class Adzuna(Source):
             while len(out) < ctx.max_per_source and page <= 4:
                 params = {"app_id": os.environ["ADZUNA_APP_ID"], "app_key": os.environ["ADZUNA_APP_KEY"],
                           "what": kw, "results_per_page": 50, "content-type": "application/json"}
-                if ctx.days:
-                    params["max_days_old"] = int(ctx.days)
+                if ctx.window_hours:
+                    # the API only speaks whole days, so round the window up
+                    params["max_days_old"] = max(1, math.ceil(ctx.window_hours / 24))
                 data = ctx.http.get_json(API.format(cc=country.lower(), page=page), params=params)
                 items = data.get("results") or []
                 if not items:
@@ -42,6 +44,7 @@ class Adzuna(Source):
                         country=country,
                         location=normalize_ws((it.get("location") or {}).get("display_name", "")),
                         posted=parse_date(it.get("created")),
+                        posted_raw=it.get("created") or "",   # ISO timestamp, so the exact time survives
                         salary=salary,
                         snippet=normalize_ws(it.get("description") or "")[:400],
                         employment_type=it.get("contract_type") or "",

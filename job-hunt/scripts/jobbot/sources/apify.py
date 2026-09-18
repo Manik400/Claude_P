@@ -14,6 +14,7 @@ Set APIFY_TOKEN (https://console.apify.com/account/integrations). APIFY_SOURCES
 picks which of the three run (default "naukri,indeed"; add "linkedin" to spend
 on it). Each actor call is synchronous and capped by --max-per-source.
 """
+import math
 import os
 import re
 from datetime import datetime, timezone
@@ -46,6 +47,11 @@ def _run(ctx, actor, payload, log_name):
         raise RuntimeError(f"apify {actor}: HTTP {r.status_code} {r.text[:120]}")
     data = r.json()
     return data if isinstance(data, list) else []
+
+
+def _window_days(ctx):
+    """The run's window as whole days (rounded up) - the actors only take days."""
+    return math.ceil(ctx.window_hours / 24) if ctx.window_hours else None
 
 
 def _ms_to_date(ms):
@@ -82,7 +88,8 @@ class ApifyNaukri(_ApifyBase):
 
     def search(self, ctx, country):
         out, seen = [], set()
-        age = next((a for a in (1, 3, 7, 15, 30) if ctx.days and ctx.days <= a), "30")
+        days = _window_days(ctx)
+        age = next((a for a in (1, 3, 7, 15, 30) if days and days <= a), "30")
         for kw in ctx.keywords():
             payload = {"keywords": kw, "location": "India", "sort": "f", "jobAge": str(age),
                        "limit": min(ctx.max_per_source, 100)}
@@ -105,6 +112,7 @@ class ApifyNaukri(_ApifyBase):
                     url=url if url.startswith("http") else "https://www.naukri.com" + url, country=country,
                     location=normalize_ws(locs or "India"),
                     posted=_ms_to_date(it.get("createdDate")) or parse_date(it.get("createdDateText")),
+                    posted_raw=it.get("createdDate") or it.get("createdDateText") or "",   # epoch ms / "2 hours ago"
                     salary=normalize_ws(sal.get("label") or ""),
                     snippet=normalize_ws(desc.get("short") or "")[:400],
                     description=normalize_ws(desc.get("full") or ""),
@@ -134,7 +142,8 @@ class ApifyIndeed(_ApifyBase):
     def search(self, ctx, country):
         out, seen = [], set()
         cname = COUNTRIES.get(country, {}).get("name", country)
-        days = next((d for d in (1, 3, 7, 14) if ctx.days and ctx.days <= d), "14")
+        window = _window_days(ctx)
+        days = next((d for d in (1, 3, 7, 14) if window and window <= d), "14")
         for kw in ctx.keywords():
             payload = {"country": "uk" if country == "GB" else country.lower(), "title": kw, "location": cname,
                        "limit": min(ctx.max_per_source, 100), "datePosted": str(days)}
@@ -154,6 +163,7 @@ class ApifyIndeed(_ApifyBase):
                     url=url, country=country,
                     location=normalize_ws(", ".join(x for x in (loc.get("city"), loc.get("admin1Code"), loc.get("countryName")) if x)),
                     posted=parse_date(it.get("datePublished")) or parse_date(it.get("dateOnIndeed")),
+                    posted_raw=it.get("datePublished") or it.get("dateOnIndeed") or "",
                     salary=salary.strip(), snippet=normalize_ws((it.get("description") or {}).get("text") or "")[:400],
                     description=normalize_ws((it.get("description") or {}).get("text") or ""),
                     query=kw, id=f"in{jid}",
@@ -173,7 +183,8 @@ class ApifyLinkedIn(_ApifyBase):
         out, seen = [], set()
         meta = ctx.country_meta(country)
         location = meta.get("linkedin") or meta.get("name") or country
-        posted = "past24Hours" if ctx.days == 1 else ("pastWeek" if ctx.days and ctx.days <= 7 else "pastMonth")
+        h = ctx.window_hours
+        posted = "past24Hours" if h and h <= 24 else ("pastWeek" if h and h <= 168 else "pastMonth")
         for kw in ctx.keywords():
             payload = {"keywords": kw, "location": location, "datePosted": posted, "scrapeCompany": False,
                        "limitPerSource": min(ctx.max_per_source, 100)}
@@ -186,6 +197,7 @@ class ApifyLinkedIn(_ApifyBase):
                     title=clean_title(it.get("title") or ""), company=clean_company(it.get("companyName") or ""),
                     url=f"https://www.linkedin.com/jobs/view/{jid}", country=country,
                     location=normalize_ws(it.get("location") or ""), posted=parse_date(it.get("postedAt")),
+                    posted_raw=it.get("postedAt") or "",   # ISO timestamp or "3 hours ago", depending on the card
                     salary=normalize_ws(it.get("salary") or ""),
                     snippet=normalize_ws(it.get("descriptionText") or "")[:400],
                     description=normalize_ws(it.get("descriptionText") or ""),

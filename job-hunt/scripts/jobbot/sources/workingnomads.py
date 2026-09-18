@@ -24,9 +24,6 @@ class WorkingNomads(Source):
             tags = [t.strip() for t in (it.get("tags") or "").split(",") if t.strip()]
             if ctx.relevance(title, " ".join(tags) + " " + desc[:600]) <= 0:
                 continue
-            posted = parse_date(it.get("pub_date"))
-            if not ctx.fresh(posted):
-                continue
             loc = normalize_ws(it.get("location") or "")
             code, eligible = assign_country(loc, ctx)
             if code is None:
@@ -38,13 +35,18 @@ class WorkingNomads(Source):
                 country=code,
                 location=f"Remote · {loc}" if loc else "Remote",
                 remote=True,
-                posted=posted,
+                posted=parse_date(it.get("pub_date")),
+                posted_raw=it.get("pub_date") or "",   # ISO timestamp with a time
                 snippet=desc[:400],
                 description=desc,
                 skills=tags,
             )
             j.extra["eligible"] = eligible
-            out.append(j.finalize())
+            j.finalize()
+            ok, why = ctx.fresh_job(j)
+            if not ok and why == "old":
+                continue
+            out.append(j)
             if len(out) >= ctx.max_per_source:
                 break
         return out

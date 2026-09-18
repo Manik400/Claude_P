@@ -27,6 +27,34 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 CONFIG_PATH = ROOT / "jobs.yaml"
 PROFILE_PATH = ROOT / "data" / "profile.json"
 
+
+def _load_env() -> None:
+    """Keys and tokens from .env (this project's, then the repo's).
+
+    Secrets only - the contact finders and the Apify scrapers. What you answer
+    stays in jobs.yaml and data/jobs/*.yaml, where a question can keep its
+    options and the jobs it blocked. A variable already set in the environment
+    is never overwritten.
+    """
+    import os
+
+    for path in (ROOT / ".env", ROOT.parent / ".env"):
+        try:
+            text = path.read_text(encoding="utf-8")
+        except (OSError, UnicodeDecodeError):
+            continue
+        for line in text.splitlines():
+            line = line.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, value = line[7:].split("=", 1) if line.startswith("export ") else line.split("=", 1)
+            key, value = key.strip(), value.strip().strip("\"'")
+            if key and key not in os.environ:
+                os.environ[key] = value
+
+
+_load_env()
+
 DEFAULTS = {
     # Which roles/*.yaml pack supplies the field vocabulary. Empty means the
     # module default (qa-automation), so an old jobs.yaml keeps working.

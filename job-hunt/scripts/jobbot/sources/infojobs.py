@@ -27,7 +27,8 @@ class InfoJobs(Source):
                         continue
                     seen.add(j.id)
                     new += 1
-                    if ctx.fresh(j.posted):
+                    ok, why = ctx.fresh_job(j)
+                    if ok or why != "old":
                         out.append(j)
                 if new == 0:
                     break
@@ -50,7 +51,8 @@ class InfoJobs(Source):
             items = [normalize_ws(li.get_text(" ", strip=True)) for li in card.select("li.ij-OfferCardContent-description-list-item")]
             loc = items[0] if items else "Spain"
             mode = next((i for i in items if re.search(r"híbrido|hibrido|presencial|teletrabajo|remoto", i, re.I)), "")
-            date = next((parse_date(i) for i in items if re.search(r"hace|\d{1,2}/\d{1,2}/\d{4}|hoy|ayer", i, re.I)), None)
+            # kept raw as well: "hace 3 horas" pins the exact time, "12/09/2026" only the day
+            when = next((i for i in items if re.search(r"hace|\d{1,2}/\d{1,2}/\d{4}|hoy|ayer", i, re.I)), "")
             salary = next((i for i in items if "€" in i), "")
             contract = next((i for i in items if re.search(r"indefinido|temporal|autónomo|prácticas|formativo|freelance", i, re.I)), "")
             exp = next((i for i in items if re.search(r"experiencia", i, re.I)), "")
@@ -61,7 +63,8 @@ class InfoJobs(Source):
                 url=href,
                 country=country,
                 location=normalize_ws(f"{loc}{(' · ' + mode) if mode else ''}"),
-                posted=date,
+                posted=parse_date(when),
+                posted_raw=when,
                 salary=salary,
                 employment_type=contract,
                 snippet=exp,

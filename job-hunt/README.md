@@ -15,6 +15,24 @@ Double-click `jobhunt.bat` and answer the questions, or run:
 Reports are saved in `Documents\JobHunt\<date>_<role>\report.html`.
 Other commands: `python scripts/job_bot.py -h`.
 
+## How fresh, and from where
+Default: **posted in the last 7 days, every platform**.
+
+    --hours 2                 only postings put up in the last 2 hours
+    --allow-undated           ...and keep the ones the board gave no time for
+    --sources "linkedin,instahyre,seek"     only these platforms (keys or names)
+
+Under a day, a posting whose exact time the board never stated is dropped - nothing shows it is inside
+the window. Boards that can filter server-side are told the window (LinkedIn takes it to the second),
+and `python scripts/job_bot.py sources` lists every platform, whether it is on, and whether it
+publishes posting times.
+
+The platform list lives in **`assets/sites.txt`**, next to the company list: one line per site,
+`key | on/off | note`. Switch a site off there and no run touches it; `--sources` (and the phone's
+Platforms chips) still override the file for a single run.
+
+API keys for the keyed platforms go in `.env` (see `.env.example` in the repo root), never in these files.
+
 ## Applying (LinkedIn Easy Apply)
 The report's Apply buttons open each posting. LinkedIn postings can also be applied to for you:
 

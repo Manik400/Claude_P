@@ -37,6 +37,8 @@ mistake stops before a browser opens rather than halfway through a dialog.
 | `trim_personal.py` | — | Clears doorstep-level address fields from Personal details |
 | `apply_summary.py` | — reads `changes.yaml` | Applies the profile summary alone, verifying the dialog first |
 | `schedule_jobs_agent.ps1` | — | Registers the scan runs in Windows Task Scheduler |
+| `schedule_refresh.ps1` | — | Registers `NaukriProfileRefresh`, the 45-minute profile nudge (`-Show`, `-Remove`, `-Every`) |
+| `refresh_log.py` | — | One refresh run: `main.py --refresh`, one line into `logs\refresh.log`, log trimmed to 24 h |
 
 ## Two things worth knowing
 

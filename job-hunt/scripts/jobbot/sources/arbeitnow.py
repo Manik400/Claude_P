@@ -26,9 +26,6 @@ class Arbeitnow(Source):
                 desc = html_to_text(it.get("description") or "")
                 if ctx.relevance(title, " ".join(tags) + " " + desc[:800]) <= 0:
                     continue
-                posted = parse_date(it.get("created_at"))
-                if not ctx.fresh(posted):
-                    continue
                 j = self.job(
                     title=title,
                     company=clean_company(it.get("company_name", "")),
@@ -36,13 +33,18 @@ class Arbeitnow(Source):
                     country=country,
                     location=normalize_ws(it.get("location") or "Germany"),
                     remote=bool(it.get("remote")),
-                    posted=posted,
+                    posted=parse_date(it.get("created_at")),
+                    posted_raw=it.get("created_at") or "",   # epoch seconds
                     snippet=desc[:400],
                     description=desc,
                     skills=tags,
                     employment_type=", ".join(it.get("job_types") or []),
                 )
-                out.append(j.finalize())
+                j.finalize()
+                ok, why = ctx.fresh_job(j)
+                if not ok and why == "old":
+                    continue
+                out.append(j)
             if not (data.get("links") or {}).get("next"):
                 break
             page += 1

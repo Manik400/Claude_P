@@ -30,21 +30,23 @@ class Wantedly(Source):
                     looking = normalize_ws(it.get("looking_for") or "")
                     if ctx.relevance(title + " " + looking, desc[:800]) <= 0:
                         continue
-                    posted = parse_date(it.get("published_at"))
-                    if not ctx.fresh(posted):
-                        continue
                     j = self.job(
                         title=title if not looking or looking in title else f"{title} ({looking})",
                         company=clean_company((it.get("company") or {}).get("name", "")),
                         url=f"https://www.wantedly.com/projects/{pid}",
                         country=country,
                         location=normalize_ws(it.get("location") or "Japan"),
-                        posted=posted,
+                        posted=parse_date(it.get("published_at")),
+                        posted_raw=it.get("published_at") or "",   # ISO timestamp with a time
                         snippet=desc[:400],
                         description=desc,
                         query=kw,
                     )
-                    out.append(j.finalize())
+                    j.finalize()
+                    ok, why = ctx.fresh_job(j)
+                    if not ok and why == "old":
+                        continue
+                    out.append(j)
                 meta = data.get("_metadata") or {}
                 if page >= int(meta.get("total_pages") or 1):
                     break

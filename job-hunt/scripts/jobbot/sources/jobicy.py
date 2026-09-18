@@ -25,9 +25,6 @@ class Jobicy(Source):
                 desc = html_to_text(it.get("jobDescription") or it.get("jobExcerpt") or "")
                 if ctx.relevance(title, desc[:600]) <= 0:
                     continue
-                posted = parse_date(it.get("pubDate"))
-                if not ctx.fresh(posted):
-                    continue
                 geo = normalize_ws(it.get("jobGeo") or "")
                 code, eligible = assign_country(geo, ctx)
                 if code is None:
@@ -41,7 +38,8 @@ class Jobicy(Source):
                     country=code,
                     location=f"Remote · {geo}" if geo else "Remote",
                     remote=True,
-                    posted=posted,
+                    posted=parse_date(it.get("pubDate")),
+                    posted_raw=it.get("pubDate") or "",   # "2026-09-18 06:12:00"
                     salary=salary,
                     snippet=html_to_text(it.get("jobExcerpt") or "")[:400] or desc[:400],
                     description=desc,
@@ -51,7 +49,11 @@ class Jobicy(Source):
                     query=kw,
                 )
                 j.extra["eligible"] = eligible
-                out.append(j.finalize())
+                j.finalize()
+                ok, why = ctx.fresh_job(j)
+                if not ok and why == "old":
+                    continue
+                out.append(j)
                 if len(out) >= ctx.max_per_source:
                     return out
         return out

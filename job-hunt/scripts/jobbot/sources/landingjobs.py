@@ -53,9 +53,7 @@ class LandingJobs(Source):
             tags = [t for t in (it.get("tags") or []) if t]
             if ctx.relevance(title, " ".join(tags) + " " + desc[:600]) <= 0:
                 continue
-            posted = parse_date(it.get("published_at") or it.get("updated_at"))
-            if not ctx.fresh(posted):
-                continue
+            when = it.get("published_at") or it.get("updated_at")   # ISO timestamps
             url = it.get("url", "")
             m = re.search(r"landing\.jobs/at/([^/]+)/", url)
             company = m.group(1).replace("-", " ").title() if m else ""
@@ -69,7 +67,8 @@ class LandingJobs(Source):
                 country=country,
                 location=normalize_ws(", ".join(c for c in cities if c)) or COUNTRIES.get(country, {}).get("name", ""),
                 remote=bool(it.get("remote")),
-                posted=posted,
+                posted=parse_date(when),
+                posted_raw=when or "",
                 salary=salary,
                 snippet=desc[:400],
                 description=desc,
@@ -78,7 +77,11 @@ class LandingJobs(Source):
             )
             if it.get("relocation_paid"):
                 j.extra["relocation_paid"] = True
-            out.append(j.finalize())
+            j.finalize()
+            ok, why = ctx.fresh_job(j)
+            if not ok and why == "old":
+                continue
+            out.append(j)
             if len(out) >= ctx.max_per_source:
                 break
         return out

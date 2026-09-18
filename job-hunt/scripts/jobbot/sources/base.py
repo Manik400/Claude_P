@@ -12,17 +12,26 @@ class SearchContext:
     """Everything a source needs to know about one run."""
 
     def __init__(self, roles, countries, user_years=None, days=30, max_per_source=60, http=None, log=None,
-                 exclude_terms=None, must_terms=None, loose=False):
+                 exclude_terms=None, must_terms=None, loose=False, hours=None, allow_undated=None,
+                 min_relevance=0.4):
         self.roles = [r.strip() for r in roles if r and r.strip()]
         self.countries = countries
         self.user_years = user_years
         self.days = days
+        # `hours` wins over `days` when set. Under a day, a posting with no time
+        # on it cannot be shown to be inside the window, so it is dropped unless
+        # allow_undated says otherwise - that is what makes "last 2 hours" mean
+        # what it says.
+        self.hours = hours or None
+        self.allow_undated = (self.hours is None) if allow_undated is None else bool(allow_undated)
         self.max_per_source = max_per_source
         self.http = http
         self.log = log or (lambda *a, **k: None)
         self.exclude_terms = [t.lower() for t in (exclude_terms or []) if t]
         self.must_terms = [t.lower() for t in (must_terms or []) if t]
         self.loose = loose
+        # How closely a TITLE must match a requested role to be kept (0..1).
+        self.min_relevance = float(min_relevance)
         self._role_terms = []
         for role in self.roles:
             toks = content_tokens(strip_accents(role))
@@ -83,12 +92,55 @@ class SearchContext:
             return True
         return False
 
+    # ---- recency -------------------------------------------------------
+    @property
+    def window_hours(self):
+        """The whole window in hours, or None for "any age"."""
+        if self.hours:
+            return float(self.hours)
+        return float(self.days) * 24 if self.days else None
+
+    @property
+    def recency_seconds(self):
+        """The window in seconds, for boards that can filter server-side
+        (LinkedIn's f_TPR, Adzuna's max_days_old, JSearch's date_posted...)."""
+        h = self.window_hours
+        return int(h * 3600) if h else None
+
     def fresh(self, iso_date):
-        """True when the posting is within the recency window (unknown dates pass)."""
+        """True when a DATE is within the window (unknown dates pass).
+
+        Kept for sources that only ever see a date. Whole jobs go through
+        fresh_job(), which uses the exact time when the board gave one.
+        """
         if not iso_date or not self.days:
             return True
         d = days_old(iso_date)
         return d is None or d <= self.days
+
+    def fresh_job(self, job):
+        """(ok, reason) for one job against the window.
+
+        reason is "" when it is inside, "old" when it is demonstrably outside,
+        and "undated" when the board never said when it went up and the window
+        is too short for a date to settle it.
+        """
+        window = self.window_hours
+        if not window:
+            return True, ""
+        age = job.age_hours if hasattr(job, "age_hours") else None
+        if age is not None:
+            return (age <= window + 0.01, "" if age <= window + 0.01 else "old")
+        days = days_old(getattr(job, "posted", None))
+        if days is None:
+            return (self.allow_undated, "" if self.allow_undated else "undated")
+        if window >= 24:
+            return (days <= window / 24.0, "" if days <= window / 24.0 else "old")
+        # Under a day and only a date to go on: today's date is the best it can
+        # do, and that is still a guess, so it only passes when undated is allowed.
+        if days > 0:
+            return False, "old"
+        return self.allow_undated, "" if self.allow_undated else "undated"
 
     def linkedin_codes(self):
         return linkedin_experience_codes(self.user_years)

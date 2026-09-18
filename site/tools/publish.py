@@ -98,7 +98,13 @@ def publish_report(a):
 
 
 def publish_site(a):
-    shutil.copyfile(os.path.join(SITE_DIR, "index.html"), os.path.join(a.pages, "index.html"))
+    # index.html is the page; the ui-v2 pair is the second skin it can switch
+    # to (the portfolio look), copied only when present so an older checkout
+    # still publishes.
+    for name in ("index.html", "ui-v2.css", "ui-v2.js"):
+        src = os.path.join(SITE_DIR, name)
+        if os.path.exists(src):
+            shutil.copyfile(src, os.path.join(a.pages, name))
     with open(os.path.join(a.pages, ".nojekyll"), "w") as f:
         f.write("")
     if not os.path.exists(os.path.join(a.pages, "data", "index.json")):

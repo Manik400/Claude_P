@@ -24,6 +24,19 @@ on:
         description: "Only jobs posted in the last N days"
         required: false
         default: "14"
+      hours:
+        description: "Only jobs posted in the last N hours (wins over days; empty = use days)"
+        required: false
+        default: ""
+      allow_undated:
+        description: "With hours: keep postings whose exact time the board never stated"
+        type: boolean
+        required: false
+        default: false
+      platforms:
+        description: "Only these platforms, comma-separated keys or names (e.g. linkedin,seek,The Muse). Empty = every platform that is set up"
+        required: false
+        default: ""
       fit:
         description: "Experience filter"
         type: choice
@@ -63,6 +76,9 @@ jobs:
           INPUT_EXPERIENCE: ${{ inputs.experience }}
           INPUT_COUNTRIES: ${{ inputs.countries }}
           INPUT_DAYS: ${{ inputs.days }}
+          INPUT_HOURS: ${{ inputs.hours }}
+          INPUT_ALLOW_UNDATED: ${{ inputs.allow_undated }}
+          INPUT_PLATFORMS: ${{ inputs.platforms }}
           INPUT_FIT: ${{ inputs.fit }}
           INPUT_EXTRA: ${{ inputs.extra }}
           RESUME_TEXT: ${{ secrets.RESUME_TEXT }}

@@ -33,16 +33,14 @@ class JobThai(Source):
                     prov = (it.get("province") or {}).get("name") or ""
                     dist = (it.get("district") or {}).get("name") or ""
                     tags = [t for t in (it.get("tags") or []) if t]
-                    posted = parse_date(it.get("updatedAt"))
-                    if not ctx.fresh(posted):
-                        continue
                     j = self.job(
                         title=clean_title(it.get("jobTitle", "")),
                         company=clean_company(it.get("companyName", "")),
                         url=f"https://www.jobthai.com/en/company/job/{jid}",
                         country=country,
                         location=normalize_ws(", ".join(x for x in (dist, prov) if x)) or "Thailand",
-                        posted=posted,
+                        posted=parse_date(it.get("updatedAt")),
+                        posted_raw=it.get("updatedAt") or "",   # ISO timestamp with a time
                         salary=normalize_ws(it.get("salary") or ""),
                         snippet=normalize_ws(it.get("workLocation") or ""),
                         skills=[t for t in tags if not re.search(r"hybrid|remote|work", t, re.I)],
@@ -50,7 +48,11 @@ class JobThai(Source):
                         query=kw,
                         id=f"jt{jid}",
                     )
-                    out.append(j.finalize())
+                    j.finalize()
+                    ok, why = ctx.fresh_job(j)
+                    if not ok and why == "old":
+                        continue
+                    out.append(j)
                 if new == 0 or len(items) < 20:
                     break
                 page += 1

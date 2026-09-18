@@ -31,9 +31,7 @@ class RemoteOK(Source):
                 jtags = [t for t in (it.get("tags") or []) if t]
                 if ctx.relevance(title, " ".join(jtags) + " " + desc[:600]) <= 0:
                     continue
-                posted = parse_date(it.get("epoch") or it.get("date"))
-                if not ctx.fresh(posted):
-                    continue
+                when = it.get("epoch") or it.get("date")   # epoch seconds, else an ISO timestamp
                 loc = normalize_ws(it.get("location") or "")
                 code, eligible = assign_country(loc, ctx)
                 if code is None:
@@ -47,7 +45,8 @@ class RemoteOK(Source):
                     country=code,
                     location=f"Remote · {loc}" if loc else "Remote",
                     remote=True,
-                    posted=posted,
+                    posted=parse_date(when),
+                    posted_raw=when or "",
                     salary=salary,
                     snippet=desc[:400],
                     description=desc,
@@ -55,7 +54,11 @@ class RemoteOK(Source):
                     query=tag,
                 )
                 j.extra["eligible"] = eligible
-                out.append(j.finalize())
+                j.finalize()
+                ok, why = ctx.fresh_job(j)
+                if not ok and why == "old":
+                    continue
+                out.append(j)
                 if len(out) >= ctx.max_per_source:
                     return out
         return out

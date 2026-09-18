@@ -32,9 +32,6 @@ class TheMuse(Source):
                 desc = html_to_text(it.get("contents") or "")
                 if ctx.relevance(title, desc[:600]) <= 0:
                     continue
-                posted = parse_date(it.get("publication_date"))
-                if not ctx.fresh(posted):
-                    continue
                 levels = [l.get("name", "") for l in (it.get("levels") or [])]
                 locs = [l.get("name", "") for l in (it.get("locations") or [])]
                 j = self.job(
@@ -44,12 +41,17 @@ class TheMuse(Source):
                     country=country,
                     location=normalize_ws(", ".join(l for l in locs if l)[:120]),
                     remote=True if any("remote" in l.lower() for l in locs) else None,
-                    posted=posted,
+                    posted=parse_date(it.get("publication_date")),
+                    posted_raw=it.get("publication_date") or "",   # ISO timestamp with a time
                     snippet=desc[:400],
                     description=desc,
                     seniority={"Senior Level": "senior", "Mid Level": "mid", "Entry Level": "junior", "Internship": "intern"}.get(levels[0], "") if levels else "",
                 )
-                out.append(j.finalize())
+                j.finalize()
+                ok, why = ctx.fresh_job(j)
+                if not ok and why == "old":
+                    continue
+                out.append(j)
             if page >= int(data.get("page_count") or 1):
                 break
             page += 1

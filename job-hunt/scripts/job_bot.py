@@ -19,6 +19,7 @@ Sub-commands:
 import argparse
 import json
 import os
+import re
 import sys
 import time
 from datetime import datetime
@@ -34,6 +35,7 @@ from jobbot import __version__  # noqa: E402
 from jobbot.config import (COUNTRIES, DEFAULT_COUNTRIES, DEFAULT_DAYS, DEFAULT_DETAILS, DEFAULT_MAX_PER_SOURCE,  # noqa: E402
                            DEFAULT_OUT_ROOT, REMOTE, country_name, resolve_country)
 from jobbot.details import fetch_details  # noqa: E402
+from jobbot.dotenv import load_env  # noqa: E402
 from jobbot.experience import parse_user_experience  # noqa: E402
 from jobbot.fallback import fallback_queries, load_extra_file, merge_extra  # noqa: E402
 from jobbot.http import Http  # noqa: E402
@@ -147,12 +149,39 @@ def build_context(args, log, countries):
     http = Http(log=log, min_interval=args.interval)
     ctx = SearchContext(
         roles=args.role, countries=countries, user_years=user_years, days=args.days,
+        hours=getattr(args, "hours", None), allow_undated=getattr(args, "allow_undated", None) or None,
         max_per_source=args.max_per_source, http=http, log=log,
         exclude_terms=[t.strip() for t in (args.exclude or "").split(",") if t.strip()],
         must_terms=[t.strip() for t in (args.must or "").split(",") if t.strip()],
-        loose=args.loose,
+        loose=args.loose, min_relevance=getattr(args, "min_relevance", 0.4),
     )
     return ctx, user_years
+
+
+def parse_platforms(text):
+    """A comma list of platform keys or display names -> source keys.
+
+    Names are matched loosely ("The Muse", "themuse", "muse", "Seek / JobsDB"),
+    so the phone's chips and a typed list mean the same thing. Unknown entries
+    are returned too, so the caller can say which ones it did not recognise.
+    """
+    picked, unknown = [], []
+    for raw in (text or "").split(","):
+        want = raw.strip().lower()
+        if not want:
+            continue
+        squashed = re.sub(r"[^a-z0-9]", "", want)
+        hit = None
+        for s in ALL_SOURCES:
+            names = {re.sub(r"[^a-z0-9]", "", s.key.lower()), re.sub(r"[^a-z0-9]", "", s.name.lower())}
+            names |= {re.sub(r"[^a-z0-9]", "", part.strip().lower()) for part in s.name.split("/")}
+            names.discard("")
+            if squashed and (squashed in names
+                             or any(len(n) >= 4 and (n in squashed or squashed in n) for n in names)):
+                hit = s.key
+                break
+        (picked if hit else unknown).append(hit or raw.strip())
+    return picked, unknown
 
 
 def do_search(args, run_dir, log):
@@ -160,11 +189,18 @@ def do_search(args, run_dir, log):
     if not args.no_remote and REMOTE not in countries:
         countries = countries + [REMOTE]
     ctx, user_years = build_context(args, log, countries)
-    include = [s.strip() for s in (args.sources or "").split(",") if s.strip()] or None
-    exclude = [s.strip() for s in (args.exclude_sources or "").split(",") if s.strip()] or None
-    sources = select_sources(include, exclude, remote=not args.no_remote)
+    include, unknown_in = parse_platforms(args.sources)
+    exclude, unknown_ex = parse_platforms(args.exclude_sources)
+    for name in unknown_in + unknown_ex:
+        log(f"platform {name!r} is not one this bot searches - `job_bot sources` lists them")
+    sources = select_sources(include or None, exclude or None, remote=not args.no_remote)
     skipped = [s.key for s in ALL_SOURCES if s.needs_env and not s.enabled()]
+    asked_off = [k for k in include if k not in {s.key for s in sources}]
+    if asked_off:
+        log(f"platforms picked but not set up (missing API key): {', '.join(asked_off)}")
+    window = (f"{ctx.hours:g} hour(s)" if ctx.hours else (f"{ctx.days} day(s)" if ctx.days else "any age"))
     log(f"job_bot v{__version__} | roles={ctx.roles} | experience={args.experience} ({user_years}) | countries={countries}")
+    log(f"posted within: {window}" + ("" if ctx.allow_undated else " (postings with no time on them are dropped)"))
     log(f"sources: {', '.join(s.key for s in sources)}" + (f" | keyed sources skipped (no API key): {', '.join(skipped)}" if skipped else ""))
     t0 = time.time()
     jobs, statuses = run_search(ctx, sources, log=log, workers=args.workers)
@@ -180,7 +216,9 @@ def do_search(args, run_dir, log):
         "run_id": os.path.basename(run_dir), "version": __version__,
         "roles": ctx.roles, "experience_label": args.experience or "", "experience_years": user_years,
         "countries": [c for c in countries if c != REMOTE], "remote": not args.no_remote,
-        "days": args.days, "fit_mode": args.fit, "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "days": args.days, "hours": ctx.hours, "window_hours": ctx.window_hours,
+        "platforms": [s.key for s in sources], "platforms_asked": include,
+        "fit_mode": args.fit, "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "seconds": round(time.time() - t0, 1), "requests": ctx.http.requests_made,
         "fallback_queries": len(plan), "resume_name": "", "resume_path": "",
     }
@@ -232,6 +270,10 @@ def apply_like_last(args, log):
         args.countries = "IN," + args.countries
     if not getattr(args, "resume", None) and meta.get("resume_path") and os.path.exists(meta["resume_path"]):
         args.resume = meta["resume_path"]
+    if getattr(args, "hours", None) is None and meta.get("hours"):
+        args.hours = meta["hours"]
+    if not getattr(args, "sources", None) and meta.get("platforms_asked"):
+        args.sources = ",".join(meta["platforms_asked"])
     log(f"like-last: roles={args.role} experience={args.experience} countries={args.countries} resume={os.path.basename(args.resume or '') or '-'} (from {os.path.basename(last)})")
     return args
 
@@ -387,11 +429,19 @@ def cmd_fallback_queries(args):
 
 
 def cmd_sources(args):
-    print(f"{'key':<14} {'name':<28} {'enabled':<8} {'scope':<30} note")
+    from jobbot import sites
+    listed = sites.load()
+    print(f"{'key':<14} {'name':<28} {'on':<5} {'ready':<6} {'scope':<28} note")
     for s in ALL_SOURCES:
         scope = "remote boards" if s.remote_only else ("all countries" if s.countries is None else ", ".join(s.countries))
-        note = ("needs " + ", ".join(s.needs_env)) if s.needs_env else ("client-side keyword filter" if not s.searchable else "")
-        print(f"{s.key:<14} {s.name:<28} {'yes' if s.enabled() else 'no':<8} {scope[:30]:<30} {note}")
+        note = sites.note(s.key) or (("needs " + ", ".join(s.needs_env)) if s.needs_env else
+                                     ("client-side keyword filter" if not s.searchable else ""))
+        on = listed.get(s.key, {"on": True})["on"]
+        print(f"{s.key:<14} {s.name:<28} {'yes' if on else 'OFF':<5} {'yes' if s.enabled() else 'no':<6} {scope[:28]:<28} {note[:70]}")
+    print(f"\nSwitch a platform off for good in {sites.DEFAULT_PATH}; --sources picks them for one run.")
+    stray = sites.unknown_keys([s.key for s in ALL_SOURCES])
+    if stray:
+        print("in that file but unknown here (typo?): " + ", ".join(stray))
     print("\nBlocked for scripts (direct links + web-search fallback only): Indeed, Glassdoor, Naukri, StepStone, Hirist, Jobly, CareerCross, GaijinPot, Nationale Vacaturebank")
 
 
@@ -422,13 +472,24 @@ def add_search_args(p):
     p.add_argument("--experience", "-e", help="your years of experience, e.g. 3 or 2-4")
     p.add_argument("--countries", "-c", help="comma list of countries (names or ISO2). Default: " + ",".join(DEFAULT_COUNTRIES))
     p.add_argument("--days", type=int, default=DEFAULT_DAYS, help="ignore postings older than N days (0 = no limit)")
+    p.add_argument("--hours", type=float, default=None, metavar="N",
+                   help="ignore postings older than N hours - wins over --days. Under 24 h, a posting the "
+                        "board gave no time for is dropped (it cannot be shown to be inside the window); "
+                        "--allow-undated keeps those")
+    p.add_argument("--allow-undated", action="store_true", dest="allow_undated",
+                   help="with --hours: keep postings whose exact time the board never said")
     p.add_argument("--max-per-source", type=int, default=DEFAULT_MAX_PER_SOURCE, help="cap per source per country")
     p.add_argument("--details", type=int, default=DEFAULT_DETAILS, help="fetch full descriptions for the top N jobs (0 = off)")
-    p.add_argument("--sources", help="only these source keys (comma list; see `sources`)")
-    p.add_argument("--exclude-sources", help="skip these source keys (comma list)")
+    p.add_argument("--sources", "--platforms", dest="sources",
+                   help="only these platforms (comma list of keys or names, e.g. linkedin,seek,\"The Muse\"; "
+                        "see `sources`). Default: every platform that is set up")
+    p.add_argument("--exclude-sources", help="skip these platforms (comma list of keys or names)")
     p.add_argument("--exclude", help="drop jobs whose title contains any of these terms (comma list)")
     p.add_argument("--must", help="keep only jobs whose title contains all of these terms (comma list)")
     p.add_argument("--loose", action="store_true", help="do not drop platform results that never mention the role words")
+    p.add_argument("--min-relevance", type=float, default=0.4, dest="min_relevance", metavar="0..1",
+                   help="how closely a job TITLE must match the role (default 0.4). Raise it for fewer, "
+                        "closer results; --loose turns the check off")
     p.add_argument("--no-remote", action="store_true", help="skip remote job boards / the Remote tab")
     p.add_argument("--fit", choices=["default", "strict", "all"], default="default",
                    help="experience filter: default drops clear mismatches, strict keeps only fits, all keeps everything")
@@ -456,8 +517,16 @@ def cmd_wizard(args=None):
     exp = ask("Your years of experience (e.g. 3 or 2-4)")
     countries = ask("Countries", ",".join(DEFAULT_COUNTRIES))
     resume = ask("Resume file for the match score (optional - drag the file here)").strip().strip('"').strip("'")
-    days = ask("Only jobs posted in the last N days", str(DEFAULT_DAYS))
-    argv = ["run", "--countries", countries, "--days", days, "--open"]
+    window = ask("Posted within (e.g. 2h, 12h, 7d)", f"{DEFAULT_DAYS}d")
+    platforms = ask("Platforms (comma list, or Enter for all)", "all")
+    argv = ["run", "--countries", countries, "--open"]
+    m = re.fullmatch(r"\s*(\d+(?:\.\d+)?)\s*([hd]?)\s*", window, re.I)
+    if m and m.group(2).lower() == "h":
+        argv += ["--hours", m.group(1)]
+    else:
+        argv += ["--days", str(int(float(m.group(1)))) if m else str(DEFAULT_DAYS)]
+    if platforms and platforms.lower() not in ("all", "any", "*"):
+        argv += ["--sources", platforms]
     for r in role.split(","):
         if r.strip():
             argv += ["--role", r.strip()]
@@ -470,6 +539,9 @@ def cmd_wizard(args=None):
 
 
 def main(argv=None):
+    # API keys come from .env when they are not already in the environment, so
+    # the keyed sources work the same on the PC and in GitHub Actions.
+    load_env()
     if argv is None:
         argv = sys.argv[1:]
     if not argv:
