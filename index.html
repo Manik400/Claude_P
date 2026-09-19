@@ -904,7 +904,7 @@
     if (st.h > 1.25) s += '<div class="msg warn">The PC has not checked in for ' + (st.h < 48 ? Math.round(st.h) + " h" : Math.round(st.h / 24) + " days") + '. Everything you queue waits safely and is applied when it is on again (lock screen is fine; sleep is not).</div>';
     var a = pc.applied_today || {}, caps = pc.caps || {};
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
-      " · up to " + (pc.limit || 5) + " per board each run" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + "</div>";
+      " · up to " + (pc.limit || 5) + " per board each run" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
     return s;
   }
 
