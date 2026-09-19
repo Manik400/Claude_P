@@ -513,6 +513,37 @@ def _shot(page, job: dict, suffix: str = "") -> str:
     return str(path)
 
 
+LEAVE_LINKEDIN = re.compile(r"linkedin\.com/(safety/go|redir/|checkpoint/)", re.I)
+CONTINUE_TEXT = re.compile(r"^\s*(continue|proceed|go to (site|company site|the site)|visit (site|website))\s*$", re.I)
+
+
+def _leave_linkedin(page) -> None:
+    """Get past LinkedIn's "you are leaving LinkedIn" page.
+
+    Its URL carries the destination (`/safety/go/?url=...`), so that is opened
+    directly; failing that, the page's Continue button is pressed.
+    """
+    from urllib.parse import parse_qs, unquote, urlparse
+    try:
+        url = page.url or ""
+        if not LEAVE_LINKEDIN.search(url):
+            return
+        target = (parse_qs(urlparse(url).query).get("url") or [""])[0]
+        if target.startswith("http"):
+            page.goto(unquote(target), wait_until="domcontentloaded", timeout=45000)
+            page.wait_for_timeout(2500)
+            return
+        for el in page.locator("button, a").all()[:60]:
+            txt = (el.inner_text(timeout=200) or "").strip()
+            if CONTINUE_TEXT.match(txt) and el.is_visible():
+                el.click(timeout=3000)
+                page.wait_for_load_state("domcontentloaded", timeout=30000)
+                page.wait_for_timeout(2000)
+                return
+    except Exception:
+        pass
+
+
 def _follow_click(page, click) -> object:
     """Run click(); return the page the application continues on (a new tab if one opened)."""
     context = page.context
@@ -527,26 +558,30 @@ def _follow_click(page, click) -> object:
         except Exception:
             pass
         new.wait_for_timeout(2500)
+        _leave_linkedin(new)
         return new
     try:
         page.wait_for_load_state("domcontentloaded", timeout=30000)
     except Exception:
         pass
+    _leave_linkedin(page)
     return page
 
 
 def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = True,
-                    capture: dict | None = None, offsite_click=None) -> tuple[str, str]:
+                    capture: dict | None = None, offsite_click=None, prefill=None) -> tuple[str, str]:
     """Apply starting from `page`, which shows the posting.
 
     `offsite_click` is a callable that presses the board's own offsite button
     (Naukri / LinkedIn); without it the posting's own Apply button is used when
-    the form is not on the page yet. Returns (status, note); extra tabs opened
+    the form is not on the page yet. `prefill(page) -> int` gets the form
+    first when given (Simplify's autofill, see simplify.py); fill_form then
+    only answers what it left empty. Returns (status, note); extra tabs opened
     here are closed before returning.
     """
     capture = capture if capture is not None else {}
     lacking = missing_details(who)
-    if lacking:
+    if lacking and prefill is None:
         return "career-incomplete", f"set applicant.{', applicant.'.join(lacking)} in jobs.yaml"
     opened = set()
     current = page
@@ -588,8 +623,15 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                     return "login-required", "the Apply button leads to a site that needs its own account"
                 continue
 
+            prefilled = 0
+            if prefill is not None:
+                try:
+                    prefilled = int(prefill(current) or 0)
+                except Exception as exc:  # noqa: BLE001 - Simplify is a helper, not a requirement
+                    log.debug("prefill failed: %s", exc)
+                frame, fields = _form_frame(current)     # rescan: values and pages may have changed
             filled, blocked = fill_form(frame, fields, who, facts, job, capture)
-            total_filled += filled
+            total_filled += filled + prefilled
             if blocked:
                 shot = _shot(current, job, "-incomplete")
                 return "career-incomplete", f"cannot answer: {'; '.join(b[:60] for b in blocked[:3])} ({shot})"

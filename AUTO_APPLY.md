@@ -104,7 +104,7 @@ applying without losing anything; *Resume* continues.
 | `site/tools/run_apply_queue.py` | what that workflow runs |
 | `site/tools/phone_apply.py` | the PC worker: the only writer of `data/apply/queue.enc` |
 | `Profile_Naukri_Screener-main/naukri/jobs/career_apply.py` | company career sites: skip the ones needing a login, fill and submit the rest |
-| `site/tools/offsite_apply.py` | Simplify-assisted browser for company-site postings (experimental alternative) |
+| `Profile_Naukri_Screener-main/naukri/jobs/simplify.py` | the browser with Simplify Copilot loaded: every company form gets Simplify's autofill before the career applier answers the rest and submits (`simplify: true` in jobs.yaml) |
 | `site/tools/phone_publish.py` | publishes Naukri scan pages **with their job list** so the phone can queue them; contacts on the way |
 | `site/phone_apply.bat`, `site/schedule_phone_apply.ps1` | run / schedule the worker (every 30 min + at logon, hidden) |
 | `job-hunt/scripts/jobbot/sources/apify.py` | Naukri / Indeed / LinkedIn through Apify (`APIFY_TOKEN`) |
@@ -123,13 +123,19 @@ applying without losing anything; *Resume* continues.
 6. Optional, for contacts on every report: any of `gh secret set SIGNALHIRE_API_KEY`, `HUNTER_API_KEY`,
    `APOLLO_API_KEY`. For Naukri scans (made on the PC) put the same keys in
    `%LOCALAPPDATA%\JobHuntPhone\config.json` under `"env": {...}`.
-7. Nothing to do for company career sites - the PC fills and submits them by default and skips the ones
-   that want a login. Check `Profile_Naukri_Screener-main\jobs.yaml` → `applicant:` if the details it
-   reads from your resume need correcting, and `data\jobs\career_shots\` for what it sent.
-8. Optional, to use Simplify for company-site postings instead: install Simplify Copilot in Chrome, complete your Simplify
-   profile, run `python site\tools\offsite_apply.py --setup` (sign in once), then Queue → Rules →
-   Company-site postings → *Simplify fills the form, I submit on the PC*. Try *fills and submits* only
-   after a few good screenshots in `%LOCALAPPDATA%\JobHuntPhone\shots`.
+7. Company career sites need nothing extra: every posting that is not a one-click apply - Naukri
+   "Apply on company site", LinkedIn's plain Apply (not just Easy Apply), the worldwide boards'
+   links - is opened, its Apply button followed to the company's form, and the form filled and
+   submitted. Only forms that want a login / account or show a CAPTCHA are left for you ("by hand").
+   Check `Profile_Naukri_Screener-main\jobs.yaml` → `applicant:` if the details it reads from your
+   resume need correcting, and `data\jobs\career_shots\` for what it sent.
+8. Simplify Copilot fills those forms first (it knows 500+ ATSes; the career applier then only
+   answers what it left - screening questions, the resume, consent boxes - and submits):
+   install Simplify Copilot in Chrome, complete your profile on simplify.jobs, then on the PC
+   `cd Profile_Naukri_Screener-main` and `python -m naukri.jobs.simplify --setup` (sign in once,
+   with manikgoyal400@gmail.com, close the window). `simplify: true` in jobs.yaml turns it on for
+   every run; the Simplify option under Queue → Rules turns it on for the phone queue alone.
+   `python -m naukri.jobs.simplify --try <url>` tries one posting without submitting.
 
 ## Privacy and safety
 

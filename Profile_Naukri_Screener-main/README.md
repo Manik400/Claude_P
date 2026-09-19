@@ -490,10 +490,34 @@ It is a separate module — `naukri/interview/`, its own data directory, its own
 page. It reads `data/jobs/results-<date>.json` and writes nothing the scanner
 reads, so a failed prep run costs you nothing but the prep.
 
+### The model and the login
+
+The preparation always runs on **Claude Opus 5 at effort `high`** - `--model`
+anything else is refused, and a reply the CLI reports as coming from another
+model is discarded. It is a hundred answers you will study from; a cheaper
+model is not a saving.
+
+It calls the `claude` CLI with **its own login folder**,
+`%USERPROFILE%\.claude-interview`, so the account used is independent of the
+one Claude Code itself is signed in with. Sign in there once with the
+organisation account (the Max plan):
+
+```powershell
+login_interview_claude.bat          # claude auth login, in that folder
+```
+
+The run logs which account and plan it is using; a Pro plan there gets a
+warning. `INTERVIEW_CLAUDE_CONFIG_DIR` moves the folder. (The Claude desktop
+app cannot be driven by a script - the CLI signed in to the same organisation
+is the same subscription.)
+
 ### Run the scan first
 
 The prep analyses a specific day's results file. Without one it stops and says
-so rather than analysing a stale day. `--date 2026-08-24` analyses an older
+so rather than analysing a stale day. A day with fewer than ten Naukri jobs is
+topped up from the previous week's scans (newest first, best scores first) so
+a quiet morning still gets a full Top 10; the page says which days it borrowed
+from. `--date 2026-08-24` analyses an older
 scan; `--reuse-jds` re-runs the analysis without re-opening the ten job pages.
 
 **Each scan overwrites that day's results file.** If you have the scheduled

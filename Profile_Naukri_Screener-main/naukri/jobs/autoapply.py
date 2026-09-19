@@ -200,6 +200,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
 
     from .. import selectors as S
     from ..session import DEFAULT_STATE, launch_browser, new_context, open_profile
+    from . import simplify
 
     deadline = _deadline()
     facts = answers_mod.build_facts(profile, config)
@@ -225,6 +226,17 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     if career_on and career_left[0] <= 0:
         log.info("Company sites: today's cap of %s submissions is reached",
                  config.get("career_max_per_day") or 25)
+    # `simplify: true` in jobs.yaml: every browser below is the one with
+    # Simplify Copilot loaded, and each company form gets its autofill before
+    # fill_form answers the rest (see simplify.py).
+    use_simplify = career_on and simplify.wanted(config)
+    if use_simplify and not simplify.ready():
+        log.warning("Simplify is on in jobs.yaml but not set up (%s) - filling forms without it",
+                    simplify.why_not_ready())
+        use_simplify = False
+    if use_simplify:
+        log.info("Company-site forms go through Simplify Copilot (%s)", simplify.PROFILE_DIR)
+    prefill = simplify.autofill if use_simplify else None
 
     def career_ready() -> bool:
         return career_on and career_left[0] > 0 and not (deadline and time.monotonic() >= deadline)
@@ -237,7 +249,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         capture: dict = {}
         status, note = career_mod.apply_from_page(
             page, {"title": job.title, "company": job.company, "url": job.url}, who, facts,
-            dry_run=dry_run, capture=capture, offsite_click=offsite_click)
+            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill)
         if status == "submitted":
             career_left[0] -= 1
         if not dry_run and status != "would-apply" and not career_mod.transient(status, note):
@@ -297,7 +309,10 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         log.info("Naukri: applying to up to %d of %d job(s)%s", budget, len(naukri_jobs),
                  " (dry run)" if dry_run else "")
         with sync_playwright() as p:
-            browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
+            if use_simplify:
+                browser, _ctx, page = simplify.open_naukri(p, headless=headless)
+            else:
+                browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
             try:
                 for n, job in enumerate(naukri_jobs):
                     if budget <= 0 or _out_of_time(deadline, "Naukri", len(naukri_jobs) - n):
@@ -351,7 +366,10 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         li_cards = []
         seen_ids = set()
         for card in list(cards) + retry_cards:
-            if not card.get("easy_apply") or not card.get("url"):
+            # Plain-Apply postings are worth opening too when the career
+            # applier is on: apply_to() reports them "offsite" and try_career
+            # follows the button to the company's form.
+            if not card.get("url") or not (card.get("easy_apply") or career_on):
                 continue
             job = _card_job(card)
             if job.job_id in seen_ids:
@@ -371,7 +389,10 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                      " (dry run)" if dry_run else "")
             try:
                 with sync_playwright() as p:
-                    browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
+                    if use_simplify:
+                        browser, _ctx, page = simplify.open_linkedin(p, headless=headless)
+                    else:
+                        browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
                     try:
                         for n, (card, job) in enumerate(li_cards):
                             if li_budget <= 0 or _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
@@ -424,8 +445,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         log.info("Company sites: up to %d submission(s) from %d posting(s)%s", career_left[0], len(web),
                  " (dry run)" if dry_run else "")
         with sync_playwright() as p:
-            browser = launch_browser(p, headless=headless, offscreen=not headless)
-            context = new_context(browser, viewport={"width": 1366, "height": 900})
+            if use_simplify:
+                browser = simplify.launch(p, headless=headless, states=[DEFAULT_STATE, linkedin_mod.STATE_PATH])
+                context = browser.context
+            else:
+                browser = launch_browser(p, headless=headless, offscreen=not headless)
+                context = new_context(browser, viewport={"width": 1366, "height": 900})
             try:
                 for n, job in enumerate(web):
                     if not career_ready():

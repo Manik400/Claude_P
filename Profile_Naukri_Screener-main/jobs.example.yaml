@@ -165,6 +165,18 @@ career_apply: true
 career_max_per_run: 5
 career_max_per_day: 25
 
+# Simplify Copilot (https://simplify.jobs): when true, every company-site
+# form is opened in a browser that has the Simplify Chrome extension loaded
+# and signed in, so Simplify's autofill fills the form first and
+# career_apply only answers what it left (screening questions from your
+# answer bank, the resume, consent boxes) before submitting. Naukri and
+# LinkedIn postings are opened with your saved logins in that same browser
+# and their Apply button is followed to the company's form; Easy Apply and
+# Naukri one-click applies stay with their own walkers. Postings whose form
+# wants a login / account or shows a CAPTCHA are still left for you.
+# One-time setup:  python -m naukri.jobs.simplify --setup
+simplify: false
+
 # Your details for those forms. Left out, each is read from your resume's
 # header and data/profile.json.
 # applicant:

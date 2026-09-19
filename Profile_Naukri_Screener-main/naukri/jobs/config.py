@@ -67,6 +67,14 @@ DEFAULTS = {
     "min_salary_lpa": None,
     "auto_apply_min_score": 72,
     "review_min_score": 55,
+    # Company career sites (naukri/jobs/career_apply.py) and the Simplify
+    # Copilot browser (naukri/jobs/simplify.py). These used to be missing
+    # here, so jobs.yaml's career_* and applicant: were dropped as "unknown".
+    "career_apply": True,
+    "career_max_per_run": 5,
+    "career_max_per_day": 25,
+    "applicant": {},
+    "simplify": False,
     "daily_target": 50,
     "max_auto_applies": 20,
     # Cap on apply *attempts* per run. max_auto_applies caps successes, which

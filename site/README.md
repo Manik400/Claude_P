@@ -43,8 +43,8 @@ Every tap that asks the PC for something starts `apply.yml`, which only *queues*
 (encrypted, on `gh-pages`). The PC does the applying: `site\phone_apply.bat`, scheduled every 30 minutes
 and 2 minutes after every logon by `site\schedule_phone_apply.ps1`, folds the requests into
 `data/apply/queue.enc`, applies on Naukri and LinkedIn with your logins through the Naukri screener's
-own walkers (same answers, same pacing, same daily caps), hands company-site postings to a
-Simplify-equipped browser when that is set up, and publishes the queue back with every item's status,
+own walkers (same answers, same pacing, same daily caps), follows every other posting's Apply button to the company's form and
+fills and submits it (Simplify Copilot fills first when set up; login walls and CAPTCHAs are left for you), and publishes the queue back with every item's status,
 the percentage done, the questions waiting and a heartbeat. A PC that was off simply catches up
 after boot; nothing is lost in between.
 
@@ -103,7 +103,7 @@ Add them with `gh secret set NAME` and the GitHub runs pick them up.
 | `tools/run_careers.py` | What the careers run executes (career-page search → encrypted JSON). |
 | `tools/run_apply_queue.py` | What `apply.yml` executes: writes the phone's request to the queue. |
 | `tools/phone_apply.py` | PC-side worker: the one queue - folds requests in, applies, publishes `queue.enc`. |
-| `tools/offsite_apply.py` | Simplify-assisted browser for company-site postings (experimental). |
+| `tools/offsite_apply.py` | Alias of `Profile_Naukri_Screener-main/naukri/jobs/simplify.py` (the Simplify-equipped browser). |
 | `../.github/workflows/apply.yml` | The auto-apply request (`workflow_dispatch`). |
 | `tools/phone_publish.py` | PC-side publisher used by the `.bat` files. |
 | `tools/setup_phone.py` | One-time setup. |

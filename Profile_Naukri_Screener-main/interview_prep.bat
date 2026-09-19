@@ -21,8 +21,15 @@ rem when run through scripts\run_hidden.vbs or with NAUKRI_BACKGROUND=1). After
 rem that it is model calls only - roughly ten minutes and a few dollars of tokens.
 rem Add --reuse-jds to re-run the analysis without re-opening the job pages.
 rem
-rem Needs the `claude` CLI on PATH (it reuses your Claude Code login), or
-rem ANTHROPIC_API_KEY set plus `pip install anthropic` and --engine anthropic.
+rem MODEL: Claude Opus 5 at effort "high", always - --model anything else is
+rem refused and a reply from another model is discarded.
+rem
+rem LOGIN: the `claude` CLI is run with its own login folder
+rem (%USERPROFILE%\.claude-interview), NOT the login Claude Code uses. Sign in
+rem there once with the organisation (Max plan) account:
+rem     login_interview_claude.bat
+rem Alternatively set ANTHROPIC_API_KEY, `pip install anthropic`, and pass
+rem --engine anthropic (same model and effort).
 cd /d "%~dp0"
 
 set "PY=python"

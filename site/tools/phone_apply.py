@@ -16,9 +16,14 @@ gh-pages branch. This script is the only thing that writes it. Each run:
        from reports published since the last run
     4. apply to the next few queued jobs with the Naukri screener's own
        walkers (Naukri one-click / questionnaire, LinkedIn Easy Apply),
-       same answers, same pacing, same daily caps, same ledger. Company-site
-       postings go through the Simplify-assisted browser when that is set up
-       (offsite_apply.py), otherwise they are marked "manual" for you
+       same answers, same pacing, same daily caps, same ledger. Every
+       other posting - Naukri "Apply on company site", LinkedIn's plain
+       Apply, the worldwide boards' links - is opened and its Apply button
+       followed to the company's form, which the career applier fills and
+       submits; with Simplify Copilot set up (naukri/jobs/simplify.py, or
+       the Simplify mode under Queue -> Rules) Simplify fills the form
+       first. Only forms that want a login / account or show a CAPTCHA are
+       left for you ("by hand")
     5. write data/apply/queue.enc: every item with its status, the progress
        (done / total / %), the questions waiting for you, when the PC last
        checked in - and data/apply/profile.enc for the Track tab
@@ -68,6 +73,11 @@ DEFAULT_SETTINGS = {
 # "career": the PC opens the company's page, skips it when it wants a login or
 # shows a CAPTCHA, otherwise fills the form from your details and submits
 # (Profile_Naukri_Screener-main/naukri/jobs/career_apply.py).
+# "simplify" / "simplify-submit": the same path, in the browser that has
+# Simplify Copilot loaded - Simplify fills first, the career applier answers
+# the rest and submits (naukri/jobs/simplify.py). Both submit: a headless
+# browser cannot hold a half-filled form for you to finish later.
+SIMPLIFY_MODES = ("simplify", "simplify-submit")
 
 
 def log(msg: str) -> None:
@@ -344,6 +354,9 @@ def progress_of(queue: dict) -> dict:
 
 def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoapply, config_mod, NaukriJob) -> dict:
     mode = settings.get("offsite", "career")
+    simplify_on = mode in SIMPLIFY_MODES
+    if simplify_on:
+        mode = "career"
     # Company-site postings left "by hand" before the career applier existed
     # get one go at it.
     career_again = [i for i in queue["items"] if mode == "career" and not i.get("career_tried")
@@ -373,6 +386,8 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
     config = dict(config_mod.load(profile=profile))
     config["scan_apply_min_score"] = 0        # queued by you: no score gate
     config["career_apply"] = mode == "career" and config.get("career_apply", True)
+    if simplify_on:
+        config["simplify"] = True
     web = [i for i in todo if i["board"] == "web"]
     web_jobs = [{"job_id": i["key"], "url": i["url"], "title": i["title"], "company": i["company"],
                  "score": i.get("score"), "retry": i.get("attempts", 0) > 1 or i["status"] in ("queued", "retry")}
@@ -394,21 +409,9 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
             if it["board"] == "web":
                 it.update(status=career_mod.queue_status(hit["status"]), note=hit["note"], at=now_iso())
     elif web:
-        if mode == "manual":
-            for it in web:
-                it.update(status="manual", note="company site - open it from the report and apply by hand",
-                          at=now_iso())
-        else:
-            try:
-                import offsite_apply
-                for it in web[:limit]:
-                    st, note = offsite_apply.apply(it["url"], submit=(mode == "simplify-submit"), dry_run=dry_run)
-                    it.update(status=st, note=note, at=now_iso())
-                    log("[web %s] %s @ %s - %s" % (st, it["title"], it["company"], note))
-            except Exception as exc:
-                log("offsite: %s" % exc)
-                for it in web[:limit]:
-                    it.update(status="offsite-error", note=str(exc)[:200], at=now_iso())
+        for it in web:
+            it.update(status="manual", note="company site - open it from the report and apply by hand",
+                      at=now_iso())
     return outcomes
 
 
@@ -499,10 +502,11 @@ def main(argv=None) -> int:
         "linkedin": sum(1 for k, e in ledger.entries.items() if k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
         "naukri": sum(1 for k, e in ledger.entries.items() if not k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
     }
-    caps = {}
+    caps, simplify_default = {}, False
     try:
         c = config_mod.load()
         caps = {"linkedin": c.get("linkedin_max_applies_per_day"), "naukri": c.get("max_auto_applies")}
+        simplify_default = bool(c.get("simplify"))
     except Exception:
         pass
     # Finished items older than 30 days drop off; the applications log keeps the record.
@@ -514,7 +518,8 @@ def main(argv=None) -> int:
         "pc": {"last_seen": now_iso(), "host": os.environ.get("COMPUTERNAME", ""), "limit": limit,
                "applied_today": applied_today, "caps": caps, "dry_run": args.dry_run,
                "offsite": settings.get("offsite", "career"),
-               "simplify_ready": os.path.exists(os.path.join(config_dir(), "simplify-profile"))},
+               "simplify_ready": os.path.exists(os.path.join(config_dir(), "simplify-profile")),
+               "simplify_default": simplify_default},
         "settings": settings,
         "progress": progress_of(queue),
         "pending_questions": [

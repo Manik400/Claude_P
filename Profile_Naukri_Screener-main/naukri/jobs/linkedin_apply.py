@@ -41,7 +41,9 @@ from . import answers as answers_mod
 log = logging.getLogger("naukri.jobs.linkedin_apply")
 
 EASY_APPLY_BUTTON = "button[aria-label*='Easy Apply' i], button:has-text('Easy Apply')"
-ANY_APPLY_BUTTON = "button:has-text('Apply')"
+# The external Apply is a <button> in the older layout and, in the current
+# one, an <a> whose href goes through LinkedIn's "you are leaving" page.
+ANY_APPLY_BUTTON = "button:has-text('Apply'), a[href*='linkedin.com/safety/go'], a[href*='/safety/go/']"
 DISMISS_BUTTON = "button[aria-label='Dismiss']"
 DISCARD_BUTTON = "button:has-text('Discard')"
 NEXT_BUTTON = "button:has-text('Next'), button:has-text('Review'), button:has-text('Continue')"
