@@ -1,24 +1,46 @@
 {
- "updated": "2026-09-19T20:11:49Z",
+ "updated": "2026-09-19T20:41:51Z",
  "items": [
   {
-   "id": "applications-20260919-201149-applications-sent",
+   "id": "applications-20260919-204151-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-09-19T20:11:49Z",
-   "file": "data/applications/applications-20260919-201149-applications-sent.enc",
-   "bytes": 1432292,
+   "when": "2026-09-19T20:41:51Z",
+   "file": "data/applications/applications-20260919-204151-applications-sent.enc",
+   "bytes": 1453286,
    "meta": {}
   },
   {
-   "id": "naukri-20260919-191637-naukri-openings-2026-09-20-run-1",
+   "id": "naukri-20260919-204150-naukri-openings-2026-09-20-run-2",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-20 run 2",
+   "when": "2026-09-19T20:41:50Z",
+   "file": "data/naukri/naukri-20260919-204150-naukri-openings-2026-09-20-run-2.enc",
+   "bytes": 35730,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260919-204150-naukri-openings-2026-09-20-run-2.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260919-204150-naukri-openings-2026-09-20-run-3",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-20 run 3",
+   "when": "2026-09-19T20:41:50Z",
+   "file": "data/naukri/naukri-20260919-204150-naukri-openings-2026-09-20-run-3.enc",
+   "bytes": 37373,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260919-204150-naukri-openings-2026-09-20-run-3.jobs.enc"
+   }
+  },
+  {
+   "id": "naukri-20260919-204149-naukri-openings-2026-09-20-run-1",
    "kind": "naukri",
    "title": "Naukri openings 2026-09-20 run 1",
-   "when": "2026-09-19T19:16:37Z",
-   "file": "data/naukri/naukri-20260919-191637-naukri-openings-2026-09-20-run-1.enc",
-   "bytes": 36463,
+   "when": "2026-09-19T20:41:49Z",
+   "file": "data/naukri/naukri-20260919-204149-naukri-openings-2026-09-20-run-1.enc",
+   "bytes": 36563,
    "meta": {
-    "jobs_file": "data/naukri/naukri-20260919-191637-naukri-openings-2026-09-20-run-1.jobs.enc"
+    "jobs_file": "data/naukri/naukri-20260919-204149-naukri-openings-2026-09-20-run-1.jobs.enc"
    }
   },
   {
