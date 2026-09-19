@@ -28,6 +28,10 @@ your Simplify login in it, made once:
 
     python -m naukri.jobs.simplify --setup      sign in to Simplify in the
                                                window that opens, close it
+    python -m naukri.jobs.simplify --import-from-chrome
+                                               or: copy the login from the
+                                               Chrome profile where Simplify is
+                                               already signed in (close Chrome)
     python -m naukri.jobs.simplify              show what is set up
     python -m naukri.jobs.simplify --try URL [--submit]   one posting, by hand
 
@@ -148,13 +152,28 @@ def launch(p, headless: bool, states: list[Path] | None = None) -> SimplifyBrows
     if not ext:
         raise RuntimeError(why_not_ready())
     os.makedirs(PROFILE_DIR, exist_ok=True)
+    # Google's sign-in refuses a browser that announces automation ("this
+    # browser or app may not be secure"), and Simplify's login is a Google
+    # login. So: the installed Chrome rather than the bundled Chromium, no
+    # --enable-automation banner, and the webdriver flag off.
     args = ["--disable-extensions-except=" + ext, "--load-extension=" + ext, "--no-first-run",
+            "--no-default-browser-check", "--disable-blink-features=AutomationControlled",
             "--disable-features=CalculateNativeWinOcclusion"]
     if headless:
         args.append("--headless=new")
-    context = p.chromium.launch_persistent_context(
-        PROFILE_DIR, headless=False, args=args, viewport={"width": 1366, "height": 900},
-        channel=os.environ.get("SIMPLIFY_CHANNEL") or None)
+    kwargs = dict(headless=False, args=args, ignore_default_args=["--enable-automation"],
+                  viewport={"width": 1366, "height": 900} if headless else None)
+    channels = [os.environ.get("SIMPLIFY_CHANNEL") or "chrome", "msedge", None]
+    context, last = None, None
+    for channel in channels:
+        try:
+            context = p.chromium.launch_persistent_context(PROFILE_DIR, channel=channel, **kwargs)
+            break
+        except Exception as exc:  # that browser is not installed: try the next
+            last = exc
+            log.debug("Simplify browser: %s failed (%s)", channel or "bundled chromium", exc)
+    if context is None:
+        raise RuntimeError(f"could not start a browser for Simplify: {last}")
     cookies: list[dict] = []
     for state in states or []:
         if state and Path(state).exists():
@@ -216,21 +235,79 @@ def open_linkedin(p, headless: bool):
     return browser, browser.context, page
 
 
+SETUP_URL = "https://simplify.jobs/auth/login"
+
+
 def setup() -> int:
+    """Open a window with the extension; you sign in to Simplify; close the window.
+
+    The window is a real Chrome (see launch), so "Sign in with Google" works.
+    The script waits for the browser to be closed - Playwright only delivers
+    events while it is asked to wait, so this uses its own waiting rather
+    than sleep(), which left the old version hanging after the window went.
+    """
     from playwright.sync_api import sync_playwright
     with sync_playwright() as p:
         browser = launch(p, headless=False)
         ctx = browser.context
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
-        page.goto("https://simplify.jobs/auth/login")
-        print("Sign in to Simplify in the window that opened (manikgoyal400@gmail.com), then close the window.")
         try:
-            while ctx.pages:
-                time.sleep(1)
+            page.goto(SETUP_URL, wait_until="domcontentloaded", timeout=60000)
+        except Exception as exc:
+            print(f"(could not open {SETUP_URL}: {exc}; open it yourself in the window)")
+        print()
+        print("  1. In the window that opened, sign in to Simplify (manikgoyal400@gmail.com).")
+        print("     If Google refuses the sign-in, use the email + password / email-code login")
+        print("     on simplify.jobs instead - the account is the same.")
+        print("  2. Open any job page (e.g. jobs.ashbyhq.com) and check the Simplify panel")
+        print("     shows 'Autofill', not 'Log In to Autofill'. Accept its one-time prompt.")
+        print("  3. Close the browser window. This script then finishes.")
+        print()
+        try:
+            ctx.wait_for_event("close", timeout=0)
         except Exception:
             pass
         browser.close()
-    print("Saved. Set `simplify: true` in jobs.yaml and every company-site form goes through Simplify.")
+    print(f"Saved to {PROFILE_DIR}.")
+    print("Set `simplify: true` in jobs.yaml and every company-site form goes through Simplify.")
+    return 0
+
+
+def import_from_chrome(profile: str | None = None) -> int:
+    """Copy Simplify's own storage from your Chrome profile, so no sign-in is needed.
+
+    The extension keeps its login in its storage under the Chrome profile it
+    is installed in ("Local Extension Settings\\<id>"). Copying that folder
+    into the browser profile here carries the signed-in state across. Chrome
+    must be closed while this runs, or the files are locked / half-written.
+    """
+    import shutil
+
+    ext = extension_dir()
+    if not ext:
+        print(why_not_ready())
+        return 1
+    # ...\User Data\<profile>\Extensions\<id>\<version>  ->  ...\User Data\<profile>
+    chrome_profile = profile or os.path.dirname(os.path.dirname(os.path.dirname(ext)))
+    copied = 0
+    for sub in ("Local Extension Settings", "Sync Extension Settings"):
+        src = os.path.join(chrome_profile, sub, EXT_ID)
+        if not os.path.isdir(src):
+            continue
+        dst = os.path.join(PROFILE_DIR, "Default", sub, EXT_ID)
+        try:
+            if os.path.isdir(dst):
+                shutil.rmtree(dst)
+            shutil.copytree(src, dst)
+            copied += 1
+        except OSError as exc:
+            print(f"could not copy {src}: {exc}\n  Close Chrome completely and run this again.")
+            return 1
+    if not copied:
+        print(f"no Simplify storage found under {chrome_profile}")
+        return 1
+    print(f"Copied Simplify's storage from {chrome_profile} to {PROFILE_DIR}.")
+    print("Check with:  python -m naukri.jobs.simplify --try <a job url>")
     return 0
 
 
@@ -296,12 +373,16 @@ def main(argv=None) -> int:
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--setup", action="store_true", help="open a window to sign in to Simplify once")
+    ap.add_argument("--import-from-chrome", action="store_true", dest="import_chrome",
+                    help="instead of signing in: copy Simplify's login from your Chrome profile (close Chrome first)")
     ap.add_argument("--try", dest="url", help="apply to one posting through Simplify (fill only)")
     ap.add_argument("--submit", action="store_true", help="with --try: really submit")
     ap.add_argument("--hidden", action="store_true", help="with --try: run in the background")
     a = ap.parse_args(argv)
     if a.setup:
         return setup()
+    if a.import_chrome:
+        return import_from_chrome()
     if a.url:
         from playwright.sync_api import sync_playwright
 

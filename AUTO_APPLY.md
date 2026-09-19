@@ -133,7 +133,8 @@ applying without losing anything; *Resume* continues.
    answers what it left - screening questions, the resume, consent boxes - and submits):
    install Simplify Copilot in Chrome, complete your profile on simplify.jobs, then on the PC
    `cd Profile_Naukri_Screener-main` and `python -m naukri.jobs.simplify --setup` (sign in once,
-   with manikgoyal400@gmail.com, close the window). `simplify: true` in jobs.yaml turns it on for
+   with manikgoyal400@gmail.com, close the window - or, with Chrome closed,
+   `python -m naukri.jobs.simplify --import-from-chrome` copies the login Chrome already has). `simplify: true` in jobs.yaml turns it on for
    every run; the Simplify option under Queue → Rules turns it on for the phone queue alone.
    `python -m naukri.jobs.simplify --try <url>` tries one posting without submitting.
 
