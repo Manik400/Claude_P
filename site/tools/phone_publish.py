@@ -1,6 +1,6 @@
 """PC-side publisher: push locally generated pages to the phone site.
 
-    python phone_publish.py naukri                      newest Naukri openings + interview-prep pages
+    python phone_publish.py naukri                      newest Naukri openings + interview-prep pages + applications log
     python phone_publish.py jobhunt <report.html> [--title "..."]   a job-hunt report made on this PC
     python phone_publish.py site                        just refresh the phone UI on gh-pages
 
@@ -136,13 +136,22 @@ def cmd_naukri(a):
     count = 0
     openings = sorted(glob.glob(os.path.join(NAUKRI, "data", "jobs", "openings-*.html")), key=os.path.getmtime)
     preps = sorted(glob.glob(os.path.join(NAUKRI, "data", "interview", "interview-prep-*.html")), key=os.path.getmtime)
-    for path in openings[-a.max:] + preps[-a.max:]:
+    # The openings page links to applications.html (the "Applications sent"
+    # tab) and to the interview pages by relative file name; the phone page
+    # resolves those clicks against the published copies, so the log page
+    # travels with the scans. One copy is kept, replaced whenever it changes.
+    applications = os.path.join(NAUKRI, "data", "jobs", "applications.html")
+    extra = [applications] if os.path.exists(applications) else []
+    for path in openings[-a.max:] + preps[-a.max:] + extra:
         key = _stamp(path)
         if key in done and not a.force:
             continue
         name = os.path.basename(path)
         m = re.search(r"(\d{4}-\d{2}-\d{2})(?:-r(\d+))?", name)
-        if name.startswith("openings-"):
+        if name == "applications.html":
+            title = "Applications sent"
+            publish(cfg, pages, "applications", path, title, replace=True)
+        elif name.startswith("openings-"):
             day = m.group(1) if m else ""
             title = "Naukri openings %s%s" % (day or name, (" run " + m.group(2)) if m and m.group(2) else "")
             publish(cfg, pages, "naukri", path, title, replace=True, attach=naukri_jobs_file(day) if day else None)

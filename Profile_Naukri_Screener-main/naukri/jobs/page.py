@@ -652,6 +652,56 @@ def refresh_run_navs(day: str) -> int:
     return patched
 
 
+def prep_links(day: str) -> tuple[str, str, str, str]:
+    """(Top-10 href, prep href, link class, hint) for the two prep tabs.
+
+    The interview-prep module writes its pages next door, one per analysed
+    run. Link to the newest run of `day` if there is one, else the most recent
+    page of any day (and say which), else grey the tab out - a nav link to a
+    file that is not there is worse than none.
+    """
+    prep_dir = JOBS_DIR.parent / "interview"
+    existing = sorted(prep_dir.glob("interview-prep-*.html"), reverse=True) \
+        if prep_dir.exists() else []
+    same_day = [p for p in existing if p.stem.startswith(f"interview-prep-{day}")]
+    prep_page = same_day[0] if same_day else (existing[0] if existing else None)
+    if not prep_page:
+        return "#", "#", "disabled", " (not generated)"
+    href = f"../interview/{prep_page.name}"
+    hint = "" if same_day else f" ({prep_page.stem.replace('interview-prep-', '')})"
+    return href + "#jobs", href, "", hint
+
+
+_PREP_NAV_RE = re.compile(
+    r'<a href="[^"]*" class="(?:disabled)?">Top 10 Jobs</a>\s*'
+    r'<a href="[^"]*" class="(?:disabled)?">Interview Preparation[^<]*</a>')
+
+
+def refresh_prep_navs() -> int:
+    """Re-point the prep tabs of every tracker page at the preps that now exist.
+
+    The scan writes its page minutes before the interview prep for the same
+    run is built, so as written it says "(not generated)" - and would say so
+    forever, since nothing rewrote it. The prep module calls this after every
+    page it writes. Only the two anchors are touched.
+    """
+    patched = 0
+    for path in sorted(JOBS_DIR.glob("openings-*.html")):
+        m = re.search(r"openings-(\d{4}-\d{2}-\d{2})", path.name)
+        if not m:
+            continue
+        jobs_href, href, state, hint = prep_links(m.group(1))
+        replacement = (f'<a href="{html.escape(jobs_href)}" class="{state}">Top 10 Jobs</a>\n'
+                       f'    <a href="{html.escape(href)}" class="{state}">'
+                       f'Interview Preparation{html.escape(hint)}</a>')
+        text = path.read_text(encoding="utf-8")
+        updated, count = _PREP_NAV_RE.subn(lambda _m: replacement, text, count=1)
+        if count and updated != text:
+            path.write_text(updated, encoding="utf-8")
+            patched += 1
+    return patched
+
+
 def build(results: dict, out_path: Path | None = None, today: str | None = None,
           run: int | None = None) -> Path:
     """Write the dated tracker page. Returns the path."""
@@ -697,26 +747,10 @@ def build(results: dict, out_path: Path | None = None, today: str | None = None,
     this_name = out_path.name if out_path is not None else f"openings-{today}-r{this_run}.html"
     runs_html = runs_nav(today, this_name, extra=None if out_path is not None else this_name)
 
-    # The interview-prep module writes its pages next door, one per analysed
-    # day. Link to today's if it exists, else the most recent one, else grey
-    # the tab out - a nav link to a file that is not there is worse than none.
-    prep_dir = JOBS_DIR.parent / "interview"
-    prep_page = prep_dir / f"interview-prep-{today}.html"
-    if not prep_page.exists():
-        existing = sorted(prep_dir.glob("interview-prep-*.html"), reverse=True) \
-            if prep_dir.exists() else []
-        prep_page = existing[0] if existing else None
-    prep_href = f"../interview/{prep_page.name}" if prep_page else "#"
-    prep_state = "" if prep_page else "disabled"
-    prep_hint = ""
-    if prep_page and today not in prep_page.name:
-        prep_hint = f" ({prep_page.stem.replace('interview-prep-', '')})"
-    elif not prep_page:
-        prep_hint = " (not generated)"
+    prep_jobs_href, prep_href, prep_state, prep_hint = prep_links(today)
 
     page = (TEMPLATE
-            .replace("__PREP_JOBS_HREF__",
-                     html.escape(prep_href + "#jobs" if prep_page else "#"))
+            .replace("__PREP_JOBS_HREF__", html.escape(prep_jobs_href))
             .replace("__PREP_HREF__", html.escape(prep_href))
             .replace("__PREP_STATE__", prep_state)
             .replace("__PREP_HINT__", html.escape(prep_hint))

@@ -35,6 +35,12 @@ from . import profile as profile_mod
 log = logging.getLogger("naukri.interview.generate")
 
 TOP_N = 10
+# A digest scan (--posted-days 1 --new-only) often finds fewer than ten Naukri
+# jobs; the day's shortfall is filled from the previous days' scans, newest
+# first, so a quiet morning still gets a full study set. Below MIN_JOBS even
+# that is not worth a model call.
+TOP_UP_DAYS = 7
+MIN_JOBS = 3
 BATCHES = [("basic", 15), ("basic", 15),
            ("intermediate", 20), ("intermediate", 20),
            ("advanced", 15), ("advanced", 15)]
@@ -127,6 +133,48 @@ def top_ten(naukri: list[dict]) -> list[dict]:
     producing the same ten.
     """
     return sorted(naukri, key=_score_of, reverse=True)[:TOP_N]
+
+
+def top_up(naukri: list[dict], day: str) -> tuple[list[dict], list[str]]:
+    """Fill a short day's list from the previous days' scans, newest first.
+
+    Returns the widened list and the days it borrowed from. Jobs already in
+    today's list (same job_id) are not re-added, and a borrowed job keeps the
+    score it had on the day it was found - it is the same posting, so the
+    same match. `top_ten` re-sorts by score anyway, so today's jobs are not
+    favoured over better-matching ones from yesterday; the study set is the
+    best ten on the board this week, which is what an interview needs.
+    """
+    have = {str(job.get("job_id")) for job in naukri}
+    widened = list(naukri)
+    borrowed_from: list[str] = []
+    for earlier in store.available_scan_dates():
+        if len(widened) >= TOP_N:
+            break
+        if earlier >= day:
+            continue
+        try:
+            age = (date.fromisoformat(day) - date.fromisoformat(earlier)).days
+        except ValueError:
+            continue
+        if age > TOP_UP_DAYS:
+            break
+        added = 0
+        for job in sorted(store.load_results(earlier).get("naukri") or [],
+                          key=_score_of, reverse=True):
+            key = str(job.get("job_id"))
+            if key in have or len(widened) >= TOP_N:
+                continue
+            have.add(key)
+            widened.append(dict(job, found_on=earlier))
+            added += 1
+        if added:
+            borrowed_from.append(earlier)
+            log.info("Top 10: %d job(s) carried over from the %s scan", added, earlier)
+    if len(widened) > len(naukri):
+        log.info("The %s scan found %d Naukri job(s); topped up to %d from %s",
+                 day, len(naukri), len(widened), ", ".join(borrowed_from))
+    return widened, borrowed_from
 
 
 def _reuse_jd_text(top: list[dict], day: str, force: bool) -> list[dict]:
@@ -293,11 +341,15 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
 
     results = store.load_results(day)
     naukri = results.get("naukri") or []
+    topped_up: list[str] = []
     if len(naukri) < TOP_N:
+        naukri, topped_up = top_up(naukri, day)
+    if len(naukri) < MIN_JOBS:
         raise GenerationError(
-            f"The scan for {day} found only {len(naukri)} Naukri job(s); "
-            f"{TOP_N} are needed for the Top 10 analysis.\n"
+            f"The scan for {day} found only {len(naukri)} Naukri job(s), even with "
+            f"the last {TOP_UP_DAYS} days folded in; {MIN_JOBS} are the least worth analysing.\n"
             f"  Widen the scan:  python main.py --jobs-export --worldwide --top 60")
+    results = dict(results, naukri=naukri, topped_up_from=topped_up)
 
     top = top_ten(naukri)
     log.info("Top %d for %s, by score:", TOP_N, day)
@@ -515,6 +567,13 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
     written = page_mod.rebuild_all()
     prep["page"] = str(next((p for p in written if stamp in p.name),
                             written[-1] if written else ""))
+    # The scan's page was written before this prep existed and still says
+    # "(not generated)" on its Interview Preparation tab.
+    from ..jobs.page import refresh_prep_navs
+    try:
+        refresh_prep_navs()
+    except OSError as exc:  # a locked page must not cost the prep
+        log.warning("Could not re-point the tracker pages at the new prep: %s", exc)
     return prep
 
 
@@ -669,6 +728,8 @@ def _assemble(day, stamp, jobs, profile, matrix, bucketed, target_profile, gap_a
             "naukri_total": len(results.get("naukri") or []),
             "linkedin_total": len(results.get("linkedin") or []),
             "top10_job_ids": [str(job.get("job_id")) for job in jobs],
+            # Days whose scans filled in for a short one (see top_up).
+            "topped_up_from": list(results.get("topped_up_from") or []),
         },
         "profile": {
             "name": profile["name"],

@@ -425,6 +425,8 @@
       <div class="hint">Made on your PC by the Naukri scan on its schedule; the queue run publishes them here. Tap one to queue its jobs.</div></div>
     <div class="card"><h2>Career-page searches</h2><div id="list-careers" class="muted">Loading…</div></div>
     <div class="card"><h2>Interview prep</h2><div id="list-interview" class="muted">Loading…</div></div>
+    <div class="card"><h2>Applications sent (PC)</h2><div id="list-applications" class="muted">Loading…</div>
+      <div class="hint">The Naukri screener's log of every application it sent, rebuilt after each run and published with the scans.</div></div>
     <div class="muted" id="index-updated"></div>
   </section>
 
@@ -725,7 +727,7 @@
     return fetch("data/index.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { items: [] }; })
       .then(function (j) {
         index = j;
-        ["jobhunt", "careers", "naukri", "interview"].forEach(function (kind) {
+        ["jobhunt", "careers", "naukri", "interview", "applications"].forEach(function (kind) {
           var items = (j.items || []).filter(function (i) { return i.kind === kind; });
           var box = $("list-" + kind);
           box.innerHTML = items.length ? items.map(reportRow).join("") : '<span class="muted">Nothing here yet.</span>';
@@ -771,13 +773,59 @@
       else showViewer(item.title, text);
     }).catch(function (e) { if (el) el.textContent = "open ›"; toast(errText(e)); });
   }
-  function showViewer(title, html) {
+  function showViewer(title, html, anchor) {
     if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
     $("v-title").textContent = title; $("v-right").innerHTML = "";
     $("v-box").hidden = false; $("c-box").hidden = true; $("j-box").hidden = true;
     var f = document.createElement("iframe"); f.title = "report"; f.srcdoc = html;
+    f.addEventListener("load", function () { wireReportLinks(f, anchor); });
     $("v-box").innerHTML = ""; $("v-box").appendChild(f);
     openViewer();
+  }
+  // The PC-made pages (Naukri openings, interview prep, applications) link to
+  // each other by relative file name - ../interview/interview-prep-2026-09-18-r1.html,
+  // applications.html, openings-2026-09-18-r3.html. Those files are not on
+  // github.io; their encrypted copies are, under other names. So every click
+  // inside the report is looked up in the index and opened from there.
+  function siblingItem(href) {
+    var m, items = (index || {}).items || [];
+    var byTitle = function (kind, title) { return items.filter(function (i) { return i.kind === kind && i.title === title; })[0]; };
+    if (/(^|\/)applications\.html$/i.test(href)) return byTitle("applications", "Applications sent") || items.filter(function (i) { return i.kind === "applications"; })[0] || null;
+    if ((m = /interview-prep-([0-9]{4}-[0-9]{2}-[0-9]{2}(?:-r[0-9]+)?)\.html$/i.exec(href))) return byTitle("interview", "Interview prep " + m[1]) || null;
+    if ((m = /openings-([0-9]{4}-[0-9]{2}-[0-9]{2})(?:-r([0-9]+))?\.html$/i.exec(href))) return byTitle("naukri", "Naukri openings " + m[1] + (m[2] ? " run " + m[2] : "")) || null;
+    return undefined;   // not one of ours: let the browser have it
+  }
+  function followSibling(href) {
+    var q = href.split("#"), item = siblingItem(q[0]);
+    if (item === undefined) return false;
+    if (!item) { toast("Not on the phone yet - run publish_to_phone.bat on the PC"); return true; }
+    var p = cache[item.id] ? Promise.resolve(cache[item.id]) : fetchEnc(item.file, { cache: "force-cache" }).then(function (t) { cache[item.id] = t; return t; });
+    toast("Opening " + item.title + "…");
+    p.then(function (text) { showViewer(item.title, text, q[1] || ""); }).catch(function (e) { toast(errText(e)); });
+    return true;
+  }
+  function wireReportLinks(f, anchor) {
+    var d; try { d = f.contentDocument; } catch (e) { return; }
+    if (!d) return;
+    if (anchor) { var t = d.getElementById(anchor); if (t) t.scrollIntoView(); }
+    d.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!a) return;
+      var href = a.getAttribute("href") || "";
+      if (href.charAt(0) === "#") {   // in-page anchor: <base target=_blank> would open a blank tab
+        e.preventDefault(); var t = href.length > 1 ? d.getElementById(href.slice(1)) : null;
+        if (t) t.scrollIntoView({ behavior: "smooth" }); else d.documentElement.scrollTop = 0;
+        return;
+      }
+      if (/^(https?:)?\/\//i.test(href) || /^(mailto|tel):/i.test(href)) return;
+      if (followSibling(href)) e.preventDefault();
+    }, true);
+    // The interview page's "Analysis date" picker navigates with location.href.
+    d.addEventListener("change", function (e) {
+      var s = e.target;
+      if (!s || s.tagName !== "SELECT" || !/\.html$/i.test(s.value || "")) return;
+      if (followSibling(s.value)) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
   }
   function openViewer() {
     $("viewer").classList.add("on"); document.documentElement.classList.add("viewer-on");

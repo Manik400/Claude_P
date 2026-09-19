@@ -961,8 +961,15 @@ def build(prep: dict, out_path: Path | None = None, dates: list[str] | None = No
     counts = (prep.get("validation") or {}).get("counts") or {}
     heading = (f"{len(questions)} questions for the {day} Top 10"
                if questions else f"Preparation for {day}")
+    borrowed = [job for job in jobs if job.get("found_on")]
+    scan_label = f"the {day} scan"
+    if borrowed:
+        days = sorted({job["found_on"] for job in borrowed}, reverse=True)
+        scan_label += (f" ({len(borrowed)} carried over from the "
+                       f"{', '.join(days)} scan{'s' if len(days) > 1 else ''}, "
+                       f"which found more than {day} did)")
     subtitle = (
-        f"Built from the {len(jobs)} highest-scoring jobs in the {day} scan and your resume. "
+        f"Built from the {len(jobs)} highest-scoring jobs in {scan_label} and your resume. "
         f"{counts.get('basic', 0)} basic, {counts.get('intermediate', 0)} intermediate and "
         f"{counts.get('advanced', 0)} advanced questions, each traceable to the job "
         f"descriptions that motivated it.")

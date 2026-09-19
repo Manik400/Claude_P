@@ -7,6 +7,7 @@ Kinds:  jobhunt   worldwide search report (job-hunt bot)
         careers   company career-page search (careers bot; JSON the Careers tab renders)
         naukri    Naukri daily openings page
         interview interview-prep study page
+        applications  the Naukri screener's "Applications sent" log page (one copy, replaced)
 Old reports are pruned per kind (KEEP newest) so the branch stays small.
 """
 import argparse
@@ -19,7 +20,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE_DIR = os.path.dirname(HERE)
-KEEP = {"jobhunt": 40, "careers": 30, "naukri": 40, "interview": 20}
+KEEP = {"jobhunt": 40, "careers": 30, "naukri": 40, "interview": 20, "applications": 1}
 
 
 def slug(s):

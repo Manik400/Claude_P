@@ -46,7 +46,43 @@ def _claude_cli() -> str | None:
     return None
 
 
+def _cli_failure_text(stdout: str, stderr: str | None) -> str:
+    """The human-readable part of a failed CLI run, for the log."""
+    try:
+        envelope = json.loads(stdout or "")
+    except json.JSONDecodeError:
+        envelope = None
+    if isinstance(envelope, dict):
+        for key in ("result", "error", "message"):
+            if envelope.get(key):
+                return str(envelope[key])[:400]
+    text = (stderr or "").strip() or (stdout or "").strip()
+    return text[:400] or "(no output)"
+
+
+# A transient CLI failure - the login being refreshed, a rate limit, an
+# overloaded API - costs a whole prep run when it lands on the first of seven
+# calls. Try again after a pause before giving up.
+CLI_RETRIES = 2
+CLI_RETRY_WAIT = (30, 90)
+
+
 def _call_cli(prompt: str, timeout: int, model: str | None) -> tuple[str, dict]:
+    last: EngineError | None = None
+    for attempt in range(CLI_RETRIES + 1):
+        try:
+            return _call_cli_once(prompt, timeout, model)
+        except EngineError as exc:
+            last = exc
+            if attempt >= CLI_RETRIES or "is not on PATH" in str(exc):
+                break
+            wait = CLI_RETRY_WAIT[min(attempt, len(CLI_RETRY_WAIT) - 1)]
+            log.warning("  claude CLI failed (%s) - retrying in %ds", str(exc)[:200], wait)
+            time.sleep(wait)
+    raise last  # type: ignore[misc]
+
+
+def _call_cli_once(prompt: str, timeout: int, model: str | None) -> tuple[str, dict]:
     exe = _claude_cli()
     if not exe:
         raise EngineError(
@@ -74,11 +110,14 @@ def _call_cli(prompt: str, timeout: int, model: str | None) -> tuple[str, dict]:
     except subprocess.TimeoutExpired:
         raise EngineError(f"claude CLI timed out after {timeout}s")
 
+    raw = completed.stdout or ""
     if completed.returncode != 0:
-        detail = (completed.stderr or completed.stdout or "")[:400]
+        # A failed run still prints its JSON envelope; the message is in
+        # "result" ("Not logged in", "rate limit", ...), well past the usage
+        # counters that used to fill the 400 characters logged here.
+        detail = _cli_failure_text(raw, completed.stderr)
         raise EngineError(f"claude CLI exited {completed.returncode}: {detail}")
 
-    raw = completed.stdout or ""
     try:
         envelope = json.loads(raw)
     except json.JSONDecodeError:
