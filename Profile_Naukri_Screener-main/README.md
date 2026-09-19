@@ -287,6 +287,20 @@ once so the drawer appears, records its structure to
 The application is not submitted - a questionnaire posting only completes once
 its questions are answered. Then set `answer_questionnaires: true`.
 
+**With the local model** (`..i_setup.bat` at the repo root; `naukri/localai.py`
+-> job-hunt's `jobbot/localai.py`, Qwen 3.5 2B on the CPU, no key) a question
+no rule covers gets one more chance before it is parked: the model is shown a
+*facts sheet* - the same facts as above, as `key: value` lines - and asked to
+answer from it or say UNKNOWN. Its answer is used only when it names the fact
+line it used, every number in it is a number on the sheet (it cannot invent a
+CTC or a year count), it is at least 80 % sure, and, with options, it maps
+onto one of the chips. Such answers are logged with source `local-ai: <fact>`
+on the applications page; an `answer_rules` entry in `jobs.yaml` overrides
+them, and `local_ai_answers: false` turns them off. The model also adds a
+`semantic` component to the score (whole posting vs. whole profile; skills and
+title give up 10 points so the total stays 100) and a "Fit / Gap" line for the
+top jobs on the openings page and in the sheet's last column.
+
 ### A spreadsheet to work through by hand
 
 ```bash

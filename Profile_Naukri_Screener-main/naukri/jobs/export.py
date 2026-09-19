@@ -51,6 +51,7 @@ HEADERS = [
     ("Where", 12),
     ("Applied on", 12),
     ("Notes", 30),
+    ("Why it fits (AI)", 48),   # from the local model, when installed
 ]
 
 # Naukri writes the current official names, which are not what people search
@@ -124,6 +125,42 @@ def linkedin_search_url(job) -> str:
     return f"https://www.linkedin.com/jobs/search/?keywords={quote_plus(terms)}"
 
 
+def summarize_top(kept, config: dict) -> int:
+    """A "why it fits / gap" line from the local model for the best-scoring jobs.
+
+    Bounded by LOCAL_AI_SUMMARY_TOP (30) and the model's time budget; the
+    profile text stands in for the resume. Stored on job.ai_summary, which
+    the results file, the openings page and the sheet all carry.
+    """
+    import os
+
+    from naukri import localai
+    if not kept or not localai.available("llm"):
+        return 0
+    profile_text = config.get("profile_evidence") or config.get("profile_text") or ""
+    top = int(os.environ.get("LOCAL_AI_SUMMARY_TOP") or 30)
+    done = 0
+    ranked = sorted(kept, key=lambda j: j.score or 0, reverse=True)[:top]
+    for job in ranked:
+        if localai.budget_left() < 15:
+            break
+        out = localai.summarize_fit(profile_text, job.title, job.description or "",
+                                    getattr(job, "matched_skills", None), None)
+        if out:
+            job.ai_summary = out
+            done += 1
+    log.info("local AI: %d of %d top jobs got a fit line (%.0fs of budget left)",
+             done, len(ranked), localai.budget_left())
+    return done
+
+
+def _ai_line(summary) -> str:
+    if not summary or not summary.get("why"):
+        return ""
+    gaps = (summary.get("gaps") or "").strip()
+    return summary["why"] + ("" if not gaps or gaps.lower().rstrip(".") == "none" else f" Gap: {gaps}")
+
+
 def to_excel(jobs: list, path: Path, ledger: Ledger | None = None,
              linkedin_cards: list[dict] | None = None, config: dict | None = None) -> Path:
     """Write the ranked jobs to an .xlsx. Returns the path written."""
@@ -174,10 +211,11 @@ def to_excel(jobs: list, path: Path, ledger: Ledger | None = None,
             "Naukri" if already else "",
             date.today().isoformat() if already else "",
             "applied by the agent" if already else "",
+            _ai_line(getattr(job, "ai_summary", None)),
         ]
         for column, value in enumerate(values, start=1):
             cell = sheet.cell(row=row, column=column, value=value)
-            cell.alignment = Alignment(vertical="top", wrap_text=column in (3, 4, 5, 9, 15))
+            cell.alignment = Alignment(vertical="top", wrap_text=column in (3, 4, 5, 9, 15, 16))
 
         naukri_cell = sheet.cell(row=row, column=10, value="Apply")
         naukri_cell.hyperlink = job.url
@@ -318,6 +356,9 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
     wanted = [variant for loc in locations for variant in city_variants(loc)]
     kept = []
     stale = repeats = 0
+    from naukri import localai
+    log.info(localai.status_line())
+    score_mod.prepare(jobs, config)
     for job in jobs:
         score_mod.score(job, config)
         if job.score <= 0:
@@ -350,6 +391,7 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
     else:
         kept.sort(key=lambda j: j.score, reverse=True)
     kept = kept[:top]
+    summarize_top(kept, config)
 
     cards = []
     if include_linkedin:
@@ -396,6 +438,7 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         "naukri": [
             dict(job.to_dict(), score=job.score,
                  matched_skills=getattr(job, "matched_skills", []),
+                 ai_summary=getattr(job, "ai_summary", None),
                  apply_status=getattr(job, "apply_status", ""),
                  apply_note=getattr(job, "apply_note", ""))
             for job in kept

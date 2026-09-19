@@ -12,6 +12,16 @@ rather than buried in a model you cannot interrogate.
     location     0-10   is it somewhere you would work
     freshness    0-5    recent postings get replies; month-old ones do not
 
+With the local model installed (naukri/localai.py -> job-hunt's jobbot/localai.py)
+a sixth component reads the whole posting against the whole profile, so a
+job that describes your work in words your key-skills list does not use
+still scores. The total stays 100 - skills and title give up a little room:
+
+    skills       0-40   title 0-20   semantic 0-10   (the rest unchanged)
+
+prepare(jobs, config) computes it in one batch before the score() loop; a
+job without `.semantic` is scored exactly as before.
+
 Hard rejects (score forced to 0) come first: they encode "never, regardless of
 how well the rest matches".
 """
@@ -161,6 +171,27 @@ def _freshness_score(job) -> float:
     return 0.0
 
 
+def prepare(jobs, config: dict) -> int:
+    """Batch the semantic term for `jobs` (sets job.semantic, 0..1). Returns how many.
+
+    One embedding of the profile, one batch for the jobs - the model is the
+    expensive part, so it is never called per job inside score().
+    """
+    from naukri import localai
+    if not jobs or not localai.available("embed"):
+        return 0
+    reference = config.get("profile_evidence") or config.get("profile_text") or ""
+    if not reference.strip():
+        return 0
+    texts = [f"{job.title}. Skills: {', '.join(job.skills or [])}. {(job.description or '')[:1500]}" for job in jobs]
+    sims = localai.semantic_scores(reference, texts)
+    if not sims:
+        return 0
+    for job, sim in zip(jobs, sims):
+        job.semantic = sim
+    return len(sims)
+
+
 def score(job, config: dict) -> dict:
     """Attach `.score` and `.score_breakdown` to the job; return the breakdown."""
     reason = hard_reject(job, config)
@@ -171,13 +202,21 @@ def score(job, config: dict) -> dict:
         return job.score_breakdown
 
     skills, matched = _skill_score(job, config)
-    breakdown = {
-        "skills": skills,
-        "title": _title_score(job, config),
+    title = _title_score(job, config)
+    semantic = getattr(job, "semantic", None)
+    if semantic is None:
+        breakdown = {"skills": skills, "title": title}
+    else:
+        breakdown = {
+            "skills": round(skills * 40 / 45, 1),
+            "title": round(title * 20 / 25, 1),
+            "semantic": round(10 * max(0.0, min(1.0, float(semantic))), 1),
+        }
+    breakdown.update({
         "experience": _experience_score(job, config),
         "location": _location_score(job, config),
         "freshness": _freshness_score(job),
-    }
+    })
     job.score = round(sum(breakdown.values()), 1)
     job.score_breakdown = breakdown
     job.matched_skills = matched

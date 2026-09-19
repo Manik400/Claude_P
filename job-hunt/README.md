@@ -74,6 +74,27 @@ ADZUNA_APP_ID + ADZUNA_APP_KEY, JOOBLE_API_KEY, RAPIDAPI_KEY (JSearch), FIRECRAW
 job poster as a contact). `APIFY_SOURCES` picks which run, default `naukri,indeed`. A search costs a
 few cents. Get a token at <https://console.apify.com/account/integrations>.
 
+## The free local model (optional)
+`..i_setup.bat` (repo root) installs a small open model that runs on the CPU - Qwen 3.5 2B via
+`llama-cpp-python` and a `bge-small` embedding model, ~1.4 GB downloaded once, no key, no cloud
+(`scripts/jobbot/localai.py`). With it installed, every run gets:
+
+* **semantic ranking** - the whole posting is compared with the whole resume, blended into the text
+  term of the score (`scoring.py`), so a "test automation lead" no longer looks unrelated to "SDET";
+* a **"Fit: ... Gap: ..."** line on the report cards for the top 30 jobs (`LOCAL_AI_SUMMARY_TOP`);
+* in the careers bot, a **second opinion** on postings the relocation patterns left as *maybe* /
+  *unknown* - accepted only when the sentence the model quotes is really in the posting;
+* in the Naukri screener, **screening answers** no rule covers, from your facts sheet only
+  (see that README).
+
+Generation is capped per run (`LOCAL_AI_BUDGET_SECONDS`, default 600 s); when the budget is spent
+the rest of the run simply goes without. Without the packages nothing changes.
+
+**On GitHub Actions** the same model runs in the phone-triggered searches: set the repo variable
+`LOCAL_AI` to `1` (`gh variable set LOCAL_AI --body 1`). The workflow installs the prebuilt CPU wheels,
+caches the model files between runs, and reads `LOCAL_AI_MODEL` / `LOCAL_AI_BUDGET_SECONDS` from repo
+variables too. The free 4-vCPU runner does about 20-30 fit lines inside the default budget.
+
 ## Contacts per company
 After every search the best companies are looked up for recruiters, engineering managers and heads
 of engineering (`scripts/jobbot/contacts.py`): what the postings themselves reveal (emails, the

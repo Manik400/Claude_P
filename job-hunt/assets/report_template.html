@@ -98,6 +98,8 @@
   .sk.hit { border-color: transparent; background: var(--good-soft); color: var(--good); }
   .sk.miss { border-color: transparent; background: var(--bad-soft); color: var(--bad); }
   .snip { color: var(--muted); font-size: 13px; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .ai { font-size: 13px; line-height: 1.45; padding: 6px 10px; border-left: 3px solid var(--accent, #3b82f6); background: color-mix(in srgb, var(--accent, #3b82f6) 8%, transparent); border-radius: 0 6px 6px 0; }
+  .ai b { font-weight: 600; }
   .card.open .snip { display: block; -webkit-line-clamp: unset; max-height: 400px; overflow: auto; }
   .more { color: var(--accent); font-size: 12px; background: none; border: 0; padding: 0; align-self: flex-start; }
   .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; align-items: center; }
@@ -241,8 +243,8 @@
   ['onlySaved', 'hideApplied', 'showHidden', 'titleOnly'].forEach(k => { $(k).onclick = () => { ui[k] = !ui[k]; persist(); render(); }; });
   $('reset').onclick = () => { Object.assign(ui, { q: '', minScore: 0, fits: ['fit', 'stretch', 'unknown', 'over'], remote: 'any', src: '', onlySaved: false, hideApplied: false, showHidden: false, titleOnly: false }); $('q').value = ''; $('minScore').value = 0; $('minScoreV').textContent = 0; $('remote').value = 'any'; $('srcSel').value = ''; persist(); render(); };
   $('csv').onclick = () => {
-    const rows = [['country', 'title', 'company', 'location', 'source', 'posted', 'salary', 'fit', 'exp_min', 'exp_max', 'score', 'matched_skills', 'missing_skills', 'url', 'applied', 'saved']];
-    visible().forEach(j => rows.push([j.country, j.title, j.company, j.location, j.source_name, j.posted || '', j.salary, j.fit, j.exp_min ?? '', j.exp_max ?? '', j.score ?? '', (j.matched_skills || []).join('; '), (j.missing_skills || []).join('; '), j.url, S.applied[j.id] ? 'yes' : '', S.saved[j.id] ? 'yes' : '']));
+    const rows = [['country', 'title', 'company', 'location', 'source', 'posted', 'salary', 'fit', 'exp_min', 'exp_max', 'score', 'matched_skills', 'missing_skills', 'ai_why', 'ai_gaps', 'url', 'applied', 'saved']];
+    visible().forEach(j => rows.push([j.country, j.title, j.company, j.location, j.source_name, j.posted || '', j.salary, j.fit, j.exp_min ?? '', j.exp_max ?? '', j.score ?? '', (j.matched_skills || []).join('; '), (j.missing_skills || []).join('; '), (j.extra && j.extra.ai_summary && j.extra.ai_summary.why) || '', (j.extra && j.extra.ai_summary && j.extra.ai_summary.gaps) || '', j.url, S.applied[j.id] ? 'yes' : '', S.saved[j.id] ? 'yes' : '']));
     const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
     const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'jobs.csv'; a.click();
   };
@@ -316,6 +318,7 @@
       </div></div>
       <div class="badges"><span class="b src">${esc(j.source_name)}</span>${(j.also_on || []).map(a => `<span class="b">also on ${esc(a)}</span>`).join('')}<span class="b fit-${j.fit}">${FIT_LABEL[j.fit] || j.fit}</span>${expLabel(j) ? `<span class="b">${esc(expLabel(j))}</span>` : ''}${j.remote ? '<span class="b remote">remote</span>' : ''}${eligible}${j.extra && j.extra.relocation_paid ? '<span class="b remote">relocation paid</span>' : ''}${j.extra && j.extra.applied_status === 'applied' ? '<span class="b fit-fit" title="' + esc(j.extra.applied_note || '') + '">Applied by agent</span>' : ''}${j.extra && j.extra.applied_status === 'questionnaire' ? '<span class="b fit-stretch" title="' + esc(j.extra.applied_note || '') + '">Needs your answer</span>' : ''}${j.extra && j.extra.applied_status === 'would-apply' ? '<span class="b fit-fit">Would apply</span>' : ''}${j.extra && j.extra.applied_status === 'offsite' ? '<span class="b">Apply on company site</span>' : ''}${j.extra && j.extra.japanese_level ? `<span class="b">JP: ${esc(j.extra.japanese_level)}</span>` : ''}</div>
       ${skills ? `<div class="skills">${skills}</div>` : ''}
+      ${j.extra && j.extra.ai_summary && j.extra.ai_summary.why ? `<div class="ai" title="from the local model"><b>Fit:</b> ${esc(j.extra.ai_summary.why)}${j.extra.ai_summary.gaps && !/^none\.?$/i.test(j.extra.ai_summary.gaps) ? ` <b>Gap:</b> ${esc(j.extra.ai_summary.gaps)}` : ''}</div>` : ''}
       ${text ? `<div class="snip">${esc(text)}</div><button class="more" data-act="more">more</button>` : ''}
       <div class="actions">
         <a class="btn primary" href="${esc(j.url)}" target="_blank" rel="noopener" data-act="apply">Apply ↗</a>

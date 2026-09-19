@@ -3,4 +3,5 @@ rem Installs the Python packages the Job Hunt bot needs (Python 3.8+ must alread
 python -m pip install --user -r "%~dp0requirements.txt"
 echo.
 echo Done. Double-click jobhunt.bat to start the bot.
+echo Optional: ..i_setup.bat installs the free local model (better ranking, fit lines).
 pause

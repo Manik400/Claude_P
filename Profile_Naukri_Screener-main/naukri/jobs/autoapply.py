@@ -40,7 +40,7 @@ from pathlib import Path
 
 from . import answers as answers_mod
 from . import career_apply as career_mod
-from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, questions
+from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, linkedin_limit, questions
 from .ledger import Ledger
 from .model import Job
 
@@ -56,7 +56,7 @@ LINKEDIN_PAUSE = (50.0, 110.0)
 # already applied) a long pause only burns the run: a run of 198 such postings
 # took five hours and outlived its scheduled task.
 SHORT_PAUSE = (6.0, 14.0)
-NOTHING_SENT = {"offsite", "no-button", "already", "would-apply",
+NOTHING_SENT = {"offsite", "no-button", "already", "would-apply", "limit-reached", "limit-cooldown",
                 "login-required", "captcha", "no-form", "career-error", "career-incomplete"}
 # A run stops starting new applications after this many minutes
 # (APPLY_MAX_MINUTES overrides; 0 = no limit) so it always ends before the
@@ -139,8 +139,8 @@ def _record(ledger: Ledger, job, status: str, note: str, board: str, capture: di
     """Map an apply outcome onto the ledger, saving any blocking question."""
     if status == "applied":
         ledger.record(job, "applied", note)
-    elif status == "would-apply":
-        return
+    elif status in ("would-apply", "limit-reached", "limit-cooldown"):
+        return              # nothing happened to this job; it stays as it was
     elif status == "already" and ledger.status(job.job_id) == "unconfirmed":
         # Our own earlier click, confirmed on the revisit. Counts as ours, and
         # as one of today's applications for the cap.
@@ -381,11 +381,24 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                 continue
             seen_ids.add(job.job_id)
             li_cards.append((card, job))
+        # Easy Apply stops for the day when our own cap is spent or LinkedIn
+        # said its limit is reached (linkedin_limit.py, 24 h). The postings
+        # are still opened when the career applier can use them: a plain
+        # Apply leads to the company's site, which no limit touches.
+        paused = [linkedin_limit.active()]
         if li_cards and li_budget <= 0:
             log.info("LinkedIn: daily cap of %s already reached; %d job(s) left for tomorrow",
                      config.get("linkedin_max_applies_per_day"), len(li_cards))
-        if li_cards and li_budget > 0:
-            log.info("LinkedIn: Easy Apply to up to %d of %d job(s)%s", li_budget, len(li_cards),
+            paused[0] = True
+        if li_cards and linkedin_limit.active():
+            log.info("LinkedIn: %s - Easy Apply postings are left alone; plain-Apply ones still go to the company site",
+                     linkedin_limit.label())
+        if li_cards and paused[0] and not career_ready():
+            li_cards = []           # nothing this run could do with them
+        if li_cards:
+            log.info("LinkedIn: %s up to %d of %d job(s)%s",
+                     "company-site applies from" if paused[0] else "Easy Apply to",
+                     li_budget if not paused[0] else len(li_cards), len(li_cards),
                      " (dry run)" if dry_run else "")
             try:
                 with sync_playwright() as p:
@@ -395,13 +408,22 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                         browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
                     try:
                         for n, (card, job) in enumerate(li_cards):
-                            if li_budget <= 0 or _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
+                            if (li_budget <= 0 and not paused[0]) or _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
+                                break
+                            if paused[0] and not career_ready():
                                 break
                             if career_untried(job.job_id) and not career_ready():
                                 continue
                             capture = {}
                             status, note = linkedin_apply.apply_to(
-                                page, card, facts, dry_run=dry_run, phone=phone, capture=capture)
+                                page, card, facts, dry_run=dry_run, phone=phone, capture=capture,
+                                easy_apply_paused=paused[0])
+                            if status == "limit-reached":
+                                end = linkedin_limit.hit()
+                                paused[0] = True
+                                log.warning("LinkedIn: daily Easy Apply limit reached - Easy Apply paused until %s; "
+                                            "Naukri, other boards, company sites and LinkedIn's plain-Apply postings continue",
+                                            end.strftime("%Y-%m-%d %H:%M"))
                             if status == "offsite" and career_ready():
                                 status, note = try_career(
                                     page, job, "linkedin",
@@ -410,7 +432,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                                 _record(ledger, job, status, note, "linkedin", capture)
                             if status == "questionnaire" and capture.get("question"):
                                 summary["questions_saved"] += 1
-                            if not dry_run and status not in career_mod.STATUSES:
+                            if not dry_run and status not in career_mod.STATUSES                                     and status not in ("limit-reached", "limit-cooldown"):
                                 applications.record("linkedin", job, status, note, capture,
                                                     dry_run=False, per_run=per_run, project=project)
                             counts[status] = counts.get(status, 0) + 1

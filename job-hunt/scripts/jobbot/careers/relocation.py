@@ -109,3 +109,48 @@ def assess(title, text):
         label, m = ("maybe", w) if w else ("unknown", None)
     evidence = _sentence(t, m.start(), m.end())[:360] if m else ""
     return {"label": label, "relocation": reloc, "visa": visa, "evidence": evidence}
+
+
+# ---------------------------------------------------------- second opinion
+#
+# The local model (jobbot/localai.py) reads the postings the patterns could
+# not settle ("maybe" / "unknown"). Its verdict only counts when the sentence
+# it quotes is really in the posting - a model that paraphrases or invents is
+# ignored - and it can never downgrade a "yes" the patterns found.
+
+_KEYWORDS = re.compile(r"relocat|visa|sponsor|permit|blue\s*card|immigration|umzug|verhuis|reubicaci", _I)
+
+
+def excerpt_for_model(title, text, limit=3000):
+    """The sentences that mention relocation / visa, plus the opening of the posting."""
+    t = normalize_ws(text or "")
+    hits = []
+    for m in _KEYWORDS.finditer(t):
+        s = _sentence(t, m.start(), m.end())
+        if s and s not in hits:
+            hits.append(s)
+    body = " ".join(hits)
+    head = t[:800]
+    return (body + "\n\n" + head)[:limit] if body else head[:limit]
+
+
+def merge_opinion(reloc, opinion, text):
+    """Fold the model's verdict into assess()'s dict. Returns the (possibly updated) dict."""
+    if not opinion or reloc.get("label") not in ("maybe", "unknown"):
+        return reloc
+    quote = normalize_ws(opinion.get("evidence_quote") or "").strip().strip('"').lower()
+    verified = bool(quote) and len(quote) >= 12 and quote in normalize_ws(text or "").lower()
+    rel, visa = opinion.get("relocation"), opinion.get("visa")
+    label = reloc["label"]
+    if rel == "yes" and verified:
+        label = "yes"
+    elif visa == "yes" and verified and label == "unknown":
+        label = "visa"
+    elif rel == "no" and visa == "no" and verified:
+        label = "no"
+    if label == reloc["label"]:
+        return reloc
+    out = dict(reloc, label=label, ai=opinion, source="local-ai")
+    if not out.get("evidence"):
+        out["evidence"] = (opinion.get("evidence_quote") or "")[:360]
+    return out

@@ -35,6 +35,8 @@ PAGE_PATH = JOBS_DIR / "applications.html"
 # Where an answer came from (the `reason` answers.resolve returns) -> where to
 # correct it. First match wins.
 FIX_HINTS: list[tuple[str, str]] = [
+    (r"^local-ai", "answered by the local model from your facts sheet - add an answer_rule in jobs.yaml to override, "
+                   "or set local_ai_answers: false"),
     (r"your rule", "jobs.yaml -> answer_rules"),
     (r"your saved answer", "data/jobs/answer_bank.yaml"),
     (r"IT-skills table", "jobs.yaml -> skill_years (or the IT skills table on your Naukri profile)"),

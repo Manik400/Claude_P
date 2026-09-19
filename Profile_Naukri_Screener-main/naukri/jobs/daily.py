@@ -91,6 +91,7 @@ def run(headless: bool = False, dry_run: bool = True, config_overrides: dict | N
             fresh = [j for j in jobs if not ledger.is_terminal(j.job_id)]
             log.info("%d of %d are new (rest already handled)", len(fresh), len(jobs))
 
+            score_mod.prepare(fresh, config)
             for job in fresh:
                 score_mod.score(job, config)
             fresh.sort(key=lambda j: j.score, reverse=True)

@@ -29,6 +29,9 @@ Statuses:
     questionnaire-failed  the form rejected what was entered, or got stuck
     unconfirmed           Submit was clicked but nothing confirmed it
     error                 navigation or interaction failed
+    limit-reached         LinkedIn refused: the daily Easy Apply limit is used up
+    limit-cooldown        an Easy Apply posting left alone while that limit's
+                          24-hour pause holds (linkedin_limit.py); not an attempt
 """
 from __future__ import annotations
 
@@ -51,6 +54,12 @@ SUBMIT_BUTTON = "button:has-text('Submit application')"
 
 FOLLOW_RE = re.compile(r"^follow\b", re.IGNORECASE)
 RESUME_PAGE_RE = re.compile(r"upload a resume|select or upload|be sure to include an updated resume", re.IGNORECASE)
+# What LinkedIn shows when the day's Easy Apply allowance is used up. It comes
+# as a dialog in place of the form, sometimes as a banner on the job page.
+LIMIT_RE = re.compile(
+    r"reached (?:the |your )?(?:daily |easy apply )?(?:application |apply )?limit"
+    r"|(?:application|apply) limit for today|limit of easy apply|try again tomorrow"
+    r"|you can(?:'|’)?t apply to (?:any )?more jobs today", re.IGNORECASE)
 CONFIRM_RE = re.compile(r"application (was )?(sent|submitted)|your application (has been|was) (sent|submitted)", re.IGNORECASE)
 APPLIED_MARK_RE = re.compile(r"^applied\s+\d|^applied on|^application submitted", re.IGNORECASE)
 ERROR_RE = re.compile(r"invalid input|is required|required field|please (enter|select|make a selection)|enter a (valid|decimal|whole) number|select an option", re.IGNORECASE)
@@ -299,12 +308,26 @@ def _fill_page(page, info: dict, facts: dict, phone: str | None, capture: dict) 
     return True, ""
 
 
+def _limit_text(page) -> str:
+    """The limit message on the page or in its dialog, or ""."""
+    try:
+        body = page.locator("body").inner_text(timeout=3000) or ""
+    except Exception:
+        return ""
+    m = LIMIT_RE.search(body)
+    return m.group(0) if m else ""
+
+
 def apply_to(page, card: dict, facts: dict, dry_run: bool = True,
-             phone: str | None = None, capture: dict | None = None) -> tuple[str, str]:
+             phone: str | None = None, capture: dict | None = None,
+             easy_apply_paused: bool = False) -> tuple[str, str]:
     """Attempt one Easy Apply. Returns (status, note); see the module doc.
 
     `card` is a search-result card (url, title, company). `capture`, if
     given, receives {question, options, why} when a question stops the run.
+    `easy_apply_paused` (the daily limit's cooldown) opens the posting only
+    to tell Easy Apply from an offsite Apply: the first is left alone, the
+    second is still reported "offsite" so the career applier can follow it.
     """
     capture = capture if capture is not None else {}
     try:
@@ -330,6 +353,8 @@ def apply_to(page, card: dict, facts: dict, dry_run: bool = True,
             pass
         return "no-button", "no apply control found"
 
+    if easy_apply_paused:
+        return "limit-cooldown", "Easy Apply paused: LinkedIn's daily limit was reached earlier"
     if dry_run:
         return "would-apply", "Easy Apply button present"
 
@@ -341,8 +366,14 @@ def apply_to(page, card: dict, facts: dict, dry_run: bool = True,
 
     previous = None
     stuck = 0
-    for _ in range(12):
+    for step in range(12):
         info = page.evaluate(SCAN_JS)
+        if step == 0:
+            hit = LIMIT_RE.search(info.get("text") or "")
+            hit = hit.group(0) if hit else _limit_text(page)
+            if hit:
+                _dismiss(page, discard=True)
+                return "limit-reached", f"LinkedIn says '{hit}'"
         if not info.get("modal"):
             if _already_applied(page):
                 return "applied", "job page shows Applied"

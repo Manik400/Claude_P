@@ -75,6 +75,9 @@ DEFAULTS = {
     "career_max_per_day": 25,
     "applicant": {},
     "simplify": False,
+    # The local model (naukri/localai.py) may answer screening questions no
+    # rule covers, from your facts sheet only. False keeps them all for you.
+    "local_ai_answers": True,
     "daily_target": 50,
     "max_auto_applies": 20,
     # Cap on apply *attempts* per run. max_auto_applies caps successes, which

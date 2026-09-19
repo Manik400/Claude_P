@@ -22,6 +22,7 @@ the report can say *why* a job was left for you rather than just that it was.
 """
 from __future__ import annotations
 
+import os
 import re
 
 # Each rule is (name, question pattern, fact key). Order matters: the first
@@ -164,7 +165,36 @@ def build_facts(profile: dict, config: dict) -> dict:
     for key, value in (config.get("fact_overrides") or {}).items():
         if value not in (None, ""):
             facts[key] = value
+    # The local model (naukri/localai.py) may answer what no rule covers -
+    # from this sheet of facts only. jobs.yaml `local_ai_answers: false`
+    # keeps every unmatched question for you instead.
+    facts["_local_ai"] = bool(config.get("local_ai_answers", True))
+    facts["_facts_sheet"] = facts_sheet(facts)
     return facts
+
+
+def facts_sheet(facts: dict) -> str:
+    """The facts as `key: value` lines - what the local model is allowed to know.
+
+    Everything you stated or the profile records, nothing else: no rules, no
+    answer bank (those are matched exactly, not paraphrased by a model).
+    """
+    lines = []
+    for key, value in facts.items():
+        if key.startswith("_") or value in (None, "", [], {}):
+            continue
+        if key == "skill_years":
+            for name, years in sorted(value.items()):
+                lines.append(f"skill_years.{name}: {years:g}")
+        elif key == "skills":
+            lines.append("skills: " + ", ".join(str(v) for v in value))
+        elif isinstance(value, bool):
+            lines.append(f"{key}: {'yes' if value else 'no'}")
+        elif isinstance(value, (int, float)):
+            lines.append(f"{key}: {value:g}")
+        else:
+            lines.append(f"{key}: {value}")
+    return "\n".join(lines)
 
 
 def _format(key: str, value) -> str:
@@ -340,7 +370,67 @@ def resolve(question: str, options: list[str], facts: dict) -> tuple[str | None,
             return None, hint
         return _format(key, value), f"from {name}"
 
+    # Nothing you wrote covers it: the local model may answer from the facts
+    # sheet, under the checks in _resolve_local_ai. Otherwise the question is
+    # kept for you, as before.
+    ai = _resolve_local_ai(question, options, facts)
+    if ai is not None:
+        return ai
     return None, "no rule matches this question"
+
+
+# How sure the model must say it is before an answer is used. The model's own
+# confidence is a weak signal on its own; the basis and number checks below
+# are what actually keep invented answers out.
+AI_MIN_CONFIDENCE = 0.8
+_NUMBER = re.compile(r"\d+(?:\.\d+)?")
+
+
+def _resolve_local_ai(question: str, options: list[str], facts: dict) -> tuple[str, str] | None:
+    """An answer from the local model, or None. Accepted only when it is
+    grounded: the basis names a fact, every number in it is a fact's value,
+    and (with options) it maps onto one of the chips."""
+    if not facts.get("_local_ai"):
+        return None
+    try:
+        from naukri import localai
+    except Exception:  # noqa: BLE001
+        return None
+    if not localai.available("llm"):
+        return None
+    sheet = facts.get("_facts_sheet") or facts_sheet(facts)
+    if not sheet.strip():
+        return None
+    try:
+        threshold = float(os.environ.get("LOCAL_AI_ANSWER_MIN_CONFIDENCE") or AI_MIN_CONFIDENCE)
+    except ValueError:
+        threshold = AI_MIN_CONFIDENCE
+    out = localai.answer_from_facts(question, options or [], sheet)
+    if not out:
+        return None
+    answer = str(out.get("answer") or "").strip()
+    basis = str(out.get("basis") or "").strip()
+    if not answer or answer.upper() == "UNKNOWN" or float(out.get("confidence") or 0) < threshold:
+        return None
+    # The basis must point at a line of the sheet: a key, or a value of substance.
+    keys = [line.split(":", 1)[0].strip().lower() for line in sheet.splitlines() if ":" in line]
+    values = [line.split(":", 1)[1].strip().lower() for line in sheet.splitlines() if ":" in line]
+    basis_l = basis.lower()
+    grounded = any(k and k in basis_l for k in keys) or any(len(v) >= 2 and v in basis_l for v in values)
+    if not grounded:
+        return None
+    # Every number in the answer must be a number the sheet holds - a notice
+    # period, a CTC or a year count is never the model's to make up.
+    fact_numbers = {float(n) for n in _NUMBER.findall(sheet)}
+    for n in _NUMBER.findall(answer):
+        if float(n) not in fact_numbers:
+            return None
+    if options:
+        chip = choose_option(answer, options)
+        if chip is None:
+            return None
+        answer = chip
+    return answer, f"local-ai: {basis[:80]}"
 
 
 def _skill_candidates(text: str) -> list[str]:

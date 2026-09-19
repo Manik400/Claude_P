@@ -238,3 +238,70 @@ if __name__ == "__main__":
             print(f"  FAIL  {name}: {exc}")
     print(f"\n  {'all tests passed' if not failures else str(failures) + ' failure(s)'}")
     sys.exit(1 if failures else 0)
+
+
+# ------------------------------------------------------------ local model
+#
+# The local model may answer what no rule covers - but only when grounded in
+# the facts sheet. These drive resolve() with a fake model so no download is
+# needed, and check every guard in _resolve_local_ai.
+
+def _with_fake_ai(monkeypatch, reply):
+    from naukri import localai
+
+    monkeypatch.setattr(localai, "available", lambda kind="any": True)
+    monkeypatch.setattr(localai, "answer_from_facts", lambda q, o, sheet: reply)
+
+
+def test_facts_sheet_lists_facts_only():
+    sheet = answers.facts_sheet(FACTS)
+    assert "notice_period_months: 2" in sheet
+    assert "skill_years.playwright: 1.25" in sheet
+    assert "_rules" not in sheet and "_bank" not in sheet
+
+
+def test_without_model_fallthrough_is_unchanged(monkeypatch):
+    from naukri import localai
+
+    monkeypatch.setattr(localai, "available", lambda kind="any": False)
+    assert answers.resolve("Why do you want to join our company?", [], FACTS) == (None, "no rule matches this question")
+
+
+def test_model_answer_is_used_when_grounded(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.95, "basis": "notice_period_months: 2"})
+    answer, why = answers.resolve("When could you start with us?", ["Immediately", "2 Months", "6 Months"], FACTS)
+    assert answer == "2 Months" and why.startswith("local-ai:")
+
+
+def test_model_answer_rejected_when_unsure_or_ungrounded(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.4, "basis": "notice_period_months: 2"})
+    assert answers.resolve("When could you start?", ["2 Months"], FACTS)[0] is None
+    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.95, "basis": "it seems reasonable"})
+    assert answers.resolve("When could you start?", ["2 Months"], FACTS)[0] is None
+    _with_fake_ai(monkeypatch, {"answer": "UNKNOWN", "confidence": 0.99, "basis": "notice_period_months"})
+    assert answers.resolve("When could you start?", ["2 Months"], FACTS)[0] is None
+
+
+def test_model_may_not_invent_numbers(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "3 years", "confidence": 0.99, "basis": "skill_years.playwright: 1.25"})
+    assert answers.resolve("How long have you used Cypress?", [], FACTS)[0] is None
+
+
+def test_model_answer_must_map_to_an_option(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "Pune", "confidence": 0.99, "basis": "current_location: Pune"})
+    assert answers.resolve("Which office do you prefer?", ["Mumbai", "Delhi"], FACTS)[0] is None
+    answer, _ = answers.resolve("Which office do you prefer?", ["Mumbai", "Pune"], FACTS)
+    assert answer == "Pune"
+
+
+def test_model_can_be_switched_off_in_config(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.99, "basis": "notice_period_months: 2"})
+    facts = answers.build_facts(PROFILE, dict(CONFIG, local_ai_answers=False))
+    assert answers.resolve("When could you start?", ["2 Months"], facts) == (None, "no rule matches this question")
+
+
+def test_rules_and_refusals_still_win_over_the_model(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "6.25", "confidence": 0.99, "basis": "total_experience_years: 6.25"})
+    # An unknown skill's years are an explicit refusal, never handed to the model.
+    answer, why = answers.resolve("How many years of experience do you have in Kubernetes?", [], FACTS)
+    assert answer is None and "local-ai" not in why

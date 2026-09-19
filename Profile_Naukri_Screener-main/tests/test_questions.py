@@ -104,3 +104,30 @@ def test_a_broken_pending_file_is_moved_aside_not_overwritten(store):
     questions.PENDING_PATH.write_text("- question: [unclosed", encoding="utf-8")
     assert questions.load_pending() == []
     assert (store / "questions.broken.yaml").exists()
+
+
+# ------------------------------------------------- LinkedIn's daily limit
+
+def test_linkedin_limit_pause_is_24_hours(tmp_path, monkeypatch):
+    from datetime import datetime, timedelta
+
+    from naukri.jobs import linkedin_limit
+
+    monkeypatch.setattr(linkedin_limit, "PATH", tmp_path / "linkedin_limit.json")
+    assert not linkedin_limit.active() and linkedin_limit.label() == ""
+    end = linkedin_limit.hit()
+    assert linkedin_limit.active()
+    assert timedelta(hours=23, minutes=59) < end - datetime.now() <= timedelta(hours=24)
+    assert "paused until" in linkedin_limit.label()
+    linkedin_limit.clear()
+    assert not linkedin_limit.active()
+
+
+def test_linkedin_limit_message_is_recognised():
+    from naukri.jobs.linkedin_apply import LIMIT_RE
+
+    for text in ("You’ve reached the Easy Apply application limit for today",
+                 "You have reached the daily limit. Try again tomorrow.",
+                 "You can't apply to any more jobs today"):
+        assert LIMIT_RE.search(text), text
+    assert not LIMIT_RE.search("Application sent. Your application was submitted.")

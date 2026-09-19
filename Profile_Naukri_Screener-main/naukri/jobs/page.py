@@ -113,6 +113,14 @@ def created_age_days(created_ms, day: str) -> int | None:
         return None
 
 
+def _ai_line(summary) -> str:
+    """The model's "why it fits / gap" as one line, or ""."""
+    if not isinstance(summary, dict) or not summary.get("why"):
+        return ""
+    gaps = (summary.get("gaps") or "").strip()
+    return "Fit: " + summary["why"] + ("" if not gaps or gaps.lower().rstrip(".") == "none" else f"  Gap: {gaps}")
+
+
 def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
     """Flatten both boards into one row list, stamping first-seen dates."""
     rows = []
@@ -140,6 +148,7 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
             "remote": "remote" in location.lower(),
             "easy": not job.get("company_apply") and not job.get("has_questionnaire"),
             "note": ", ".join((job.get("matched_skills") or [])[:6]),
+            "ai": _ai_line(job.get("ai_summary")),
             "new": first == today,
             "first_seen": first,
             "status": job.get("apply_status") or "",
@@ -331,6 +340,7 @@ TEMPLATE = """<title>__TITLE__</title>
   .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
   .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
   .note { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
 
   .meta { font-size: 13px; color: var(--muted); }
   .meta div + div { margin-top: 3px; }
@@ -496,6 +506,7 @@ TEMPLATE = """<title>__TITLE__</title>
           '<div class="company">' + esc(r.company) + '</div>' +
           '<div class="tags">' + tags + '</div>' +
           (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
         '</div>' +
         '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
           (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +

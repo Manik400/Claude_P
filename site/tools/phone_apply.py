@@ -398,6 +398,13 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
     if naukri_jobs or cards or web_jobs:
         outcomes = autoapply.run(naukri_jobs, cards, config, profile, headless=True, dry_run=dry_run,
                                  per_run=limit, include_backlog=False, project="phone", web_jobs=web_jobs)
+    # LinkedIn's daily Easy Apply limit (24 h pause, naukri/jobs/linkedin_limit.py):
+    # nothing happened to these, so they stay queued and the try is not counted.
+    for it in todo:
+        hit = outcomes.get(it["key"]) if it["board"] == "linkedin" else None
+        if hit and hit["status"] in ("limit-reached", "limit-cooldown"):
+            it["attempts"] = max(0, it.get("attempts", 0) - 1)
+            it["note"] = "waiting: " + hit["note"]
     # Company-site postings: the career applier's outcomes, or Simplify / by hand.
     if mode == "career":
         import naukri.jobs.career_apply as career_mod
@@ -502,11 +509,16 @@ def main(argv=None) -> int:
         "linkedin": sum(1 for k, e in ledger.entries.items() if k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
         "naukri": sum(1 for k, e in ledger.entries.items() if not k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
     }
-    caps, simplify_default = {}, False
+    caps, simplify_default, linkedin_paused = {}, False, ""
     try:
         c = config_mod.load()
         caps = {"linkedin": c.get("linkedin_max_applies_per_day"), "naukri": c.get("max_auto_applies")}
         simplify_default = bool(c.get("simplify"))
+    except Exception:
+        pass
+    try:
+        from naukri.jobs import linkedin_limit
+        linkedin_paused = linkedin_limit.label()
     except Exception:
         pass
     # Finished items older than 30 days drop off; the applications log keeps the record.
@@ -519,7 +531,8 @@ def main(argv=None) -> int:
                "applied_today": applied_today, "caps": caps, "dry_run": args.dry_run,
                "offsite": settings.get("offsite", "career"),
                "simplify_ready": os.path.exists(os.path.join(config_dir(), "simplify-profile")),
-               "simplify_default": simplify_default},
+               "simplify_default": simplify_default,
+               "linkedin_easy_apply_paused": linkedin_paused},
         "settings": settings,
         "progress": progress_of(queue),
         "pending_questions": [

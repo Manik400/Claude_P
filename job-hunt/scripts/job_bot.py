@@ -39,6 +39,7 @@ from jobbot.dotenv import load_env  # noqa: E402
 from jobbot.experience import parse_user_experience  # noqa: E402
 from jobbot.fallback import fallback_queries, load_extra_file, merge_extra  # noqa: E402
 from jobbot.http import Http  # noqa: E402
+from jobbot import localai  # noqa: E402
 from jobbot.models import Job  # noqa: E402
 from jobbot.render import render  # noqa: E402
 from jobbot.resume import ResumeError, extract_text  # noqa: E402
@@ -239,9 +240,38 @@ def do_score(run_dir, meta, jobs, resume_path, log):
     meta["resume_name"] = os.path.basename(resume_path)
     meta["resume_path"] = os.path.abspath(os.path.expanduser(resume_path))
     meta["resume_skills"] = info["resume_skills"]
+    meta["semantic"] = info.get("semantic", False)
     log(f"score: {info['scored']} jobs scored against {meta['resume_name']} ({info['resume_chars']} chars, "
-        f"{len(info['resume_skills'])} skills detected: {', '.join(info['resume_skills'][:15])}{'…' if len(info['resume_skills']) > 15 else ''})")
+        f"{len(info['resume_skills'])} skills detected: {', '.join(info['resume_skills'][:15])}{'…' if len(info['resume_skills']) > 15 else ''}"
+        f"{'; semantic match on' if info.get('semantic') else ''})")
+    do_summaries(jobs, text, log)
     return info
+
+
+def do_summaries(jobs, resume_text, log):
+    """A one-line "why it fits / gap" from the local model for the best-scoring jobs.
+
+    Bounded twice: LOCAL_AI_SUMMARY_TOP jobs at most, and the model's own
+    time budget - when that runs low the rest simply have no line.
+    """
+    if not localai.available("llm") or not jobs:
+        return 0
+    top = int(os.environ.get("LOCAL_AI_SUMMARY_TOP") or 30)
+    ranked = sorted([j for j in jobs if j.score is not None], key=lambda j: j.score or 0, reverse=True)[:top]
+    done = 0
+    started = time.time()
+    for j in ranked:
+        if localai.budget_left() < 15:
+            break
+        out = localai.summarize_fit(resume_text, j.title, j.description or j.snippet or "",
+                                    j.matched_skills, j.missing_skills)
+        if out:
+            j.extra["ai_summary"] = out
+            done += 1
+    if done or ranked:
+        log(f"local AI: {done} of {len(ranked)} top jobs got a fit line ({time.time() - started:.0f}s, "
+            f"{localai.budget_left():.0f}s of budget left)")
+    return done
 
 
 def latest_run_dir(root=None):
@@ -335,6 +365,7 @@ def cmd_run(args):
         raise SystemExit("--role is required (or --like-last)")
     run_dir = make_run_dir(args)
     log = Logger(os.path.join(run_dir, "run.log"), quiet=args.quiet)
+    log(localai.status_line())
     meta, statuses, jobs = do_search(args, run_dir, log)
     if args.resume:
         do_score(run_dir, meta, jobs, args.resume, log)

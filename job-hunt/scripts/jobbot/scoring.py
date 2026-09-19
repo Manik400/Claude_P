@@ -2,7 +2,10 @@
 
 Score (0-100) blends:
   * skill coverage  - share of the skills named in the job that also appear in the resume
-  * text similarity - TF-IDF cosine between the resume and the job text
+  * text similarity - TF-IDF cosine between the resume and the job text; when the
+                      local model is installed (jobbot/localai.py) an embedding
+                      similarity is blended in (0.4 TF-IDF + 0.6 semantic), so
+                      "test automation lead" and "SDET" stop looking unrelated
   * title alignment - share of the job title's content words that appear in the resume
   * experience fit  - from experience.classify_fit
 """
@@ -78,8 +81,29 @@ def _cos(a, b):
     return sum(w * b.get(t, 0.0) for t, w in a.items())
 
 
-def score_jobs(jobs, resume_text, vocab=None):
-    """Annotate jobs in place with score / matched_skills / missing_skills. Returns summary dict."""
+def _semantic(jobs, resume_text, ai):
+    """0..1 per job from the local embedding model, or None (not installed / ai=False)."""
+    if ai is False or not jobs:
+        return None
+    if ai is None:
+        try:
+            from . import localai as ai
+        except Exception:  # noqa: BLE001
+            return None
+    if not ai.available("embed"):
+        return None
+    try:
+        return ai.semantic_scores(resume_text, [(j.title + ". " + (j.description or j.snippet or ""))[:1500] for j in jobs])
+    except Exception:  # noqa: BLE001 - the model is a bonus; the TF-IDF term still stands
+        return None
+
+
+def score_jobs(jobs, resume_text, vocab=None, ai=None):
+    """Annotate jobs in place with score / matched_skills / missing_skills. Returns summary dict.
+
+    `ai`: None = use jobbot.localai when installed, False = never (tests, or
+    to compare), or a module with the same interface.
+    """
     vocab = vocab or Vocab()
     resume_skills = vocab.find(resume_text)
     resume_tokens = content_tokens(strip_accents(resume_text))
@@ -87,7 +111,8 @@ def score_jobs(jobs, resume_text, vocab=None):
     docs = [resume_tokens] + [content_tokens(strip_accents(j.text_blob())) for j in jobs]
     vecs = _tfidf_vectors(docs)
     rvec = vecs[0]
-    for j, jvec in zip(jobs, vecs[1:]):
+    semantic = _semantic(jobs, resume_text, ai)
+    for i, (j, jvec) in enumerate(zip(jobs, vecs[1:])):
         job_skills = vocab.find(" ".join([j.title, j.snippet, j.description]))
         for s in j.skills:  # platform-provided tags count as explicit requirements
             for c in vocab.find(s):
@@ -96,6 +121,9 @@ def score_jobs(jobs, resume_text, vocab=None):
         missing = [s for s, _ in job_skills.most_common() if s not in resume_skills]
         cos = _cos(rvec, jvec)
         cos_scaled = min(1.0, cos / 0.30)
+        if semantic is not None:
+            j.extra["semantic"] = round(semantic[i], 3)
+            cos_scaled = 0.4 * cos_scaled + 0.6 * semantic[i]
         title_terms = [t for t in content_tokens(strip_accents(j.title)) if t not in ("developer", "engineer", "senior", "junior")]
         title_align = (sum(1 for t in title_terms if t in resume_token_set) / len(title_terms)) if title_terms else 0.0
         exp = FIT_SCORE.get(j.fit, 0.5)
@@ -117,4 +145,5 @@ def score_jobs(jobs, resume_text, vocab=None):
         "resume_skills": [s for s, _ in resume_skills.most_common(60)],
         "resume_chars": len(resume_text),
         "scored": len(jobs),
+        "semantic": semantic is not None,
     }

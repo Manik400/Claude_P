@@ -31,7 +31,8 @@ from jobbot import __version__  # noqa: E402
 from jobbot.careers import geo  # noqa: E402
 from jobbot.careers.ats import fetch, probe  # noqa: E402
 from jobbot.careers.companies import DEFAULT_PATH, load, select  # noqa: E402
-from jobbot.careers.relocation import assess  # noqa: E402
+from jobbot.careers.relocation import assess, excerpt_for_model, merge_opinion  # noqa: E402
+from jobbot import localai  # noqa: E402
 from jobbot.config import REMOTE  # noqa: E402
 from jobbot.experience import parse_experience, seniority_from_title  # noqa: E402
 from jobbot.http import Http  # noqa: E402
@@ -106,6 +107,58 @@ def fit_for_range(lo, hi, jmin, jmax, seniority):
     return "fit"
 
 
+def second_opinions(relevant, ctx, want, a, lo, hi, log):
+    """Let the local model read the postings the patterns could not settle.
+
+    Only postings that would otherwise be kept (fresh, wanted country, fit)
+    and are labelled maybe / unknown, best relevance first, at most
+    LOCAL_AI_RELOC_MAX and at most 40% of the model's time budget - the
+    "why it fits" lines need the rest.
+    """
+    if not localai.available("llm") or a.relocation == "any":
+        return 0
+    cap = int(os.environ.get("LOCAL_AI_RELOC_MAX") or 40)
+    reserve = localai.budget_left() * 0.6
+    todo = [j for j in relevant
+            if j.extra["reloc"]["label"] in ("maybe", "unknown") and ctx.fresh(j.posted)
+            and (want is None or set(j.extra["countries"]) & want)
+            and not ((a.fit == "strict" and j.fit != "fit") or (a.fit == "default" and j.fit == "no"))]
+    todo.sort(key=lambda j: -(j.relevance or 0))
+    asked = upgraded = 0
+    for j in todo[:cap]:
+        if localai.budget_left() <= reserve:
+            break
+        opinion = localai.relocation_opinion(j.title, excerpt_for_model(j.title, j.description))
+        asked += 1
+        if not opinion:
+            continue
+        before = j.extra["reloc"]["label"]
+        j.extra["reloc"] = merge_opinion(j.extra["reloc"], opinion, j.description)
+        if j.extra["reloc"]["label"] != before:
+            upgraded += 1
+    if asked:
+        log(f"relocation: {asked} second opinion(s) from the local model, {upgraded} label(s) changed")
+    return upgraded
+
+
+def summarize_top(jobs, resume_text, log):
+    """One "why it fits / gap" line per top job from the local model (budgeted)."""
+    if not localai.available("llm"):
+        return 0
+    top = int(os.environ.get("LOCAL_AI_SUMMARY_TOP") or 30)
+    done = 0
+    for j in jobs[:top]:
+        if localai.budget_left() < 15:
+            break
+        out = localai.summarize_fit(resume_text, j.title, j.description, j.matched_skills, j.missing_skills)
+        if out:
+            j.extra["ai_summary"] = out
+            done += 1
+    if jobs:
+        log(f"local AI: {done} of {min(top, len(jobs))} top jobs got a fit line ({localai.budget_left():.0f}s of budget left)")
+    return done
+
+
 def chance(job):
     """0-100: how likely this one turns into an offer - resume match, experience fit and relocation support."""
     match = job.score / 100.0 if job.score is not None else 0.35 + 0.3 * job.relevance
@@ -176,6 +229,7 @@ def cmd_run(a):
     def place(codes):
         return want is None or not codes or bool(set(codes) & want)
 
+    log(localai.status_line())
     log(f"careers_bot v{__version__} | roles={roles} | experience={a.experience or '-'} ({lo}-{hi}) | "
         f"countries={'worldwide' if want is None else sorted(want)} | relocation={a.relocation} | {len(companies)} companies")
     found, statuses, recruiters, requests = search_companies(companies, keep, roles, a.details, a.workers, place)
@@ -198,6 +252,7 @@ def cmd_run(a):
         j.extra["reloc"] = assess(j.title, j.description)
         relevant.append(j)
 
+    second_opinions(relevant, ctx, want, a, lo, hi, log)
     reloc_yes = Counter(j.company for j in relevant if j.extra["reloc"]["label"] == "yes")
     reloc_seen = Counter(j.company for j in relevant)
     drops = Counter()
@@ -222,9 +277,15 @@ def cmd_run(a):
     resume_skills = []
     if a.resume:
         try:
-            info = score_jobs(jobs, extract_text(a.resume)) if jobs else {"resume_skills": []}
+            resume_text = extract_text(a.resume)
+            info = score_jobs(jobs, resume_text) if jobs else {"resume_skills": []}
             resume_skills = info["resume_skills"][:25]
-            log(f"score: {len(jobs)} jobs scored against your resume")
+            log(f"score: {len(jobs)} jobs scored against your resume"
+                + ("; semantic match on" if info.get("semantic") else ""))
+            for j in jobs:
+                j.extra["chance"] = chance(j)
+            jobs.sort(key=lambda j: (-j.extra["chance"], -(j.score or 0)))
+            summarize_top(jobs, resume_text, log)
         except ResumeError as e:
             log(f"resume error: {e} (jobs are not scored)")
     for j in jobs:

@@ -1,0 +1,8 @@
+# Optional: the free local model (job-hunt/scripts/jobbot/localai.py).
+# Install with the prebuilt CPU wheels so nothing is compiled:
+#   pip install -r requirements-ai.txt --only-binary llama-cpp-python \
+#       --extra-index-url https://abetlen.github.io/llama-cpp-python/whl/cpu
+# (ai_setup.bat at the repo root does exactly this and downloads the model.)
+llama-cpp-python>=0.3.4
+huggingface_hub>=0.23
+fastembed>=0.3
