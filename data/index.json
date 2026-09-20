@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-20T23:07:03Z",
+ "updated": "2026-09-20T23:24:08Z",
  "items": [
+  {
+   "id": "careers-20260920-232408-software-engineer",
+   "kind": "careers",
+   "title": "software engineer",
+   "when": "2026-09-20T23:24:08Z",
+   "file": "data/careers/careers-20260920-232408-software-engineer.enc",
+   "bytes": 555994,
+   "meta": {
+    "jobs": "707",
+    "relocation": "0",
+    "countries": "IN",
+    "experience": "1",
+    "reloc_mode": "any"
+   }
+  },
   {
    "id": "applications-20260920-230703-applications-sent",
    "kind": "applications",
