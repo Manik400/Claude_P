@@ -209,7 +209,7 @@ def cmd_run(a):
     roles = [r.strip() for r in ",".join(a.role).split(",") if r.strip()]
     lo, hi = parse_range(a.experience)
     want = parse_countries(a.countries)
-    companies = select(load(a.companies_file), a.companies)
+    companies = select(load(a.companies_file, log=log), a.companies)
     if not companies:
         raise SystemExit(f"no companies match '{a.companies}' in {a.companies_file or DEFAULT_PATH}")
     ctx = SearchContext(roles, [], days=a.days,
@@ -335,6 +335,7 @@ def cmd_run(a):
             "reloc": j.extra["reloc"]["label"], "visa": j.extra["reloc"]["visa"], "evidence": j.extra["reloc"]["evidence"],
             "score": j.score, "matched": j.matched_skills[:10], "missing": j.missing_skills[:6],
             "chance": j.extra["chance"], "recruiter": j.extra.get("recruiter", ""),
+            "ai": j.extra.get("ai_summary"),
         } for j in jobs],
     }
     out = os.path.abspath(a.out or f"careers_{datetime.now().strftime('%Y-%m-%d_%H%M')}_{slugify(roles[0])[:30]}.json")
@@ -352,7 +353,7 @@ def cmd_run(a):
 
 
 def cmd_check(a):
-    companies = select(load(a.companies_file), a.companies)
+    companies = select(load(a.companies_file, log=log), a.companies)
     _, statuses, _, _ = search_companies(companies, lambda t: False, ["engineer"], 0, a.workers)
     bad = [n for n, s in statuses.items() if s["status"] != "ok" or not s["total"]]
     print(f"\n{len(companies) - len(bad)}/{len(companies)} companies answer with open jobs"

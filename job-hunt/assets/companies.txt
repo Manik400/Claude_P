@@ -17,6 +17,12 @@
 # Check the whole list still works:      python job-hunt/scripts/careers_bot.py check
 #
 # Not supported yet (own career sites, no public job-board API): Booking.com, Zalando, Revolut, Atlassian, Shopify.
+#
+# Rows commented out with a [reason] tag are kept as a record, not read:
+#   [no public job-board API]        the ats column named something this bot cannot read
+#   [workday endpoint not found]     no <host>/<tenant>/<site> answers the Workday jobs API
+# A row this bot cannot read is skipped with a warning at the top of a run - it never
+# aborts the search - so it is safe to add a company here before its board is confirmed.
 
 # ---- Asia / Middle East / Oceania
 Agoda            | greenhouse      | agoda          | Bangkok hub; many roles say "relocation provided" + visa
@@ -152,12 +158,12 @@ Snap                | greenhouse | snap                 | Santa Monica, Seattle,
 TikTok / ByteDance  | greenhouse | bytedance             | Singapore, London, Dublin, New York, Los Angeles
 Roblox              | greenhouse | roblox               | San Mateo, San Francisco, London, Remote
 Unity               | greenhouse | unity                | San Francisco, Copenhagen, Stockholm, Remote
-Epic Games           | official   | epicgames             | Cary, Montreal, Vancouver, London, Porto Alegre
+# [no public job-board API] Epic Games           | official   | epicgames             | Cary, Montreal, Vancouver, London, Porto Alegre
 Riot Games           | greenhouse | riotgames             | Los Angeles, Dublin, St. Louis, Remote
-Electronic Arts      | workday    | ea                    | Redwood City, Vancouver, Austin, Orlando
-Valve                | official   | valve                 | Bellevue, Remote
-Nintendo              | official   | nintendo              | Kyoto, Tokyo, Redmond
-PlayStation / Sony    | workday    | sony                  | San Diego, London, Tokyo
+# [workday endpoint not found] Electronic Arts      | workday    | ea                    | Redwood City, Vancouver, Austin, Orlando
+# [no public job-board API] Valve                | official   | valve                 | Bellevue, Remote
+# [no public job-board API] Nintendo              | official   | nintendo              | Kyoto, Tokyo, Redmond
+PlayStation / Sony    | workday    | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers                  | San Diego, London, Tokyo
 
 # ---- Fintech / Crypto
 Coinbase             | greenhouse | coinbase              | Remote India, US, UK, Ireland, Singapore
@@ -186,29 +192,29 @@ OKX                   | greenhouse | okx                   | Hong Kong, Singapor
 Gemini                | greenhouse | gemini                | New York, London, Singapore
 
 # ---- Big Tech / MNC
-Google                | workday    | google                | US, India, UK, Europe, Singapore, Japan
-Microsoft             | workday    | microsoft             | US, India, UK, Europe, Canada
-Amazon                | amazon     | amazonjobs            | Global
-Apple                 | workday    | apple                 | US, UK, Europe, India, Singapore
+# [workday endpoint not found] Google                | workday    | google                | US, India, UK, Europe, Singapore, Japan
+# [workday endpoint not found] Microsoft             | workday    | microsoft             | US, India, UK, Europe, Canada
+# [no public job-board API] Amazon                | amazon     | amazonjobs            | Global
+# [workday endpoint not found] Apple                 | workday    | apple                 | US, UK, Europe, India, Singapore
 Meta                  | greenhouse | meta                  | Menlo Park, New York, London, Singapore, India
 NVIDIA                | workday    | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | US, India, Europe, Asia
 Salesforce             | workday    | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | US, India, Europe, Singapore
 Adobe                  | workday    | adobe.wd5.myworkdayjobs.com/adobe/external_experienced | San Jose, Bengaluru, Noida, London
-Oracle                 | oracle     | oracle                 | US, India, Europe, Asia
-SAP                    | successfactors | sap | Germany, US, India, Europe
-IBM                    | workday    | ibm                   | Global
-Cisco                  | workday    | cisco                 | US, India, Europe, Singapore
-Intel                  | workday    | intel                 | US, India, Europe, Israel
-AMD                    | workday    | amd                   | US, Canada, India, Europe
-Qualcomm               | workday    | qualcomm              | San Diego, Bengaluru, Cambridge, Munich
-Broadcom               | workday    | broadcom               | US, India, Europe, Singapore
-ServiceNow              | workday    | servicenow             | Santa Clara, Bengaluru, Amsterdam, London
-VMware / Broadcom       | workday    | broadcom               | Palo Alto, Bengaluru, Europe
-Dell Technologies       | workday    | dell                   | Austin, Bengaluru, Round Rock, Europe
+# [no public job-board API] Oracle                 | oracle     | oracle                 | US, India, Europe, Asia
+# [no public job-board API] SAP                    | successfactors | sap | Germany, US, India, Europe
+# [workday endpoint not found] IBM                    | workday    | ibm                   | Global
+Cisco                  | workday    | cisco.wd5.myworkdayjobs.com/cisco/Cisco_Careers                 | US, India, Europe, Singapore
+Intel                  | workday    | intel.wd1.myworkdayjobs.com/intel/External                 | US, India, Europe, Israel
+# [workday endpoint not found] AMD                    | workday    | amd                   | US, Canada, India, Europe
+# [workday endpoint not found] Qualcomm               | workday    | qualcomm              | San Diego, Bengaluru, Cambridge, Munich
+Broadcom               | workday    | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career               | US, India, Europe, Singapore
+ServiceNow              | workday    | snc.wd1.myworkdayjobs.com/snc/Snc_External_Career_Site             | Santa Clara, Bengaluru, Amsterdam, London
+VMware / Broadcom       | workday    | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career               | Palo Alto, Bengaluru, Europe
+# [workday endpoint not found] Dell Technologies       | workday    | dell                   | Austin, Bengaluru, Round Rock, Europe
 Nutanix                 | greenhouse | nutanix                | San Jose, Bengaluru, Durham
-Intuit                  | workday    | intuit                 | Mountain View, Bengaluru, London
+# [workday endpoint not found] Intuit                  | workday    | intuit                 | Mountain View, Bengaluru, London
 Atlassian               | greenhouse | atlassian               | Sydney, Bengaluru, Austin, Remote
-Workday                 | workday    | workday                | Pleasanton, Dublin, Bengaluru
+Workday                | workday | workday.wd5.myworkdayjobs.com/workday/Workday   | Pleasanton, Dublin, Bengaluru
 Palantir                | greenhouse | palantir               | Denver, New York, London, Tokyo
 Snowflake               | greenhouse | snowflake              | San Mateo, New York, London, Bengaluru
 
@@ -251,14 +257,14 @@ Instacart               | greenhouse | instacart             | San Francisco, To
 Grab                    | greenhouse | grab                  | Singapore, Jakarta, Bangkok
 Sea / Shopee            | greenhouse | sea                   | Singapore, Taiwan, Indonesia
 Booking.com             | greenhouse | booking                | Amsterdam, London, Bengaluru
-Expedia Group           | workday    | expedia               | Seattle, London, Madrid, Bengaluru
+# [workday endpoint not found] Expedia Group           | workday    | expedia               | Seattle, London, Madrid, Bengaluru
 Delivery Hero           | greenhouse | deliveryhero          | Berlin, London, Singapore
 Zalando                 | greenhouse | zalando               | Berlin, Dublin, Helsinki
 GetYourGuide             | greenhouse | getyourguide           | Berlin, Zurich, Paris
 Airbnb                  | greenhouse | airbnb                | San Francisco, New York, Dublin, London
 Etsy                    | greenhouse | etsy                  | Brooklyn, Dublin, London
-eBay                    | workday    | ebay                  | San Jose, Bengaluru, London
-Walmart Global Tech     | workday    | walmart                | Bengaluru, Chennai, Sunnyvale
+# [workday endpoint not found] eBay                    | workday    | ebay                  | San Jose, Bengaluru, London
+# [workday endpoint not found] Walmart Global Tech     | workday    | walmart                | Bengaluru, Chennai, Sunnyvale
 Flipkart                | greenhouse | flipkart               | Bengaluru
 Meesho                  | greenhouse | meesho                 | Bengaluru
 Swiggy                  | greenhouse | swiggy                 | Bengaluru
@@ -273,11 +279,11 @@ Ather Energy             | greenhouse | ather                  | Bengaluru
 Ola Electric             | greenhouse | olaelectric             | Bengaluru
 
 # ---- Security
-CrowdStrike             | workday    | crowdstrike            | Austin, Sunnyvale, Bengaluru, Remote
-Palo Alto Networks      | workday    | paloaltonetworks       | Santa Clara, Bengaluru, Israel, Europe
+CrowdStrike             | workday    | crowdstrike.wd5.myworkdayjobs.com/crowdstrike/CrowdstrikeCareers            | Austin, Sunnyvale, Bengaluru, Remote
+# [workday endpoint not found] Palo Alto Networks      | workday    | paloaltonetworks       | Santa Clara, Bengaluru, Israel, Europe
 Wiz                    | greenhouse | wiz                   | New York, Tel Aviv, London, Bengaluru
 Snyk                   | greenhouse | snyk                  | London, Boston, Tel Aviv, Remote
-Zscaler                | workday    | zscaler               | San Jose, Bengaluru, London
+# [workday endpoint not found] Zscaler                | workday    | zscaler               | San Jose, Bengaluru, London
 Cloudflare              | greenhouse | cloudflare             | Global / Remote
 Okta                   | greenhouse | okta                  | San Francisco, Bengaluru, London
 1Password              | greenhouse | 1password              | Toronto, Remote
@@ -290,26 +296,26 @@ Darktrace              | greenhouse | darktrace             | Cambridge, London,
 
 # ---- Hardware / Semiconductor
 NVIDIA                 | workday    | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | Santa Clara, Bengaluru, Pune, Taipei
-AMD                    | workday    | amd                     | Santa Clara, Bengaluru, Austin
-Qualcomm               | workday    | qualcomm                | San Diego, Bengaluru, Cambridge
-Broadcom               | workday    | broadcom                | Palo Alto, Bengaluru, Munich
-Intel                  | workday    | intel                   | Santa Clara, Bengaluru, Israel
-ARM                    | workday    | arm                     | Cambridge, Bengaluru, Austin
-MediaTek               | official   | mediatek                | Hsinchu, Bengaluru, Singapore
-Marvell                | workday    | marvell                 | Santa Clara, Bengaluru
-Micron                 | workday    | micron                  | Boise, Bengaluru, Hyderabad
-Cadence                | workday    | cadence                 | San Jose, Noida, Bengaluru
-Synopsys               | workday    | synopsys                | Sunnyvale, Bengaluru, Noida
-Applied Materials      | workday    | appliedmaterials        | Santa Clara, Bengaluru
-Lam Research           | workday    | lamresearch             | Fremont, Bengaluru
+# [workday endpoint not found] AMD                    | workday    | amd                     | Santa Clara, Bengaluru, Austin
+# [workday endpoint not found] Qualcomm               | workday    | qualcomm                | San Diego, Bengaluru, Cambridge
+Broadcom               | workday    | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career                | Palo Alto, Bengaluru, Munich
+Intel                  | workday    | intel.wd1.myworkdayjobs.com/intel/External                   | Santa Clara, Bengaluru, Israel
+# [workday endpoint not found] ARM                    | workday    | arm                     | Cambridge, Bengaluru, Austin
+# [no public job-board API] MediaTek               | official   | mediatek                | Hsinchu, Bengaluru, Singapore
+Marvell                | workday    | marvell.wd1.myworkdayjobs.com/marvell/MarvellCareers                 | Santa Clara, Bengaluru
+Micron                 | workday    | micron.wd1.myworkdayjobs.com/micron/External                  | Boise, Bengaluru, Hyderabad
+Cadence                | workday    | cadence.wd1.myworkdayjobs.com/cadence/External_Careers                 | San Jose, Noida, Bengaluru
+# [workday endpoint not found] Synopsys               | workday    | synopsys                | Sunnyvale, Bengaluru, Noida
+Applied Materials      | workday    | amat.wd1.myworkdayjobs.com/amat/External        | Santa Clara, Bengaluru
+# [workday endpoint not found] Lam Research           | workday    | lamresearch             | Fremont, Bengaluru
 
 # ---- Autonomous / EV / Robotics / Space
-Tesla                  | workday    | tesla                   | Austin, Palo Alto, Berlin, Amsterdam
+# [workday endpoint not found] Tesla                  | workday    | tesla                   | Austin, Palo Alto, Berlin, Amsterdam
 SpaceX                 | greenhouse | spacex                  | Hawthorne, Starbase, Seattle
 Waymo                  | greenhouse | waymo                   | Mountain View, San Francisco, Phoenix
 Zoox                   | greenhouse | zoox                    | Foster City, Seattle, San Francisco
 Aurora Innovation      | greenhouse | aurora                  | Pittsburgh, Mountain View, Dallas
-Rivian                 | workday    | rivian                  | Irvine, Palo Alto, Normal
+# [workday endpoint not found] Rivian                 | workday    | rivian                  | Irvine, Palo Alto, Normal
 Anduril                | greenhouse | anduril                 | Costa Mesa, Irvine, Seattle
 Figure AI               | greenhouse | figureai                | Sunnyvale, San Francisco
 Skydio                 | greenhouse | skydio                  | San Mateo, Remote
@@ -323,7 +329,7 @@ Revolut                | greenhouse | revolut                 | London, Dublin, 
 Wise                   | greenhouse | wise                    | London, Tallinn, Singapore
 Adyen                  | greenhouse | adyen                   | Amsterdam, London, Madrid
 Booking.com             | greenhouse | booking                 | Amsterdam, London, Bengaluru
-ASML                   | workday    | asml                    | Eindhoven, Veldhoven, Amsterdam
+# [workday endpoint not found] ASML                   | workday    | asml                    | Eindhoven, Veldhoven, Amsterdam
 N26                    | greenhouse | n26                     | Berlin, Barcelona
 Celonis                | greenhouse | celonis                 | Munich, London, New York
 Personio               | greenhouse | personio                | Munich, Dublin, London
@@ -343,68 +349,68 @@ Checkout.com             | greenhouse | checkout                | London, Paris,
 SumUp                   | greenhouse | sumup                   | Berlin, London, Sofia
 
 # ---- Japan / Singapore / APAC
-Rakuten                 | official   | rakuten                 | Tokyo, Singapore
+# [no public job-board API] Rakuten                 | official   | rakuten                 | Tokyo, Singapore
 Mercari                 | greenhouse | mercari                 | Tokyo, Palo Alto
-LINE Yahoo              | official   | line-yahoo              | Tokyo
-Preferred Networks      | official   | preferred-networks      | Tokyo
-Toyota                  | workday    | toyota                  | Tokyo, US, Europe
-Sony                    | workday    | sony                    | Tokyo, US, Europe
-Nintendo                | official   | nintendo                | Kyoto, Tokyo
+# [no public job-board API] LINE Yahoo              | official   | line-yahoo              | Tokyo
+# [no public job-board API] Preferred Networks      | official   | preferred-networks      | Tokyo
+# [workday endpoint not found] Toyota                  | workday    | toyota                  | Tokyo, US, Europe
+Sony                    | workday    | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers                    | Tokyo, US, Europe
+# [no public job-board API] Nintendo                | official   | nintendo                | Kyoto, Tokyo
 ByteDance               | greenhouse | bytedance               | Singapore, Tokyo, London, US
 Grab                    | greenhouse | grab                    | Singapore, Jakarta, Bangkok
 Sea Group               | greenhouse | sea                     | Singapore
 Shopee                  | greenhouse | sea                     | Singapore, Taiwan
 Agoda                   | greenhouse | agoda                   | Bangkok, Singapore
-DBS                     | workday    | dbs                     | Singapore, India, Hong Kong
-Standard Chartered      | workday    | standardchartered       | London, Singapore, India
-Visa                    | workday    | visa                    | San Francisco, Singapore, Bengaluru
-Mastercard              | workday    | mastercard              | New York, Bengaluru, Singapore
+DBS                     | workday    | dbs.wd3.myworkdayjobs.com/dbs/Dbs_Careers                     | Singapore, India, Hong Kong
+# [workday endpoint not found] Standard Chartered      | workday    | standardchartered       | London, Singapore, India
+Visa                    | workday    | visa.wd5.myworkdayjobs.com/visa/Visa                    | San Francisco, Singapore, Bengaluru
+# [workday endpoint not found] Mastercard              | workday    | mastercard              | New York, Bengaluru, Singapore
 
 
 
-Google | workday | google | https://www.google.com/about/careers/applications/
-Microsoft | workday | microsoft | https://jobs.careers.microsoft.com/
-Amazon | amazon | amazonjobs | https://www.amazon.jobs/
-Apple | workday | apple | https://jobs.apple.com/
+# [workday endpoint not found] Google | workday | google | https://www.google.com/about/careers/applications/
+# [workday endpoint not found] Microsoft | workday | microsoft | https://jobs.careers.microsoft.com/
+# [no public job-board API] Amazon | amazon | amazonjobs | https://www.amazon.jobs/
+# [workday endpoint not found] Apple | workday | apple | https://jobs.apple.com/
 Meta | greenhouse | meta | https://www.metacareers.com/
-NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
-Microsoft Azure | workday | microsoft | https://jobs.careers.microsoft.com/
-Amazon AWS | amazon | amazonjobs | https://www.amazon.jobs/
-IBM | workday | ibm | https://www.ibm.com/careers
-Oracle | oracle | oracle | https://careers.oracle.com/
-Salesforce | workday | salesforce.wd12.myworkdayjobs.com/External_Career_Site | https://salesforce.wd12.myworkdayjobs.com/External_Career_Site
-Adobe | workday | adobe.wd5.myworkdayjobs.com/external_experienced | https://adobe.wd5.myworkdayjobs.com/external_experienced
-Cisco | workday | cisco | https://jobs.cisco.com/
-Intel | workday | intel | https://jobs.intel.com/
-AMD | workday | amd | https://careers.amd.com/
-Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
-Broadcom | workday | broadcom | https://broadcom.wd1.myworkdayjobs.com/External_Career
-ServiceNow | workday | servicenow | https://careers.servicenow.com/
-SAP | successfactors | sap | https://jobs.sap.com/
-Dell Technologies | workday | dell | https://jobs.dell.com/
-HP | workday | hp | https://jobs.hp.com/
-HPE | workday | hpe | https://careers.hpe.com/
-Lenovo | workday | lenovo | https://jobs.lenovo.com/
-VMware / Broadcom | workday | broadcom | https://broadcom.wd1.myworkdayjobs.com/
+NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+# [workday endpoint not found] Microsoft Azure | workday | microsoft | https://jobs.careers.microsoft.com/
+# [no public job-board API] Amazon AWS | amazon | amazonjobs | https://www.amazon.jobs/
+# [workday endpoint not found] IBM | workday | ibm | https://www.ibm.com/careers
+# [no public job-board API] Oracle | oracle | oracle | https://careers.oracle.com/
+Salesforce | workday | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | https://salesforce.wd12.myworkdayjobs.com/External_Career_Site
+Adobe | workday | adobe.wd5.myworkdayjobs.com/adobe/external_experienced | https://adobe.wd5.myworkdayjobs.com/external_experienced
+Cisco | workday | cisco.wd5.myworkdayjobs.com/cisco/Cisco_Careers | https://jobs.cisco.com/
+Intel | workday | intel.wd1.myworkdayjobs.com/intel/External | https://jobs.intel.com/
+# [workday endpoint not found] AMD | workday | amd | https://careers.amd.com/
+# [workday endpoint not found] Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
+Broadcom | workday | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career | https://broadcom.wd1.myworkdayjobs.com/External_Career
+ServiceNow | workday | snc.wd1.myworkdayjobs.com/snc/Snc_External_Career_Site | https://careers.servicenow.com/
+# [no public job-board API] SAP | successfactors | sap | https://jobs.sap.com/
+# [workday endpoint not found] Dell Technologies | workday | dell | https://jobs.dell.com/
+HP | workday | hp.wd5.myworkdayjobs.com/hp/ExternalCareerSite | https://jobs.hp.com/
+# [workday endpoint not found] HPE | workday | hpe | https://careers.hpe.com/
+# [workday endpoint not found] Lenovo | workday | lenovo | https://jobs.lenovo.com/
+VMware / Broadcom | workday | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career | https://broadcom.wd1.myworkdayjobs.com/
 Atlassian | greenhouse | atlassian | https://www.atlassian.com/company/careers
 LinkedIn | greenhouse | linkedin | https://www.linkedin.com/jobs/
-Intuit | workday | intuit | https://jobs.intuit.com/
-Workday | workday | workday | https://www.workday.com/en-us/company/careers.html
+# [workday endpoint not found] Intuit | workday | intuit | https://jobs.intuit.com/
+Workday                | workday | workday.wd5.myworkdayjobs.com/workday/Workday   | https://www.workday.com/en-us/company/careers.html
 Palantir | greenhouse | palantir | https://www.palantir.com/careers/
 Snowflake | greenhouse | snowflake | https://careers.snowflake.com/
 Uber | greenhouse | uber | https://www.uber.com/careers/
 Airbnb | greenhouse | airbnb | https://careers.airbnb.com/
 Booking.com | greenhouse | booking | https://careers.booking.com/
-Expedia Group | workday | expedia | https://careers.expediagroup.com/
+# [workday endpoint not found] Expedia Group | workday | expedia | https://careers.expediagroup.com/
 Indeed | greenhouse | indeed | https://www.indeed.com/cmp/Indeed/jobs
 Wayfair | greenhouse | wayfair | https://www.wayfair.com/careers
 Coupang | greenhouse | coupang | https://www.coupang.jobs/
-Walmart Global Tech | workday | walmart | https://careers.walmart.com/
-Target | workday | target | https://corporate.target.com/careers
-Nike | workday | nike | https://jobs.nike.com/
-Samsung | workday | samsung | https://www.samsung.com/global/careers/
-Sony | workday | sony | https://www.sony.com/en/SonyInfo/Careers/
-Panasonic | workday | panasonic | https://holdings.panasonic/global/corporate/careers.html
+# [workday endpoint not found] Walmart Global Tech | workday | walmart | https://careers.walmart.com/
+Target | workday | target.wd5.myworkdayjobs.com/target/TargetCareers | https://corporate.target.com/careers
+# [workday endpoint not found] Nike | workday | nike | https://jobs.nike.com/
+# [workday endpoint not found] Samsung | workday | samsung | https://www.samsung.com/global/careers/
+Sony | workday | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers | https://www.sony.com/en/SonyInfo/Careers/
+# [workday endpoint not found] Panasonic | workday | panasonic | https://holdings.panasonic/global/corporate/careers.html
 
 
 # ================================================================
@@ -429,11 +435,11 @@ Docker | greenhouse | docker | https://www.docker.com/careers/
 Sentry | greenhouse | sentry | https://sentry.io/careers/
 New Relic | greenhouse | newrelic | https://newrelic.com/careers/
 Fastly | greenhouse | fastly | https://www.fastly.com/about/careers
-Akamai | workday | akamai | https://www.akamai.com/careers
+# [workday endpoint not found] Akamai | workday | akamai | https://www.akamai.com/careers
 DigitalOcean | greenhouse | digitalocean | https://www.digitalocean.com/careers
 Pure Storage | greenhouse | purestorage | https://www.purestorage.com/company/careers.html
 Canonical | greenhouse | canonical | https://canonical.com/careers
-Red Hat | workday | redhat | https://www.redhat.com/en/jobs
+Red Hat | workday | redhat.wd5.myworkdayjobs.com/redhat/jobs | https://www.redhat.com/en/jobs
 SUSE | greenhouse | suse | https://www.suse.com/careers/
 Veeam | greenhouse | veeam | https://www.veeam.com/company-careers.html
 JFrog | greenhouse | jfrog | https://www.jfrog.com/careers/
@@ -449,11 +455,11 @@ Timescale | greenhouse | timescale | https://www.timescale.com/careers
 Materialize | greenhouse | materialize | https://materialize.com/careers/
 PlanetScale | greenhouse | planetscale | https://planetscale.com/careers
 Neon | greenhouse | neon | https://neon.tech/careers
-Turso | official | turso | https://turso.tech/careers
+# [no public job-board API] Turso | official | turso | https://turso.tech/careers
 Oxide Computer | greenhouse | oxidecomputer | https://oxide.computer/careers
-Fly.io | official | fly | https://fly.io/careers
-Render | official | render | https://render.com/careers
-Railway | official | railway | https://railway.com/careers
+# [no public job-board API] Fly.io | official | fly | https://fly.io/careers
+# [no public job-board API] Render | official | render | https://render.com/careers
+# [no public job-board API] Railway | official | railway | https://railway.com/careers
 
 
 # ================================================================
@@ -470,13 +476,13 @@ Zilliz | greenhouse | zilliz | https://zilliz.com/careers
 Milvus / Zilliz | greenhouse | zilliz | https://zilliz.com/careers
 Neo4j | greenhouse | neo4j | https://neo4j.com/careers/
 PlanetScale | greenhouse | planetscale | https://planetscale.com/careers
-Couchbase | workday | couchbase | https://www.couchbase.com/careers/
-Cloudera | workday | cloudera | https://www.cloudera.com/about/careers.html
+# [workday endpoint not found] Couchbase | workday | couchbase | https://www.couchbase.com/careers/
+# [workday endpoint not found] Cloudera | workday | cloudera | https://www.cloudera.com/about/careers.html
 DataStax | greenhouse | datastax | https://www.datastax.com/company/careers
 SingleStore | greenhouse | singlestore | https://www.singlestore.com/careers
 ClickHouse | greenhouse | clickhouse | https://clickhouse.com/company/careers
 ScyllaDB | greenhouse | scylladb | https://www.scylladb.com/careers/
-TigerBeetle | official | tigerbeetle | https://tigerbeetle.com/careers/
+# [no public job-board API] TigerBeetle | official | tigerbeetle | https://tigerbeetle.com/careers/
 Cockroach Labs | greenhouse | cockroachlabs | https://www.cockroachlabs.com/careers/
 Confluent | greenhouse | confluent | https://www.confluent.io/about/careers/
 Redis | greenhouse | redis | https://redis.io/careers/
@@ -572,7 +578,7 @@ Zepto | greenhouse | zepto | https://www.zepto.in/careers
 Swiggy | greenhouse | swiggy | https://careers.swiggy.com/
 Zomato / Eternal | greenhouse | eternal | https://www.eternal.com/careers/
 Dream11 / Dream Sports | greenhouse | dreamsports | https://www.dreamsports.group/careers/
-Paytm | official | paytm | https://paytm.com/careers
+# [no public job-board API] Paytm | official | paytm | https://paytm.com/careers
 Myntra | greenhouse | myntra | https://careers.myntra.com/
 Ola | greenhouse | ola | https://www.olacabs.com/careers
 Ola Electric | greenhouse | olaelectric | https://www.olaelectric.com/careers
@@ -686,19 +692,19 @@ Pinterest | greenhouse | pinterest | https://www.pinterestcareers.com/
 Dropbox | greenhouse | dropbox | https://jobs.dropbox.com/
 Discord | greenhouse | discord | https://discord.com/jobs
 Quora | greenhouse | quora | https://www.quora.com/careers
-Medium | official | medium | https://medium.com/jobs
+# [no public job-board API] Medium | official | medium | https://medium.com/jobs
 Substack | greenhouse | substack | https://substack.com/careers
 Patreon | greenhouse | patreon | https://www.patreon.com/careers
 Vimeo | greenhouse | vimeo | https://vimeo.com/jobs
-Automattic | official | automattic | https://automattic.com/work-with-us/
-WordPress.com | official | automattic | https://automattic.com/work-with-us/
-Buffer | official | buffer | https://buffer.com/journey
+# [no public job-board API] Automattic | official | automattic | https://automattic.com/work-with-us/
+# [no public job-board API] WordPress.com | official | automattic | https://automattic.com/work-with-us/
+# [no public job-board API] Buffer | official | buffer | https://buffer.com/journey
 Etsy | greenhouse | etsy | https://www.etsy.com/careers
 Snap | greenhouse | snap | https://www.snap.com/en-US/careers
 Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
 TikTok / ByteDance | greenhouse | bytedance | https://lifeattiktok.com/
 Roblox | greenhouse | roblox | https://careers.roblox.com/
-Twitch | amazon | amazonjobs | https://www.amazon.jobs/en/teams/twitch
+# [no public job-board API] Twitch | amazon | amazonjobs | https://www.amazon.jobs/en/teams/twitch
 Whatnot | greenhouse | whatnot | https://careers.whatnot.com/
 
 
@@ -710,7 +716,7 @@ DoorDash | greenhouse | doordash | https://careers.doordash.com/
 Instacart | greenhouse | instacart | https://instacart.careers/
 Etsy | greenhouse | etsy | https://www.etsy.com/careers
 Wayfair | greenhouse | wayfair | https://www.wayfair.com/careers
-Chewy | workday | chewy | https://careers.chewy.com/
+Chewy | workday | chewy.wd5.myworkdayjobs.com/chewy/External | https://careers.chewy.com/
 Gopuff | greenhouse | gopuff | https://www.gopuff.com/go/careers
 Mercari | greenhouse | mercari | https://careers.mercari.com/
 Poshmark | greenhouse | poshmark | https://careers.poshmark.com/
@@ -727,7 +733,7 @@ Uber | greenhouse | uber | https://www.uber.com/careers/
 Lyft | greenhouse | lyft | https://www.lyft.com/careers
 Grab | greenhouse | grab | https://www.grab.careers/
 Booking.com | greenhouse | booking | https://careers.booking.com/
-Expedia Group | workday | expedia | https://careers.expediagroup.com/
+# [workday endpoint not found] Expedia Group | workday | expedia | https://careers.expediagroup.com/
 Delivery Hero | greenhouse | deliveryhero | https://careers.deliveryhero.com/
 Zalando | greenhouse | zalando | https://jobs.zalando.com/
 GetYourGuide | greenhouse | getyourguide | https://www.getyourguide.careers/
@@ -739,9 +745,9 @@ Doctolib | greenhouse | doctolib | https://about.doctolib.com/careers/
 # CYBERSECURITY
 # ================================================================
 
-CrowdStrike | workday | crowdstrike | https://www.crowdstrike.com/careers/
-Palo Alto Networks | workday | paloaltonetworks | https://jobs.paloaltonetworks.com/
-Zscaler | workday | zscaler | https://www.zscaler.com/careers
+CrowdStrike | workday | crowdstrike.wd5.myworkdayjobs.com/crowdstrike/CrowdstrikeCareers | https://www.crowdstrike.com/careers/
+# [workday endpoint not found] Palo Alto Networks | workday | paloaltonetworks | https://jobs.paloaltonetworks.com/
+# [workday endpoint not found] Zscaler | workday | zscaler | https://www.zscaler.com/careers
 Wiz | greenhouse | wiz | https://www.wiz.io/careers
 Snyk | greenhouse | snyk | https://snyk.io/careers/
 Rubrik | greenhouse | rubrik | https://www.rubrik.com/company/careers/
@@ -753,7 +759,7 @@ Arctic Wolf | greenhouse | arcticwolf | https://arcticwolf.com/careers/
 Tailscale | greenhouse | tailscale | https://tailscale.com/careers
 1Password | greenhouse | 1password | https://1password.com/jobs
 Keeper Security | greenhouse | keepersecurity | https://www.keepersecurity.com/careers.html
-SailPoint | workday | sailpoint | https://www.sailpoint.com/company/careers/
+SailPoint | workday | sailpoint.wd1.myworkdayjobs.com/sailpoint/Sailpoint | https://www.sailpoint.com/company/careers/
 Darktrace | greenhouse | darktrace | https://careers.darktrace.com/
 
 
@@ -761,49 +767,49 @@ Darktrace | greenhouse | darktrace | https://careers.darktrace.com/
 # QUANT / HFT / TRADING
 # ================================================================
 
-Jane Street | official | janestreet | https://www.janestreet.com/join-jane-street/
-Hudson River Trading | official | hrt | https://www.hudsonrivertrading.com/careers/
-Citadel | official | citadel | https://www.citadel.com/careers/
-Citadel Securities | official | citadel-securities | https://www.citadelsecurities.com/careers/
-Two Sigma | official | twosigma | https://www.twosigma.com/careers/
-Jump Trading | official | jumptrading | https://www.jumptrading.com/careers/
-DRW | official | drw | https://www.drw.com/careers/
-IMC Trading | official | imc | https://www.imc.com/careers/
-Optiver | official | optiver | https://www.optiver.com/working-at-optiver/career-opportunities/
-Akuna Capital | official | akuna | https://akunacapital.com/careers/
-Five Rings | official | fiverings | https://fiverings.com/careers/
-Tower Research | official | tower-research | https://www.tower-research.com/careers/
-D.E. Shaw | official | deshaw | https://www.deshaw.com/careers
-SIG | official | sig | https://sig.com/careers/
-Virtu Financial | official | virtu | https://www.virtu.com/careers/
-Flow Traders | official | flowtraders | https://www.flowtraders.com/careers/
+# [no public job-board API] Jane Street | official | janestreet | https://www.janestreet.com/join-jane-street/
+# [no public job-board API] Hudson River Trading | official | hrt | https://www.hudsonrivertrading.com/careers/
+# [no public job-board API] Citadel | official | citadel | https://www.citadel.com/careers/
+# [no public job-board API] Citadel Securities | official | citadel-securities | https://www.citadelsecurities.com/careers/
+# [no public job-board API] Two Sigma | official | twosigma | https://www.twosigma.com/careers/
+# [no public job-board API] Jump Trading | official | jumptrading | https://www.jumptrading.com/careers/
+# [no public job-board API] DRW | official | drw | https://www.drw.com/careers/
+# [no public job-board API] IMC Trading | official | imc | https://www.imc.com/careers/
+# [no public job-board API] Optiver | official | optiver | https://www.optiver.com/working-at-optiver/career-opportunities/
+# [no public job-board API] Akuna Capital | official | akuna | https://akunacapital.com/careers/
+# [no public job-board API] Five Rings | official | fiverings | https://fiverings.com/careers/
+# [no public job-board API] Tower Research | official | tower-research | https://www.tower-research.com/careers/
+# [no public job-board API] D.E. Shaw | official | deshaw | https://www.deshaw.com/careers
+# [no public job-board API] SIG | official | sig | https://sig.com/careers/
+# [no public job-board API] Virtu Financial | official | virtu | https://www.virtu.com/careers/
+# [no public job-board API] Flow Traders | official | flowtraders | https://www.flowtraders.com/careers/
 
 
 # ================================================================
 # SEMICONDUCTOR / HARDWARE
 # ================================================================
 
-NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
-AMD | workday | amd | https://careers.amd.com/
-Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
-Broadcom | workday | broadcom | https://broadcom.wd1.myworkdayjobs.com/External_Career
-Intel | workday | intel | https://jobs.intel.com/
-ARM | workday | arm | https://careers.arm.com/
-Marvell | workday | marvell | https://marvell.wd1.myworkdayjobs.com/
-MediaTek | official | mediatek | https://corp.mediatek.com/careers
-Micron | workday | micron | https://micron.wd1.myworkdayjobs.com/
-Cadence | workday | cadence | https://cadence.wd1.myworkdayjobs.com/
-Synopsys | workday | synopsys | https://careers.synopsys.com/
-Applied Materials | workday | appliedmaterials | https://amat.wd1.myworkdayjobs.com/
-Lam Research | workday | lamresearch | https://careers.lamresearch.com/
-ASML | workday | asml | https://www.asml.com/en/careers
+NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
+# [workday endpoint not found] AMD | workday | amd | https://careers.amd.com/
+# [workday endpoint not found] Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
+Broadcom | workday | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career | https://broadcom.wd1.myworkdayjobs.com/External_Career
+Intel | workday | intel.wd1.myworkdayjobs.com/intel/External | https://jobs.intel.com/
+# [workday endpoint not found] ARM | workday | arm | https://careers.arm.com/
+Marvell | workday | marvell.wd1.myworkdayjobs.com/marvell/MarvellCareers | https://marvell.wd1.myworkdayjobs.com/
+# [no public job-board API] MediaTek | official | mediatek | https://corp.mediatek.com/careers
+Micron | workday | micron.wd1.myworkdayjobs.com/micron/External | https://micron.wd1.myworkdayjobs.com/
+Cadence | workday | cadence.wd1.myworkdayjobs.com/cadence/External_Careers | https://cadence.wd1.myworkdayjobs.com/
+# [workday endpoint not found] Synopsys | workday | synopsys | https://careers.synopsys.com/
+Applied Materials | workday | amat.wd1.myworkdayjobs.com/amat/External | https://amat.wd1.myworkdayjobs.com/
+# [workday endpoint not found] Lam Research | workday | lamresearch | https://careers.lamresearch.com/
+# [workday endpoint not found] ASML | workday | asml | https://www.asml.com/en/careers
 
 
 # ================================================================
 # AUTONOMOUS / ROBOTICS / EV
 # ================================================================
 
-Tesla | workday | tesla | https://www.tesla.com/careers
+# [workday endpoint not found] Tesla | workday | tesla | https://www.tesla.com/careers
 Waymo | greenhouse | waymo | https://waymo.com/careers/
 Zoox | greenhouse | zoox | https://zoox.com/careers/
 Aurora | greenhouse | aurora | https://aurora.tech/careers
@@ -815,9 +821,9 @@ Shield AI | greenhouse | shieldai | https://shield.ai/careers/
 Zipline | greenhouse | zipline | https://www.flyzipline.com/careers
 Archer Aviation | greenhouse | archer | https://www.archer.com/careers
 Joby Aviation | greenhouse | joby | https://www.jobyaviation.com/careers/
-Rivian | workday | rivian | https://rivian.com/careers
-Lucid Motors | workday | lucid | https://www.lucidmotors.com/careers
-Polestar | workday | polestar | https://www.polestar.com/global/careers/
+# [workday endpoint not found] Rivian | workday | rivian | https://rivian.com/careers
+# [workday endpoint not found] Lucid Motors | workday | lucid | https://www.lucidmotors.com/careers
+# [workday endpoint not found] Polestar | workday | polestar | https://www.polestar.com/global/careers/
 Cruise | greenhouse | cruise | https://www.getcruise.com/careers/
 
 
@@ -840,15 +846,15 @@ Anduril | greenhouse | anduril | https://www.anduril.com/careers/
 # VIDEO / STREAMING / MEDIA
 # ================================================================
 
-Netflix | workday | netflix | https://jobs.netflix.com/
+# [workday endpoint not found] Netflix | workday | netflix | https://jobs.netflix.com/
 Roku | greenhouse | roku | https://www.roku.com/jobs
 Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
 Tubi | lever | tubi | https://jobs.lever.co/tubi
-Disney | workday | disney | https://jobs.disneycareers.com/
-Hulu | workday | disney | https://jobs.disneycareers.com/
-Paramount | workday | paramount | https://careers.paramount.com/
-Warner Bros Discovery | workday | wbd | https://careers.wbd.com/
-Comcast | workday | comcast | https://jobs.comcast.com/
+# [workday endpoint not found] Disney | workday | disney | https://jobs.disneycareers.com/
+# [workday endpoint not found] Hulu | workday | disney | https://jobs.disneycareers.com/
+# [workday endpoint not found] Paramount | workday | paramount | https://careers.paramount.com/
+# [workday endpoint not found] Warner Bros Discovery | workday | wbd | https://careers.wbd.com/
+# [workday endpoint not found] Comcast | workday | comcast | https://jobs.comcast.com/
 Fubo | greenhouse | fubo | https://careers.fubo.tv/
 
 
@@ -856,17 +862,17 @@ Fubo | greenhouse | fubo | https://careers.fubo.tv/
 # GAMING
 # ================================================================
 
-Epic Games | official | epicgames | https://www.epicgames.com/site/en-US/careers/jobs
+# [no public job-board API] Epic Games | official | epicgames | https://www.epicgames.com/site/en-US/careers/jobs
 Riot Games | greenhouse | riotgames | https://www.riotgames.com/en/work-with-us/jobs
-Valve | official | valve | https://www.valvesoftware.com/en/jobs
+# [no public job-board API] Valve | official | valve | https://www.valvesoftware.com/en/jobs
 Roblox | greenhouse | roblox | https://careers.roblox.com/
 Unity | greenhouse | unity | https://unity.com/careers
-Electronic Arts | workday | ea | https://jobs.ea.com/
-Activision Blizzard | workday | activision | https://careers.activision.com/
-Take-Two Interactive | workday | taketwo | https://www.take2games.com/careers
+# [workday endpoint not found] Electronic Arts | workday | ea | https://jobs.ea.com/
+# [workday endpoint not found] Activision Blizzard | workday | activision | https://careers.activision.com/
+# [workday endpoint not found] Take-Two Interactive | workday | taketwo | https://www.take2games.com/careers
 Zynga | greenhouse | zynga | https://www.zynga.com/careers
 Supercell | greenhouse | supercell | https://supercell.com/en/careers/
-King | workday | king | https://www.king.com/en/careers
+# [workday endpoint not found] King | workday | king | https://www.king.com/en/careers
 
 
 # ================================================================
@@ -879,7 +885,7 @@ Klarna | greenhouse | klarna | https://www.klarna.com/careers/
 Revolut | greenhouse | revolut | https://www.revolut.com/careers/
 Wise | greenhouse | wise | https://wise.jobs/
 Adyen | greenhouse | adyen | https://careers.adyen.com/
-ASML | workday | asml | https://www.asml.com/en/careers
+# [workday endpoint not found] ASML | workday | asml | https://www.asml.com/en/careers
 N26 | greenhouse | n26 | https://n26.com/en-eu/careers
 Celonis | greenhouse | celonis | https://www.celonis.com/careers/
 Personio | greenhouse | personio | https://www.personio.com/careers/
@@ -909,14 +915,14 @@ Shopee | greenhouse | sea | https://www.sea.com/careers
 ByteDance | greenhouse | bytedance | https://jobs.bytedance.com/
 TikTok | greenhouse | bytedance | https://lifeattiktok.com/
 Agoda | greenhouse | agoda | https://careersatagoda.com/
-Rakuten | official | rakuten | https://global.rakuten.com/corp/careers/
+# [no public job-board API] Rakuten | official | rakuten | https://global.rakuten.com/corp/careers/
 Mercari | greenhouse | mercari | https://careers.mercari.com/
-Preferred Networks | official | preferred-networks | https://www.preferred.jp/en/careers/
-LINE Yahoo | official | line-yahoo | https://www.lycorp.co.jp/en/recruit/
-Toyota | workday | toyota | https://careers.toyota.com/
-Sony | workday | sony | https://www.sony.com/en/SonyInfo/Careers/
-Nintendo | official | nintendo | https://www.nintendo.co.jp/jobs/
-DBS | workday | dbs | https://www.dbs.com/careers
-Standard Chartered | workday | standardchartered | https://www.sc.com/en/careers/
-Visa | workday | visa | https://usa.visa.com/careers.html
-Mastercard | workday | mastercard | https://careers.mastercard.com/
+# [no public job-board API] Preferred Networks | official | preferred-networks | https://www.preferred.jp/en/careers/
+# [no public job-board API] LINE Yahoo | official | line-yahoo | https://www.lycorp.co.jp/en/recruit/
+# [workday endpoint not found] Toyota | workday | toyota | https://careers.toyota.com/
+Sony | workday | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers | https://www.sony.com/en/SonyInfo/Careers/
+# [no public job-board API] Nintendo | official | nintendo | https://www.nintendo.co.jp/jobs/
+DBS | workday | dbs.wd3.myworkdayjobs.com/dbs/Dbs_Careers | https://www.dbs.com/careers
+# [workday endpoint not found] Standard Chartered | workday | standardchartered | https://www.sc.com/en/careers/
+Visa | workday | visa.wd5.myworkdayjobs.com/visa/Visa | https://usa.visa.com/careers.html
+# [workday endpoint not found] Mastercard | workday | mastercard | https://careers.mastercard.com/

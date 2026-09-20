@@ -69,6 +69,7 @@ jobs:
       # are cached between runs (actions/cache keeps them 7 days past last use).
       - name: Install local AI
         if: vars.LOCAL_AI == '1'
+        continue-on-error: true
         run: >
           python -m pip install -q -r job-hunt/requirements-ai.txt
           --only-binary llama-cpp-python
@@ -81,6 +82,7 @@ jobs:
           key: local-ai-v1-${{ vars.LOCAL_AI_MODEL || 'unsloth/Qwen3.5-2B-GGUF:Qwen3.5-2B-Q4_K_M.gguf' }}-${{ vars.LOCAL_AI_EMBED_MODEL || 'BAAI/bge-small-en-v1.5' }}
       - name: Download local AI models
         if: vars.LOCAL_AI == '1'
+        continue-on-error: true
         env:
           LOCAL_AI_MODEL: ${{ vars.LOCAL_AI_MODEL }}
           LOCAL_AI_EMBED_MODEL: ${{ vars.LOCAL_AI_EMBED_MODEL }}
