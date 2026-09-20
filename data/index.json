@@ -1,6 +1,25 @@
 {
- "updated": "2026-09-20T22:16:38Z",
+ "updated": "2026-09-20T22:31:47Z",
  "items": [
+  {
+   "id": "jobhunt-20260920-223147-software-engineer",
+   "kind": "jobhunt",
+   "title": "software engineer",
+   "when": "2026-09-20T22:31:47Z",
+   "file": "data/jobhunt/jobhunt-20260920-223147-software-engineer.enc",
+   "bytes": 621202,
+   "meta": {
+    "jobs": "182",
+    "countries": "IN",
+    "experience": "1",
+    "days": "7",
+    "hours": "",
+    "window_hours": "168",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads",
+    "jobs_file": "data/jobhunt/jobhunt-20260920-223147-software-engineer.jobs.enc"
+   }
+  },
   {
    "id": "applications-20260920-221638-applications-sent",
    "kind": "applications",
