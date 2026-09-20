@@ -203,6 +203,8 @@
   .job .sub { font-size: 13px; color: var(--muted); }
   .job .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
   .job .ev { font-size: 13px; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 8px; margin: 8px 0; }
+  .job .ai { font-size: 13px; color: var(--fg); background: rgba(127,127,127,.10); border-left: 3px solid var(--ok, var(--accent)); padding: 6px 8px; margin: 8px 0; border-radius: 4px; }
+  .job .ai b { font-weight: 600; }
   .job .acts { display: flex; gap: 8px; margin-top: auto; padding-top: 12px; }
   .job .acts a, .job .acts button { flex: 1; text-align: center; text-decoration: none; padding: 9px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
   .job a.btn, .job button.btn { background: var(--accent); color: var(--accent-fg); border: 0; }
@@ -1912,6 +1914,12 @@
     box.innerHTML = h; box.scrollTop = top;
     bindMarks(box, function (toggle) { if (toggle === true) CV.showRemoved = !CV.showRemoved; renderCareers(); });
   }
+  // The "why it fits / gap" line the local model wrote for the top jobs (careers_bot summarize_top).
+  function aiLine(j) {
+    var a = j.ai; if (!a || !a.why) return "";
+    var gap = a.gaps && !/^none\.?$/i.test(a.gaps) ? ' <b>Gap:</b> ' + esc(a.gaps) : "";
+    return '<div class="ai" title="from the local model"><b>Fit:</b> ' + esc(a.why) + gap + "</div>";
+  }
   function cJobHtml(j) {
     var R = RELOC[j.reloc] || ["", j.reloc], F = FIT[j.fit] || ["", j.fit], t = [], mk = "c:" + j.id, applied = !!marks.applied[mk];
     if (applied) t.push(chip("ok", "✓ applied"));
@@ -1922,7 +1930,7 @@
     if (j.matched && j.matched.length) skills += '<div class="hint">✓ ' + esc(j.matched.join(", ")) + "</div>";
     if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
     return '<div class="job' + (applied ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
-      '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + skills +
+      '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + aiLine(j) + skills +
       '<div class="acts">' + openLink(j.url, applied ? "Open" : "Open & apply", applied ? "btn2" : "btn", mk) + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a>" + markBtns(mk, applied) + "</div>" +
       (CV.open[j.id] ? '<div class="contacts">' + contactsHtml(j.company, cityOf(j.location, CV.country || (j.countries || [])[0]), j.recruiter) + "</div>" : "") + "</div>";
   }
