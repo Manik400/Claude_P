@@ -1,6 +1,15 @@
 {
- "updated": "2026-09-20T06:57:53Z",
+ "updated": "2026-09-20T08:07:15Z",
  "items": [
+  {
+   "id": "applications-20260920-080714-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-09-20T08:07:14Z",
+   "file": "data/applications/applications-20260920-080714-applications-sent.enc",
+   "bytes": 1495233,
+   "meta": {}
+  },
   {
    "id": "jobhunt-20260920-065753-software-engineer",
    "kind": "jobhunt",
@@ -19,15 +28,6 @@
     "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads",
     "jobs_file": "data/jobhunt/jobhunt-20260920-065753-software-engineer.jobs.enc"
    }
-  },
-  {
-   "id": "applications-20260919-224637-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-09-19T22:46:37Z",
-   "file": "data/applications/applications-20260919-224637-applications-sent.enc",
-   "bytes": 1495233,
-   "meta": {}
   },
   {
    "id": "naukri-20260919-224151-naukri-openings-2026-09-20-run-4",
