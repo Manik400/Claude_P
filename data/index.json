@@ -1,14 +1,16 @@
 {
- "updated": "2026-09-21T11:00:33Z",
+ "updated": "2026-09-21T11:00:41Z",
  "items": [
   {
-   "id": "applications-20260921-110032-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-09-21T11:00:32Z",
-   "file": "data/applications/applications-20260921-110032-applications-sent.enc",
-   "bytes": 1835176,
-   "meta": {}
+   "id": "jobhunt-20260921-110041-2026-09-21-1555-software-engineer",
+   "kind": "jobhunt",
+   "title": "2026-09-21_1555_software-engineer",
+   "when": "2026-09-21T11:00:41Z",
+   "file": "data/jobhunt/jobhunt-20260921-110041-2026-09-21-1555-software-engineer.enc",
+   "bytes": 1687468,
+   "meta": {
+    "jobs_file": "data/jobhunt/jobhunt-20260921-110041-2026-09-21-1555-software-engineer.jobs.enc"
+   }
   },
   {
    "id": "naukri-20260919-194149-naukri-openings-2026-09-20-run-2",
