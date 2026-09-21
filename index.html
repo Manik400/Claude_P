@@ -203,6 +203,8 @@
   .job .sub { font-size: 13px; color: var(--muted); }
   .job .tags { display: flex; flex-wrap: wrap; gap: 6px; margin: 10px 0 4px; }
   .job .ev { font-size: 13px; color: var(--muted); border-left: 3px solid var(--accent); padding-left: 8px; margin: 8px 0; }
+  .job .ai { font-size: 13px; color: var(--fg); background: rgba(127,127,127,.10); border-left: 3px solid var(--ok, var(--accent)); padding: 6px 8px; margin: 8px 0; border-radius: 4px; }
+  .job .ai b { font-weight: 600; }
   .job .acts { display: flex; gap: 8px; margin-top: auto; padding-top: 12px; }
   .job .acts a, .job .acts button { flex: 1; text-align: center; text-decoration: none; padding: 9px; border-radius: 10px; font-weight: 600; font-size: 14px; cursor: pointer; min-height: 40px; display: inline-flex; align-items: center; justify-content: center; }
   .job a.btn, .job button.btn { background: var(--accent); color: var(--accent-fg); border: 0; }
@@ -425,6 +427,8 @@
       <div class="hint">Made on your PC by the Naukri scan on its schedule; the queue run publishes them here. Tap one to queue its jobs.</div></div>
     <div class="card"><h2>Career-page searches</h2><div id="list-careers" class="muted">Loading…</div></div>
     <div class="card"><h2>Interview prep</h2><div id="list-interview" class="muted">Loading…</div></div>
+    <div class="card"><h2>Applications sent (PC)</h2><div id="list-applications" class="muted">Loading…</div>
+      <div class="hint">The Naukri screener's log of every application it sent, rebuilt after each run and published with the scans.</div></div>
     <div class="muted" id="index-updated"></div>
   </section>
 
@@ -475,7 +479,7 @@
       <div class="muted" style="font-size:14px">
         <p><b>India results:</b> <code>gh secret set APIFY_TOKEN</code> — the search then rents real Naukri / Indeed / LinkedIn scrapers on Apify (a few cents per search). Repo variable <code>APIFY_SOURCES</code> picks them (default <code>naukri,indeed</code>; add <code>linkedin</code> to get the job poster as a contact).</p>
         <p><b>Recruiter / hiring-manager contacts on every report:</b> any of <code>SIGNALHIRE_API_KEY</code>, <code>HUNTER_API_KEY</code>, <code>APOLLO_API_KEY</code> as repo secrets. Without keys you still get the emails the postings mention plus ready-made LinkedIn people searches.</p>
-        <p><b>Company-site applications:</b> by default the PC opens the career page and fills and submits the form from your details, skipping sites that need a login / account or show a CAPTCHA (those are marked "by hand"). To use Simplify instead, run <code>site\tools\offsite_apply.py --setup</code> once on the PC (Simplify Copilot must be installed in Chrome) and pick a mode in Queue → Rules.</p>
+        <p><b>Company-site applications:</b> by default the PC opens the career page and fills and submits the form from your details, skipping sites that need a login / account or show a CAPTCHA (those are marked "by hand"). To have Simplify Copilot fill the forms first, sign in once on the PC with <code>python -m naukri.jobs.simplify --setup</code> and set <code>simplify: true</code> in jobs.yaml (or pick the Simplify option under Queue → Rules). Simplify Copilot must be installed in Chrome.</p>
         <p>Full guide: <a href="https://github.com/" id="s-docs" target="_blank" rel="noopener">AUTO_APPLY.md</a></p>
       </div>
     </div>
@@ -725,7 +729,7 @@
     return fetch("data/index.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { items: [] }; })
       .then(function (j) {
         index = j;
-        ["jobhunt", "careers", "naukri", "interview"].forEach(function (kind) {
+        ["jobhunt", "careers", "naukri", "interview", "applications"].forEach(function (kind) {
           var items = (j.items || []).filter(function (i) { return i.kind === kind; });
           var box = $("list-" + kind);
           box.innerHTML = items.length ? items.map(reportRow).join("") : '<span class="muted">Nothing here yet.</span>';
@@ -771,13 +775,59 @@
       else showViewer(item.title, text);
     }).catch(function (e) { if (el) el.textContent = "open ›"; toast(errText(e)); });
   }
-  function showViewer(title, html) {
+  function showViewer(title, html, anchor) {
     if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
     $("v-title").textContent = title; $("v-right").innerHTML = "";
     $("v-box").hidden = false; $("c-box").hidden = true; $("j-box").hidden = true;
     var f = document.createElement("iframe"); f.title = "report"; f.srcdoc = html;
+    f.addEventListener("load", function () { wireReportLinks(f, anchor); });
     $("v-box").innerHTML = ""; $("v-box").appendChild(f);
     openViewer();
+  }
+  // The PC-made pages (Naukri openings, interview prep, applications) link to
+  // each other by relative file name - ../interview/interview-prep-2026-09-18-r1.html,
+  // applications.html, openings-2026-09-18-r3.html. Those files are not on
+  // github.io; their encrypted copies are, under other names. So every click
+  // inside the report is looked up in the index and opened from there.
+  function siblingItem(href) {
+    var m, items = (index || {}).items || [];
+    var byTitle = function (kind, title) { return items.filter(function (i) { return i.kind === kind && i.title === title; })[0]; };
+    if (/(^|\/)applications\.html$/i.test(href)) return byTitle("applications", "Applications sent") || items.filter(function (i) { return i.kind === "applications"; })[0] || null;
+    if ((m = /interview-prep-([0-9]{4}-[0-9]{2}-[0-9]{2}(?:-r[0-9]+)?)\.html$/i.exec(href))) return byTitle("interview", "Interview prep " + m[1]) || null;
+    if ((m = /openings-([0-9]{4}-[0-9]{2}-[0-9]{2})(?:-r([0-9]+))?\.html$/i.exec(href))) return byTitle("naukri", "Naukri openings " + m[1] + (m[2] ? " run " + m[2] : "")) || null;
+    return undefined;   // not one of ours: let the browser have it
+  }
+  function followSibling(href) {
+    var q = href.split("#"), item = siblingItem(q[0]);
+    if (item === undefined) return false;
+    if (!item) { toast("Not on the phone yet - run publish_to_phone.bat on the PC"); return true; }
+    var p = cache[item.id] ? Promise.resolve(cache[item.id]) : fetchEnc(item.file, { cache: "force-cache" }).then(function (t) { cache[item.id] = t; return t; });
+    toast("Opening " + item.title + "…");
+    p.then(function (text) { showViewer(item.title, text, q[1] || ""); }).catch(function (e) { toast(errText(e)); });
+    return true;
+  }
+  function wireReportLinks(f, anchor) {
+    var d; try { d = f.contentDocument; } catch (e) { return; }
+    if (!d) return;
+    if (anchor) { var t = d.getElementById(anchor); if (t) t.scrollIntoView(); }
+    d.addEventListener("click", function (e) {
+      var a = e.target && e.target.closest ? e.target.closest("a[href]") : null;
+      if (!a) return;
+      var href = a.getAttribute("href") || "";
+      if (href.charAt(0) === "#") {   // in-page anchor: <base target=_blank> would open a blank tab
+        e.preventDefault(); var t = href.length > 1 ? d.getElementById(href.slice(1)) : null;
+        if (t) t.scrollIntoView({ behavior: "smooth" }); else d.documentElement.scrollTop = 0;
+        return;
+      }
+      if (/^(https?:)?\/\//i.test(href) || /^(mailto|tel):/i.test(href)) return;
+      if (followSibling(href)) e.preventDefault();
+    }, true);
+    // The interview page's "Analysis date" picker navigates with location.href.
+    d.addEventListener("change", function (e) {
+      var s = e.target;
+      if (!s || s.tagName !== "SELECT" || !/\.html$/i.test(s.value || "")) return;
+      if (followSibling(s.value)) { e.stopPropagation(); e.preventDefault(); }
+    }, true);
   }
   function openViewer() {
     $("viewer").classList.add("on"); document.documentElement.classList.add("viewer-on");
@@ -856,7 +906,7 @@
     if (st.h > 1.25) s += '<div class="msg warn">The PC has not checked in for ' + (st.h < 48 ? Math.round(st.h) + " h" : Math.round(st.h / 24) + " days") + '. Everything you queue waits safely and is applied when it is on again (lock screen is fine; sleep is not).</div>';
     var a = pc.applied_today || {}, caps = pc.caps || {};
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
-      " · up to " + (pc.limit || 5) + " per board each run" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + "</div>";
+      " · up to " + (pc.limit || 5) + " per board each run" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
     return s;
   }
 
@@ -937,17 +987,17 @@
       '<div class="acts2"><button class="ghost" id="q-pause">' + (q.paused ? "▶ Resume queue" : "⏸ Pause queue") + '</button><button class="ghost" id="q-refresh">↻ Refresh</button></div></div>';
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
     var rsum = (auto.enabled ? "auto-queue " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") : "auto-queue off") +
-      " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) +
+      " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) +
       " · " + (st.limit || 5) + " per board per run";
     h += acc("qr", "Rules", rsum,
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
-      " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, you submit", "simplify-submit": "Simplify fills and submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
+      " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Per board per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
       '<label>Boards</label><div class="chips small" id="r-boards">' + ["linkedin", "naukri", "web"].map(function (b) { return '<button type="button" data-b="' + b + '"' + ((dirty["r-boards"] || auto.boards || []).indexOf(b) >= 0 ? ' class="on"' : "") + ">" + ({ linkedin: "LinkedIn", naukri: "Naukri", web: "Company sites" }[b]) + "</button>"; }).join("") + "</div>" +
-      '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify", "Simplify fills the form, I submit on the PC"], ["simplify-submit", "Simplify fills and submits (experimental)"]]) +
-      '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify modes need a one-time setup on the PC: <code>python site\\tools\\offsite_apply.py --setup</code>.') + "</div>" +
+      '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify-submit", "Simplify fills, PC answers the rest and submits"]]) +
+      '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify needs a one-time sign-in on the PC: <code>python -m naukri.jobs.simplify --setup</code> (in Profile_Naukri_Screener-main).') + ((q.pc || {}).simplify_default ? ' jobs.yaml has <code>simplify: true</code>, so "PC fills and submits" already goes through Simplify.' : "") + "</div>" +
       '<button class="primary" id="r-save">Save rules</button>');
     var qsum = (FILTERS.filter(function (f) { return f[0] === qFilter; })[0] || ["", "All"])[1] + " · " + items.filter(function (i) { return inFilter(i, qFilter); }).length + " shown";
     h += '<div class="card"><h2>' + items.length + " job" + (items.length !== 1 ? "s" : "") + " in the queue</h2>" +
@@ -1202,7 +1252,7 @@
       '<button class="ghost" id="jq-sel"' + (selected.length ? "" : " disabled") + ">Queue selected (" + selected.length + ")</button></div>" +
       '<div class="hint">LinkedIn Easy Apply and Naukri postings are applied to by your PC. Company career sites are ' +
         ({ career: 'filled and submitted by the PC when they don\'t need a login; otherwise marked "by hand"', manual: 'marked "by hand" for you (change under Queue → Rules)',
-           simplify: "filled by Simplify on the PC; you submit", "simplify-submit": "filled and submitted by Simplify on the PC" }[off] || 'marked "by hand"') + ".</div></div>" +
+           simplify: "filled by Simplify and submitted by the PC", "simplify-submit": "filled by Simplify and submitted by the PC" }[off] || 'marked "by hand"') + ".</div></div>" +
       acc("jf", "Filters", fsum,
       '<label>Boards <span class="muted">(tap several)</span></label><div class="chips small" id="jf-board">' + '<button type="button" data-b=""' + (fb.length ? "" : ' class="on"') + ">All boards · " + JV.jobs.filter(function (j) { return j.fit !== "no"; }).length + "</button>" +
         boards.map(function (b) { return fchip("b", b[0], esc(b[1]), bc[b[0]] || 0, JV.boards[b[0]]); }).join("") + "</div>" +
@@ -1845,7 +1895,7 @@
                  { strict: "relocation only", visa: "relocation or visa", any: "" }[m.relocation] || ""].filter(Boolean).join(" · ");
     var ccBtn = function (cc, label) { return '<button type="button" data-cc="' + esc(cc) + '"' + (CV.country === cc ? ' class="on"' : "") + ">" + esc(label) + "</button>"; };
     var h = '<div class="card"><div><b>' + esc(asked) + "</b></div>" +
-      '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read · " + (m.role_matches || 0) + " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" + (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
+      '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read" + (m.companies_link_only ? " · " + m.companies_link_only + " link only" : "") + " · " + (m.role_matches || 0) + " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" + (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
       (m.scored ? "" : '<div class="msg info">No resume match scores: store your resume with setup_phone.bat (RESUME_TEXT secret) and search again.</div>') +
       '<label>Country <span class="muted">(best chance of getting hired first)</span></label>' +
       '<div class="chips small">' + ccBtn("", "All · " + base.length) + rank.map(function (r) { return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n); }).join("") + "</div>" +
@@ -1864,6 +1914,12 @@
     box.innerHTML = h; box.scrollTop = top;
     bindMarks(box, function (toggle) { if (toggle === true) CV.showRemoved = !CV.showRemoved; renderCareers(); });
   }
+  // The "why it fits / gap" line the local model wrote for the top jobs (careers_bot summarize_top).
+  function aiLine(j) {
+    var a = j.ai; if (!a || !a.why) return "";
+    var gap = a.gaps && !/^none\.?$/i.test(a.gaps) ? ' <b>Gap:</b> ' + esc(a.gaps) : "";
+    return '<div class="ai" title="from the local model"><b>Fit:</b> ' + esc(a.why) + gap + "</div>";
+  }
   function cJobHtml(j) {
     var R = RELOC[j.reloc] || ["", j.reloc], F = FIT[j.fit] || ["", j.fit], t = [], mk = "c:" + j.id, applied = !!marks.applied[mk];
     if (applied) t.push(chip("ok", "✓ applied"));
@@ -1874,7 +1930,7 @@
     if (j.matched && j.matched.length) skills += '<div class="hint">✓ ' + esc(j.matched.join(", ")) + "</div>";
     if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
     return '<div class="job' + (applied ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
-      '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + skills +
+      '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + aiLine(j) + skills +
       '<div class="acts">' + openLink(j.url, applied ? "Open" : "Open & apply", applied ? "btn2" : "btn", mk) + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a>" + markBtns(mk, applied) + "</div>" +
       (CV.open[j.id] ? '<div class="contacts">' + contactsHtml(j.company, cityOf(j.location, CV.country || (j.countries || [])[0]), j.recruiter) + "</div>" : "") + "</div>";
   }
@@ -1899,8 +1955,11 @@
       return '<div class="job"><h3>' + esc(c.name) + '</h3><div class="sub">' + esc(c.note || c.ats) + "</div><div class=\"tags\">" + chip("", count[c.name] + " shown · " + c.role_matches + " match the role · " + c.open + " open") + share + "</div>" +
         '<div class="contacts">' + contactsHtml(c.name, (c.cities || [])[0] || "", "") + "</div></div>";
     }).join("") + "</div>";
-    var rest = cos.filter(function (c) { return !count[c.name]; });
+    var rest = cos.filter(function (c) { return !count[c.name] && c.status !== "link"; });
     if (rest.length) h += '<div class="card muted">Nothing with these filters at: ' + esc(rest.map(function (c) { return c.name + (c.status === "error" ? " (could not read: " + c.error + ")" : ""); }).join(", ")) + "</div>";
+    // No job-board API to read: the report still carries the company and where to apply.
+    var links = cos.filter(function (c) { return c.status === "link" && c.careers; });
+    if (links.length) h += '<div class="card muted">No job-board API, apply on their own page: ' + links.map(function (c) { return ext(c.careers, c.name); }).join(" · ") + "</div>";
     return h || '<div class="card muted">No companies.</div>';
   }
   $("c-box").addEventListener("click", function (e) {

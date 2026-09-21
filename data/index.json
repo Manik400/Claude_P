@@ -1,6 +1,15 @@
 {
- "updated": "2026-09-19T19:41:49Z",
+ "updated": "2026-09-21T11:00:33Z",
  "items": [
+  {
+   "id": "applications-20260921-110032-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-09-21T11:00:32Z",
+   "file": "data/applications/applications-20260921-110032-applications-sent.enc",
+   "bytes": 1835176,
+   "meta": {}
+  },
   {
    "id": "naukri-20260919-194149-naukri-openings-2026-09-20-run-2",
    "kind": "naukri",
