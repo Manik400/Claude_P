@@ -37,12 +37,17 @@ OFFSCREEN_ARGS = [
 
 
 def background() -> bool:
-    """True when runs must never put a window on the screen.
+    """True when runs must never put a window on the screen - the default.
 
-    Set by `main.py --background`, by NAUKRI_BACKGROUND=1 in the environment,
-    and by scripts\\run_hidden.vbs, which is what Task Scheduler launches.
+    Every run is headless unless a window is asked for with `main.py --show`
+    (NAUKRI_SHOW=1). NAUKRI_BACKGROUND=1 - set by `--background` and by
+    scripts\\run_hidden.vbs, which is what Task Scheduler launches - forces
+    the background even when NAUKRI_SHOW is set. Login flows are the one
+    exception: they are interactive and always open a window.
     """
-    return os.environ.get("NAUKRI_BACKGROUND", "").strip() == "1"
+    if os.environ.get("NAUKRI_BACKGROUND", "").strip() == "1":
+        return True
+    return os.environ.get("NAUKRI_SHOW", "").strip() != "1"
 
 
 def launch_attempts(headless: bool) -> list[tuple[bool, bool]]:

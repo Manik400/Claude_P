@@ -13,11 +13,11 @@ The order below matters. Each step needs the one before it.
 - **Python 3.9 or newer** and **Git**.
 - **A Naukri account you already use.** This does not create accounts, and it
   does not scrape anyone's profile but yours.
-- **A machine you can leave logged in.** Commands you run by hand open a
-  visible browser. Scheduled runs (and anything run with `--background`) are
-  headless and put nothing on screen, but keep a headed off-screen window as a
-  fallback for the day Naukri refuses the headless browser, and that fallback
-  needs a desktop session to exist. The lock screen is fine.
+- **A machine you can leave logged in.** Every run is headless and puts
+  nothing on screen (`--show` opens a visible browser when you want to watch;
+  `--login` always does). Runs keep a headed off-screen window as a fallback
+  for the day Naukri refuses the headless browser, and that fallback needs a
+  desktop session to exist. The lock screen is fine.
 
 Read [SAFETY.md](SAFETY.md) before you turn on anything that submits. The short
 version: every command defaults to a dry run, applications are sent in your

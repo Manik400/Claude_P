@@ -12,7 +12,7 @@ cd D:\Manik\Projects\Claude_P\Profile_Naukri_Screener-main
 .venv\Scripts\python.exe main.py <flags>
 ```
 
-Playwright drives a **visible** Chrome window (Naukri's Akamai blocks headless), so it needs a desktop session. Never pass `--headless`-style options. Runs can take several minutes — use a long timeout or run in the background.
+Playwright drives Chrome **headless by default** (nothing on screen); add `--show` to watch a run. If Naukri's Akamai ever refuses the headless browser, the run retries with a headed window parked off-screen, so it still needs a desktop session (lock screen is fine). Runs can take several minutes — use a long timeout or run in the background.
 
 ## Safety rules (non-negotiable)
 
@@ -56,7 +56,7 @@ Playwright drives a **visible** Chrome window (Naukri's Akamai blocks headless),
 |---|---|
 | `Saved session has expired` | `main.py --login` |
 | `No profile at data/profile.json` | `main.py --extract` |
-| `Access Denied` | never headless; keep the browser visible |
+| `Access Denied` | the run retries off-screen by itself; if it persists, try `--show` once |
 | Google "browser may not be secure" | `--login` uses plain Chrome with profile in `data/chrome-login-profile/` |
 | `spawn UNKNOWN` / side-by-side error | bundled Chromium broken; tool uses installed Chrome. `NAUKRI_BROWSER_CHANNEL=msedge` for Edge, `none` for bundled |
 | Many fields `MISSING` | Naukri changed layout → update `naukri/selectors.py` |

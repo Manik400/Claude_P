@@ -148,9 +148,13 @@ def launch(p, headless: bool, states: list[Path] | None = None) -> SimplifyBrows
     mode carries them. The Naukri / LinkedIn cookies are added on every
     launch, so a session refreshed by --login is picked up next run.
     """
+    from ..session import background
+
     ext = extension_dir()
     if not ext:
         raise RuntimeError(why_not_ready())
+    if background():
+        headless = True   # never a window on screen unless --show (see session.background)
     os.makedirs(PROFILE_DIR, exist_ok=True)
     # Google's sign-in refuses a browser that announces automation ("this
     # browser or app may not be secure"), and Simplify's login is a Google

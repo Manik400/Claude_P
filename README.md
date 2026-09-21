@@ -67,7 +67,7 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 
 ### Setup (once)
 
-1. Needs Python 3.9 or newer. Commands you run by hand open a visible browser; scheduled runs are silent (headless browser, hidden console).
+1. Needs Python 3.9 or newer. Every run is headless (nothing on screen); add `--show` to watch one. Scheduled runs also hide their console.
 2. Create a virtual environment and install:
    ```
    cd Profile_Naukri_Screener-main

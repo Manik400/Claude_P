@@ -38,12 +38,12 @@ cp jobs.example.yaml jobs.yaml   # then set `role:` in it
 python main.py --roles           # confirm which pack is active
 ```
 
-Needs Python 3.9+. Commands you run by hand open a visible browser so you can
-watch them. Add `--background` (or set `NAUKRI_BACKGROUND=1`) and nothing
-appears on screen: the browser runs headless, and the scheduled runs do this
-automatically. If Naukri ever refuses the headless browser again, that mode
-falls back to a headed window parked off-screen, which still needs a desktop
-session to exist — so stay logged in to Windows (the lock screen is fine).
+Needs Python 3.9+. Every run is headless: nothing appears on screen, by hand
+or scheduled. Add `--show` (or set `NAUKRI_SHOW=1`) to watch a run in a
+visible browser; `--login` always opens one. If Naukri ever refuses the
+headless browser again, the run falls back to a headed window parked
+off-screen, which still needs a desktop session to exist — so stay logged in
+to Windows (the lock screen is fine).
 
 ## Pick your role
 

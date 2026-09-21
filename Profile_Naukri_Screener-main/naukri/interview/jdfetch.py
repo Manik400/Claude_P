@@ -168,9 +168,9 @@ def _pause() -> None:
 def fetch(jobs: list[dict], headless: bool = False) -> list[dict]:
     """Return `jobs` with jd_text / jd_source / jd_extras filled in.
 
-    Headed by default for the same Akamai reason as every other Naukri run -
-    headless Chromium gets an "Access Denied" body, which would leave every JD
-    on the teaser fallback and quietly halve the quality of the analysis.
+    Headless unless --show, like every other Naukri run (session.launch_browser
+    decides). If Akamai ever refuses it, open_profile retries with an
+    off-screen window rather than leaving every JD on the teaser fallback.
     """
     from playwright.sync_api import sync_playwright
 

@@ -79,10 +79,11 @@ def run(headless: bool = False, dry_run: bool = True, config_overrides: dict | N
     }
 
     with sync_playwright() as p:
-        # Headed, always: Naukri sits behind Akamai, which serves "Access
-        # Denied" to headless Chromium. open_profile also validates the saved
-        # session up front, so an expired login fails here rather than midway
-        # through applying.
+        # Headless unless --show (session.launch_browser decides; Akamai no
+        # longer refuses the current headless Chrome once the "Headless" UA
+        # tag is dropped). open_profile also validates the saved session up
+        # front, so an expired login fails here rather than midway through
+        # applying.
         browser, _context, page = open_profile(p, DEFAULT_STATE, headless=headless)
         try:
             jobs = search.gather(page, config)

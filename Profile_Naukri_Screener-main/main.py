@@ -117,10 +117,12 @@ def main() -> int:
                         help="Answer the screening questions that stopped applications "
                              "(data/jobs/questions.yaml); the next run applies with them")
 
-    parser.add_argument("--show", action="store_true", help="Run with a visible browser")
+    parser.add_argument("--show", action="store_true",
+                        help="Run with a visible browser (the default is headless, nothing on screen). "
+                             "Same as setting NAUKRI_SHOW=1.")
     parser.add_argument("--background", action="store_true",
-                        help="Never put a window on the screen: the browser runs headless, "
-                             "falling back to an off-screen window if Naukri refuses it. "
+                        help="Force the headless run even if NAUKRI_SHOW is set: the browser runs "
+                             "headless, falling back to an off-screen window if Naukri refuses it. "
                              "The scheduled runs get this from scripts\\run_hidden.vbs. "
                              "Same as setting NAUKRI_BACKGROUND=1.")
     parser.add_argument("--yes", action="store_true",
@@ -173,6 +175,8 @@ def main() -> int:
     parser.add_argument("-v", "--verbose", action="store_true", help="Debug logging")
     args = parser.parse_args()
 
+    if args.show:
+        os.environ["NAUKRI_SHOW"] = "1"
     if args.background:
         os.environ["NAUKRI_BACKGROUND"] = "1"
 
@@ -192,8 +196,8 @@ def main() -> int:
             return 0 if session_mod.login() else 1
 
         if args.extract:
-            # Headed by default; --background makes every run below headless.
-            profile = extract_mod.extract(headless=False)
+            # Headless by default; --show puts the window on screen (naukri/session.py).
+            profile = extract_mod.extract(headless=not args.show)
             print(extract_mod.summarise(profile))
             print("  Written to data/profile.json, data/profile.txt, data/profile.png")
             return 0
@@ -202,7 +206,7 @@ def main() -> int:
             changes = apply_mod.load_changes()
             # Applying runs headed unless explicitly told otherwise - you want
             # to see a live profile being edited.
-            results = apply_mod.apply(changes, headless=False, dry_run=not args.yes)
+            results = apply_mod.apply(changes, headless=not args.show, dry_run=not args.yes)
             if not args.yes:
                 print("  Re-run with --yes to actually save these.")
             failed = [f for f, r in results.items() if r not in ("ok", "dry-run")]
@@ -214,7 +218,7 @@ def main() -> int:
             overrides = None
             if args.limit is not None:
                 overrides = {"max_auto_applies": args.limit, "max_apply_attempts": args.limit}
-            summary = jobs_daily.run(headless=False, dry_run=not args.yes,
+            summary = jobs_daily.run(headless=not args.show, dry_run=not args.yes,
                                      config_overrides=overrides)
             print(jobs_daily.summarise(summary))
             if not args.yes:
@@ -228,7 +232,7 @@ def main() -> int:
             locations = [c.strip() for c in args.locations.split(",") if c.strip()]
             apply_report: dict = {}
             path, jobs, cards = jobs_export.run(
-                locations, top=args.top, headless=False,
+                locations, top=args.top, headless=not args.show,
                 include_applied=args.include_applied,
                 include_linkedin=not args.no_linkedin,
                 worldwide=args.worldwide,
@@ -265,7 +269,7 @@ def main() -> int:
             # Clicks Apply once on a questionnaire posting, which opens the
             # drawer but does not submit - the application only completes once
             # the questions are answered, and this answers none of them.
-            result = jobs_probe.probe(url=args.url, headless=False)
+            result = jobs_probe.probe(url=args.url, headless=not args.show)
             print(jobs_probe.summarise(result))
             return 0
 
@@ -274,7 +278,7 @@ def main() -> int:
             # afterwards are offline.
             from naukri.interview import generate as prep_mod
             prep = prep_mod.run(day=args.date, engine=args.engine, model=args.model,
-                                headless=False, reuse_jds=args.reuse_jds,
+                                headless=not args.show, reuse_jds=args.reuse_jds,
                                 no_reuse=args.no_reuse, run=args.run)
             print(prep_mod.summarise(prep))
             from naukri.interview import validate as prep_validate
@@ -321,10 +325,9 @@ def main() -> int:
             return 0
 
         if args.refresh:
-            # Headed by default. The scheduled runs set NAUKRI_BACKGROUND=1
-            # (via scripts\\run_hidden.vbs), which makes this headless - see
-            # naukri/session.py for why that is no longer blocked.
-            ok = refresh_mod.refresh(headless=False)
+            # Headless by default (see naukri/session.py for why Naukri no
+            # longer blocks that); --show puts the window on screen.
+            ok = refresh_mod.refresh(headless=not args.show)
             print("  Profile refreshed." if ok else "  Refresh failed - see logs/naukri.log")
             return 0 if ok else 1
 
