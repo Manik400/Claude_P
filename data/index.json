@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-21T12:38:41Z",
+ "updated": "2026-09-21T12:42:34Z",
  "items": [
+  {
+   "id": "careers-20260921-124234-software",
+   "kind": "careers",
+   "title": "software",
+   "when": "2026-09-21T12:42:34Z",
+   "file": "data/careers/careers-20260921-124234-software.enc",
+   "bytes": 134415,
+   "meta": {
+    "jobs": "64",
+    "relocation": "0",
+    "countries": "IN",
+    "experience": "1",
+    "reloc_mode": "any"
+   }
+  },
   {
    "id": "careers-20260921-121524-software",
    "kind": "careers",
