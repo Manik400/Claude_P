@@ -34,6 +34,10 @@ def default_repo_url():
     return sh(["git", "remote", "get-url", name], cwd=root, capture=True).stdout.strip()
 
 
+def remote_url(cwd):
+    return sh(["git", "remote", "get-url", "origin"], cwd=cwd, check=False, capture=True).stdout.strip()
+
+
 def ensure_identity(cwd):
     for key, val in (("user.name", "job-hunt-phone"), ("user.email", "job-hunt-phone@users.noreply.github.com")):
         if sh(["git", "config", key], cwd=cwd, check=False, capture=True).returncode != 0:
@@ -76,6 +80,17 @@ def push(target, message):
             return
         print("pages_git: push rejected (attempt %d), rebasing..." % (attempt + 1), file=sys.stderr)
         print(r.stderr, file=sys.stderr)
+        # A previous run may have died mid-rebase (auth failure etc.); clear it or every retry fails.
+        git_dir = os.path.join(target, ".git")
+        if os.path.isdir(os.path.join(git_dir, "rebase-merge")) or os.path.isdir(os.path.join(git_dir, "rebase-apply")):
+            sh(["git", "rebase", "--abort"], cwd=target, check=False, capture=True)
+        err = r.stderr or ""
+        if "denied" in err or "403" in err:
+            raise SystemExit(
+                "pages_git: push denied by GitHub for " + remote_url(target) + "\n"
+                "  the credentials git is using do not own this repo. Use the SSH remote instead:\n"
+                "  set \"repo_url\" in %LOCALAPPDATA%\\JobHuntPhone\\config.json to git@github-personal:Manik400/Claude_P.git\n"
+                "  (or remove the wrong github.com entry in Windows Credential Manager)")
         sh(["git", "fetch", "origin", BRANCH], cwd=target, check=False)
         sh(["git", "rebase", "-X", "theirs", "FETCH_HEAD"], cwd=target, check=False)
         time.sleep(2 + attempt * 3)
