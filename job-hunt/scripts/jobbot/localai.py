@@ -1,5 +1,13 @@
 """A free model that runs on this machine - the PC or a GitHub runner - no key, no API.
 
+Two backends, whichever is there:
+
+    ollama      an Ollama server already running on this machine (OLLAMA_HOST,
+                default http://127.0.0.1:11434). Nothing to download here - it
+                serves whatever you have pulled (`ollama pull qwen2.5:3b`), uses
+                the GPU when it has one, and is preferred when it answers.
+    llama-cpp   the bundled CPU fallback below, used when no Ollama server answers.
+
 Two small open-weight models, both CPU-only, both downloaded once from
 Hugging Face into LOCAL_AI_CACHE (default ~/.cache/jobbot-ai):
 
@@ -27,7 +35,11 @@ and the callers carry on without it.
     python -m jobbot.localai --smoke       one embedding + one JSON answer, with timings
 
 Environment (all optional; <repo>/.env is read through jobbot.dotenv):
-    LOCAL_AI=0|1                     force off / on (default: on when the packages import)
+    LOCAL_AI=0|1                     force off / on (default: on when a backend answers)
+    LOCAL_AI_BACKEND=auto|ollama|llama   which backend to use (default auto: ollama first)
+    OLLAMA_HOST=http://host:11434    where the Ollama server is
+    OLLAMA_MODEL=<name>              which pulled model to use (default: first one the server lists,
+                                     preferring qwen / llama / mistral / phi / gemma)
     LOCAL_AI_MODEL=<hf repo>:<file>  the GGUF (default above); e.g. unsloth/Qwen3.5-4B-GGUF:Qwen3.5-4B-Q4_K_M.gguf
     LOCAL_AI_EMBED_MODEL=<name>      fastembed model name (default BAAI/bge-small-en-v1.5)
     LOCAL_AI_CACHE=<dir>             where the files live
@@ -138,6 +150,86 @@ def threads() -> int:
     return _int_env("LOCAL_AI_THREADS", min(4, os.cpu_count() or 4))
 
 
+# ----------------------------------------------------------------- ollama
+
+OLLAMA_PREFERRED = ("qwen", "llama", "mistral", "phi", "gemma", "deepseek")
+_ollama = {"checked": 0.0, "url": None, "model": None}
+
+
+def ollama_url() -> str:
+    url = (_env("OLLAMA_HOST") or "http://127.0.0.1:11434").strip().rstrip("/")
+    return url if "://" in url else "http://" + url
+
+
+def _pick_ollama_model(names):
+    """The model to use: OLLAMA_MODEL when it is pulled, else the first familiar name."""
+    want = (_env("OLLAMA_MODEL") or "").strip()
+    if want:
+        for n in names:
+            if n == want or n.split(":")[0] == want.split(":")[0]:
+                return n
+        return want if names else None
+    for family in OLLAMA_PREFERRED:
+        for n in names:
+            if n.lower().startswith(family) and "embed" not in n.lower():
+                return n
+    return next((n for n in names if "embed" not in n.lower()), None)
+
+
+def ollama_ready(recheck_after: float = 60.0) -> bool:
+    """Is an Ollama server answering, with a model to talk to? Cached for a minute.
+
+    Never raises and never waits long: no server is the normal case, and every
+    caller has a fallback.
+    """
+    if (_env("LOCAL_AI_BACKEND") or "auto").lower() == "llama":
+        return False
+    if _ollama["url"] and time.time() - _ollama["checked"] < recheck_after:
+        return bool(_ollama["model"])
+    _ollama["checked"] = time.time()
+    _ollama["url"] = ollama_url()
+    try:
+        import requests
+        r = requests.get(ollama_url() + "/api/tags", timeout=2.5)
+        names = [m.get("name") or m.get("model") or "" for m in (r.json().get("models") or [])]
+        _ollama["model"] = _pick_ollama_model([n for n in names if n])
+    except Exception:  # noqa: BLE001 - not running, wrong port, no requests
+        _ollama["model"] = None
+    return bool(_ollama["model"])
+
+
+def ollama_model() -> str | None:
+    return _ollama["model"] if ollama_ready() else None
+
+
+def _ask_ollama(prompt, system, max_tokens, json_mode, temperature, limit):
+    """One /api/chat completion against the Ollama server. None when it cannot answer."""
+    import requests
+    body = {
+        "model": _ollama["model"],
+        "messages": [m for m in ({"role": "system", "content": system} if system else None,
+                                 {"role": "user", "content": prompt}) if m],
+        "stream": False,
+        "options": {"temperature": temperature, "num_predict": max_tokens},
+    }
+    if json_mode:
+        body["format"] = "json"
+    started = time.time()
+    ok = True
+    try:
+        r = requests.post(ollama_url() + "/api/chat", json=body, timeout=limit)
+        r.raise_for_status()
+        text = ((r.json().get("message") or {}).get("content")) or ""
+    except Exception:  # noqa: BLE001 - timeout, server restarted, model pulled away
+        ok, text = False, ""
+    finally:
+        _charge(time.time() - started, ok)
+    if not ok:
+        return None
+    return extract_json(text) if json_mode else (_THINK_RE.sub("", text).strip() or None)
+
+
+
 def _forced() -> str | None:
     v = (_env("LOCAL_AI") or "").strip().lower()
     if v in ("0", "off", "false", "no"):
@@ -152,10 +244,10 @@ def available(kind: str = "any") -> bool:
     if _forced() == "off":
         return False
     if kind == "llm":
-        return _HAVE_LLM and _hf_download is not None
+        return ollama_ready() or (_HAVE_LLM and _hf_download is not None)
     if kind == "embed":
         return _HAVE_EMBED
-    return (_HAVE_LLM and _hf_download is not None) or _HAVE_EMBED
+    return available("llm") or _HAVE_EMBED
 
 
 # ------------------------------------------------------------------ budget
@@ -183,7 +275,9 @@ def status() -> dict:
     path = model_path(download=False)
     return {
         "llm": available("llm"), "embed": available("embed"),
-        "model": name, "repo": repo, "model_file": path, "downloaded": bool(path and os.path.exists(path)),
+        "backend": "ollama" if ollama_ready() else ("llama-cpp" if (_HAVE_LLM and _hf_download is not None) else "off"),
+        "ollama": ollama_model() or "", "ollama_host": ollama_url(),
+        "model": ollama_model() or name, "repo": repo, "model_file": path, "downloaded": bool(path and os.path.exists(path)),
         "embed_model": embed_model_name(), "cache": cache_dir(), "threads": threads(),
         "budget": budget_seconds(), "budget_left": round(budget_left(), 1),
         "calls": _budget["calls"], "failed": _budget["failed"],
@@ -194,9 +288,13 @@ def status_line() -> str:
     """One line for a run's log."""
     s = status()
     if not (s["llm"] or s["embed"]):
-        return "local AI: off (run ai_setup.bat, or pip install -r job-hunt/requirements-ai.txt)"
+        return ("local AI: off (start Ollama and `ollama pull qwen2.5:3b`, run ai_setup.bat, "
+                "or pip install -r job-hunt/requirements-ai.txt)")
     parts = []
-    parts.append("llm=%s%s" % (s["model"], "" if s["downloaded"] else " (not downloaded yet)") if s["llm"] else "llm=off")
+    if s["ollama"]:
+        parts.append("llm=%s via ollama" % s["ollama"])
+    else:
+        parts.append("llm=%s%s" % (s["model"], "" if s["downloaded"] else " (not downloaded yet)") if s["llm"] else "llm=off")
     parts.append("embed=%s" % s["embed_model"] if s["embed"] else "embed=off")
     parts.append("budget=%ds" % s["budget"])
     return "local AI: " + ", ".join(parts)
@@ -368,11 +466,13 @@ def ask(prompt: str, *, system: str = "", max_tokens: int = 200, json: bool = Fa
     """
     if budget_left() <= 0:
         return None
+    limit = min(timeout or 60.0, budget_left())
+    sys_text = (NO_THINK + " " + system).strip()
+    if ollama_ready():
+        return _ask_ollama(prompt, sys_text, max_tokens, json, temperature, limit)
     llm = _llm()
     if llm is None:
         return None
-    limit = min(timeout or 60.0, budget_left())
-    sys_text = (NO_THINK + " " + system).strip()
     kwargs = dict(
         messages=[{"role": "system", "content": sys_text}, {"role": "user", "content": prompt}],
         max_tokens=max_tokens, temperature=temperature, stream=True)

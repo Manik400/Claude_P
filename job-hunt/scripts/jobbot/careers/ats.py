@@ -127,6 +127,25 @@ def _smartrecruiters(http, c, keep, roles, details, place):
     return out, total or len(rows), recruiters
 
 
+def _workable(http, c, keep, roles, details, place):
+    """Workable's public widget API: the whole board in one call, descriptions included."""
+    d = http.get_json(f"https://apply.workable.com/api/v1/widget/accounts/{c.board}", params={"details": "true"})
+    rows = d.get("jobs") or []
+    out = []
+    for p in rows:
+        if not keep(p.get("title", "")):
+            continue
+        locs = [p.get("location"), ", ".join(x for x in (p.get("city"), p.get("country")) if x)]
+        text = html_to_text((p.get("description") or "") + " " + (p.get("requirements") or "")
+                            + " " + (p.get("benefits") or ""))
+        out.append(_job(c, p.get("title"), p.get("url") or p.get("shortlink"), locs, [p.get("countryCode")], text,
+                        p.get("published_on") or p.get("created_at"),
+                        remote=bool(p.get("telecommuting")) or None, department=p.get("department") or "",
+                        employment=p.get("employment_type") or ""))
+    return out, len(rows), []
+
+
+
 def _recruitee(http, c, keep, roles, details, place):
     d = http.get_json(f"https://{c.board}.recruitee.com/api/offers/")
     rows = d.get("offers") or []
@@ -182,11 +201,41 @@ def _workday(http, c, keep, roles, details, place):
 
 
 READERS = {"greenhouse": _greenhouse, "lever": _lever, "ashby": _ashby, "smartrecruiters": _smartrecruiters,
-           "recruitee": _recruitee, "workday": _workday}
+           "workable": _workable, "recruitee": _recruitee, "workday": _workday}
 
 
-def fetch(http, company, keep, roles, details=40, place=None):
-    return READERS[company.ats](http, company, keep, roles, details, place or (lambda codes: True))
+class Unresolved(Exception):
+    """No job board could be found for this company - only a link to its careers page."""
+
+    def __init__(self, url, via):
+        super().__init__(f"no job-board API found; use {url}")
+        self.url = url
+        self.via = via
+
+
+def fetch(http, company, keep, roles, details=40, place=None, resolver=None):
+    """Read a company's board, re-resolving it when the board in companies.txt does not answer.
+
+    `resolver(company, why) -> Company | None` is what turns a dead slug into a live one
+    (careers_bot passes jobbot.careers.resolve through it). Without it, behaviour is the
+    old one: whatever the row says, and an error when that is wrong.
+    """
+    if company.readable:
+        try:
+            return READERS[company.ats](http, company, keep, roles, details, place or (lambda codes: True))
+        except Exception as e:  # noqa: BLE001 - a 404 is a stale slug, not the end of this company
+            if resolver is None:
+                raise
+            fixed = resolver(company, f"{type(e).__name__}: {str(e)[:80]}")
+            if fixed is None:
+                raise
+    elif resolver is not None:
+        fixed = resolver(company, "no board in companies.txt")
+    else:
+        raise Unresolved(company.careers, "unreadable row")
+    if fixed is None or not fixed.readable:
+        raise Unresolved((fixed or company).careers, (fixed or company).resolved or "unresolved")
+    return READERS[fixed.ats](http, fixed, keep, roles, details, place or (lambda codes: True))
 
 
 def probe(http, slug):

@@ -6,3 +6,6 @@ __pycache__/
 .env
 .env.*
 !.env.example
+
+# companies.txt backups from `careers_bot.py resolve --write` (the file itself is tracked)
+*.txt.bak

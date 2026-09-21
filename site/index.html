@@ -1895,7 +1895,7 @@
                  { strict: "relocation only", visa: "relocation or visa", any: "" }[m.relocation] || ""].filter(Boolean).join(" · ");
     var ccBtn = function (cc, label) { return '<button type="button" data-cc="' + esc(cc) + '"' + (CV.country === cc ? ' class="on"' : "") + ">" + esc(label) + "</button>"; };
     var h = '<div class="card"><div><b>' + esc(asked) + "</b></div>" +
-      '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read · " + (m.role_matches || 0) + " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" + (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
+      '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read" + (m.companies_link_only ? " · " + m.companies_link_only + " link only" : "") + " · " + (m.role_matches || 0) + " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" + (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
       (m.scored ? "" : '<div class="msg info">No resume match scores: store your resume with setup_phone.bat (RESUME_TEXT secret) and search again.</div>') +
       '<label>Country <span class="muted">(best chance of getting hired first)</span></label>' +
       '<div class="chips small">' + ccBtn("", "All · " + base.length) + rank.map(function (r) { return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n); }).join("") + "</div>" +
@@ -1955,8 +1955,11 @@
       return '<div class="job"><h3>' + esc(c.name) + '</h3><div class="sub">' + esc(c.note || c.ats) + "</div><div class=\"tags\">" + chip("", count[c.name] + " shown · " + c.role_matches + " match the role · " + c.open + " open") + share + "</div>" +
         '<div class="contacts">' + contactsHtml(c.name, (c.cities || [])[0] || "", "") + "</div></div>";
     }).join("") + "</div>";
-    var rest = cos.filter(function (c) { return !count[c.name]; });
+    var rest = cos.filter(function (c) { return !count[c.name] && c.status !== "link"; });
     if (rest.length) h += '<div class="card muted">Nothing with these filters at: ' + esc(rest.map(function (c) { return c.name + (c.status === "error" ? " (could not read: " + c.error + ")" : ""); }).join(", ")) + "</div>";
+    // No job-board API to read: the report still carries the company and where to apply.
+    var links = cos.filter(function (c) { return c.status === "link" && c.careers; });
+    if (links.length) h += '<div class="card muted">No job-board API, apply on their own page: ' + links.map(function (c) { return ext(c.careers, c.name); }).join(" · ") + "</div>";
     return h || '<div class="card muted">No companies.</div>';
   }
   $("c-box").addEventListener("click", function (e) {

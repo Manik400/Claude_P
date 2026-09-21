@@ -3,8 +3,11 @@ verified, grounded output is used. The smoke test at the end needs the
 model files and is skipped otherwise."""
 from __future__ import annotations
 
+import json
 import os
 import sys
+import threading
+from http.server import BaseHTTPRequestHandler, HTTPServer
 
 import pytest
 
@@ -142,3 +145,74 @@ def test_smoke_embed():
     vecs = localai.embed(["python developer", "python developer with selenium", "lentil soup recipe"])
     assert vecs and len(vecs) == 3 and len(vecs[0]) >= 256
     assert localai.cosine(vecs[0], vecs[1]) > localai.cosine(vecs[0], vecs[2])
+
+
+# ----------------------------------------------------------- the Ollama backend
+# A server that is already running on the machine is preferred over the bundled
+# GGUF: nothing to download, and it uses the GPU when there is one. It must stay
+# optional, so the no-server case is tested too.
+
+class _OllamaStub(BaseHTTPRequestHandler):
+    models = [{"name": "qwen2.5:3b"}, {"name": "nomic-embed-text"}]
+    reply = "hello from ollama"
+    seen: dict = {}
+
+    def log_message(self, *a):
+        pass
+
+    def _send(self, obj):
+        body = json.dumps(obj).encode()
+        self.send_response(200)
+        self.send_header("Content-Type", "application/json")
+        self.send_header("Content-Length", str(len(body)))
+        self.end_headers()
+        self.wfile.write(body)
+
+    def do_GET(self):
+        self._send({"models": self.models})
+
+    def do_POST(self):
+        n = int(self.headers.get("Content-Length") or 0)
+        _OllamaStub.seen = json.loads(self.rfile.read(n) or b"{}")
+        self._send({"message": {"role": "assistant", "content": self.reply}})
+
+
+@pytest.fixture()
+def ollama(monkeypatch):
+    srv = HTTPServer(("127.0.0.1", 0), _OllamaStub)
+    threading.Thread(target=srv.serve_forever, daemon=True).start()
+    monkeypatch.setenv("OLLAMA_HOST", "http://127.0.0.1:%d" % srv.server_address[1])
+    localai._ollama.update({"checked": 0.0, "url": None, "model": None})
+    yield srv
+    srv.shutdown()
+    localai._ollama.update({"checked": 0.0, "url": None, "model": None})
+
+
+def test_ollama_is_used_when_it_answers(ollama):
+    assert localai.ollama_ready() is True
+    assert localai.ollama_model() == "qwen2.5:3b"        # the embedding model is not a chat model
+    assert localai.available("llm") is True
+    assert localai.ask("say hi") == "hello from ollama"
+    assert _OllamaStub.seen["model"] == "qwen2.5:3b"
+    assert _OllamaStub.seen["messages"][-1]["content"] == "say hi"
+    assert "ollama" in localai.status_line()
+
+
+def test_ollama_json_mode_returns_the_object(ollama, monkeypatch):
+    monkeypatch.setattr(_OllamaStub, "reply", '```json\n{"ats": "ashby", "slug": "openai"}\n```')
+    assert localai.ask("which board?", json=True) == {"ats": "ashby", "slug": "openai"}
+    assert _OllamaStub.seen["format"] == "json"
+
+
+def test_no_server_is_not_an_error(monkeypatch):
+    monkeypatch.setenv("OLLAMA_HOST", "http://127.0.0.1:1")   # nothing listens there
+    localai._ollama.update({"checked": 0.0, "url": None, "model": None})
+    assert localai.ollama_ready() is False
+    assert localai.ollama_model() is None
+    localai._ollama.update({"checked": 0.0, "url": None, "model": None})
+
+
+def test_the_backend_can_be_pinned_to_llama_cpp(ollama, monkeypatch):
+    monkeypatch.setenv("LOCAL_AI_BACKEND", "llama")
+    localai._ollama.update({"checked": 0.0, "url": None, "model": None})
+    assert localai.ollama_ready() is False

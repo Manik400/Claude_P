@@ -2,927 +2,372 @@
 #
 # One company per line:   Name | ats | board | note
 #
-#   ats     greenhouse | lever | ashby | smartrecruiters | recruitee | workday
+#   ats     greenhouse | lever | ashby | smartrecruiters | workable | recruitee | workday
+#           auto  = find the board on the first run (and remember it in assets/boards_cache.json)
+#           link  = no public API; the note holds the careers URL to apply through
 #   board   the company's id on that job board:
-#             greenhouse       boards.greenhouse.io/<board>          e.g. agoda
-#             lever            jobs.lever.co/<board>                 e.g. spotify
-#             ashby            jobs.ashbyhq.com/<board>              e.g. supercell
+#             greenhouse       job-boards.greenhouse.io/<board>      e.g. agoda
+#             lever            jobs.lever.co/<board>                 e.g. binance
+#             ashby            jobs.ashbyhq.com/<board>              e.g. openai
 #             smartrecruiters  jobs.smartrecruiters.com/<board>      e.g. grab
+#             workable         apply.workable.com/<board>
 #             recruitee        <board>.recruitee.com                 e.g. bunq
 #             workday          <host>/<tenant>/<site> from the careers URL
 #                              e.g. nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
-#   note    free text shown on the phone (hubs, anything you want to remember)
+#   note    free text shown on the phone - and, if you paste a careers URL here, the link
+#           this bot uses. A link to a known job board wins over the ats/board columns, so
+#           pasting https://jobs.ashbyhq.com/openai is enough to pin a company for good.
 #
-# Not sure which board a company uses?  python job-hunt/scripts/careers_bot.py find "<company>"
-# Check the whole list still works:      python job-hunt/scripts/careers_bot.py check
+# A row whose board stops answering is not lost: careers_bot re-resolves it (link -> the
+# company's careers page -> name variants across every board API -> the local model, each
+# one verified) and caches what works. Nothing here has to be right for the search to run.
 #
-# Not supported yet (own career sites, no public job-board API): Booking.com, Zalando, Revolut, Atlassian, Shopify.
-#
-# Rows commented out with a [reason] tag are kept as a record, not read:
-#   [no public job-board API]        the ats column named something this bot cannot read
-#   [workday endpoint not found]     no <host>/<tenant>/<site> answers the Workday jobs API
-# A row this bot cannot read is skipped with a warning at the top of a run - it never
-# aborts the search - so it is safe to add a company here before its board is confirmed.
-
-# ---- Asia / Middle East / Oceania
-Agoda            | greenhouse      | agoda          | Bangkok hub; many roles say "relocation provided" + visa
-Grab             | smartrecruiters | grab           | Singapore, Kuala Lumpur, Jakarta
-PayPay           | greenhouse      | paypay         | Tokyo
-Careem           | greenhouse      | careem         | Dubai, Karachi
-Canva            | smartrecruiters | canva          | Sydney, Melbourne
-
-# ---- Netherlands
-Adyen            | greenhouse      | adyen          | Amsterdam
-bunq             | recruitee       | bunq           | Amsterdam
-Mollie           | ashby           | mollie         | Amsterdam
-Miro             | ashby           | miro           | Amsterdam, Berlin
-JetBrains        | greenhouse      | jetbrains      | Amsterdam, Prague, Munich
-
-# ---- Germany / Austria / Switzerland
-N26              | greenhouse      | n26            | Berlin, Barcelona
-Delivery Hero    | smartrecruiters | deliveryhero   | Berlin
-HelloFresh       | greenhouse      | hellofresh     | Berlin
-GetYourGuide     | greenhouse      | getyourguide   | Berlin, Zurich
-AUTO1 Group      | smartrecruiters | auto1          | Berlin
-Raisin           | greenhouse      | raisin         | Berlin
-Forto            | ashby           | forto          | Berlin
-SumUp            | greenhouse      | sumup          | Berlin, London, Sofia
-Celonis          | greenhouse      | celonis        | Munich
-Flix             | greenhouse      | flix           | Munich
-trivago          | greenhouse      | trivago        | Düsseldorf
-Bitpanda         | greenhouse      | bitpanda       | Vienna
-
-# ---- Nordics
-Spotify          | lever           | spotify        | Stockholm, London
-Supercell        | ashby           | supercell      | Helsinki
-Wolt             | greenhouse      | wolt           | Helsinki, Berlin
-Pleo             | ashby           | pleo           | Copenhagen
-
-# ---- UK / Ireland / France / Portugal
-Wise             | smartrecruiters | wise           | London, Tallinn
-Monzo            | greenhouse      | monzo          | London
-Deliveroo        | ashby           | deliveroo      | London
-Stripe           | greenhouse      | stripe         | Dublin
-Datadog          | greenhouse      | datadog        | Paris, Dublin
-Cloudflare       | greenhouse      | cloudflare     | Lisbon, London
-
-# ---- Global tech (offices in many countries)
-Databricks       | greenhouse      | databricks     | Amsterdam, Tokyo, Bengaluru
-GitLab           | greenhouse      | gitlab         | remote-first
-Airbnb           | greenhouse      | airbnb
-Coinbase         | greenhouse      | coinbase
-Binance          | lever           | binance
-Figma            | greenhouse      | figma
-Notion           | ashby           | notion
-Plaid            | ashby           | plaid
-Vercel           | greenhouse      | vercel
-Reddit           | greenhouse      | reddit
-Pinterest        | greenhouse      | pinterest
-Dropbox          | greenhouse      | dropbox
-Twilio           | greenhouse      | twilio
-Elastic          | greenhouse      | elastic
-Epic Games       | greenhouse      | epicgames
-Riot Games       | greenhouse      | riotgames
-NVIDIA           | workday         | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
-Salesforce       | workday         | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site
-Adobe            | workday         | adobe.wd5.myworkdayjobs.com/adobe/external_experienced
-
-# ============================================================
-# GLOBAL HIGH-PAYING TECH COMPANIES
-# Format:
-# Company | ATS | ATS Slug / Board | Primary Locations / Notes
-# ============================================================
-
-# ---- AI / Data / Infrastructure
-Databricks       | greenhouse | databricks       | San Francisco, New York, Amsterdam, London, Bengaluru
-Anthropic        | greenhouse | anthropic        | San Francisco, Seattle, London, Tokyo
-OpenAI           | greenhouse | openai            | San Francisco, New York, London, Paris, Tokyo
-Scale AI         | greenhouse | scaleai           | San Francisco, New York, London
-Hugging Face     | greenhouse | huggingface       | New York, Paris, Remote
-Cohere           | greenhouse | cohere             | Toronto, New York, London
-Mistral AI       | ashby      | mistral            | Paris, London, Palo Alto
-Perplexity       | greenhouse | perplexity-ai      | San Francisco, New York
-xAI              | greenhouse | xai                | Palo Alto, Memphis, Remote
-Glean             | greenhouse | glean              | Palo Alto, Bengaluru, New York
-Weights & Biases | greenhouse | wandb              | San Francisco, London, Tokyo, Remote
-Pinecone         | greenhouse | pinecone           | New York, San Francisco, Remote
-Zilliz           | greenhouse | zilliz             | Redwood City, Shanghai, Remote
-Weaviate         | greenhouse | weaviate           | Amsterdam, New York, Remote
-Replicate        | greenhouse | replicate          | San Francisco, Remote
-Modal            | greenhouse | modal              | New York, San Francisco, Remote
-Together AI      | greenhouse | togetherai         | San Francisco, Remote
-Fireworks AI     | greenhouse | fireworksai        | Mountain View, Remote
-Baseten          | greenhouse | baseten            | San Francisco, New York
-Runway           | greenhouse | runwayml           | New York, San Francisco
-ElevenLabs       | greenhouse | elevenlabs         | New York, London, Warsaw
-Harvey           | greenhouse | harvey              | San Francisco, New York, Remote
-Cloudflare        | greenhouse | cloudflare         | San Francisco, Austin, London, Lisbon, Singapore, Remote
-Vercel            | greenhouse | vercel              | San Francisco, New York, London, Remote, India
-GitLab            | greenhouse | gitlab              | Remote-first, India, Europe, Americas
-GitHub            | greenhouse | github              | Remote, US, Europe, India
-GitLab            | greenhouse | gitlab              | Remote-first
-Docker             | greenhouse | docker              | Palo Alto, Remote, Europe
-HashiCorp          | greenhouse | hashicorp            | US, Canada, Europe, Remote
-Grafana Labs       | greenhouse | grafanalabs          | New York, London, Stockholm, Remote
-Elastic             | greenhouse | elastic              | Amsterdam, Mountain View, Bangalore, Remote
-Datadog             | greenhouse | datadog              | New York, Boston, Paris, Amsterdam, Tokyo
-MongoDB             | greenhouse | mongodb              | New York, London, Dublin, Bengaluru, Remote
-Confluent           | greenhouse | confluent             | Mountain View, London, Bengaluru, Remote
-Cockroach Labs      | greenhouse | cockroachlabs         | New York, Austin, Remote
-Redis               | greenhouse | redis                 | Mountain View, London, Tel Aviv, Remote
-ClickHouse          | greenhouse | clickhouse            | Amsterdam, London, New York, Remote
-Sentry              | greenhouse | sentry                | San Francisco, Vienna, Remote
-LaunchDarkly        | greenhouse | launchdarkly          | Oakland, London, Remote
-Sourcegraph         | greenhouse | sourcegraph           | Remote
-Temporal             | greenhouse | temporal              | Seattle, London, Remote
-CircleCI             | greenhouse | circleci              | Remote
-Harness              | greenhouse | harness               | San Francisco, Bengaluru, Remote
-Postman              | greenhouse | postman               | Bengaluru, San Francisco, Remote
-BrowserStack         | greenhouse | browserstack          | Mumbai, Bengaluru, New York, Amsterdam
-LambdaTest           | greenhouse | lambdatest            | Noida, Bengaluru, San Francisco, Remote
-Supabase             | greenhouse | supabase              | Remote, New York
-Neon                 | greenhouse | neon                   | San Francisco, Remote
-PlanetScale          | greenhouse | planetscale            | Remote
-Retool               | greenhouse | retool                 | San Francisco, New York, Remote
-
-# ---- Product / Consumer Tech
-Airbnb              | greenhouse | airbnb              | San Francisco, New York, Dublin, London
-Figma               | greenhouse | figma                | San Francisco, New York, London, Bengaluru
-Notion              | ashby      | notion               | San Francisco, New York, London, Amsterdam, Hyderabad, Tokyo
-Reddit              | greenhouse | reddit               | San Francisco, New York, Toronto, London, Amsterdam
-Pinterest           | greenhouse | pinterest            | San Francisco, New York, Seattle, London, Tokyo
-Dropbox             | greenhouse | dropbox              | San Francisco, New York, Austin, Dublin, Remote
-Discord             | greenhouse | discord              | San Francisco, Remote
-Spotify             | greenhouse | spotify              | Stockholm, London, New York, Bengaluru
-Snap                | greenhouse | snap                 | Santa Monica, Seattle, London, Paris
-TikTok / ByteDance  | greenhouse | bytedance             | Singapore, London, Dublin, New York, Los Angeles
-Roblox              | greenhouse | roblox               | San Mateo, San Francisco, London, Remote
-Unity               | greenhouse | unity                | San Francisco, Copenhagen, Stockholm, Remote
-# [no public job-board API] Epic Games           | official   | epicgames             | Cary, Montreal, Vancouver, London, Porto Alegre
-Riot Games           | greenhouse | riotgames             | Los Angeles, Dublin, St. Louis, Remote
-# [workday endpoint not found] Electronic Arts      | workday    | ea                    | Redwood City, Vancouver, Austin, Orlando
-# [no public job-board API] Valve                | official   | valve                 | Bellevue, Remote
-# [no public job-board API] Nintendo              | official   | nintendo              | Kyoto, Tokyo, Redmond
-PlayStation / Sony    | workday    | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers                  | San Diego, London, Tokyo
-
-# ---- Fintech / Crypto
-Coinbase             | greenhouse | coinbase              | Remote India, US, UK, Ireland, Singapore
-Binance              | lever      | binance               | Global Remote, Dubai, Singapore, Europe, India
-Stripe               | greenhouse | stripe                | San Francisco, New York, Dublin, London, Singapore, Bengaluru
-Plaid                | ashby      | plaid                 | San Francisco, New York, Washington DC, Remote
-Block / Square       | greenhouse | block                 | San Francisco, New York, London, Toronto
-Ramp                 | greenhouse | ramp                  | New York, Miami, Remote
-Brex                 | greenhouse | brex                  | San Francisco, New York, Vancouver
-Robinhood             | greenhouse | robinhood             | Menlo Park, New York, London
-Chime                 | greenhouse | chime                 | San Francisco, Chicago, Remote
-Revolut               | greenhouse | revolut               | London, Dublin, Berlin, Madrid, Paris
-Wise                  | greenhouse | wise                  | London, Tallinn, Singapore, New York
-Adyen                 | greenhouse | adyen                 | Amsterdam, London, Madrid, Singapore
-Checkout.com          | greenhouse | checkout              | London, Dubai, Singapore, Paris
-Klarna                | greenhouse | klarna                | Stockholm, London, Berlin, New York
-Nubank                | greenhouse | nubank                | Sao Paulo, Mexico City, Remote
-Affirm                | greenhouse | affirm                | San Francisco, New York, Remote
-Marqeta               | greenhouse | marqeta               | Oakland, London, Remote
-Mercury               | greenhouse | mercury               | San Francisco, New York, Remote
-Circle                | greenhouse | circle                | Boston, New York, London, Remote
-Ripple                | greenhouse | ripple                | San Francisco, London, Toronto
-Chainalysis            | greenhouse | chainalysis            | New York, London, Singapore, Remote
-Kraken                | greenhouse | kraken                | Remote, Europe, US
-OKX                   | greenhouse | okx                   | Hong Kong, Singapore, Dubai, Europe
-Gemini                | greenhouse | gemini                | New York, London, Singapore
-
-# ---- Big Tech / MNC
-# [workday endpoint not found] Google                | workday    | google                | US, India, UK, Europe, Singapore, Japan
-# [workday endpoint not found] Microsoft             | workday    | microsoft             | US, India, UK, Europe, Canada
-# [no public job-board API] Amazon                | amazon     | amazonjobs            | Global
-# [workday endpoint not found] Apple                 | workday    | apple                 | US, UK, Europe, India, Singapore
-Meta                  | greenhouse | meta                  | Menlo Park, New York, London, Singapore, India
-NVIDIA                | workday    | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | US, India, Europe, Asia
-Salesforce             | workday    | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | US, India, Europe, Singapore
-Adobe                  | workday    | adobe.wd5.myworkdayjobs.com/adobe/external_experienced | San Jose, Bengaluru, Noida, London
-# [no public job-board API] Oracle                 | oracle     | oracle                 | US, India, Europe, Asia
-# [no public job-board API] SAP                    | successfactors | sap | Germany, US, India, Europe
-# [workday endpoint not found] IBM                    | workday    | ibm                   | Global
-Cisco                  | workday    | cisco.wd5.myworkdayjobs.com/cisco/Cisco_Careers                 | US, India, Europe, Singapore
-Intel                  | workday    | intel.wd1.myworkdayjobs.com/intel/External                 | US, India, Europe, Israel
-# [workday endpoint not found] AMD                    | workday    | amd                   | US, Canada, India, Europe
-# [workday endpoint not found] Qualcomm               | workday    | qualcomm              | San Diego, Bengaluru, Cambridge, Munich
-Broadcom               | workday    | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career               | US, India, Europe, Singapore
-ServiceNow              | workday    | snc.wd1.myworkdayjobs.com/snc/Snc_External_Career_Site             | Santa Clara, Bengaluru, Amsterdam, London
-VMware / Broadcom       | workday    | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career               | Palo Alto, Bengaluru, Europe
-# [workday endpoint not found] Dell Technologies       | workday    | dell                   | Austin, Bengaluru, Round Rock, Europe
-Nutanix                 | greenhouse | nutanix                | San Jose, Bengaluru, Durham
-# [workday endpoint not found] Intuit                  | workday    | intuit                 | Mountain View, Bengaluru, London
-Atlassian               | greenhouse | atlassian               | Sydney, Bengaluru, Austin, Remote
-Workday                | workday | workday.wd5.myworkdayjobs.com/workday/Workday   | Pleasanton, Dublin, Bengaluru
-Palantir                | greenhouse | palantir               | Denver, New York, London, Tokyo
-Snowflake               | greenhouse | snowflake              | San Mateo, New York, London, Bengaluru
-
-# ---- Enterprise / SaaS
-Freshworks              | greenhouse | freshworks             | San Mateo, Chennai, Bengaluru
-Chargebee               | greenhouse | chargebee              | San Francisco, Chennai, Bengaluru
-Whatfix                 | greenhouse | whatfix                | San Jose, Bengaluru, Pune
-Druva                   | greenhouse | druva                  | Sunnyvale, Pune, Bengaluru
-Gupshup                 | greenhouse | gupshup                | Mumbai, Bengaluru, London
-HighRadius              | greenhouse | highradius             | Houston, Gurugram, Hyderabad
-Innovaccer               | greenhouse | innovaccer              | San Francisco, Noida, Bengaluru
-MoEngage                | greenhouse | moengage               | San Francisco, Bengaluru, Berlin
-CleverTap               | greenhouse | clevertap              | Mountain View, Mumbai, Bengaluru
-WebEngage               | greenhouse | webengage               | Mumbai, Bengaluru
-Mindtickle              | greenhouse | mindtickle              | San Francisco, Pune, Bengaluru
-Darwinbox               | greenhouse | darwinbox              | Hyderabad, Bengaluru, Singapore
-Uniphore                | greenhouse | uniphore               | Palo Alto, Chennai, Bengaluru
-Observe.AI              | greenhouse | observeai              | San Francisco, Bengaluru
-Yellow.ai               | greenhouse | yellowai               | San Mateo, Bengaluru
-Amagi                   | greenhouse | amagi                  | New York, Bengaluru
-Icertis                 | greenhouse | icertis                | Bellevue, Pune, Bengaluru
-Sprinklr                | greenhouse | sprinklr               | New York, Gurugram, London
-Contentful              | greenhouse | contentful             | Berlin, San Francisco, London
-Celonis                 | greenhouse | celonis                | Munich, New York, London, Bengaluru
-Personio                | greenhouse | personio               | Munich, London, Dublin
-Miro                    | greenhouse | miro                   | Amsterdam, Berlin, London, New York
-Canva                   | greenhouse | canva                  | Sydney, Austin, London, Bengaluru
-HubSpot                 | greenhouse | hubspot                | Cambridge, Dublin, Berlin, Remote
-Zendesk                 | greenhouse | zendesk                | San Francisco, Madison, Singapore, Remote
-Okta                    | greenhouse | okta                   | San Francisco, Bellevue, Bengaluru
-Twilio                  | greenhouse | twilio                 | San Francisco, Bengaluru, London, Remote
-Auth0                   | greenhouse | auth0                  | Remote, US, Europe
-Cloudinary              | greenhouse | cloudinary             | Santa Clara, London, Singapore, Remote
-
-# ---- Mobility / Commerce / Consumer
-Uber                    | greenhouse | uber                  | San Francisco, New York, Bengaluru, Amsterdam, London
-Lyft                    | greenhouse | lyft                  | San Francisco, New York, Remote
-DoorDash                | greenhouse | doordash              | San Francisco, New York, Toronto
-Instacart               | greenhouse | instacart             | San Francisco, Toronto, Remote
-Grab                    | greenhouse | grab                  | Singapore, Jakarta, Bangkok
-Sea / Shopee            | greenhouse | sea                   | Singapore, Taiwan, Indonesia
-Booking.com             | greenhouse | booking                | Amsterdam, London, Bengaluru
-# [workday endpoint not found] Expedia Group           | workday    | expedia               | Seattle, London, Madrid, Bengaluru
-Delivery Hero           | greenhouse | deliveryhero          | Berlin, London, Singapore
-Zalando                 | greenhouse | zalando               | Berlin, Dublin, Helsinki
-GetYourGuide             | greenhouse | getyourguide           | Berlin, Zurich, Paris
-Airbnb                  | greenhouse | airbnb                | San Francisco, New York, Dublin, London
-Etsy                    | greenhouse | etsy                  | Brooklyn, Dublin, London
-# [workday endpoint not found] eBay                    | workday    | ebay                  | San Jose, Bengaluru, London
-# [workday endpoint not found] Walmart Global Tech     | workday    | walmart                | Bengaluru, Chennai, Sunnyvale
-Flipkart                | greenhouse | flipkart               | Bengaluru
-Meesho                  | greenhouse | meesho                 | Bengaluru
-Swiggy                  | greenhouse | swiggy                 | Bengaluru
-Zomato / Eternal        | greenhouse | eternal                | Gurugram
-Zepto                   | greenhouse | zepto                  | Bengaluru, Mumbai
-PhonePe                 | greenhouse | phonepe               | Bengaluru
-Razorpay                | greenhouse | razorpay              | Bengaluru
-CRED                    | greenhouse | cred                  | Bengaluru
-Groww                   | greenhouse | groww                 | Bengaluru
-Dream Sports            | greenhouse | dreamsports            | Mumbai
-Ather Energy             | greenhouse | ather                  | Bengaluru
-Ola Electric             | greenhouse | olaelectric             | Bengaluru
-
-# ---- Security
-CrowdStrike             | workday    | crowdstrike.wd5.myworkdayjobs.com/crowdstrike/CrowdstrikeCareers            | Austin, Sunnyvale, Bengaluru, Remote
-# [workday endpoint not found] Palo Alto Networks      | workday    | paloaltonetworks       | Santa Clara, Bengaluru, Israel, Europe
-Wiz                    | greenhouse | wiz                   | New York, Tel Aviv, London, Bengaluru
-Snyk                   | greenhouse | snyk                  | London, Boston, Tel Aviv, Remote
-# [workday endpoint not found] Zscaler                | workday    | zscaler               | San Jose, Bengaluru, London
-Cloudflare              | greenhouse | cloudflare             | Global / Remote
-Okta                   | greenhouse | okta                  | San Francisco, Bengaluru, London
-1Password              | greenhouse | 1password              | Toronto, Remote
-Vanta                  | greenhouse | vanta                 | San Francisco, New York, Remote
-Abnormal Security      | greenhouse | abnormalsecurity       | San Francisco, New York, Remote
-Rubrik                 | greenhouse | rubrik                | Palo Alto, Bengaluru, New York
-Cohesity               | greenhouse | cohesity              | San Jose, Bengaluru, London
-Tanium                 | greenhouse | tanium                | Kirkland, London, Bengaluru
-Darktrace              | greenhouse | darktrace             | Cambridge, London, Bengaluru
-
-# ---- Hardware / Semiconductor
-NVIDIA                 | workday    | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | Santa Clara, Bengaluru, Pune, Taipei
-# [workday endpoint not found] AMD                    | workday    | amd                     | Santa Clara, Bengaluru, Austin
-# [workday endpoint not found] Qualcomm               | workday    | qualcomm                | San Diego, Bengaluru, Cambridge
-Broadcom               | workday    | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career                | Palo Alto, Bengaluru, Munich
-Intel                  | workday    | intel.wd1.myworkdayjobs.com/intel/External                   | Santa Clara, Bengaluru, Israel
-# [workday endpoint not found] ARM                    | workday    | arm                     | Cambridge, Bengaluru, Austin
-# [no public job-board API] MediaTek               | official   | mediatek                | Hsinchu, Bengaluru, Singapore
-Marvell                | workday    | marvell.wd1.myworkdayjobs.com/marvell/MarvellCareers                 | Santa Clara, Bengaluru
-Micron                 | workday    | micron.wd1.myworkdayjobs.com/micron/External                  | Boise, Bengaluru, Hyderabad
-Cadence                | workday    | cadence.wd1.myworkdayjobs.com/cadence/External_Careers                 | San Jose, Noida, Bengaluru
-# [workday endpoint not found] Synopsys               | workday    | synopsys                | Sunnyvale, Bengaluru, Noida
-Applied Materials      | workday    | amat.wd1.myworkdayjobs.com/amat/External        | Santa Clara, Bengaluru
-# [workday endpoint not found] Lam Research           | workday    | lamresearch             | Fremont, Bengaluru
-
-# ---- Autonomous / EV / Robotics / Space
-# [workday endpoint not found] Tesla                  | workday    | tesla                   | Austin, Palo Alto, Berlin, Amsterdam
-SpaceX                 | greenhouse | spacex                  | Hawthorne, Starbase, Seattle
-Waymo                  | greenhouse | waymo                   | Mountain View, San Francisco, Phoenix
-Zoox                   | greenhouse | zoox                    | Foster City, Seattle, San Francisco
-Aurora Innovation      | greenhouse | aurora                  | Pittsburgh, Mountain View, Dallas
-# [workday endpoint not found] Rivian                 | workday    | rivian                  | Irvine, Palo Alto, Normal
-Anduril                | greenhouse | anduril                 | Costa Mesa, Irvine, Seattle
-Figure AI               | greenhouse | figureai                | Sunnyvale, San Francisco
-Skydio                 | greenhouse | skydio                  | San Mateo, Remote
-Cruise                 | greenhouse | cruise                  | San Francisco
-
-# ---- Europe High-Paying
-DeepMind               | greenhouse | deepmind                | London, Paris, Zurich
-Spotify                | greenhouse | spotify                 | Stockholm, London, New York
-Klarna                 | greenhouse | klarna                  | Stockholm, London, Berlin
-Revolut                | greenhouse | revolut                 | London, Dublin, Madrid, Berlin
-Wise                   | greenhouse | wise                    | London, Tallinn, Singapore
-Adyen                  | greenhouse | adyen                   | Amsterdam, London, Madrid
-Booking.com             | greenhouse | booking                 | Amsterdam, London, Bengaluru
-# [workday endpoint not found] ASML                   | workday    | asml                    | Eindhoven, Veldhoven, Amsterdam
-N26                    | greenhouse | n26                     | Berlin, Barcelona
-Celonis                | greenhouse | celonis                 | Munich, London, New York
-Personio               | greenhouse | personio                | Munich, Dublin, London
-Zalando                | greenhouse | zalando                 | Berlin, Dublin, Helsinki
-Delivery Hero           | greenhouse | deliveryhero            | Berlin, Singapore, London
-DeepL                   | greenhouse | deepl                   | Cologne, Berlin, London
-Mistral AI              | ashby      | mistral                 | Paris, London
-Hugging Face            | greenhouse | huggingface             | Paris, New York
-Back Market             | greenhouse | backmarket              | Paris, Bordeaux, New York
-Doctolib                | greenhouse | doctolib                | Paris, Berlin, Milan
-BlaBlaCar               | greenhouse | blablacar               | Paris, Amsterdam
-Qonto                   | greenhouse | qonto                   | Paris, Berlin, Milan
-Contentsquare           | greenhouse | contentsquare           | Paris, London, New York
-OVHcloud                | greenhouse | ovhcloud                | France, UK, Germany, Canada
-Criteo                 | greenhouse | criteo                  | Paris, London, New York
-Checkout.com             | greenhouse | checkout                | London, Paris, Dubai
-SumUp                   | greenhouse | sumup                   | Berlin, London, Sofia
-
-# ---- Japan / Singapore / APAC
-# [no public job-board API] Rakuten                 | official   | rakuten                 | Tokyo, Singapore
-Mercari                 | greenhouse | mercari                 | Tokyo, Palo Alto
-# [no public job-board API] LINE Yahoo              | official   | line-yahoo              | Tokyo
-# [no public job-board API] Preferred Networks      | official   | preferred-networks      | Tokyo
-# [workday endpoint not found] Toyota                  | workday    | toyota                  | Tokyo, US, Europe
-Sony                    | workday    | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers                    | Tokyo, US, Europe
-# [no public job-board API] Nintendo                | official   | nintendo                | Kyoto, Tokyo
-ByteDance               | greenhouse | bytedance               | Singapore, Tokyo, London, US
-Grab                    | greenhouse | grab                    | Singapore, Jakarta, Bangkok
-Sea Group               | greenhouse | sea                     | Singapore
-Shopee                  | greenhouse | sea                     | Singapore, Taiwan
-Agoda                   | greenhouse | agoda                   | Bangkok, Singapore
-DBS                     | workday    | dbs.wd3.myworkdayjobs.com/dbs/Dbs_Careers                     | Singapore, India, Hong Kong
-# [workday endpoint not found] Standard Chartered      | workday    | standardchartered       | London, Singapore, India
-Visa                    | workday    | visa.wd5.myworkdayjobs.com/visa/Visa                    | San Francisco, Singapore, Bengaluru
-# [workday endpoint not found] Mastercard              | workday    | mastercard              | New York, Bengaluru, Singapore
-
-
-
-# [workday endpoint not found] Google | workday | google | https://www.google.com/about/careers/applications/
-# [workday endpoint not found] Microsoft | workday | microsoft | https://jobs.careers.microsoft.com/
-# [no public job-board API] Amazon | amazon | amazonjobs | https://www.amazon.jobs/
-# [workday endpoint not found] Apple | workday | apple | https://jobs.apple.com/
-Meta | greenhouse | meta | https://www.metacareers.com/
-NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
-# [workday endpoint not found] Microsoft Azure | workday | microsoft | https://jobs.careers.microsoft.com/
-# [no public job-board API] Amazon AWS | amazon | amazonjobs | https://www.amazon.jobs/
-# [workday endpoint not found] IBM | workday | ibm | https://www.ibm.com/careers
-# [no public job-board API] Oracle | oracle | oracle | https://careers.oracle.com/
-Salesforce | workday | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | https://salesforce.wd12.myworkdayjobs.com/External_Career_Site
-Adobe | workday | adobe.wd5.myworkdayjobs.com/adobe/external_experienced | https://adobe.wd5.myworkdayjobs.com/external_experienced
-Cisco | workday | cisco.wd5.myworkdayjobs.com/cisco/Cisco_Careers | https://jobs.cisco.com/
-Intel | workday | intel.wd1.myworkdayjobs.com/intel/External | https://jobs.intel.com/
-# [workday endpoint not found] AMD | workday | amd | https://careers.amd.com/
-# [workday endpoint not found] Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
-Broadcom | workday | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career | https://broadcom.wd1.myworkdayjobs.com/External_Career
-ServiceNow | workday | snc.wd1.myworkdayjobs.com/snc/Snc_External_Career_Site | https://careers.servicenow.com/
-# [no public job-board API] SAP | successfactors | sap | https://jobs.sap.com/
-# [workday endpoint not found] Dell Technologies | workday | dell | https://jobs.dell.com/
-HP | workday | hp.wd5.myworkdayjobs.com/hp/ExternalCareerSite | https://jobs.hp.com/
-# [workday endpoint not found] HPE | workday | hpe | https://careers.hpe.com/
-# [workday endpoint not found] Lenovo | workday | lenovo | https://jobs.lenovo.com/
-VMware / Broadcom | workday | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career | https://broadcom.wd1.myworkdayjobs.com/
-Atlassian | greenhouse | atlassian | https://www.atlassian.com/company/careers
-LinkedIn | greenhouse | linkedin | https://www.linkedin.com/jobs/
-# [workday endpoint not found] Intuit | workday | intuit | https://jobs.intuit.com/
-Workday                | workday | workday.wd5.myworkdayjobs.com/workday/Workday   | https://www.workday.com/en-us/company/careers.html
-Palantir | greenhouse | palantir | https://www.palantir.com/careers/
-Snowflake | greenhouse | snowflake | https://careers.snowflake.com/
-Uber | greenhouse | uber | https://www.uber.com/careers/
-Airbnb | greenhouse | airbnb | https://careers.airbnb.com/
-Booking.com | greenhouse | booking | https://careers.booking.com/
-# [workday endpoint not found] Expedia Group | workday | expedia | https://careers.expediagroup.com/
-Indeed | greenhouse | indeed | https://www.indeed.com/cmp/Indeed/jobs
-Wayfair | greenhouse | wayfair | https://www.wayfair.com/careers
-Coupang | greenhouse | coupang | https://www.coupang.jobs/
-# [workday endpoint not found] Walmart Global Tech | workday | walmart | https://careers.walmart.com/
-Target | workday | target.wd5.myworkdayjobs.com/target/TargetCareers | https://corporate.target.com/careers
-# [workday endpoint not found] Nike | workday | nike | https://jobs.nike.com/
-# [workday endpoint not found] Samsung | workday | samsung | https://www.samsung.com/global/careers/
-Sony | workday | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers | https://www.sony.com/en/SonyInfo/Careers/
-# [workday endpoint not found] Panasonic | workday | panasonic | https://holdings.panasonic/global/corporate/careers.html
-
-
-# ================================================================
-# HIGH-PAYING CLOUD / INFRASTRUCTURE
-# ================================================================
-
-Databricks | greenhouse | databricks | https://www.databricks.com/company/careers
-GitLab | greenhouse | gitlab | https://about.gitlab.com/jobs/
-GitHub | greenhouse | github | https://www.github.careers/
-Cloudflare | greenhouse | cloudflare | https://www.cloudflare.com/careers/
-Vercel | greenhouse | vercel | https://vercel.com/careers
-Elastic | greenhouse | elastic | https://www.elastic.co/careers
-Datadog | greenhouse | datadog | https://careers.datadoghq.com/
-MongoDB | greenhouse | mongodb | https://www.mongodb.com/careers
-Confluent | greenhouse | confluent | https://www.confluent.io/about/careers/
-Cockroach Labs | greenhouse | cockroachlabs | https://www.cockroachlabs.com/careers/
-Redis | greenhouse | redis | https://redis.io/careers/
-ClickHouse | greenhouse | clickhouse | https://clickhouse.com/company/careers
-Grafana Labs | greenhouse | grafanalabs | https://grafana.com/about/careers/
-HashiCorp | greenhouse | hashicorp | https://www.hashicorp.com/careers
-Docker | greenhouse | docker | https://www.docker.com/careers/
-Sentry | greenhouse | sentry | https://sentry.io/careers/
-New Relic | greenhouse | newrelic | https://newrelic.com/careers/
-Fastly | greenhouse | fastly | https://www.fastly.com/about/careers
-# [workday endpoint not found] Akamai | workday | akamai | https://www.akamai.com/careers
-DigitalOcean | greenhouse | digitalocean | https://www.digitalocean.com/careers
-Pure Storage | greenhouse | purestorage | https://www.purestorage.com/company/careers.html
-Canonical | greenhouse | canonical | https://canonical.com/careers
-Red Hat | workday | redhat.wd5.myworkdayjobs.com/redhat/jobs | https://www.redhat.com/en/jobs
-SUSE | greenhouse | suse | https://www.suse.com/careers/
-Veeam | greenhouse | veeam | https://www.veeam.com/company-careers.html
-JFrog | greenhouse | jfrog | https://www.jfrog.com/careers/
-Sonatype | greenhouse | sonatype | https://www.sonatype.com/careers
-CircleCI | greenhouse | circleci | https://circleci.com/careers/
-Buildkite | greenhouse | buildkite | https://buildkite.com/careers
-Pulumi | greenhouse | pulumi | https://www.pulumi.com/careers/
-Temporal | greenhouse | temporal | https://temporal.io/careers
-Aiven | greenhouse | aiven | https://aiven.io/careers
-ScyllaDB | greenhouse | scylladb | https://www.scylladb.com/careers/
-SingleStore | greenhouse | singlestore | https://www.singlestore.com/careers
-Timescale | greenhouse | timescale | https://www.timescale.com/careers
-Materialize | greenhouse | materialize | https://materialize.com/careers/
-PlanetScale | greenhouse | planetscale | https://planetscale.com/careers
-Neon | greenhouse | neon | https://neon.tech/careers
-# [no public job-board API] Turso | official | turso | https://turso.tech/careers
-Oxide Computer | greenhouse | oxidecomputer | https://oxide.computer/careers
-# [no public job-board API] Fly.io | official | fly | https://fly.io/careers
-# [no public job-board API] Render | official | render | https://render.com/careers
-# [no public job-board API] Railway | official | railway | https://railway.com/careers
-
-
-# ================================================================
-# DATABASE / DATA / DEVELOPER TOOLS
-# ================================================================
-
-Postman | greenhouse | postman | https://www.postman.com/company/careers/
-BrowserStack | greenhouse | browserstack | https://www.browserstack.com/careers
-LambdaTest | greenhouse | lambdatest | https://www.lambdatest.com/career
-Supabase | greenhouse | supabase | https://supabase.com/careers
-Weaviate | greenhouse | weaviate | https://weaviate.io/careers
-Pinecone | greenhouse | pinecone | https://www.pinecone.io/careers/
-Zilliz | greenhouse | zilliz | https://zilliz.com/careers
-Milvus / Zilliz | greenhouse | zilliz | https://zilliz.com/careers
-Neo4j | greenhouse | neo4j | https://neo4j.com/careers/
-PlanetScale | greenhouse | planetscale | https://planetscale.com/careers
-# [workday endpoint not found] Couchbase | workday | couchbase | https://www.couchbase.com/careers/
-# [workday endpoint not found] Cloudera | workday | cloudera | https://www.cloudera.com/about/careers.html
-DataStax | greenhouse | datastax | https://www.datastax.com/company/careers
-SingleStore | greenhouse | singlestore | https://www.singlestore.com/careers
-ClickHouse | greenhouse | clickhouse | https://clickhouse.com/company/careers
-ScyllaDB | greenhouse | scylladb | https://www.scylladb.com/careers/
-# [no public job-board API] TigerBeetle | official | tigerbeetle | https://tigerbeetle.com/careers/
-Cockroach Labs | greenhouse | cockroachlabs | https://www.cockroachlabs.com/careers/
-Confluent | greenhouse | confluent | https://www.confluent.io/about/careers/
-Redis | greenhouse | redis | https://redis.io/careers/
-
-
-# ================================================================
-# AI / MACHINE LEARNING
-# ================================================================
-
-OpenAI | greenhouse | openai | https://openai.com/careers/
-Anthropic | greenhouse | anthropic | https://www.anthropic.com/careers
-xAI | greenhouse | xai | https://x.ai/careers
-Perplexity | greenhouse | perplexity-ai | https://www.perplexity.ai/hub/careers
-Scale AI | greenhouse | scaleai | https://scale.com/careers
-Hugging Face | greenhouse | huggingface | https://huggingface.co/jobs
-Cohere | greenhouse | cohere | https://cohere.com/careers
-Mistral AI | ashby | mistral | https://mistral.ai/careers
-Glean | greenhouse | glean | https://www.glean.com/cat/careers
-Weights & Biases | greenhouse | wandb | https://wandb.ai/site/careers
-Pinecone | greenhouse | pinecone | https://www.pinecone.io/careers/
-Replicate | greenhouse | replicate | https://replicate.com/careers
-Modal | greenhouse | modal | https://modal.com/careers
-Together AI | greenhouse | togetherai | https://www.together.ai/careers
-Fireworks AI | greenhouse | fireworksai | https://fireworks.ai/careers
-Baseten | greenhouse | baseten | https://www.baseten.co/careers
-Runway | greenhouse | runwayml | https://runwayml.com/careers/
-ElevenLabs | greenhouse | elevenlabs | https://elevenlabs.io/careers
-Harvey | greenhouse | harvey | https://www.harvey.ai/careers
-Sierra | greenhouse | sierra | https://sierra.ai/careers
-Decagon | greenhouse | decagon | https://decagon.ai/careers
-Character.AI | greenhouse | character | https://character.ai/careers
-Cursor / Anysphere | greenhouse | anysphere | https://www.cursor.com/careers
-Poolside | greenhouse | poolside | https://poolside.ai/careers
-Reka AI | greenhouse | reka | https://www.reka.ai/careers
-Luma AI | greenhouse | luma-ai | https://lumalabs.ai/careers
-Twelve Labs | greenhouse | twelvelabs | https://www.twelvelabs.io/careers
-AssemblyAI | greenhouse | assemblyai | https://www.assemblyai.com/careers
-DeepL | greenhouse | deepl | https://www.deepl.com/en/careers
-Contextual AI | greenhouse | contextual-ai | https://contextual.ai/careers
-Imbue | greenhouse | imbue | https://imbue.com/careers
-Magic | greenhouse | magic | https://magic.dev/careers
-Adept | greenhouse | adept | https://www.adept.ai/careers
-Sakana AI | greenhouse | sakanaai | https://sakana.ai/careers
-Thinking Machines | greenhouse | thinking-machines | https://thinkingmachines.ai/careers
-OctoAI | greenhouse | octoai | https://octo.ai/careers
-
-
-# ================================================================
-# FINTECH / PAYMENTS / CRYPTO
-# ================================================================
-
-Stripe | greenhouse | stripe | https://stripe.com/jobs
-Coinbase | greenhouse | coinbase | https://www.coinbase.com/careers
-Binance | lever | binance | https://jobs.lever.co/binance
-Plaid | ashby | plaid | https://plaid.com/careers/
-Block / Square | greenhouse | block | https://block.xyz/careers
-Ramp | greenhouse | ramp | https://ramp.com/careers
-Brex | greenhouse | brex | https://www.brex.com/careers
-Robinhood | greenhouse | robinhood | https://careers.robinhood.com/
-Chime | greenhouse | chime | https://www.chime.com/careers/
-Revolut | greenhouse | revolut | https://www.revolut.com/careers/
-Wise | greenhouse | wise | https://wise.jobs/
-Adyen | greenhouse | adyen | https://careers.adyen.com/
-Checkout.com | greenhouse | checkout | https://www.checkout.com/careers
-Klarna | greenhouse | klarna | https://www.klarna.com/careers/
-Nubank | greenhouse | nubank | https://www.nubank.com.br/careers/
-Affirm | greenhouse | affirm | https://www.affirm.com/careers
-Marqeta | greenhouse | marqeta | https://www.marqeta.com/company/careers
-Mercury | greenhouse | mercury | https://mercury.com/jobs
-Circle | greenhouse | circle | https://www.circle.com/en/careers
-Ripple | greenhouse | ripple | https://ripple.com/careers/
-Chainalysis | greenhouse | chainalysis | https://www.chainalysis.com/careers/
-Kraken | greenhouse | kraken | https://www.kraken.com/careers
-OKX | greenhouse | okx | https://www.okx.com/careers
-Gemini | greenhouse | gemini | https://www.gemini.com/careers
-Airwallex | greenhouse | airwallex | https://www.airwallex.com/careers
-Papaya Global | greenhouse | papaya-global | https://www.papayaglobal.com/careers/
-Melio | greenhouse | melio | https://meliopayments.com/careers/
-Tipalti | greenhouse | tipalti | https://tipalti.com/careers/
-
-
-# ================================================================
-# INDIAN UNICORNS / HIGH-PAYING PRODUCT COMPANIES
-# ================================================================
-
-Flipkart | greenhouse | flipkart | https://www.flipkartcareers.com/
-PhonePe | greenhouse | phonepe | https://www.phonepe.com/careers/
-Razorpay | greenhouse | razorpay | https://razorpay.com/jobs/
-CRED | greenhouse | cred | https://careers.cred.club/
-Groww | greenhouse | groww | https://groww.in/careers
-Meesho | greenhouse | meesho | https://www.meesho.io/jobs
-Zepto | greenhouse | zepto | https://www.zepto.in/careers
-Swiggy | greenhouse | swiggy | https://careers.swiggy.com/
-Zomato / Eternal | greenhouse | eternal | https://www.eternal.com/careers/
-Dream11 / Dream Sports | greenhouse | dreamsports | https://www.dreamsports.group/careers/
-# [no public job-board API] Paytm | official | paytm | https://paytm.com/careers
-Myntra | greenhouse | myntra | https://careers.myntra.com/
-Ola | greenhouse | ola | https://www.olacabs.com/careers
-Ola Electric | greenhouse | olaelectric | https://www.olaelectric.com/careers
-Ather Energy | greenhouse | ather | https://www.atherenergy.com/careers
-Porter | greenhouse | porter | https://porter.in/careers
-Udaan | greenhouse | udaan | https://udaan.com/careers
-OfBusiness | greenhouse | ofbusiness | https://www.ofbusiness.com/careers
-Pine Labs | greenhouse | pinelabs | https://www.pinelabs.com/careers
-Juspay | greenhouse | juspay | https://juspay.in/careers
-Navi | greenhouse | navi | https://navi.com/careers
-CoinDCX | greenhouse | coindcx | https://coindcx.com/careers/
-CoinSwitch | greenhouse | coinswitch | https://coinswitch.co/careers
-Policybazaar | greenhouse | policybazaar | https://www.policybazaar.com/careers/
-ACKO | greenhouse | acko | https://www.acko.com/careers/
-Digit Insurance | greenhouse | go-digit | https://www.godigit.com/careers
-Slice | greenhouse | slice | https://sliceit.com/careers
-Yubi | greenhouse | yubi | https://www.go-yubi.com/careers
-Jupiter | greenhouse | jupiter | https://jupiter.money/careers
-Fi Money | greenhouse | fi | https://fi.money/careers
-Apna | greenhouse | apna | https://apna.co/careers
-Moglix | greenhouse | moglix | https://www.moglix.com/careers
-Zetwerk | greenhouse | zetwerk | https://www.zetwerk.com/careers
-Infra.Market | greenhouse | inframarket | https://infra.market/careers
-Ather | greenhouse | ather | https://www.atherenergy.com/careers
-
-
-# ================================================================
-# INDIAN SAAS
-# ================================================================
-
-Freshworks | greenhouse | freshworks | https://www.freshworks.com/company/careers/
-Postman | greenhouse | postman | https://www.postman.com/company/careers/
-BrowserStack | greenhouse | browserstack | https://www.browserstack.com/careers
-Chargebee | greenhouse | chargebee | https://www.chargebee.com/careers/
-Hasura | greenhouse | hasura | https://hasura.io/careers/
-Whatfix | greenhouse | whatfix | https://whatfix.com/careers/
-Druva | greenhouse | druva | https://www.druva.com/company/cassion/careers
-Gupshup | greenhouse | gupshup | https://www.gupshup.io/careers
-HighRadius | greenhouse | highradius | https://www.highradius.com/careers/
-Innovaccer | greenhouse | innovaccer | https://innovaccer.com/careers/
-MoEngage | greenhouse | moengage | https://www.moengage.com/careers/
-CleverTap | greenhouse | clevertap | https://clevertap.com/careers/
-WebEngage | greenhouse | webengage | https://webengage.com/careers/
-Mindtickle | greenhouse | mindtickle | https://www.mindtickle.com/careers/
-Darwinbox | greenhouse | darwinbox | https://darwinbox.com/careers/
-Uniphore | greenhouse | uniphore | https://www.uniphore.com/careers/
-Observe.AI | greenhouse | observeai | https://www.observe.ai/careers
-Yellow.ai | greenhouse | yellowai | https://yellow.ai/careers/
-Amagi | greenhouse | amagi | https://www.amagi.com/careers/
-Icertis | greenhouse | icertis | https://www.icertis.com/careers/
-Sprinklr | greenhouse | sprinklr | https://www.sprinklr.com/careers/
-Zenoti | greenhouse | zenoti | https://www.zenoti.com/careers
-LeadSquared | greenhouse | leadsquared | https://www.leadsquared.com/careers/
-Capillary Technologies | greenhouse | capillary | https://www.capillarytech.com/careers/
-Facilio | greenhouse | facilio | https://facilio.com/careers/
-Sirion | greenhouse | sirion | https://www.sirion.ai/careers/
-Kissflow | greenhouse | kissflow | https://kissflow.com/careers/
-Vymo | greenhouse | vymo | https://www.vymo.com/careers/
-Wingify | greenhouse | wingify | https://wingify.com/careers/
-Exotel | greenhouse | exotel | https://exotel.com/careers/
-
-
-# ================================================================
-# ENTERPRISE SAAS - GLOBAL
-# ================================================================
-
-ServiceTitan | greenhouse | servicetitan | https://www.servicetitan.com/careers
-Airtable | greenhouse | airtable | https://airtable.com/careers
-Asana | greenhouse | asana | https://asana.com/jobs
-Notion | ashby | notion | https://www.notion.com/careers
-Figma | greenhouse | figma | https://www.figma.com/careers/
-Miro | greenhouse | miro | https://miro.com/careers/
-Monday.com | greenhouse | monday | https://monday.com/careers
-ClickUp | greenhouse | clickup | https://clickup.com/careers
-Linear | greenhouse | linear | https://linear.app/careers
-Loom | greenhouse | loom | https://www.loom.com/careers
-Intercom | greenhouse | intercom | https://www.intercom.com/careers
-HubSpot | greenhouse | hubspot | https://www.hubspot.com/careers
-Zendesk | greenhouse | zendesk | https://jobs.zendesk.com/
-Okta | greenhouse | okta | https://www.okta.com/company/careers/
-Twilio | greenhouse | twilio | https://www.twilio.com/company/jobs
-DocuSign | greenhouse | docusign | https://careers.docusign.com/
-Box | greenhouse | box | https://www.box.com/en-us/careers
-Smartsheet | greenhouse | smartsheet | https://www.smartsheet.com/careers
-Amplitude | greenhouse | amplitude | https://amplitude.com/careers
-Mixpanel | greenhouse | mixpanel | https://mixpanel.com/careers/
-Braze | greenhouse | braze | https://www.braze.com/company/careers
-Iterable | greenhouse | iterable | https://iterable.com/careers/
-LaunchDarkly | greenhouse | launchdarkly | https://launchdarkly.com/careers/
-PagerDuty | greenhouse | pagerduty | https://www.pagerduty.com/careers/
-Contentful | greenhouse | contentful | https://www.contentful.com/careers/
-Celonis | greenhouse | celonis | https://www.celonis.com/careers/
-Personio | greenhouse | personio | https://www.personio.com/careers/
-Vanta | greenhouse | vanta | https://www.vanta.com/careers
-Rippling | greenhouse | rippling | https://www.rippling.com/careers
-Deel | greenhouse | deel | https://www.deel.com/careers
-Remote | greenhouse | remotecom | https://remote.com/careers
-Gusto | greenhouse | gusto | https://gusto.com/about/careers
-Retool | greenhouse | retool | https://retool.com/careers
-Airtable | greenhouse | airtable | https://airtable.com/careers
-Canva | greenhouse | canva | https://www.canva.com/careers/
-HubSpot | greenhouse | hubspot | https://www.hubspot.com/careers
-
-
-# ================================================================
-# SOCIAL / CONSUMER TECH
-# ================================================================
-
-Reddit | greenhouse | reddit | https://www.redditinc.com/careers
-Pinterest | greenhouse | pinterest | https://www.pinterestcareers.com/
-Dropbox | greenhouse | dropbox | https://jobs.dropbox.com/
-Discord | greenhouse | discord | https://discord.com/jobs
-Quora | greenhouse | quora | https://www.quora.com/careers
-# [no public job-board API] Medium | official | medium | https://medium.com/jobs
-Substack | greenhouse | substack | https://substack.com/careers
-Patreon | greenhouse | patreon | https://www.patreon.com/careers
-Vimeo | greenhouse | vimeo | https://vimeo.com/jobs
-# [no public job-board API] Automattic | official | automattic | https://automattic.com/work-with-us/
-# [no public job-board API] WordPress.com | official | automattic | https://automattic.com/work-with-us/
-# [no public job-board API] Buffer | official | buffer | https://buffer.com/journey
-Etsy | greenhouse | etsy | https://www.etsy.com/careers
-Snap | greenhouse | snap | https://www.snap.com/en-US/careers
-Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
-TikTok / ByteDance | greenhouse | bytedance | https://lifeattiktok.com/
-Roblox | greenhouse | roblox | https://careers.roblox.com/
-# [no public job-board API] Twitch | amazon | amazonjobs | https://www.amazon.jobs/en/teams/twitch
-Whatnot | greenhouse | whatnot | https://careers.whatnot.com/
-
-
-# ================================================================
-# E-COMMERCE / MARKETPLACE
-# ================================================================
-
-DoorDash | greenhouse | doordash | https://careers.doordash.com/
-Instacart | greenhouse | instacart | https://instacart.careers/
-Etsy | greenhouse | etsy | https://www.etsy.com/careers
-Wayfair | greenhouse | wayfair | https://www.wayfair.com/careers
-Chewy | workday | chewy.wd5.myworkdayjobs.com/chewy/External | https://careers.chewy.com/
-Gopuff | greenhouse | gopuff | https://www.gopuff.com/go/careers
-Mercari | greenhouse | mercari | https://careers.mercari.com/
-Poshmark | greenhouse | poshmark | https://careers.poshmark.com/
-Faire | greenhouse | faire | https://www.faire.com/careers
-StockX | greenhouse | stockx | https://careers.stockx.com/
-GOAT | greenhouse | goat | https://www.goat.com/careers
-
-
-# ================================================================
-# MOBILITY / TRAVEL
-# ================================================================
-
-Uber | greenhouse | uber | https://www.uber.com/careers/
-Lyft | greenhouse | lyft | https://www.lyft.com/careers
-Grab | greenhouse | grab | https://www.grab.careers/
-Booking.com | greenhouse | booking | https://careers.booking.com/
-# [workday endpoint not found] Expedia Group | workday | expedia | https://careers.expediagroup.com/
-Delivery Hero | greenhouse | deliveryhero | https://careers.deliveryhero.com/
-Zalando | greenhouse | zalando | https://jobs.zalando.com/
-GetYourGuide | greenhouse | getyourguide | https://www.getyourguide.careers/
-BlaBlaCar | greenhouse | blablacar | https://jobs.blablacar.com/
-Doctolib | greenhouse | doctolib | https://about.doctolib.com/careers/
-
-
-# ================================================================
-# CYBERSECURITY
-# ================================================================
-
-CrowdStrike | workday | crowdstrike.wd5.myworkdayjobs.com/crowdstrike/CrowdstrikeCareers | https://www.crowdstrike.com/careers/
-# [workday endpoint not found] Palo Alto Networks | workday | paloaltonetworks | https://jobs.paloaltonetworks.com/
-# [workday endpoint not found] Zscaler | workday | zscaler | https://www.zscaler.com/careers
-Wiz | greenhouse | wiz | https://www.wiz.io/careers
-Snyk | greenhouse | snyk | https://snyk.io/careers/
-Rubrik | greenhouse | rubrik | https://www.rubrik.com/company/careers/
-Cohesity | greenhouse | cohesity | https://www.cohesity.com/careers/
-Tenable | greenhouse | tenable | https://www.tenable.com/careers
-SentinelOne | greenhouse | sentinelone | https://www.sentinelone.com/careers/
-Abnormal Security | greenhouse | abnormalsecurity | https://abnormalsecurity.com/careers
-Arctic Wolf | greenhouse | arcticwolf | https://arcticwolf.com/careers/
-Tailscale | greenhouse | tailscale | https://tailscale.com/careers
-1Password | greenhouse | 1password | https://1password.com/jobs
-Keeper Security | greenhouse | keepersecurity | https://www.keepersecurity.com/careers.html
-SailPoint | workday | sailpoint.wd1.myworkdayjobs.com/sailpoint/Sailpoint | https://www.sailpoint.com/company/careers/
-Darktrace | greenhouse | darktrace | https://careers.darktrace.com/
-
-
-# ================================================================
-# QUANT / HFT / TRADING
-# ================================================================
-
-# [no public job-board API] Jane Street | official | janestreet | https://www.janestreet.com/join-jane-street/
-# [no public job-board API] Hudson River Trading | official | hrt | https://www.hudsonrivertrading.com/careers/
-# [no public job-board API] Citadel | official | citadel | https://www.citadel.com/careers/
-# [no public job-board API] Citadel Securities | official | citadel-securities | https://www.citadelsecurities.com/careers/
-# [no public job-board API] Two Sigma | official | twosigma | https://www.twosigma.com/careers/
-# [no public job-board API] Jump Trading | official | jumptrading | https://www.jumptrading.com/careers/
-# [no public job-board API] DRW | official | drw | https://www.drw.com/careers/
-# [no public job-board API] IMC Trading | official | imc | https://www.imc.com/careers/
-# [no public job-board API] Optiver | official | optiver | https://www.optiver.com/working-at-optiver/career-opportunities/
-# [no public job-board API] Akuna Capital | official | akuna | https://akunacapital.com/careers/
-# [no public job-board API] Five Rings | official | fiverings | https://fiverings.com/careers/
-# [no public job-board API] Tower Research | official | tower-research | https://www.tower-research.com/careers/
-# [no public job-board API] D.E. Shaw | official | deshaw | https://www.deshaw.com/careers
-# [no public job-board API] SIG | official | sig | https://sig.com/careers/
-# [no public job-board API] Virtu Financial | official | virtu | https://www.virtu.com/careers/
-# [no public job-board API] Flow Traders | official | flowtraders | https://www.flowtraders.com/careers/
-
-
-# ================================================================
-# SEMICONDUCTOR / HARDWARE
-# ================================================================
-
-NVIDIA | workday | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite
-# [workday endpoint not found] AMD | workday | amd | https://careers.amd.com/
-# [workday endpoint not found] Qualcomm | workday | qualcomm | https://careers.qualcomm.com/
-Broadcom | workday | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career | https://broadcom.wd1.myworkdayjobs.com/External_Career
-Intel | workday | intel.wd1.myworkdayjobs.com/intel/External | https://jobs.intel.com/
-# [workday endpoint not found] ARM | workday | arm | https://careers.arm.com/
-Marvell | workday | marvell.wd1.myworkdayjobs.com/marvell/MarvellCareers | https://marvell.wd1.myworkdayjobs.com/
-# [no public job-board API] MediaTek | official | mediatek | https://corp.mediatek.com/careers
-Micron | workday | micron.wd1.myworkdayjobs.com/micron/External | https://micron.wd1.myworkdayjobs.com/
-Cadence | workday | cadence.wd1.myworkdayjobs.com/cadence/External_Careers | https://cadence.wd1.myworkdayjobs.com/
-# [workday endpoint not found] Synopsys | workday | synopsys | https://careers.synopsys.com/
-Applied Materials | workday | amat.wd1.myworkdayjobs.com/amat/External | https://amat.wd1.myworkdayjobs.com/
-# [workday endpoint not found] Lam Research | workday | lamresearch | https://careers.lamresearch.com/
-# [workday endpoint not found] ASML | workday | asml | https://www.asml.com/en/careers
-
-
-# ================================================================
-# AUTONOMOUS / ROBOTICS / EV
-# ================================================================
-
-# [workday endpoint not found] Tesla | workday | tesla | https://www.tesla.com/careers
-Waymo | greenhouse | waymo | https://waymo.com/careers/
-Zoox | greenhouse | zoox | https://zoox.com/careers/
-Aurora | greenhouse | aurora | https://aurora.tech/careers
-Nuro | greenhouse | nuro | https://www.nuro.ai/careers
-Figure AI | greenhouse | figure | https://www.figure.ai/careers
-Skydio | greenhouse | skydio | https://www.skydio.com/careers
-Anduril | greenhouse | anduril | https://www.anduril.com/careers/
-Shield AI | greenhouse | shieldai | https://shield.ai/careers/
-Zipline | greenhouse | zipline | https://www.flyzipline.com/careers
-Archer Aviation | greenhouse | archer | https://www.archer.com/careers
-Joby Aviation | greenhouse | joby | https://www.jobyaviation.com/careers/
-# [workday endpoint not found] Rivian | workday | rivian | https://rivian.com/careers
-# [workday endpoint not found] Lucid Motors | workday | lucid | https://www.lucidmotors.com/careers
-# [workday endpoint not found] Polestar | workday | polestar | https://www.polestar.com/global/careers/
-Cruise | greenhouse | cruise | https://www.getcruise.com/careers/
-
-
-# ================================================================
-# SPACE / DEFENCE
-# ================================================================
-
-SpaceX | greenhouse | spacex | https://www.spacex.com/careers/
-Relativity Space | greenhouse | relativity | https://www.relativityspace.com/careers
-Rocket Lab | greenhouse | rocketlab | https://www.rocketlabusa.com/careers/
-Vast | greenhouse | vast | https://www.vastspace.com/careers
-Astranis | greenhouse | astranis | https://www.astranis.com/careers
-Axiom Space | greenhouse | axiomspace | https://www.axiomspace.com/careers
-Varda Space | greenhouse | varda | https://www.varda.com/careers
-Stoke Space | greenhouse | stokespace | https://www.stokespace.com/careers
-Anduril | greenhouse | anduril | https://www.anduril.com/careers/
-
-
-# ================================================================
-# VIDEO / STREAMING / MEDIA
-# ================================================================
-
-# [workday endpoint not found] Netflix | workday | netflix | https://jobs.netflix.com/
-Roku | greenhouse | roku | https://www.roku.com/jobs
-Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
-Tubi | lever | tubi | https://jobs.lever.co/tubi
-# [workday endpoint not found] Disney | workday | disney | https://jobs.disneycareers.com/
-# [workday endpoint not found] Hulu | workday | disney | https://jobs.disneycareers.com/
-# [workday endpoint not found] Paramount | workday | paramount | https://careers.paramount.com/
-# [workday endpoint not found] Warner Bros Discovery | workday | wbd | https://careers.wbd.com/
-# [workday endpoint not found] Comcast | workday | comcast | https://jobs.comcast.com/
-Fubo | greenhouse | fubo | https://careers.fubo.tv/
-
-
-# ================================================================
-# GAMING
-# ================================================================
-
-# [no public job-board API] Epic Games | official | epicgames | https://www.epicgames.com/site/en-US/careers/jobs
-Riot Games | greenhouse | riotgames | https://www.riotgames.com/en/work-with-us/jobs
-# [no public job-board API] Valve | official | valve | https://www.valvesoftware.com/en/jobs
-Roblox | greenhouse | roblox | https://careers.roblox.com/
-Unity | greenhouse | unity | https://unity.com/careers
-# [workday endpoint not found] Electronic Arts | workday | ea | https://jobs.ea.com/
-# [workday endpoint not found] Activision Blizzard | workday | activision | https://careers.activision.com/
-# [workday endpoint not found] Take-Two Interactive | workday | taketwo | https://www.take2games.com/careers
-Zynga | greenhouse | zynga | https://www.zynga.com/careers
-Supercell | greenhouse | supercell | https://supercell.com/en/careers/
-# [workday endpoint not found] King | workday | king | https://www.king.com/en/careers
-
-
-# ================================================================
-# EUROPEAN TECH
-# ================================================================
-
-DeepMind | greenhouse | deepmind | https://deepmind.google/careers/
-Spotify | greenhouse | spotify | https://www.lifeatspotify.com/jobs
-Klarna | greenhouse | klarna | https://www.klarna.com/careers/
-Revolut | greenhouse | revolut | https://www.revolut.com/careers/
-Wise | greenhouse | wise | https://wise.jobs/
-Adyen | greenhouse | adyen | https://careers.adyen.com/
-# [workday endpoint not found] ASML | workday | asml | https://www.asml.com/en/careers
-N26 | greenhouse | n26 | https://n26.com/en-eu/careers
-Celonis | greenhouse | celonis | https://www.celonis.com/careers/
-Personio | greenhouse | personio | https://www.personio.com/careers/
-Zalando | greenhouse | zalando | https://jobs.zalando.com/
-Delivery Hero | greenhouse | deliveryhero | https://careers.deliveryhero.com/
-DeepL | greenhouse | deepl | https://www.deepl.com/en/careers
-Mistral AI | ashby | mistral | https://mistral.ai/careers
-Hugging Face | greenhouse | huggingface | https://huggingface.co/jobs
-Back Market | greenhouse | backmarket | https://www.backmarket.com/en-us/careers
-Doctolib | greenhouse | doctolib | https://about.doctolib.com/careers
-BlaBlaCar | greenhouse | blablacar | https://jobs.blablacar.com/
-Qonto | greenhouse | qonto | https://qonto.com/en/careers
-Contentsquare | greenhouse | contentsquare | https://contentsquare.com/careers/
-OVHcloud | greenhouse | ovhcloud | https://www.ovhcloud.com/en/careers/
-Criteo | greenhouse | criteo | https://careers.criteo.com/
-Checkout.com | greenhouse | checkout | https://www.checkout.com/careers
-SumUp | greenhouse | sumup | https://www.sumup.com/careers/
-
-
-# ================================================================
-# ASIA / APAC
-# ================================================================
-
-Grab | greenhouse | grab | https://www.grab.careers/
-Sea Group | greenhouse | sea | https://www.sea.com/careers
-Shopee | greenhouse | sea | https://www.sea.com/careers
-ByteDance | greenhouse | bytedance | https://jobs.bytedance.com/
-TikTok | greenhouse | bytedance | https://lifeattiktok.com/
-Agoda | greenhouse | agoda | https://careersatagoda.com/
-# [no public job-board API] Rakuten | official | rakuten | https://global.rakuten.com/corp/careers/
-Mercari | greenhouse | mercari | https://careers.mercari.com/
-# [no public job-board API] Preferred Networks | official | preferred-networks | https://www.preferred.jp/en/careers/
-# [no public job-board API] LINE Yahoo | official | line-yahoo | https://www.lycorp.co.jp/en/recruit/
-# [workday endpoint not found] Toyota | workday | toyota | https://careers.toyota.com/
-Sony | workday | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers | https://www.sony.com/en/SonyInfo/Careers/
-# [no public job-board API] Nintendo | official | nintendo | https://www.nintendo.co.jp/jobs/
-DBS | workday | dbs.wd3.myworkdayjobs.com/dbs/Dbs_Careers | https://www.dbs.com/careers
-# [workday endpoint not found] Standard Chartered | workday | standardchartered | https://www.sc.com/en/careers/
-Visa | workday | visa.wd5.myworkdayjobs.com/visa/Visa | https://usa.visa.com/careers.html
-# [workday endpoint not found] Mastercard | workday | mastercard | https://careers.mastercard.com/
+#   python job-hunt/scripts/careers_bot.py resolve            check every row, print what is wrong
+#   python job-hunt/scripts/careers_bot.py resolve --write    fix this file from what answered
+#   python job-hunt/scripts/careers_bot.py find "<company>"   which board does one company use?
+
+# ---- boards this bot reads through their public API
+1Password                | ashby           | 1password                                                  | Toronto, Remote | https://1password.com/jobs
+Abnormal Security        | greenhouse      | abnormalsecurity                                           | San Francisco, New York, Remote
+Adobe                    | workday         | adobe.wd5.myworkdayjobs.com/adobe/external_experienced     | San Jose, Bengaluru, Noida, London
+Adyen                    | greenhouse      | adyen                                                      | Amsterdam; Amsterdam, London, Madrid, Singapore
+Affirm                   | greenhouse      | affirm                                                     | San Francisco, New York, Remote
+Agoda                    | greenhouse      | agoda                                                      | Bangkok hub; many roles say "relocation provided" + visa; Bangkok, Singapore
+Airbnb                   | greenhouse      | airbnb                                                     | San Francisco, New York, Dublin, London
+Airtable                 | greenhouse      | airtable
+Airwallex                | ashby           | airwallex
+Amplitude                | greenhouse      | amplitude
+Anthropic                | greenhouse      | anthropic                                                  | San Francisco, Seattle, London, Tokyo
+Applied Materials        | workday         | amat.wd1.myworkdayjobs.com/amat/External                   | Santa Clara, Bengaluru
+Archer Aviation          | greenhouse      | archer
+Arctic Wolf              | workday         | arcticwolf.wd1.myworkdayjobs.com/arcticwolf/External       | https://arcticwolf.com/careers/
+Asana                    | greenhouse      | asana
+AssemblyAI               | greenhouse      | assemblyai
+Astranis                 | greenhouse      | astranis
+AUTO1 Group              | smartrecruiters | auto1                                                      | Berlin
+Axiom Space              | workday         | axiomspace.wd5.myworkdayjobs.com/axiomspace/External_Career_Site | https://www.axiomspace.com/careers
+Back Market              | ashby           | backmarket                                                 | Paris, Bordeaux, New York
+Baseten                  | ashby           | baseten                                                    | San Francisco, New York | https://www.baseten.co/careers
+Binance                  | lever           | binance                                                    | Global Remote, Dubai, Singapore, Europe, India
+Bitpanda                 | greenhouse      | bitpanda                                                   | Vienna
+BlaBlaCar                | lever           | blablacar                                                  | Paris, Amsterdam
+Block / Square           | greenhouse      | block                                                      | San Francisco, New York, London, Toronto
+Box                      | greenhouse      | boxinc
+Braze                    | greenhouse      | braze
+Brex                     | greenhouse      | brex                                                       | San Francisco, New York, Vancouver
+Broadcom                 | workday         | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career    | US, India, Europe, Singapore; Palo Alto, Bengaluru, Munich
+BrowserStack             | workday         | browserstack.wd3.myworkdayjobs.com/browserstack/External   | Mumbai, Bengaluru, New York, Amsterdam | https://www.browserstack.com/careers
+Buildkite                | greenhouse      | buildkite
+bunq                     | recruitee       | bunq                                                       | Amsterdam
+ByteDance                | smartrecruiters | bytedance                                                  | Singapore, Tokyo, London, US
+Cadence                  | workday         | cadence.wd1.myworkdayjobs.com/cadence/External_Careers     | San Jose, Noida, Bengaluru
+Canonical                | greenhouse      | canonical
+Canva                    | smartrecruiters | canva                                                      | Sydney, Melbourne; Sydney, Austin, London, Bengaluru
+Careem                   | greenhouse      | careem                                                     | Dubai, Karachi
+Celonis                  | greenhouse      | celonis                                                    | Munich; Munich, New York, London, Bengaluru; Munich, London, New York
+Character.AI             | ashby           | character                                                  | https://character.ai/careers
+Chewy                    | workday         | chewy.wd5.myworkdayjobs.com/chewy/External
+Chime                    | greenhouse      | chime                                                      | San Francisco, Chicago, Remote
+Circle                   | ashby           | circle                                                     | Boston, New York, London, Remote
+CircleCI                 | greenhouse      | circleci                                                   | Remote
+Cisco                    | workday         | cisco.wd5.myworkdayjobs.com/cisco/Cisco_Careers            | US, India, Europe, Singapore
+ClickHouse               | ashby           | clickhouse                                                 | Amsterdam, London, New York, Remote
+ClickUp                  | ashby           | clickup
+Cloudflare               | greenhouse      | cloudflare                                                 | Lisbon, London; San Francisco, Austin, London, Lisbon, Singapore, Remote; Global / Remote
+Cloudinary               | lever           | cloudinary                                                 | Santa Clara, London, Singapore, Remote
+Cockroach Labs           | greenhouse      | cockroachlabs                                              | New York, Austin, Remote
+Cohere                   | ashby           | cohere                                                     | Toronto, New York, London | https://cohere.com/careers
+Coinbase                 | greenhouse      | coinbase                                                   | Remote India, US, UK, Ireland, Singapore
+Confluent                | ashby           | confluent                                                  | Mountain View, London, Bengaluru, Remote
+Contentful               | greenhouse      | contentful                                                 | Berlin, San Francisco, London
+Contentsquare            | lever           | contentsquare                                              | Paris, London, New York | https://contentsquare.com/careers/
+Coupang                  | greenhouse      | coupang
+CRED                     | lever           | cred                                                       | Bengaluru
+Criteo                   | workday         | criteo.wd3.myworkdayjobs.com/criteo/Criteo_Career_Site     | Paris, London, New York | https://careers.criteo.com/
+CrowdStrike              | workday         | crowdstrike.wd5.myworkdayjobs.com/crowdstrike/CrowdstrikeCareers | Austin, Sunnyvale, Bengaluru, Remote
+Cursor / Anysphere       | ashby           | cursor
+Darktrace                | workday         | darktrace.wd3.myworkdayjobs.com/darktrace/DarktaceExternal | Cambridge, London, Bengaluru | https://careers.darktrace.com/
+Databricks               | greenhouse      | databricks                                                 | Amsterdam, Tokyo, Bengaluru; San Francisco, New York, Amsterdam, London, Bengaluru
+Datadog                  | greenhouse      | datadog                                                    | Paris, Dublin; New York, Boston, Paris, Amsterdam, Tokyo
+DBS                      | workday         | dbs.wd3.myworkdayjobs.com/dbs/Dbs_Careers                  | Singapore, India, Hong Kong
+Decagon                  | ashby           | decagon
+DeepL                    | ashby           | DeepL                                                      | Cologne, Berlin, London | https://www.deepl.com/en/careers
+Deliveroo                | ashby           | deliveroo                                                  | London
+Delivery Hero            | smartrecruiters | deliveryhero                                               | Berlin; Berlin, London, Singapore; Berlin, Singapore, London
+Discord                  | greenhouse      | discord                                                    | San Francisco, Remote
+Docker                   | ashby           | docker                                                     | Palo Alto, Remote, Europe
+Doctolib                 | greenhouse      | doctolib                                                   | Paris, Berlin, Milan
+DoorDash                 | greenhouse      | doordashusa                                                | San Francisco, New York, Toronto
+Dropbox                  | greenhouse      | dropbox                                                    | San Francisco, New York, Austin, Dublin, Remote
+Druva                    | greenhouse      | druva                                                      | Sunnyvale, Pune, Bengaluru
+Elastic                  | greenhouse      | elastic                                                    | Amsterdam, Mountain View, Bangalore, Remote
+ElevenLabs               | ashby           | elevenlabs                                                 | New York, London, Warsaw
+Epic Games               | greenhouse      | epicgames
+Faire                    | greenhouse      | faire
+Fastly                   | greenhouse      | fastly
+Fi Money                 | lever           | epifi                                                      | https://fi.money/careers
+Figma                    | greenhouse      | figma                                                      | San Francisco, New York, London, Bengaluru
+Figure AI                | greenhouse      | figureai                                                   | Sunnyvale, San Francisco
+Fireworks AI             | ashby           | fireworks                                                  | Mountain View, Remote | https://fireworks.ai/careers
+Flix                     | greenhouse      | flix                                                       | Munich
+Forto                    | ashby           | forto                                                      | Berlin
+Freshworks               | smartrecruiters | freshworks                                                 | San Mateo, Chennai, Bengaluru
+Gemini                   | greenhouse      | gemini                                                     | New York, London, Singapore
+GetYourGuide             | greenhouse      | getyourguide                                               | Berlin, Zurich; Berlin, Zurich, Paris
+GitLab                   | greenhouse      | gitlab                                                     | remote-first; Remote-first, India, Europe, Americas
+Glean                    | smartrecruiters | glean                                                      | Palo Alto, Bengaluru, New York
+GOAT                     | greenhouse      | goatgroup                                                  | https://www.goat.com/careers
+Gopuff                   | lever           | gopuff
+Grab                     | smartrecruiters | grab                                                       | Singapore, Kuala Lumpur, Jakarta; Singapore, Jakarta, Bangkok
+Grafana Labs             | greenhouse      | grafanalabs                                                | New York, London, Stockholm, Remote
+Groww                    | greenhouse      | groww                                                      | Bengaluru
+Gusto                    | greenhouse      | gusto
+Harness                  | greenhouse      | harnessinc                                                 | San Francisco, Bengaluru, Remote
+Harvey                   | ashby           | harvey                                                     | San Francisco, New York, Remote
+HelloFresh               | greenhouse      | hellofresh                                                 | Berlin
+HighRadius               | greenhouse      | highradius                                                 | Houston, Gurugram, Hyderabad
+HP                       | workday         | hp.wd5.myworkdayjobs.com/hp/ExternalCareerSite
+HubSpot                  | greenhouse      | hubspotjobs                                                | Cambridge, Dublin, Berlin, Remote
+Hugging Face             | workable        | huggingface                                                | New York, Paris, Remote; Paris, New York
+Imbue                    | greenhouse      | imbue
+Instacart                | greenhouse      | instacart                                                  | San Francisco, Toronto, Remote
+Intel                    | workday         | intel.wd1.myworkdayjobs.com/intel/External                 | US, India, Europe, Israel; Santa Clara, Bengaluru, Israel
+Intercom                 | greenhouse      | intercom
+Iterable                 | greenhouse      | iterable
+JetBrains                | greenhouse      | jetbrains                                                  | Amsterdam, Prague, Munich
+JFrog                    | greenhouse      | jfrog
+Keeper Security          | greenhouse      | keepersecurity
+LaunchDarkly             | greenhouse      | launchdarkly                                               | Oakland, London, Remote
+Linear                   | ashby           | Linear                                                     | https://linear.app/careers
+LinkedIn                 | greenhouse      | linkedin
+Luma AI                  | ashby           | lumaai                                                     | https://lumalabs.ai/careers
+Lyft                     | greenhouse      | lyft                                                       | San Francisco, New York, Remote
+Magic                    | ashby           | magic.dev                                                  | https://magic.dev/careers
+Marvell                  | workday         | marvell.wd1.myworkdayjobs.com/marvell/MarvellCareers       | Santa Clara, Bengaluru
+Materialize              | ashby           | materialize
+Meesho                   | lever           | meesho                                                     | Bengaluru
+Melio                    | greenhouse      | melio
+Mercari                  | greenhouse      | mercari                                                    | Tokyo, Palo Alto
+Mercury                  | greenhouse      | mercury                                                    | San Francisco, New York, Remote
+Micron                   | workday         | micron.wd1.myworkdayjobs.com/micron/External               | Boise, Bengaluru, Hyderabad
+Milvus / Zilliz          | lever           | zilliz                                                     | https://zilliz.com/careers
+Mindtickle               | lever           | mindtickle                                                 | San Francisco, Pune, Bengaluru | https://www.mindtickle.com/careers/
+Miro                     | ashby           | miro                                                       | Amsterdam, Berlin; Amsterdam, Berlin, London, New York
+Mistral AI               | ashby           | mistral.ai                                                 | Paris, London, Palo Alto | https://mistral.ai/careers
+Mixpanel                 | greenhouse      | mixpanel
+Modal                    | ashby           | modal                                                      | New York, San Francisco, Remote
+Mollie                   | ashby           | mollie                                                     | Amsterdam
+MongoDB                  | greenhouse      | mongodb                                                    | New York, London, Dublin, Bengaluru, Remote
+Monzo                    | greenhouse      | monzo                                                      | London
+N26                      | greenhouse      | n26                                                        | Berlin, Barcelona
+Navi                     | ashby           | navi
+Neo4j                    | greenhouse      | neo4j
+Neon                     | ashby           | neon                                                       | San Francisco, Remote
+New Relic                | greenhouse      | newrelic
+Notion                   | ashby           | notion                                                     | San Francisco, New York, London, Amsterdam, Hyderabad, Tokyo
+Nubank                   | ashby           | nubank                                                     | Sao Paulo, Mexico City, Remote
+Nuro                     | greenhouse      | nuro
+NVIDIA                   | workday         | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | US, India, Europe, Asia; Santa Clara, Bengaluru, Pune, Taipei
+Observe.AI               | greenhouse      | observeai                                                  | San Francisco, Bengaluru
+Okta                     | greenhouse      | okta                                                       | San Francisco, Bellevue, Bengaluru; San Francisco, Bengaluru, London
+OKX                      | greenhouse      | okx                                                        | Hong Kong, Singapore, Dubai, Europe
+OpenAI                   | ashby           | openai                                                     | San Francisco, New York, London, Paris, Tokyo
+PagerDuty                | greenhouse      | pagerduty
+Palantir                 | lever           | palantir                                                   | Denver, New York, London, Tokyo | https://www.palantir.com/careers/
+Patreon                  | ashby           | patreon
+PayPay                   | greenhouse      | paypay                                                     | Tokyo
+Perplexity               | ashby           | perplexity                                                 | San Francisco, New York
+Pine Labs                | greenhouse      | pine
+Pinecone                 | ashby           | pinecone                                                   | New York, San Francisco, Remote | https://www.pinecone.io/careers/
+Pinterest                | greenhouse      | pinterest                                                  | San Francisco, New York, Seattle, London, Tokyo
+Plaid                    | ashby           | plaid                                                      | San Francisco, New York, Washington DC, Remote
+PlanetScale              | greenhouse      | planetscale                                                | Remote
+PlayStation / Sony       | workday         | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers | San Diego, London, Tokyo
+Pleo                     | ashby           | pleo                                                       | Copenhagen
+Poolside                 | ashby           | poolside
+Porter                   | greenhouse      | porter
+Poshmark                 | ashby           | poshmark
+Pure Storage             | greenhouse      | purestorage
+Qonto                    | lever           | qonto                                                      | Paris, Berlin, Milan | https://qonto.com/en/careers
+Quora                    | ashby           | quora
+Raisin                   | greenhouse      | raisin                                                     | Berlin
+Ramp                     | ashby           | ramp                                                       | New York, Miami, Remote
+Razorpay                 | greenhouse      | razorpaysoftwareprivatelimited                             | Bengaluru | https://razorpay.com/jobs/
+Red Hat                  | workday         | redhat.wd5.myworkdayjobs.com/redhat/jobs
+Reddit                   | greenhouse      | reddit                                                     | San Francisco, New York, Toronto, London, Amsterdam
+Redis                    | ashby           | redis                                                      | Mountain View, London, Tel Aviv, Remote
+Reka AI                  | ashby           | Reka                                                       | https://www.reka.ai/careers
+Relativity Space         | greenhouse      | relativity
+Remote                   | greenhouse      | remotecom
+Riot Games               | greenhouse      | riotgames                                                  | Los Angeles, Dublin, St. Louis, Remote
+Ripple                   | greenhouse      | ripple                                                     | San Francisco, London, Toronto
+Robinhood                | greenhouse      | robinhood                                                  | Menlo Park, New York, London
+Roblox                   | greenhouse      | roblox                                                     | San Mateo, San Francisco, London, Remote
+Rocket Lab               | greenhouse      | rocketlab
+Roku                     | greenhouse      | roku
+Rubrik                   | greenhouse      | rubrik                                                     | Palo Alto, Bengaluru, New York
+Runway                   | ashby           | runway-ml                                                  | New York, San Francisco | https://runwayml.com/careers/
+SailPoint                | workday         | sailpoint.wd1.myworkdayjobs.com/sailpoint/Sailpoint
+Sakana AI                | workable        | sakana-ai
+Salesforce               | workday         | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | US, India, Europe, Singapore
+Scale AI                 | greenhouse      | scaleai                                                    | San Francisco, New York, London
+Sentry                   | ashby           | sentry                                                     | San Francisco, Vienna, Remote | https://sentry.io/careers/
+ServiceNow               | workday         | snc.wd1.myworkdayjobs.com/snc/Snc_External_Career_Site     | Santa Clara, Bengaluru, Amsterdam, London
+ServiceTitan             | smartrecruiters | servicetitan
+Shield AI                | lever           | shieldai                                                   | https://shield.ai/careers/
+Sierra                   | ashby           | Sierra                                                     | https://sierra.ai/careers
+SingleStore              | greenhouse      | singlestore
+Skydio                   | ashby           | skydio                                                     | San Mateo, Remote
+Slice                    | greenhouse      | slice
+Smartsheet               | greenhouse      | smartsheet
+Snowflake                | ashby           | snowflake                                                  | San Mateo, New York, London, Bengaluru
+Sonatype                 | lever           | sonatype                                                   | https://www.sonatype.com/careers
+Sony                     | workday         | sonyglobal.wd1.myworkdayjobs.com/sonyglobal/SonyglobalCareers | Tokyo, US, Europe
+SpaceX                   | greenhouse      | spacex                                                     | Hawthorne, Starbase, Seattle
+Spotify                  | lever           | spotify                                                    | Stockholm, London; Stockholm, London, New York, Bengaluru
+Sprinklr                 | workday         | sprinklr.wd1.myworkdayjobs.com/sprinklr/careers            | New York, Gurugram, London | https://www.sprinklr.com/careers/
+StockX                   | greenhouse      | stockx
+Stripe                   | greenhouse      | stripe                                                     | Dublin; San Francisco, New York, Dublin, London, Singapore, Bengaluru
+Substack                 | ashby           | substack
+SumUp                    | greenhouse      | sumup                                                      | Berlin, London, Sofia
+Supabase                 | ashby           | supabase                                                   | Remote, New York | https://supabase.com/careers
+Supercell                | ashby           | supercell                                                  | Helsinki
+SUSE                     | workday         | suse.wd3.myworkdayjobs.com/suse/Jobsatsuse                 | https://www.suse.com/careers/
+Swiggy                   | smartrecruiters | swiggy                                                     | Bengaluru
+Tailscale                | greenhouse      | tailscale
+Tanium                   | greenhouse      | tanium                                                     | Kirkland, London, Bengaluru
+Target                   | workday         | target.wd5.myworkdayjobs.com/target/TargetCareers
+Temporal                 | ashby           | temporal                                                   | Seattle, London, Remote
+Tenable                  | greenhouse      | tenableinc                                                 | https://www.tenable.com/careers
+Thinking Machines        | ashby           | thinkingmachines
+Together AI              | greenhouse      | togetherai                                                 | San Francisco, Remote
+trivago                  | greenhouse      | trivago                                                    | Düsseldorf
+Tubi                     | greenhouse      | tubi
+Twelve Labs              | ashby           | twelve
+Twilio                   | greenhouse      | twilio                                                     | San Francisco, Bengaluru, London, Remote
+Uber                     | smartrecruiters | uber                                                       | San Francisco, New York, Bengaluru, Amsterdam, London
+Uniphore                 | workday         | uniphore.wd503.myworkdayjobs.com/uniphore/Uniphore         | Palo Alto, Chennai, Bengaluru | https://www.uniphore.com/careers/
+Vanta                    | ashby           | vanta                                                      | San Francisco, New York, Remote
+Varda Space              | greenhouse      | vardaspace
+Vast                     | greenhouse      | vast
+Vercel                   | greenhouse      | vercel                                                     | San Francisco, New York, London, Remote, India
+Visa                     | workday         | visa.wd5.myworkdayjobs.com/visa/Visa                       | San Francisco, Singapore, Bengaluru
+VMware / Broadcom        | workday         | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career    | Palo Alto, Bengaluru, Europe
+Wayfair                  | smartrecruiters | wayfair
+Waymo                    | greenhouse      | waymo                                                      | Mountain View, San Francisco, Phoenix
+Weaviate                 | ashby           | weaviate                                                   | Amsterdam, New York, Remote
+Whatfix                  | smartrecruiters | whatfix                                                    | San Jose, Bengaluru, Pune
+Wise                     | smartrecruiters | wise                                                       | London, Tallinn; London, Tallinn, Singapore, New York
+Wiz                      | greenhouse      | wizinc                                                     | New York, Tel Aviv, London, Bengaluru
+Wolt                     | greenhouse      | wolt                                                       | Helsinki, Berlin
+Workday                  | workday         | workday.wd5.myworkdayjobs.com/workday/Workday              | Pleasanton, Dublin, Bengaluru
+xAI                      | greenhouse      | xai                                                        | Palo Alto, Memphis, Remote
+Zendesk                  | workday         | zendesk.wd1.myworkdayjobs.com/zendesk/zendesk              | San Francisco, Madison, Singapore, Remote | https://jobs.zendesk.com/
+Zenoti                   | greenhouse      | zenoti
+Zilliz                   | lever           | zilliz                                                     | Redwood City, Shanghai, Remote | https://zilliz.com/careers
+Zoox                     | lever           | zoox                                                       | Foster City, Seattle, San Francisco
+Zynga                    | greenhouse      | zyngacareers
+
+# ---- no public job-board API: read as a link, apply on the company's own page
+#      (`careers_bot.py find "<name>"` again later - companies do move onto a board)
+ACKO                     | link            | -                                                          | https://www.acko.com/careers/
+Adept                    | link            | -                                                          | https://www.adept.ai/careers
+Aiven                    | link            | -                                                          | https://aiven.io/careers
+Amagi                    | link            | -                                                          | https://www.amagi.com/careers/ | New York, Bengaluru
+Anduril                  | link            | -                                                          | https://www.anduril.com/careers/ | Costa Mesa, Irvine, Seattle
+Apna                     | link            | -                                                          | https://apna.co/careers
+Ather Energy             | link            | -                                                          | https://www.atherenergy.com/careers | Bengaluru | also: Ather
+Atlassian                | link            | -                                                          | https://www.atlassian.com/company/careers | Sydney, Bengaluru, Austin, Remote
+Aurora                   | link            | -                                                          | https://aurora.tech/careers | also: Aurora Innovation
+Auth0                    | link            | -                                                          | https://www.linkedin.com/jobs/search/?keywords=Auth0 | Remote, US, Europe
+Booking.com              | link            | -                                                          | https://careers.booking.com/ | Amsterdam, London, Bengaluru
+Capillary Technologies   | link            | -                                                          | https://www.capillarytech.com/careers/
+Chainalysis              | link            | -                                                          | https://www.chainalysis.com/careers/ | New York, London, Singapore, Remote
+Chargebee                | link            | -                                                          | https://www.chargebee.com/careers/ | San Francisco, Chennai, Bengaluru
+Checkout.com             | link            | -                                                          | https://www.checkout.com/careers | London, Dubai, Singapore, Paris; London, Paris, Dubai
+CleverTap                | link            | -                                                          | https://clevertap.com/careers/ | Mountain View, Mumbai, Bengaluru
+Cohesity                 | link            | -                                                          | https://www.cohesity.com/careers/ | San Jose, Bengaluru, London
+CoinDCX                  | link            | -                                                          | https://coindcx.com/careers/
+CoinSwitch               | link            | -                                                          | https://coinswitch.co/careers
+Contextual AI            | link            | -                                                          | https://contextual.ai/careers
+Cruise                   | link            | -                                                          | https://www.getcruise.com/careers/ | San Francisco
+Darwinbox                | link            | -                                                          | https://darwinbox.com/careers/ | Hyderabad, Bengaluru, Singapore
+DataStax                 | link            | -                                                          | https://www.datastax.com/company/careers
+Deel                     | link            | -                                                          | https://www.deel.com/careers
+DeepMind                 | link            | -                                                          | https://deepmind.google/careers/ | London, Paris, Zurich
+Digit Insurance          | link            | -                                                          | https://www.godigit.com/careers
+DigitalOcean             | link            | -                                                          | https://www.digitalocean.com/careers
+DocuSign                 | link            | -                                                          | https://careers.docusign.com/
+Dream11 / Dream Sports   | link            | -                                                          | https://www.dreamsports.group/careers/ | also: Dream Sports
+Etsy                     | link            | -                                                          | https://www.etsy.com/careers | Brooklyn, Dublin, London
+Exotel                   | link            | -                                                          | https://exotel.com/careers/
+Facilio                  | link            | -                                                          | https://facilio.com/careers/
+Flipkart                 | link            | -                                                          | https://www.flipkartcareers.com/ | Bengaluru
+Fubo                     | link            | -                                                          | https://careers.fubo.tv/
+GitHub                   | link            | -                                                          | https://www.github.careers/ | Remote, US, Europe, India
+Gupshup                  | link            | -                                                          | https://www.gupshup.io/careers | Mumbai, Bengaluru, London
+HashiCorp                | link            | -                                                          | https://www.hashicorp.com/careers | US, Canada, Europe, Remote
+Hasura                   | link            | -                                                          | https://hasura.io/careers/
+Icertis                  | link            | -                                                          | https://www.icertis.com/careers/ | Bellevue, Pune, Bengaluru
+Indeed                   | link            | -                                                          | https://www.indeed.com/cmp/Indeed/jobs
+Infra.Market             | link            | -                                                          | https://infra.market/careers
+Innovaccer               | link            | -                                                          | https://innovaccer.com/careers/ | San Francisco, Noida, Bengaluru
+Joby Aviation            | link            | -                                                          | https://www.jobyaviation.com/careers/
+Jupiter                  | link            | -                                                          | https://jupiter.money/careers
+Juspay                   | link            | -                                                          | https://juspay.in/careers
+Kissflow                 | link            | -                                                          | https://kissflow.com/careers/
+Klarna                   | link            | -                                                          | https://www.klarna.com/careers/ | Stockholm, London, Berlin, New York
+Kraken                   | link            | -                                                          | https://www.kraken.com/careers | Remote, Europe, US
+LambdaTest               | link            | -                                                          | https://www.lambdatest.com/career | Noida, Bengaluru, San Francisco, Remote
+LeadSquared              | link            | -                                                          | https://www.leadsquared.com/careers/
+Loom                     | link            | -                                                          | https://www.loom.com/careers
+Marqeta                  | link            | -                                                          | https://www.marqeta.com/company/careers | Oakland, London, Remote
+Meta                     | link            | -                                                          | https://www.metacareers.com/ | Menlo Park, New York, London, Singapore, India
+MoEngage                 | link            | -                                                          | https://www.moengage.com/careers/ | San Francisco, Bengaluru, Berlin
+Moglix                   | link            | -                                                          | https://www.moglix.com/careers
+Monday.com               | link            | -                                                          | https://monday.com/careers
+Myntra                   | link            | -                                                          | https://careers.myntra.com/
+Nutanix                  | link            | -                                                          | https://www.linkedin.com/jobs/search/?keywords=Nutanix | San Jose, Bengaluru, Durham
+OctoAI                   | link            | -                                                          | https://octo.ai/careers
+OfBusiness               | link            | -                                                          | https://www.ofbusiness.com/careers
+Ola                      | link            | -                                                          | https://www.olacabs.com/careers
+Ola Electric             | link            | -                                                          | https://www.olaelectric.com/careers | Bengaluru
+OVHcloud                 | link            | -                                                          | https://www.ovhcloud.com/en/careers/ | France, UK, Germany, Canada
+Oxide Computer           | link            | -                                                          | https://oxide.computer/careers
+Papaya Global            | link            | -                                                          | https://www.papayaglobal.com/careers/
+Personio                 | link            | -                                                          | https://www.personio.com/careers/ | Munich, London, Dublin; Munich, Dublin, London
+PhonePe                  | link            | -                                                          | https://www.phonepe.com/careers/ | Bengaluru
+Policybazaar             | link            | -                                                          | https://www.policybazaar.com/careers/
+Postman                  | link            | -                                                          | https://www.postman.com/company/careers/ | Bengaluru, San Francisco, Remote
+Pulumi                   | link            | -                                                          | https://www.pulumi.com/careers/
+Replicate                | link            | -                                                          | https://replicate.com/careers | San Francisco, Remote
+Retool                   | link            | -                                                          | https://retool.com/careers | San Francisco, New York, Remote
+Revolut                  | link            | -                                                          | https://www.revolut.com/careers/ | London, Dublin, Berlin, Madrid, Paris; London, Dublin, Madrid, Berlin
+Rippling                 | link            | -                                                          | https://www.rippling.com/careers
+ScyllaDB                 | link            | -                                                          | https://www.scylladb.com/careers/
+Sea Group                | link            | -                                                          | https://www.sea.com/careers | Singapore | also: Shopee, Sea / Shopee
+SentinelOne              | link            | -                                                          | https://www.sentinelone.com/careers/
+Sirion                   | link            | -                                                          | https://www.sirion.ai/careers/
+Snap                     | link            | -                                                          | https://www.snap.com/en-US/careers | Santa Monica, Seattle, London, Paris
+Snyk                     | link            | -                                                          | https://snyk.io/careers/ | London, Boston, Tel Aviv, Remote
+Sourcegraph              | link            | -                                                          | https://www.linkedin.com/jobs/search/?keywords=Sourcegraph | Remote
+Stoke Space              | link            | -                                                          | https://www.stokespace.com/careers
+TikTok                   | link            | -                                                          | https://lifeattiktok.com/ | also: TikTok / ByteDance
+Timescale                | link            | -                                                          | https://www.timescale.com/careers
+Tipalti                  | link            | -                                                          | https://tipalti.com/careers/
+Udaan                    | link            | -                                                          | https://udaan.com/careers
+Unity                    | link            | -                                                          | https://unity.com/careers | San Francisco, Copenhagen, Stockholm, Remote
+Veeam                    | link            | -                                                          | https://www.veeam.com/company-careers.html
+Vimeo                    | link            | -                                                          | https://vimeo.com/jobs
+Vymo                     | link            | -                                                          | https://www.vymo.com/careers/
+WebEngage                | link            | -                                                          | https://webengage.com/careers/ | Mumbai, Bengaluru
+Weights & Biases         | link            | -                                                          | https://wandb.ai/site/careers | San Francisco, London, Tokyo, Remote
+Whatnot                  | link            | -                                                          | https://careers.whatnot.com/
+Wingify                  | link            | -                                                          | https://wingify.com/careers/
+Yellow.ai                | link            | -                                                          | https://yellow.ai/careers/ | San Mateo, Bengaluru
+Yubi                     | link            | -                                                          | https://www.go-yubi.com/careers
+Zalando                  | link            | -                                                          | https://jobs.zalando.com/ | Berlin, Dublin, Helsinki
+Zepto                    | link            | -                                                          | https://www.zepto.in/careers | Bengaluru, Mumbai
+Zetwerk                  | link            | -                                                          | https://www.zetwerk.com/careers
+Zipline                  | link            | -                                                          | https://www.flyzipline.com/careers
+Zomato / Eternal         | link            | -                                                          | https://www.eternal.com/careers/ | Gurugram

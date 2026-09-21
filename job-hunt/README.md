@@ -52,15 +52,34 @@ LinkedIn session on the runner.
 
 ## Company career pages (careers bot)
 Reads the career pages of the companies in `assets/companies.txt` directly (Greenhouse, Lever, Ashby,
-SmartRecruiters, Recruitee and Workday boards), keeps the jobs that match your role, experience range and countries,
+SmartRecruiters, Workable, Recruitee and Workday boards), keeps the jobs that match your role, experience range and countries,
 checks each posting for relocation / visa sponsorship (and quotes the sentence), and scores it against your resume:
 
     python scripts/careers_bot.py run --role "software engineer" --experience 3-5 --countries worldwide --relocation strict --resume "C:\path\cv.pdf"
 
 `--relocation strict` keeps only postings that offer relocation, `visa` also keeps visa sponsorship, `any` keeps all.
-Add a company: `python scripts/careers_bot.py find "<company>"` prints the line to paste into `assets/companies.txt`;
-`python scripts/careers_bot.py check` confirms every company in the list still answers.
 From the phone this is the **Careers** tab (see `../site/README.md`).
+
+### Boards that move, and rows that are only a link
+A slug in `companies.txt` is right until the company switches board (OpenAI: Greenhouse -> Ashby,
+Hugging Face -> Workable, Snowflake -> Ashby...). A row that stops answering is no longer lost with a
+404: it is re-resolved during the run, in this order, and the answer cached in `assets/boards_cache.json`:
+
+1. **the link in the row** - a careers URL that names a board (`https://jobs.ashbyhq.com/openai`) wins
+   over the `ats`/`board` columns, so pasting the link is how you pin a company for good;
+2. **that link's page** - a company's own `/careers` page names the board it embeds;
+3. **the company name** - slug variants probed against Greenhouse, Ashby, Lever, SmartRecruiters,
+   Workable and Recruitee;
+4. **the local model** (Ollama, else the bundled GGUF) - asked which board the company uses;
+5. **a LinkedIn company search** - nothing answered, so the report still carries a link you can click.
+
+Guessed boards are asked whose they are before they are accepted (`meta.recruitee.com` answers - with
+the jobs of Addis Ababa University). A board pinned by a link is taken as given.
+
+    python scripts/careers_bot.py resolve           check every row, print what is wrong
+    python scripts/careers_bot.py resolve --write   fix companies.txt from what answered (keeps a .bak)
+    python scripts/careers_bot.py find "<company>"  the line to paste for one company
+    python scripts/careers_bot.py check             does every row still answer?
 
 ## Use with Claude
 Put this folder in `%USERPROFILE%\.claude\skills\job-hunt` (or install `job-hunt.skill`),
@@ -85,7 +104,10 @@ few cents. Get a token at <https://console.apify.com/account/integrations>.
 * in the careers bot, a **second opinion** on postings the relocation patterns left as *maybe* /
   *unknown* - accepted only when the sentence the model quotes is really in the posting;
 * in the Naukri screener, **screening answers** no rule covers, from your facts sheet only
-  (see that README).
+  (see that README);
+* in the careers bot, a **board for a company nothing else could place** - the model names the ATS and
+  slug, and the guess is verified against the live board before it is used (`--no-ai-boards` turns
+  this off).
 
 Generation is capped per run (`LOCAL_AI_BUDGET_SECONDS`, default 600 s); when the budget is spent
 the rest of the run simply goes without. Without the packages nothing changes.

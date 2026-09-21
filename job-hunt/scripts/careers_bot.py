@@ -15,6 +15,7 @@ import json
 import os
 import re
 import sys
+import threading
 import time
 from collections import Counter
 from concurrent.futures import ThreadPoolExecutor, as_completed
@@ -29,8 +30,9 @@ except Exception:
 
 from jobbot import __version__  # noqa: E402
 from jobbot.careers import geo  # noqa: E402
-from jobbot.careers.ats import fetch, probe  # noqa: E402
-from jobbot.careers.companies import DEFAULT_PATH, load, select  # noqa: E402
+from jobbot.careers import resolve as resolver  # noqa: E402
+from jobbot.careers.ats import Unresolved, fetch, probe  # noqa: E402
+from jobbot.careers.companies import ATS_TYPES, DEFAULT_PATH, Company, load, select  # noqa: E402
 from jobbot.careers.relocation import assess, excerpt_for_model, merge_opinion  # noqa: E402
 from jobbot import localai  # noqa: E402
 from jobbot.config import REMOTE  # noqa: E402
@@ -51,6 +53,36 @@ NOT_THE_ROLE = ["support", "sales", r"solutions?\s+(?:engineer|architect|consult
                 r"recruit\w*", "talent", "marketing",
                 r"partner\w*", "field", "pre-?sales", "consultant", "manager", "director", "head of", "vp", "vice president",
                 "intern", "internship", "working student", "werkstudent", "trainee", "apprentice"]
+
+
+HEADER = """# Companies whose career pages the careers bot reads (phone page -> Careers tab, or careers_bot.py).
+#
+# One company per line:   Name | ats | board | note
+#
+#   ats     greenhouse | lever | ashby | smartrecruiters | workable | recruitee | workday
+#           auto  = find the board on the first run (and remember it in assets/boards_cache.json)
+#           link  = no public API; the note holds the careers URL to apply through
+#   board   the company's id on that job board:
+#             greenhouse       job-boards.greenhouse.io/<board>      e.g. agoda
+#             lever            jobs.lever.co/<board>                 e.g. binance
+#             ashby            jobs.ashbyhq.com/<board>              e.g. openai
+#             smartrecruiters  jobs.smartrecruiters.com/<board>      e.g. grab
+#             workable         apply.workable.com/<board>
+#             recruitee        <board>.recruitee.com                 e.g. bunq
+#             workday          <host>/<tenant>/<site> from the careers URL
+#                              e.g. nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
+#   note    free text shown on the phone - and, if you paste a careers URL here, the link
+#           this bot uses. A link to a known job board wins over the ats/board columns, so
+#           pasting https://jobs.ashbyhq.com/openai is enough to pin a company for good.
+#
+# A row whose board stops answering is not lost: careers_bot re-resolves it (link -> the
+# company's careers page -> name variants across every board API -> the local model, each
+# one verified) and caches what works. Nothing here has to be right for the search to run.
+#
+#   python job-hunt/scripts/careers_bot.py resolve            check every row, print what is wrong
+#   python job-hunt/scripts/careers_bot.py resolve --write    fix this file from what answered
+#   python job-hunt/scripts/careers_bot.py find "<company>"   which board does one company use?
+"""
 
 
 def log(msg):
@@ -180,18 +212,66 @@ def city_of(location):
     return ""
 
 
-def search_companies(companies, keep, roles, details, workers, place=None):
+def make_resolver(http, cache, use_ai=True, lock=None):
+    """The callback fetch() uses when a board does not answer: find the real one, once, per company.
+
+    A stale slug used to cost a company its whole row. Now the row is re-resolved (link ->
+    careers page -> name -> local AI -> LinkedIn link) and the answer is cached on disk, so
+    the fix is paid for once and every later run starts from the working board.
+    """
+    def fix(c, why):
+        with (lock or _NOLOCK):
+            hit = resolver.cached(cache, c.name.lower())
+        if not hit:
+            hit = resolver.resolve(http, c.name, c.url, c.note, use_ai=use_ai, cache=None, log=None,
+                                   hint_ats=c.ats if c.ats in ATS_TYPES else "",
+                                   hint_board=c.board if c.board and c.ats in ATS_TYPES else "")
+            with (lock or _NOLOCK):
+                cache[c.name.lower()] = hit
+        if not hit.get("ats"):
+            # The status line below already says "link" and where to apply: no second line here.
+            c.resolved = hit.get("via", "")
+            c.url = hit.get("url") or c.url
+            return None
+        fixed = Company(c.name, hit["ats"], hit["board"], c.note, hit.get("url") or c.url,
+                        resolved=hit.get("via", ""), line=c.line)
+        if (fixed.ats, fixed.board) != (c.ats, c.board):
+            log(f"  {c.name:<18} board fixed: {c.ats or '-'}/{c.board or '-'} -> {fixed.ats}/{fixed.board}"
+                f"  (via {fixed.resolved}; {why})")
+        c.ats, c.board, c.url, c.resolved = fixed.ats, fixed.board, fixed.url, fixed.resolved
+        return fixed
+    return fix
+
+
+class _NullLock:
+    def __enter__(self):
+        return self
+
+    def __exit__(self, *a):
+        return False
+
+
+_NOLOCK = _NullLock()
+
+
+def search_companies(companies, keep, roles, details, workers, place=None, use_ai=True, cache=None):
     http = Http(log=log, min_interval=0.35)
     statuses, jobs, recruiters = {}, [], {}
+    cache = load_cache() if cache is None else cache
+    fix = make_resolver(http, cache, use_ai=use_ai, lock=threading.Lock())
 
     def work(c):
         t0 = time.time()
         try:
-            found, total, people = fetch(http, c, keep, roles, details, place)
-            return c, found, dict(status="ok", total=total, kept=len(found), seconds=round(time.time() - t0, 1)), people
+            found, total, people = fetch(http, c, keep, roles, details, place, resolver=fix)
+            return c, found, dict(status="ok", total=total, kept=len(found), seconds=round(time.time() - t0, 1),
+                                  resolved=c.resolved), people
+        except Unresolved as e:
+            return c, [], dict(status="link", total=0, kept=0, seconds=round(time.time() - t0, 1),
+                               resolved=e.via, error=f"no job-board API; apply through {e.url}", url=e.url), []
         except Exception as e:  # noqa: BLE001 - one broken board must not stop the run
             return c, [], dict(status="error", total=0, kept=0, seconds=round(time.time() - t0, 1),
-                               error=f"{type(e).__name__}: {str(e)[:160]}"), []
+                               resolved=c.resolved, error=f"{type(e).__name__}: {str(e)[:160]}"), []
 
     with ThreadPoolExecutor(max_workers=workers) as ex:
         for fut in as_completed([ex.submit(work, c) for c in companies]):
@@ -201,7 +281,16 @@ def search_companies(companies, keep, roles, details, workers, place=None):
             jobs.extend(found)
             log(f"  {c.name:<18} {c.ats:<15} {st['status']:<6} {st['kept']:>4} of {st['total']:>4} match the role  {st['seconds']}s"
                 + (f"  ({st['error']})" if st.get("error") else ""))
+    save_cache(cache)
     return jobs, statuses, recruiters, http.requests_made
+
+
+def load_cache():
+    return resolver.load_cache()
+
+
+def save_cache(cache):
+    resolver.save_cache(cache)
 
 
 def cmd_run(a):
@@ -232,7 +321,8 @@ def cmd_run(a):
     log(localai.status_line())
     log(f"careers_bot v{__version__} | roles={roles} | experience={a.experience or '-'} ({lo}-{hi}) | "
         f"countries={'worldwide' if want is None else sorted(want)} | relocation={a.relocation} | {len(companies)} companies")
-    found, statuses, recruiters, requests = search_companies(companies, keep, roles, a.details, a.workers, place)
+    found, statuses, recruiters, requests = search_companies(companies, keep, roles, a.details, a.workers, place,
+                                                             use_ai=not a.no_ai_boards)
 
     # Postings that only say "Hybrid" fall back to the company's hub when its note names exactly one country.
     hubs = {c.name: geo.codes(c.note) for c in companies}
@@ -307,7 +397,8 @@ def cmd_run(a):
                     emails.append(e)
         cities = [x for x, _ in Counter(city_of(j.location) for j in mine if city_of(j.location)).most_common(3)]
         out_companies.append({
-            "name": c.name, "ats": c.ats, "careers": c.careers, "note": c.note,
+            "name": c.name, "ats": c.ats, "careers": st.get("url") or c.careers, "note": c.note,
+            "resolved": st.get("resolved", ""),
             "status": st.get("status", "skipped"), "error": st.get("error", ""),
             "open": st.get("total", 0), "role_matches": reloc_seen.get(c.name, 0), "shown": len(mine),
             "reloc_share": round(reloc_yes.get(c.name, 0) / reloc_seen[c.name], 2) if reloc_seen.get(c.name) else None,
@@ -322,6 +413,8 @@ def cmd_run(a):
             "generated": datetime.now().strftime("%Y-%m-%d %H:%M"), "seconds": round(time.time() - t0, 1),
             "requests": requests, "companies": len(companies),
             "companies_ok": sum(1 for s in statuses.values() if s["status"] == "ok"),
+            "companies_link_only": sum(1 for s in statuses.values() if s["status"] == "link"),
+            "boards_fixed": sorted(n for n, s in statuses.items() if s.get("resolved") and s["status"] == "ok"),
             "role_matches": len(relevant), "dropped": dict(drops),
             "scored": any(j.score is not None for j in jobs), "resume_skills": resume_skills,
         },
@@ -354,22 +447,110 @@ def cmd_run(a):
 
 def cmd_check(a):
     companies = select(load(a.companies_file, log=log), a.companies)
-    _, statuses, _, _ = search_companies(companies, lambda t: False, ["engineer"], 0, a.workers)
-    bad = [n for n, s in statuses.items() if s["status"] != "ok" or not s["total"]]
-    print(f"\n{len(companies) - len(bad)}/{len(companies)} companies answer with open jobs"
-          + (f"; check these: {', '.join(sorted(bad))}" if bad else ""))
+    _, statuses, _, _ = search_companies(companies, lambda t: False, ["engineer"], 0, a.workers,
+                                         use_ai=not a.no_ai_boards)
+    link = [n for n, s in statuses.items() if s["status"] == "link"]
+    bad = [n for n, s in statuses.items() if s["status"] == "error" or (s["status"] == "ok" and not s["total"])]
+    print(f"\n{len(companies) - len(bad) - len(link)}/{len(companies)} companies answer with open jobs"
+          + (f"\n{len(link)} have no job-board API, only a link: {', '.join(sorted(link))}" if link else "")
+          + (f"\ncheck these: {', '.join(sorted(bad))}" if bad else ""))
     return 1 if bad else 0
 
 
+def cmd_resolve(a):
+    """Check every row's board, find the right one where it is wrong, and write the list back."""
+    companies = select(load(a.companies_file, log=log), a.companies)
+    http = Http(log=log, min_interval=0.25)
+    cache = {} if a.refresh else resolver.load_cache()
+    lock = threading.Lock()
+    fixed, link_only, same = [], [], 0
+
+    def work(c):
+        hit = resolver.cached(cache, c.name.lower())
+        if hit is None:
+            hint_ats = c.ats if c.ats in ATS_TYPES else ""
+            hit = resolver.resolve(http, c.name, c.url, c.note, use_ai=not a.no_ai_boards, cache=None,
+                                   hint_ats=hint_ats, hint_board=c.board if hint_ats else "")
+            with lock:
+                cache[c.name.lower()] = hit
+        return c, hit
+
+    with ThreadPoolExecutor(max_workers=a.workers) as ex:
+        for fut in as_completed([ex.submit(work, c) for c in companies]):
+            c, hit = fut.result()
+            if not hit.get("ats"):
+                link_only.append((c, hit))
+                log(f"  {c.name:<20} no board found      -> link {hit.get('url')}")
+            elif (hit["ats"], hit["board"]) != (c.ats, c.board):
+                fixed.append((c, hit))
+                log(f"  {c.name:<20} {c.ats}/{c.board or '-'} -> {hit['ats']}/{hit['board']} "
+                    f"({hit['jobs']} open, via {hit['via']})")
+            else:
+                same += 1
+    resolver.save_cache(cache)
+    print(f"\n{same} rows already correct, {len(fixed)} fixed, {len(link_only)} without a job-board API")
+    for c, hit in sorted(fixed, key=lambda x: x[0].name.lower()):
+        print(f"{c.name:<24} | {hit['ats']:<15} | {hit['board']:<45} | {c.note}")
+    if a.write:
+        n = rewrite_companies_file(a.companies_file or DEFAULT_PATH, companies, cache)
+        print(f"\nwrote {n} readable rows to {a.companies_file or DEFAULT_PATH} (previous version kept as .bak)")
+    elif fixed or link_only:
+        print("\nrun again with --write to fold these into companies.txt")
+    return 0
+
+
+def rewrite_companies_file(path, companies, cache):
+    """Write companies.txt from what actually answered: one row per company, boards that work.
+
+    The old file is kept as <path>.bak. A company no board answered for stays in the list as a
+    `link` row carrying its careers URL - it has no API to read, but the report still shows the
+    company and a link to apply through, which a commented-out row would not.
+    """
+    import shutil
+    from jobbot.careers.companies import Company as _C
+    ok, link = [], []
+    for c in companies:
+        hit = cache.get(c.name.lower())
+        # A checked company is written from what answered, including "nothing did": keeping the
+        # row's old slug there is exactly how a dead board survives a cleanup.
+        ats = hit.get("ats", "") if hit else (c.ats if c.readable else "")
+        board = hit.get("board", "") if hit else (c.board if c.readable else "")
+        hit = hit or {}
+        (ok if ats and board else link).append((c, ats, board, hit.get("url") or c.url))
+    lines = [HEADER.rstrip("\n"), "", "# ---- boards this bot reads through their public API"]
+    for c, ats, board, url in sorted(ok, key=lambda x: x[0].name.lower()):
+        # The link column is only worth the width when it is not the board's own URL.
+        own = url if url and url != _C(c.name, ats, board).board_url else ""
+        tail = " | ".join(x for x in (c.note, own) if x)
+        lines.append(f"{c.name:<24} | {ats:<15} | {board:<58} | {tail}" if tail else f"{c.name:<24} | {ats:<15} | {board}")
+    lines += ["", "# ---- no public job-board API: read as a link, apply on the company's own page",
+              "#      (`careers_bot.py find \"<name>\"` again later - companies do move onto a board)"]
+    for c, _ats, _board, url in sorted(link, key=lambda x: x[0].name.lower()):
+        tail = " | ".join(x for x in (url or resolver.linkedin_search(c.name), c.note) if x)
+        lines.append(f"{c.name:<24} | {'link':<15} | {'-':<58} | {tail}")
+    if os.path.exists(path):
+        shutil.copyfile(path, path + ".bak")
+    with open(path, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines) + "\n")
+    return len(ok)
+
+
 def cmd_find(a):
+    """Which board does a company use? Prints a line ready to paste into companies.txt."""
     http = Http(log=log, min_interval=0.2)
     for name in a.names:
-        slugs = list(dict.fromkeys([slugify(name).replace("-", ""), slugify(name), slugify(name).split("-")[0]]))
-        hits = [(s, ats, n) for s in slugs if s for ats, n in probe(http, s)]
-        if not hits:
-            print(f"{name}: not found on greenhouse/lever/ashby/smartrecruiters/recruitee (Workday: copy host/tenant/site from its careers URL)")
-        for s, ats, n in hits:
-            print(f"{name:<16} | {ats:<15} | {s:<14} |      ({n} open jobs)")
+        url = name if name.lower().startswith("http") else ""
+        hit = resolver.resolve(http, name if not url else url.split("//")[-1].split("/")[0], url,
+                               use_ai=not a.no_ai_boards, log=log)
+        if hit.get("ats"):
+            print(f"{name:<20} | {hit['ats']:<15} | {hit['board']:<50} |   ({hit['jobs']} open, via {hit['via']})")
+        else:
+            print(f"# [no public job-board API] {name} | link | - | {hit['url']}")
+        # Anything else that answers for the same name is worth knowing about.
+        for slug in resolver.slug_variants(name, url)[:3]:
+            for ats, n in probe(http, slug):
+                if (ats, slug) != (hit.get("ats"), hit.get("board")):
+                    print(f"{'  also':<20} | {ats:<15} | {slug:<50} |   ({n} open jobs)")
 
 
 def main(argv=None):
@@ -393,6 +574,8 @@ def main(argv=None):
     p.add_argument("--resume", help="resume (.pdf/.docx/.txt) for the match score")
     p.add_argument("--details", type=int, default=120, help="full descriptions fetched per SmartRecruiters/Workday company")
     p.add_argument("--workers", type=int, default=6)
+    p.add_argument("--no-ai-boards", action="store_true",
+                   help="do not ask the local model (Ollama) for a board when one cannot be found")
     p.add_argument("--out", help="output JSON path")
     p.set_defaults(fn=cmd_run)
 
@@ -400,10 +583,21 @@ def main(argv=None):
     p.add_argument("--companies")
     p.add_argument("--companies-file")
     p.add_argument("--workers", type=int, default=6)
+    p.add_argument("--no-ai-boards", action="store_true")
     p.set_defaults(fn=cmd_check)
 
+    p = sub.add_parser("resolve", help="find the right job board for every row (--write fixes companies.txt)")
+    p.add_argument("--companies")
+    p.add_argument("--companies-file")
+    p.add_argument("--workers", type=int, default=8)
+    p.add_argument("--write", action="store_true", help="rewrite companies.txt from what answered (keeps a .bak)")
+    p.add_argument("--refresh", action="store_true", help="ignore the cache and re-check every company")
+    p.add_argument("--no-ai-boards", action="store_true")
+    p.set_defaults(fn=cmd_resolve)
+
     p = sub.add_parser("find", help="find which job board a company uses")
-    p.add_argument("names", nargs="+")
+    p.add_argument("names", nargs="+", help="company names, or a careers URL")
+    p.add_argument("--no-ai-boards", action="store_true")
     p.set_defaults(fn=cmd_find)
 
     a = ap.parse_args(argv)
