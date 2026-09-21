@@ -1,6 +1,15 @@
 {
- "updated": "2026-09-21T11:05:24Z",
+ "updated": "2026-09-21T11:16:41Z",
  "items": [
+  {
+   "id": "applications-20260921-111641-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-09-21T11:16:41Z",
+   "file": "data/applications/applications-20260921-111641-applications-sent.enc",
+   "bytes": 1835176,
+   "meta": {}
+  },
   {
    "id": "careers-20260921-110524-software-engineer",
    "kind": "careers",
