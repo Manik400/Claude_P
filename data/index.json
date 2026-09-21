@@ -1,6 +1,17 @@
 {
- "updated": "2026-09-21T11:54:37Z",
+ "updated": "2026-09-21T11:55:33Z",
  "items": [
+  {
+   "id": "jobhunt-20260921-115533-2026-09-21-1702-software-engineer",
+   "kind": "jobhunt",
+   "title": "2026-09-21_1702_software-engineer",
+   "when": "2026-09-21T11:55:33Z",
+   "file": "data/jobhunt/jobhunt-20260921-115533-2026-09-21-1702-software-engineer.enc",
+   "bytes": 1666768,
+   "meta": {
+    "jobs_file": "data/jobhunt/jobhunt-20260921-115533-2026-09-21-1702-software-engineer.jobs.enc"
+   }
+  },
   {
    "id": "applications-20260921-115437-applications-sent",
    "kind": "applications",
