@@ -40,18 +40,18 @@ auto-queue, minimum match, boards, per-run limit, company-site handling), **Trac
 Gmail replies, your answers form) and **Settings**.
 
 Every tap that asks the PC for something starts `apply.yml`, which only *queues* the request
-(encrypted, on `gh-pages`). The PC does the applying: `site\phone_apply.bat`, scheduled every 30 minutes
+(as JSON, on `gh-pages`). The PC does the applying: `site\phone_apply.bat`, scheduled every 30 minutes
 and 2 minutes after every logon by `site\schedule_phone_apply.ps1`, folds the requests into
-`data/apply/queue.enc`, applies on Naukri and LinkedIn with your logins through the Naukri screener's
+`data/apply/queue.json`, applies on Naukri and LinkedIn with your logins through the Naukri screener's
 own walkers (same answers, same pacing, same daily caps), follows every other posting's Apply button to the company's form and
 fills and submits it (Simplify Copilot fills first when set up; login walls and CAPTCHAs are left for you), and publishes the queue back with every item's status,
 the percentage done, the questions waiting and a heartbeat. A PC that was off simply catches up
 after boot; nothing is lost in between.
 
 ```
-phone ──queue / retry / remove / rules / answers──▶ apply.yml ──▶ data/apply/queue/*.enc
+phone ──queue / retry / remove / rules / answers──▶ apply.yml ──▶ data/apply/queue/*.json
    ▲                                                                       │
-   └── Home / Queue: 75% · applied · needs answer · by hand ◀── data/apply/queue.enc ◀── PC (phone_apply.bat)
+   └── Home / Queue: 75% · applied · needs answer · by hand ◀── data/apply/queue.json ◀── PC (phone_apply.bat)
 ```
 
 GitHub's runners never apply: they have no login, and a datacenter IP on your account is what gets it
@@ -59,17 +59,16 @@ restricted. So the PC has to be on (the lock screen is fine) for the queue to mo
 
 ## Privacy
 
-The repo is public, so every report is encrypted (AES-256-GCM, key from your passphrase) before it is committed.
-The phone page decrypts in the browser after you type the passphrase once. Without it the site shows only
-titles like "python developer" and dates. Your resume is stored as text in a GitHub secret, never as a file in the repo.
+Reports, the queue and the Track data are published as plain files on the public `gh-pages` branch, so
+anyone with the URL can read them; there is no passphrase. Your resume is stored as text in a GitHub secret, never as a file in the repo.
 Naukri login cookies and profile data never leave the PC; only the generated HTML pages are published.
 
 ## Setup (once, on the PC)
 
 1. Install the GitHub CLI (<https://cli.github.com>) and log in: `gh auth login` (HTTPS).
-2. Double-click `site\setup_phone.bat`. It asks for a passphrase and, optionally, your resume, then:
-   stores the two repo secrets, creates the `gh-pages` branch, turns on GitHub Pages, and prints the URL.
-3. On the phone: open the URL, go to **Settings**, enter the passphrase and a fine-grained GitHub token
+2. Double-click `site\setup_phone.bat`. It optionally stores your resume as a repo secret, then
+   creates the `gh-pages` branch, turns on GitHub Pages, and prints the URL.
+3. On the phone: open the URL, go to **Settings**, enter a fine-grained GitHub token
    (this repo only, permission *Actions: Read and write*). Add the page to your home screen.
 
 ## Use

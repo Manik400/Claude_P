@@ -341,7 +341,7 @@
 <div class="page-head"><h1 id="page-title">Home</h1><span class="sub" id="page-sub"></span></div>
   <!-- ------------------------------------------------------------------ Home -->
   <section id="tab-home">
-    <div id="home-setup" class="msg info" hidden>Welcome. Go to <b>Settings</b> once: enter your passphrase and GitHub token. Then everything here works from the phone.</div>
+    <div id="home-setup" class="msg info" hidden>Welcome. Go to <b>Settings</b> once and enter your GitHub token. Then everything here works from the phone.</div>
     <div id="home-body"></div>
   </section>
 
@@ -421,7 +421,6 @@
 
   <!-- ------------------------------------------------------------------ Jobs -->
   <section id="tab-jobs" hidden>
-    <div id="reports-need" class="msg info" hidden>Enter your passphrase in <b>Settings</b> to open reports. They are encrypted; nobody without it can read them.</div>
     <div class="card"><h2>Worldwide searches <span class="r" id="btn-refresh">Refresh</span></h2><div id="list-jobhunt" class="muted">Loading…</div></div>
     <div class="card"><h2>Naukri scans (PC)</h2><div id="list-naukri" class="muted">Loading…</div>
       <div class="hint">Made on your PC by the Naukri scan on its schedule; the queue run publishes them here. Tap one to queue its jobs.</div></div>
@@ -434,13 +433,11 @@
 
   <!-- ----------------------------------------------------------------- Queue -->
   <section id="tab-queue" hidden>
-    <div id="queue-need" class="msg info" hidden>Enter your passphrase in <b>Settings</b> to see the queue.</div>
     <div id="queue-body"></div>
   </section>
 
   <!-- ----------------------------------------------------------------- Track -->
   <section id="tab-track" hidden>
-    <div id="track-need" class="msg info" hidden>Enter your passphrase in <b>Settings</b> to see this. Everything here is encrypted; nobody without it can read it.</div>
     <div id="track-body"></div>
   </section>
 
@@ -453,8 +450,6 @@
     </div>
     <div class="card">
       <h2>This phone</h2>
-      <label>Passphrase <span class="muted">(the one you chose in setup_phone.bat)</span></label>
-      <input id="s-pass" type="password" autocomplete="off">
       <label>GitHub token <span class="muted">(fine-grained: this repo only, Actions read+write)</span></label>
       <input id="s-token" type="password" autocomplete="off" placeholder="github_pat_…">
       <label>Repository</label>
@@ -463,7 +458,7 @@
       <input id="s-ref" value="main" autocapitalize="none">
       <button class="primary" id="btn-save">Save</button>
       <div id="s-msg"></div>
-      <div class="hint">Stored only in this browser. The token is sent only to api.github.com to start runs and read their status. The passphrase never leaves the phone.</div>
+      <div class="hint">Stored only in this browser. The token is sent only to api.github.com to start runs and read their status. Reports need no passphrase.</div>
     </div>
     <div class="card">
       <h2>How to get a token</h2>
@@ -616,19 +611,18 @@
 
   // ---- settings
   function settings() {
-    return { pass: store.get("pass", ""), token: store.get("token", ""),
+    return { token: store.get("token", ""),
              repo: store.get("repo", "") || guessRepo(), ref: store.get("ref", "main") || "main" };
   }
   function fillSettings() {
     var s = settings();
-    $("s-pass").value = s.pass; $("s-token").value = s.token; $("s-repo").value = s.repo; $("s-ref").value = s.ref;
+    $("s-token").value = s.token; $("s-repo").value = s.repo; $("s-ref").value = s.ref;
     ["run-need", "careers-need"].forEach(function (id) { $(id).hidden = !!s.token; });
-    ["reports-need", "queue-need", "track-need"].forEach(function (id) { $(id).hidden = !!s.pass; });
-    $("home-setup").hidden = !!(s.pass && s.token);
+    $("home-setup").hidden = !!s.token;
     if (s.repo) $("s-docs").href = "https://github.com/" + s.repo + "/blob/" + s.ref + "/AUTO_APPLY.md";
   }
   $("btn-save").addEventListener("click", function () {
-    store.set("pass", $("s-pass").value); store.set("token", $("s-token").value.trim());
+    store.set("token", $("s-token").value.trim());
     store.set("repo", $("s-repo").value.trim()); store.set("ref", $("s-ref").value.trim() || "main");
     fillSettings(); cache = {}; queue = null; queueAt = 0;
     msg("s-msg", "Saved.", "ok"); setTimeout(function () { $("s-msg").innerHTML = ""; }, 1500);
@@ -647,8 +641,8 @@
     });
   }
   // One entry point for everything the phone asks the PC to do. The request
-  // travels: apply.yml -> data/apply/queue/*.enc -> the PC's next run.
-  var PENDING_KEY = "pending";  // requests sent but not yet seen in queue.enc
+  // travels: apply.yml -> data/apply/queue/*.json -> the PC's next run.
+  var PENDING_KEY = "pending";  // requests sent but not yet seen in queue.json
   function pendingLocal() { try { return JSON.parse(store.get(PENDING_KEY, "[]")); } catch (e) { return []; } }
   function savePending(list) { store.set(PENDING_KEY, JSON.stringify(list.slice(-300))); }
   function request(action, payload, okText) {
@@ -681,21 +675,16 @@
   }
   tabs.forEach(function (b) { b.addEventListener("click", function () { showTab(b.dataset.tab); }); });
 
-  // ---- decrypt (matches site/tools/vault.py)
-  function b64(s) { var bin = atob(s), a = new Uint8Array(bin.length); for (var i = 0; i < bin.length; i++) a[i] = bin.charCodeAt(i); return a; }
-  function decrypt(obj, pass) {
-    var enc = new TextEncoder();
-    return crypto.subtle.importKey("raw", enc.encode(pass), "PBKDF2", false, ["deriveKey"]).then(function (km) {
-      return crypto.subtle.deriveKey({ name: "PBKDF2", salt: b64(obj.salt), iterations: obj.iter, hash: "SHA-256" }, km, { name: "AES-GCM", length: 256 }, false, ["decrypt"]);
-    }).then(function (key) { return crypto.subtle.decrypt({ name: "AES-GCM", iv: b64(obj.iv) }, key, b64(obj.ct)); })
-      .then(function (pt) { return new TextDecoder().decode(pt); });
-  }
+  // ---- data files on gh-pages are plain (site/tools/publish.py); a file from the
+  // old encrypted site is recognised and reported instead of rendered as garbage.
   function fetchEnc(path, opts) {
-    var s = settings();
-    return fetch(path, opts || { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
-      .then(function (o) { return decrypt(o, s.pass); });
+    return fetch(path, opts || { cache: "no-store" }).then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
+      .then(function (t) {
+        if (/^\s*\{\s*"v"\s*:\s*1\s*,\s*"kdf"/.test(t)) throw new Error("Old encrypted file - republish it from the PC");
+        return t;
+      });
   }
-  function errText(e) { return e && e.name === "OperationError" ? "Wrong passphrase. Check Settings." : (e && e.message) || String(e); }
+  function errText(e) { return (e && e.message) || String(e); }
 
   // ---- runs (GitHub Actions status)
   var runsTimers = {}, runsBusy = {}, runsCache = {};
@@ -764,8 +753,6 @@
     else openReport(item);
   }
   function openReport(item) {
-    var s = settings();
-    if (!s.pass) { showTab("settings"); $("s-pass").focus(); return; }
     var el = document.querySelector('.item[data-id="' + item.id + '"] .chip');
     if (el) el.innerHTML = '<span class="spin"></span>';
     var p = cache[item.id] ? Promise.resolve(cache[item.id]) : fetchEnc(item.file, { cache: "force-cache" }).then(function (t) { cache[item.id] = t; return t; });
@@ -787,7 +774,7 @@
   // The PC-made pages (Naukri openings, interview prep, applications) link to
   // each other by relative file name - ../interview/interview-prep-2026-09-18-r1.html,
   // applications.html, openings-2026-09-18-r3.html. Those files are not on
-  // github.io; their encrypted copies are, under other names. So every click
+  // github.io; their published copies are, under other names. So every click
   // inside the report is looked up in the index and opened from there.
   function siblingItem(href) {
     var m, items = (index || {}).items || [];
@@ -846,7 +833,7 @@
     if (AA.sel >= 0 && $("t-auto")) { AA.sel = -1; renderAuto(); }
   });
 
-  // ---- the queue (data/apply/queue.enc, written only by the PC)
+  // ---- the queue (data/apply/queue.json, written only by the PC)
   var queue = null, queueAt = 0;
   var STATUS = {
     queued: ["warn", "queued"], retry: ["warn", "retrying"], requested: ["warn", "sent - waits for PC"],
@@ -860,10 +847,8 @@
   };
   function stChip(st, note) { var s = STATUS[st] || ["", st]; var cls = s[0]; return '<span class="chip ' + cls + '" title="' + esc(note || "") + '">' + esc(s[1]) + "</span>"; }
   function loadQueue(force) {
-    var s = settings();
-    if (!s.pass) return Promise.resolve(null);
     if (!force && queue && Date.now() - queueAt < 45000) return Promise.resolve(queue);
-    return fetchEnc("data/apply/queue.enc?t=" + Date.now()).then(JSON.parse)
+    return fetchEnc("data/apply/queue.json?t=" + Date.now()).then(JSON.parse)
       .then(function (q) {
         queue = q; queueAt = Date.now();
         // forget local "sent" marks the PC has now seen
@@ -913,7 +898,6 @@
   // ---- Home
   function renderHome() {
     var s = settings(), h = "";
-    if (!s.pass) { $("home-body").innerHTML = ""; return; }
     var q = queue || {}, p = q.progress || {}, pend = q.pending_questions || [];
     h += '<div class="card tap" id="home-queue"><h2>Auto-apply queue <span class="r">open ›</span></h2>' + progressHtml(p) + pcHtml() + "</div>";
     if (pend.length) h += '<div class="card"><h2>' + pend.length + ' question' + (pend.length > 1 ? "s" : "") + ' waiting for you</h2>' + questionsHtml(pend, "hq") + "</div>";
@@ -978,7 +962,6 @@
     return true;
   }
   function renderQueue() {
-    var s = settings(); if (!s.pass) { $("queue-body").innerHTML = ""; return; }
     var q = queue || { items: [] }, st = q.settings || {}, auto = st.auto || {}, pend = q.pending_questions || [];
     var items = itemsLive();
     pendingLocal().forEach(function (p) { if (!items.some(function (i) { return i.key === p.key; })) items.push({ key: p.key, title: p.title, company: p.company, board: p.board, status: "requested", added_at: new Date(p.at).toISOString(), local: true, url: p.url }); });
@@ -1164,8 +1147,6 @@
   function ccLabel(c) { return c === "??" ? "not stated" : (c === "REMOTE" ? "Remote" : (NAMES[c] || c)); }
   function onKeys(o) { return Object.keys(o).filter(function (k) { return o[k]; }); }
   function openJobs(item) {
-    var s = settings();
-    if (!s.pass) { showTab("settings"); $("s-pass").focus(); return; }
     $("v-title").textContent = item.title; $("v-right").innerHTML = '<button class="ghost small" id="v-report">Full report</button>';
     $("v-box").hidden = true; $("c-box").hidden = true; $("j-box").hidden = false;
     $("j-box").innerHTML = '<div class="card"><span class="spin"></span> Loading postings…</div>';
@@ -1176,7 +1157,7 @@
       JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
       renderJobs();
       $("j-box").scrollTop = 0;
-      // the detail column shows the form the PC filled in; that lives in profile.enc
+      // the detail column shows the form the PC filled in; that lives in profile.json
       fetchTrack().then(function () { if (JV) renderJobs(); }, function () {});
     }).catch(function (e) { $("j-box").innerHTML = '<div class="card msg bad">' + esc(errText(e)) + "</div>"; });
   }
@@ -1433,21 +1414,18 @@
     submitted: "applied on company site", "login-required": "needs login - apply by hand", "career-incomplete": "form needs you - apply by hand" };
   function tCls(st) { return st === "applied" || st === "already" || st === "submitted" ? "ok" : (st === "login-required" || st === "career-incomplete" ? "man" : st === "questionnaire" || st === "offsite" ? "warn" : (st === "error" || st === "questionnaire-failed" || st === "unconfirmed" ? "bad" : "")); }
   function kCls(k) { return k === "rejected" ? "bad" : (k === "interview" || k === "shortlisted" || k === "offer" ? "ok" : (k === "viewed" ? "warn" : "")); }
-  // profile.enc holds the applications the Jobs table's detail column also needs, so the
+  // profile.json holds the applications the Jobs table's detail column also needs, so the
   // fetch is separate from the Track tab's rendering.
   var trackAt = 0, trackWait = null, trackErr = "";
   function fetchTrack(force) {
-    if (!settings().pass) return Promise.reject(new Error("no passphrase"));
     if (!force && track && Date.now() - trackAt < 45000) return Promise.resolve(track);
     if (trackWait) return trackWait;
-    trackWait = fetchEnc("data/apply/profile.enc?t=" + Date.now()).then(JSON.parse)
+    trackWait = fetchEnc("data/apply/profile.json?t=" + Date.now()).then(JSON.parse)
       .then(function (t) { track = t; trackAt = Date.now(); appIdx = null; trackWait = null; trackErr = ""; return t; },
             function (e) { trackWait = null; trackErr = errText(e); throw e; });
     return trackWait;
   }
   function loadTrack() {
-    var s = settings();
-    if (!s.pass) { $("track-body").innerHTML = ""; return; }
     if (!track) $("track-body").innerHTML = '<div class="card"><span class="spin"></span> Loading…</div>';
     else if (typing("tab-track")) return;  // do not rebuild the form under the user's fingers
     fetchTrack(true)
@@ -1836,7 +1814,7 @@
     $("c-companies").value = have.join(", "); store.set("c.companies", $("c-companies").value);
   });
 
-  // ---- careers results viewer (decrypted JSON written by careers_bot.py)
+  // ---- careers results viewer (JSON written by careers_bot.py)
   var CV = null;
   var RELOC = { yes: ["ok", "✈ relocation"], visa: ["ok", "visa sponsorship"], maybe: ["warn", "relocation?"], no: ["bad", "no relocation"], unknown: ["", "relocation not stated"] };
   var FIT = { fit: ["ok", "experience fits"], stretch: ["warn", "stretch"], over: ["warn", "over-qualified"], no: ["bad", "needs more experience"], unknown: ["", "experience not stated"] };
@@ -1982,16 +1960,16 @@
   if (store.get("s.seg", "world") === "careers") { $("s-seg").querySelector('[data-s="careers"]').click(); }
   var hashTab = location.hash.slice(1);
   showTab(TABS.indexOf(hashTab) >= 0 ? hashTab : store.get("tab", "home"));
-  if (!settings().pass && !settings().token) showTab("settings");
-  if (settings().pass) loadQueue();
+  if (!settings().token) showTab("settings");
+  loadQueue();
   window.addEventListener("hashchange", function () { var t = location.hash.slice(1); if (TABS.indexOf(t) >= 0) showTab(t); });
   // keep the queue fresh while the page is open
   function refreshVisible() {
     if (!$("tab-queue").hidden && !typing("tab-queue")) renderQueue();
     if (!$("tab-home").hidden && !typing("tab-home")) renderHome();
   }
-  setInterval(function () { if (document.hidden || !settings().pass) return; loadQueue(true).then(refreshVisible); }, 120000);
-  document.addEventListener("visibilitychange", function () { if (!document.hidden && settings().pass) loadQueue(true).then(refreshVisible); });
+  setInterval(function () { if (document.hidden) return; loadQueue(true).then(refreshVisible); }, 120000);
+  document.addEventListener("visibilitychange", function () { if (!document.hidden) loadQueue(true).then(refreshVisible); });
 })();
 </script>
 </body>

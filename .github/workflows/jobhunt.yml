@@ -2,7 +2,7 @@ name: Job Hunt (phone)
 
 # Started from the phone page (site/index.html), the GitHub mobile app, or
 # `gh workflow run jobhunt.yml -f role="python developer"`.
-# Runs the job-hunt bot on a GitHub runner and publishes the encrypted report
+# Runs the job-hunt bot on a GitHub runner and publishes the report
 # to the gh-pages branch, where the phone page lists it.
 
 on:
@@ -112,7 +112,6 @@ jobs:
           LOCAL_AI_MODEL: ${{ vars.LOCAL_AI_MODEL }}
           LOCAL_AI_EMBED_MODEL: ${{ vars.LOCAL_AI_EMBED_MODEL }}
           LOCAL_AI_BUDGET_SECONDS: ${{ vars.LOCAL_AI_BUDGET_SECONDS || '600' }}
-          SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
           PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
           # Optional extra coverage, all free sign-ups (see job-hunt/README.md)
           ADZUNA_APP_ID: ${{ secrets.ADZUNA_APP_ID }}

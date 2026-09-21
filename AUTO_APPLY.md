@@ -18,7 +18,7 @@ carries the request home.
 | **Jobs** | Every report: worldwide searches, Naukri scans from the PC, career-page searches, interview prep. Tap one → its job list with filters (board, country, match), **Contacts** per job, **+ Queue** per job or **Queue all**. |
 | **Queue** | The one list: progress, pause / resume, the rules (auto-queue, minimum match, boards, per-run limit, what to do with company-site postings), every job with its status, **retry** / **remove**, the PC's recent runs. |
 | **Track** | Every application (both projects), its screening Q&A, Gmail replies, your own status and notes; your answers form. |
-| **Settings** | Passphrase, token, repo. Which optional keys unlock India coverage, contacts and Simplify. |
+| **Settings** | Token, repo. Which optional keys unlock India coverage, contacts and Simplify. |
 
 ## Why the PC does the applying
 
@@ -29,14 +29,14 @@ carries the request home.
 
 ```
 phone ──Queue all / +Queue / retry / remove / rules / answers──▶ apply.yml (GitHub Actions)
-                                   │  writes  data/apply/queue/<request>.enc   (encrypted, gh-pages)
+                                   │  writes  data/apply/queue/<request>.json  (gh-pages)
                                    ▼
         PC: site\phone_apply.bat  (every 30 min + 2 min after logon; site\schedule_phone_apply.ps1)
                                    │  folds requests into THE queue, auto-queues strong matches,
                                    │  applies on Naukri + LinkedIn + company career sites
                                    │  (career_apply.py; Simplify optional)
-                                   │  writes  data/apply/queue.enc    (every item, status, %, questions, PC heartbeat)
-                                   │  writes  data/apply/profile.enc  (Track tab)
+                                   │  writes  data/apply/queue.json   (every item, status, %, questions, PC heartbeat)
+                                   │  writes  data/apply/profile.json (Track tab)
                                    ▼
 phone ◀── Home / Queue: 75% done · applied · needs your answer · by hand · failed
 ```
@@ -113,8 +113,8 @@ applying without losing anything; *Resume* continues.
 
 ## Setup checklist
 
-1. `site\setup_phone.bat` once (passphrase, secrets, `gh-pages`, Pages URL).
-2. On the phone: Settings → passphrase + token → Save; add the page to the home screen.
+1. `site\setup_phone.bat` once (secrets, `gh-pages`, Pages URL).
+2. On the phone: Settings → token → Save; add the page to the home screen.
 3. Naukri screener set up on the PC with logins that work for `apply` (Naukri) and `--linkedin-login`.
 4. `powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1` once, on the PC
    (`-Every 30 -Limit 5` are the defaults; `-Remove` to stop).
@@ -140,9 +140,8 @@ applying without losing anything; *Resume* continues.
 
 ## Privacy and safety
 
-* The repo is public, so every request, the queue, the profile and every report are AES-256-GCM
-  encrypted with your passphrase before they are committed. Without the passphrase the site shows nothing
-  readable.
+* The repo is public and the requests, the queue, the profile and every report are committed as plain
+  files: anyone with the URL can read them. There is no passphrase.
 * The GitHub token on the phone is fine-grained, this repo only, Actions read+write. It is sent only to
   `api.github.com`.
 * LinkedIn / Naukri cookies never leave the PC. GitHub never touches either site.

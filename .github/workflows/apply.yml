@@ -2,12 +2,12 @@ name: Queue request (phone)
 run-name: "Queue: ${{ inputs.action }} · ${{ inputs.note || '' }}"
 
 # Started from the phone page (Jobs -> add to queue, Queue tab, Track tab).
-# Writes an encrypted request to data/apply/queue/ on the gh-pages branch.
+# Writes the request as JSON to data/apply/queue/ on the gh-pages branch.
 # It does NOT apply itself: GitHub's runners have no LinkedIn/Naukri login,
 # and a datacenter IP on your account is what gets it restricted. Your PC
 # runs the queue (site\phone_apply.bat, every 30 min and at logon, scheduled
 # by site\schedule_phone_apply.ps1), applies from home with the real session,
-# and publishes data/apply/queue.enc back for the phone.
+# and publishes data/apply/queue.json back for the phone.
 
 on:
   workflow_dispatch:
@@ -50,8 +50,6 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.11"
-      - name: Install
-        run: python -m pip install -q cryptography
       - name: Queue the request
         env:
           INPUT_ACTION: ${{ inputs.action }}
@@ -59,6 +57,5 @@ jobs:
           INPUT_JOBS: ${{ inputs.jobs }}
           INPUT_NOTE: ${{ inputs.note }}
           INPUT_PAYLOAD: ${{ inputs.payload }}
-          SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
           PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: python site/tools/run_apply_queue.py

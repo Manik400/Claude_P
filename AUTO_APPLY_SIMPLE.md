@@ -18,7 +18,7 @@ and right after it boots) applies to those jobs with your LinkedIn and Naukri lo
 
 ## What you need (once)
 
-* `site\setup_phone.bat` run on the PC, passphrase + GitHub token saved on the phone.
+* `site\setup_phone.bat` run on the PC, GitHub token saved on the phone.
 * Naukri screener on the PC with working Naukri and LinkedIn logins.
 * `powershell -ExecutionPolicy Bypass -File site\schedule_phone_apply.ps1` run once on the PC.
 
@@ -30,5 +30,5 @@ and right after it boots) applies to those jobs with your LinkedIn and Naukri lo
 * Big lists are fine - "Queue all (60)" is spread over hours/days, not fired at once.
 * India: add the `APIFY_TOKEN` secret once and searches read Naukri, Indeed and LinkedIn properly.
 * Contacts: every report can show recruiters / hiring managers per company (add a Hunter / SignalHire / Apollo key).
-* Everything on the site is encrypted with your passphrase; your logins never leave the PC.
+* The site is public (no passphrase); your logins never leave the PC.
 * Want the technical version? See [AUTO_APPLY.md](AUTO_APPLY.md).

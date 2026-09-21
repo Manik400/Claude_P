@@ -4,7 +4,7 @@ run-name: "Careers: ${{ inputs.role }} · ${{ inputs.countries || 'worldwide' }}
 # Started from the phone page (site/index.html -> Careers), the GitHub mobile app, or
 # `gh workflow run careers.yml -f role="software engineer" -f experience=3-5 -f relocation=strict`.
 # Reads the career pages of the companies in job-hunt/assets/companies.txt and publishes the
-# encrypted result to the gh-pages branch, where the phone page's Careers tab shows it.
+# result to the gh-pages branch, where the phone page's Careers tab shows it.
 
 on:
   workflow_dispatch:
@@ -103,6 +103,5 @@ jobs:
           LOCAL_AI_MODEL: ${{ vars.LOCAL_AI_MODEL }}
           LOCAL_AI_EMBED_MODEL: ${{ vars.LOCAL_AI_EMBED_MODEL }}
           LOCAL_AI_BUDGET_SECONDS: ${{ vars.LOCAL_AI_BUDGET_SECONDS || '420' }}
-          SITE_PASSPHRASE: ${{ secrets.SITE_PASSPHRASE }}
           PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: python site/tools/run_careers.py

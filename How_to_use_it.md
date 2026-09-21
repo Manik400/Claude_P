@@ -75,7 +75,7 @@ Ask Claude in this project folder, for example:
 One URL for everything, hosted on GitHub Pages. Setup is one double-click on the PC; see `site/README.md`.
 
 1. Run `site\setup_phone.bat` once (needs the GitHub CLI logged in). It prints the URL.
-2. Open the URL on the phone, enter your passphrase and a GitHub token in **Settings**, add it to the home screen.
+2. Open the URL on the phone, enter a GitHub token in **Settings**, add it to the home screen.
 3. **Search** tab: type role, experience, countries, tap **Start search**. GitHub runs the job-hunt bot and the report appears in **Reports** in 5–15 minutes.
 4. **Careers** tab (`…/#careers`): searches the career pages of the companies in `job-hunt/assets/companies.txt` (Agoda, Adyen, Spotify, …).
    Type role, your experience range (e.g. `3-5`), pick countries (or 🌍 Worldwide) and tick **Only jobs that clearly offer relocation**.
@@ -85,7 +85,7 @@ One URL for everything, hosted on GitHub Pages. Setup is one double-click on the
 5. **Auto-apply** from the phone: under Reports, tap **auto-apply** on a worldwide report, tick jobs (or Apply to all). The request is queued and your PC, when on, applies with your LinkedIn login a few at a time and sends each job's status back to the phone. Screening questions it could not answer show up in the same panel for you to answer.
 6. **Reports** tab: worldwide reports, plus Naukri openings and interview-prep pages pushed from the PC by `Profile_Naukri_Screener-main\publish_to_phone.bat` (or on a schedule with `jobs_scan_and_publish.bat`).
 
-Everything published is encrypted with your passphrase, so the public repo shows nothing readable.
+Everything published is a plain file on the public `gh-pages` branch: no passphrase, and anyone with the URL can read it.
 
 ---
 

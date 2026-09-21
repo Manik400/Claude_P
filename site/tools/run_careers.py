@@ -9,10 +9,9 @@ Inputs come from the environment (set by .github/workflows/careers.yml):
     INPUT_DAYS        "30"                                    (optional; all open postings when empty)
     INPUT_COMPANIES   "agoda, adyen"                          (optional; whole list when empty)
     RESUME_TEXT       resume as plain text (repo secret)      (optional; enables match scoring)
-    SITE_PASSPHRASE   encrypts the published result           (repo secret, required)
     PAGES_REPO_URL    push URL for the gh-pages branch        (set by the workflow)
 
-The result is JSON (not HTML): the phone page's Careers tab decrypts it and renders it with filters.
+The result is JSON (not HTML): the phone page's Careers tab renders it with filters.
 """
 import json
 import os

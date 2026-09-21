@@ -5,7 +5,7 @@
     python phone_publish.py site                        just refresh the phone UI on gh-pages
 
 Reads %LOCALAPPDATA%\\JobHuntPhone\\config.json (written by setup_phone.bat) for the
-passphrase and keeps a small clone of the gh-pages branch next to it. Files already
+repo and keeps a small clone of the gh-pages branch next to it. Files already
 published (same path + modification time) are skipped, so this is safe to run after
 every scan or from Task Scheduler.
 """
@@ -63,7 +63,6 @@ def pages_dir(cfg):
 
 def publish(cfg, pages, kind, path, title, replace=False, attach=None):
     env = dict(os.environ)
-    env.setdefault("SITE_PASSPHRASE", cfg.get("passphrase", ""))
     args = PY + [os.path.join(HERE, "publish.py"), "report", "--pages", pages, "--kind", kind,
                  "--title", title, "--file", path]
     if replace:

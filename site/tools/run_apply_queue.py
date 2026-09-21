@@ -11,11 +11,10 @@ Inputs come from the environment (set by .github/workflows/apply.yml):
                         profile   the answers form     notes  {job_id: {status, note}}
     INPUT_REPORT / INPUT_JOBS / INPUT_ANSWERS   old-style inputs, still accepted
     INPUT_NOTE        free text
-    SITE_PASSPHRASE   encrypts the queue file (repo secret)
     PAGES_REPO_URL    push URL for the gh-pages branch (set by the workflow)
 
-Writes data/apply/queue/<stamp>-<action>.enc on gh-pages. The PC-side worker
-(site/tools/phone_apply.py) folds it into data/apply/queue.enc, the one queue.
+Writes data/apply/queue/<stamp>-<action>.json on gh-pages. The PC-side worker
+(site/tools/phone_apply.py) folds it into data/apply/queue.json, the one queue.
 """
 import json
 import os
@@ -24,8 +23,6 @@ import sys
 from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
-sys.path.insert(0, HERE)
-import vault  # noqa: E402
 
 ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes"}
 
@@ -35,9 +32,6 @@ def env(name, default=""):
 
 
 def main():
-    passphrase = vault.get_passphrase()
-    if not passphrase:
-        raise SystemExit("SITE_PASSPHRASE secret is missing")
     action = env("INPUT_ACTION", "queue")
     if action not in ACTIONS:
         raise SystemExit("unknown action %r" % action)
@@ -83,9 +77,9 @@ def main():
     subprocess.run(py + [os.path.join(HERE, "pages_git.py"), "checkout", pages], check=True)
     queue_dir = os.path.join(pages, "data", "apply", "queue")
     os.makedirs(queue_dir, exist_ok=True)
-    name = "%s-%s.enc" % (now.strftime("%Y%m%d-%H%M%S"), action)
+    name = "%s-%s.json" % (now.strftime("%Y%m%d-%H%M%S"), action)
     with open(os.path.join(queue_dir, name), "wb") as f:
-        f.write(vault.encrypt_bytes(json.dumps(request, ensure_ascii=False).encode("utf-8"), passphrase))
+        f.write(json.dumps(request, ensure_ascii=False).encode("utf-8"))
     subprocess.run(py + [os.path.join(HERE, "pages_git.py"), "push", pages,
                          "phone request: %s%s" % (action, (" " + str(payload.get("report", ""))) if action == "queue" else "")],
                    check=True)

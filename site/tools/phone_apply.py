@@ -4,12 +4,12 @@
     (site\\phone_apply.bat; scheduled by site\\schedule_phone_apply.ps1)
 
 Every job you want applied to - from a worldwide report, a Naukri scan, or
-picked by the auto rule - lands in one queue, data/apply/queue.enc on the
+picked by the auto rule - lands in one queue, data/apply/queue.json on the
 gh-pages branch. This script is the only thing that writes it. Each run:
 
     1. refresh the gh-pages clone; publish any new Naukri scan pages from
        this PC (so the phone can queue their jobs too)
-    2. read the phone's requests from data/apply/queue/*.enc and fold them
+    2. read the phone's requests from data/apply/queue/*.json and fold them
        into the queue: queue / remove / retry / pause / resume / settings /
        answers / profile / notes
     3. auto rule: when enabled, add every job scoring at least `min_score`
@@ -24,9 +24,9 @@ gh-pages branch. This script is the only thing that writes it. Each run:
        the Simplify mode under Queue -> Rules) Simplify fills the form
        first. Only forms that want a login / account or show a CAPTCHA are
        left for you ("by hand")
-    5. write data/apply/queue.enc: every item with its status, the progress
+    5. write data/apply/queue.json: every item with its status, the progress
        (done / total / %), the questions waiting for you, when the PC last
-       checked in - and data/apply/profile.enc for the Track tab
+       checked in - and data/apply/profile.json for the Track tab
     6. push when something changed (or a heartbeat every couple of hours)
 
 Nothing is lost when the PC is off: the requests wait on the branch and the
@@ -100,14 +100,15 @@ def pages_dir(cfg: dict) -> str:
 
 
 def read_enc(path: str, passphrase: str):
+    """A JSON file from gh-pages; files from before the site went plain are decrypted."""
     with open(path, "rb") as f:
-        return json.loads(vault.decrypt_bytes(f.read(), passphrase).decode("utf-8"))
+        return json.loads(vault.read_plain(f.read(), passphrase).decode("utf-8"))
 
 
 def write_enc(path: str, data, passphrase: str) -> None:
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, "wb") as f:
-        f.write(vault.encrypt_bytes(json.dumps(data, ensure_ascii=False).encode("utf-8"), passphrase))
+        f.write(json.dumps(data, ensure_ascii=False).encode("utf-8"))
 
 
 def load_index(pages: str) -> list[dict]:
@@ -187,7 +188,7 @@ def load_queue(path: str, passphrase: str) -> dict:
                 q.setdefault("settings", {})
                 return q
         except Exception as exc:
-            log("queue.enc unreadable (%s) - starting a fresh queue" % exc)
+            log("queue.json unreadable (%s) - starting a fresh queue" % exc)
     return {"items": [], "paused": False, "settings": {}, "history": []}
 
 
@@ -432,14 +433,15 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     cfg = load_config()
-    passphrase = cfg.get("passphrase") or vault.get_passphrase()
-    if not passphrase:
-        raise SystemExit("phone_apply: no passphrase - run site\\setup_phone.bat")
+    passphrase = cfg.get("passphrase") or vault.get_passphrase()   # only to read files from the old, encrypted site
     pages = pages_dir(cfg)
     apply_dir = os.path.join(pages, "data", "apply")
     queue_dir = os.path.join(apply_dir, "queue")
     done_dir = os.path.join(apply_dir, "done")
-    queue_path = os.path.join(apply_dir, "queue.enc")
+    queue_path = os.path.join(apply_dir, "queue.json")
+    old_queue = os.path.join(apply_dir, "queue.enc")
+    if not os.path.exists(queue_path) and os.path.exists(old_queue):
+        os.replace(old_queue, queue_path)   # from before the site went plain; read_enc still decrypts it
     os.makedirs(queue_dir, exist_ok=True)
 
     # 1. New Naukri scan pages from this PC reach the phone without a separate schedule.
@@ -466,7 +468,7 @@ def main(argv=None) -> int:
     # 2. The phone's requests.
     requests_ = []
     for name in sorted(os.listdir(queue_dir)):
-        if name.endswith(".enc"):
+        if name.endswith((".json", ".enc")):
             path = os.path.join(queue_dir, name)
             try:
                 requests_.append((name, path, read_enc(path, passphrase)))
@@ -551,7 +553,9 @@ def main(argv=None) -> int:
         save_config(cfg)
 
     # 6. Track tab data.
-    profile_path = os.path.join(apply_dir, "profile.enc")
+    profile_path = os.path.join(apply_dir, "profile.json")
+    if os.path.exists(os.path.join(apply_dir, "profile.enc")):
+        os.remove(os.path.join(apply_dir, "profile.enc"))
     try:
         state = dashboard.state()
         state.pop("generated", None)
@@ -570,9 +574,9 @@ def main(argv=None) -> int:
                 old = None
         if fp != old:
             write_enc(profile_path, track, passphrase)
-            log("track: profile.enc refreshed (%d application(s))" % len(track["applications"]))
+            log("track: profile.json refreshed (%d application(s))" % len(track["applications"]))
     except Exception as exc:
-        log("track: could not build profile.enc: %s" % exc)
+        log("track: could not build profile.json: %s" % exc)
 
     if outcomes and outcomes.get("_summary"):
         log(autoapply.summarise(outcomes).strip())

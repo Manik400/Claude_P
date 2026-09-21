@@ -12,7 +12,6 @@ Inputs come from the environment (set by .github/workflows/jobhunt.yml):
     INPUT_FIT         default | strict | all                  (optional)
     INPUT_EXTRA       any extra job_bot flags                 (optional)
     RESUME_TEXT       resume as plain text (repo secret)      (optional; enables match scoring)
-    SITE_PASSPHRASE   encrypts the published report           (repo secret, required)
     PAGES_REPO_URL    push URL for the gh-pages branch        (set by the workflow)
 """
 import json
