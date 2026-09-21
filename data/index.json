@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-21T11:00:41Z",
+ "updated": "2026-09-21T11:05:24Z",
  "items": [
+  {
+   "id": "careers-20260921-110524-software-engineer",
+   "kind": "careers",
+   "title": "software engineer",
+   "when": "2026-09-21T11:05:24Z",
+   "file": "data/careers/careers-20260921-110524-software-engineer.enc",
+   "bytes": 590930,
+   "meta": {
+    "jobs": "790",
+    "relocation": "4",
+    "countries": "IN",
+    "experience": "1",
+    "reloc_mode": "any"
+   }
+  },
   {
    "id": "jobhunt-20260921-110041-2026-09-21-1555-software-engineer",
    "kind": "jobhunt",
