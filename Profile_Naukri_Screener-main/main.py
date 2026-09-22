@@ -142,8 +142,10 @@ def main() -> int:
     parser.add_argument("--url", help="With --jobs-probe: probe this job URL instead of the top queued one")
     parser.add_argument("--limit", type=int, metavar="N",
                         help="With --jobs: attempt at most N applications this run")
-    parser.add_argument("--locations", default="Pune,Ahmedabad,Gurgaon",
-                        help="With --jobs-export: comma-separated cities to search")
+    parser.add_argument("--locations", default="",
+                        help="With --jobs-export: comma-separated cities to search. "
+                             "Empty (the default) searches the whole country and filters "
+                             "on no city at all")
     parser.add_argument("--top", type=int, default=30,
                         help="With --jobs-export: how many jobs to write (default 30)")
     parser.add_argument("--worldwide", action="store_true",

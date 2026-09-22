@@ -26,6 +26,7 @@ analyse. The Top 10 is the Naukri top 10, which is what the scan reports too.
 """
 from __future__ import annotations
 
+import hashlib
 import logging
 from datetime import date, datetime
 
@@ -393,11 +394,23 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
     calls: list[dict] = []
 
     # --- collective analysis
-    log.info("Analysing the ten JDs collectively")
-    analysis, meta = engine_mod.ask_json(
-        prompts.analysis_prompt(brief, jobs, matrix),
-        engine=engine, model=model, label="collective analysis")
-    calls.append(meta)
+    #
+    # Cached against the exact prompt it was produced from, so a later failure
+    # in the same run - a dropped connection during question generation, a
+    # validation abort - does not make the next attempt pay seven minutes and
+    # a dollar for an answer that is already on disk. A changed Top 10 or a
+    # changed profile changes the digest, and it is generated again.
+    analysis_prompt = prompts.analysis_prompt(brief, jobs, matrix)
+    analysis_key = hashlib.sha256(analysis_prompt.encode("utf-8")).hexdigest()
+    analysis = None if no_reuse else store.load_analysis(stamp, analysis_key)
+    if analysis is not None:
+        log.info("Reusing this run's collective analysis (unchanged Top 10)")
+    else:
+        log.info("Analysing the ten JDs collectively")
+        analysis, meta = engine_mod.ask_json(
+            analysis_prompt, engine=engine, model=model, label="collective analysis")
+        calls.append(meta)
+        store.save_analysis(stamp, analysis_key, analysis)
 
     target_profile = analysis.get("target_profile") or {}
     gap_analysis = analysis.get("gap_analysis") or {}
@@ -428,10 +441,26 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
     previous = store.load_prep(previous_runs[0]) if previous_runs else None
     pool = {} if no_reuse else _reusable(bank, matrix, previous)
     questions = _carry_over(previous, pool, matrix, len(jobs)) if pool else []
+    # Batches this same run generated before it was interrupted. Each batch is
+    # a model call of its own, so a run that died on the fifth of seven comes
+    # back with four already done instead of starting the whole corpus again.
+    resumed = [] if no_reuse else store.load_partial(stamp, analysis_key)
+    if resumed:
+        known = {q.get("question") for q in questions}
+        questions += [q for q in resumed if q.get("question") not in known]
+        log.info("Resuming this run with %d question(s) from an interrupted attempt",
+                 len(questions))
     _relink(questions, jobs)
 
     have = {level: sum(1 for q in questions if q["level"] == level)
             for level in validate.TARGET}
+
+    def checkpoint():
+        """Persist what is generated so far, so the next attempt keeps it."""
+        try:
+            store.save_partial(stamp, analysis_key, questions)
+        except OSError as exc:  # noqa: BLE001 - a cache, never a reason to fail
+            log.warning("could not save the resume checkpoint (%s)", exc)
 
     for level, size in BATCHES:
         shortfall = validate.TARGET[level] - have[level]
@@ -452,6 +481,7 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
             if normalised:
                 questions.append(normalised)
                 have[level] += 1
+        checkpoint()
 
     # --- top up any level a batch came up short on
     for level, wanted in validate.TARGET.items():
@@ -474,6 +504,7 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
                     questions.append(normalised)
                     have[level] += 1
                     added += 1
+            checkpoint()
             if not added:
                 log.warning("Top-up for %s returned nothing usable; stopping", level)
                 break
@@ -559,6 +590,9 @@ def run(day: str | None = None, engine: str | None = None, model: str | None = N
 
     store.save_bank(store.remember(bank, prep["questions"], day))
     store.save_prep(prep)
+    # The saved prep supersedes the resume checkpoints; leaving them behind
+    # would have the next run of this stamp resume from a finished run.
+    store.clear_run_cache(stamp)
 
     # Rebuild every day's page, not just today's: each one carries the date
     # picker listing all the others, so yesterday's page needs to learn that

@@ -304,11 +304,14 @@ top jobs on the openings page and in the sheet's last column.
 ### A spreadsheet to work through by hand
 
 ```bash
-python main.py --jobs-export --locations "Pune,Ahmedabad,Gurgaon" --top 30
+python main.py --jobs-export --top 30
 ```
 
-Writes `data/jobs/job-matches-<date>.xlsx`: the top N matches across those
-cities, ranked, with the Naukri apply link and a LinkedIn search link on every
+Searches the whole country with no city filter. `--locations "Pune,Gurgaon"`
+narrows it to those cities - it filters the query *and* drops every listing
+outside them, so leave it off unless you mean exactly that.
+
+Writes `data/jobs/job-matches-<date>.xlsx`: the top N matches, ranked, with the Naukri apply link and a LinkedIn search link on every
 row, plus `Applied? / Where / Applied on / Notes` columns as dropdowns.
 
 The tracking columns are the point. Applications go out through two portals and

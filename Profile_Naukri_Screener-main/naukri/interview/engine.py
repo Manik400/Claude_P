@@ -130,8 +130,24 @@ def _cli_failure_text(stdout: str, stderr: str | None) -> str:
 # A transient CLI failure - the login being refreshed, a rate limit, an
 # overloaded API - costs a whole prep run when it lands on the first of seven
 # calls. Try again after a pause before giving up.
-CLI_RETRIES = 2
-CLI_RETRY_WAIT = (30, 90)
+#
+# The ladder runs to ~17 minutes in total because the failure it exists for is
+# the home connection dropping, and a two-minute ladder is shorter than a DNS
+# blip: a run that had already spent twelve minutes and a dollar on the
+# collective analysis died at "ENOTFOUND" with nothing to show for it. Waiting
+# is free; re-running the whole prep is not.
+CLI_RETRY_WAIT = (20, 45, 90, 180, 300, 420)
+CLI_RETRIES = len(CLI_RETRY_WAIT)
+
+# Failures that will never come right by waiting. Retrying these just makes a
+# broken setup take a quarter of an hour to say so.
+FATAL_CLI_MARKERS = ("is not on PATH", "not logged in", "invalid api key",
+                     "authentication_error", "unauthorized", "no model to generate with")
+
+
+def _is_fatal(message: str) -> bool:
+    low = message.lower()
+    return any(marker.lower() in low for marker in FATAL_CLI_MARKERS)
 
 
 def _call_cli(prompt: str, timeout: int, model: str | None) -> tuple[str, dict]:
@@ -141,10 +157,11 @@ def _call_cli(prompt: str, timeout: int, model: str | None) -> tuple[str, dict]:
             return _call_cli_once(prompt, timeout, model)
         except EngineError as exc:
             last = exc
-            if attempt >= CLI_RETRIES or "is not on PATH" in str(exc):
+            if attempt >= CLI_RETRIES or _is_fatal(str(exc)):
                 break
             wait = CLI_RETRY_WAIT[min(attempt, len(CLI_RETRY_WAIT) - 1)]
-            log.warning("  claude CLI failed (%s) - retrying in %ds", str(exc)[:200], wait)
+            log.warning("  claude CLI failed (%s) - retrying in %ds (attempt %d of %d)",
+                        str(exc)[:200], wait, attempt + 2, CLI_RETRIES + 1)
             time.sleep(wait)
     raise last  # type: ignore[misc]
 

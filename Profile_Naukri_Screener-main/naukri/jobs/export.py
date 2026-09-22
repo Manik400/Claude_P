@@ -73,6 +73,11 @@ CITY_ALIASES = {
 }
 
 
+# The one country both boards are searched in when no city is named. Naukri is
+# India-only; LinkedIn needs a region string and "India" is the national one.
+COUNTRY = "India"
+
+
 def city_variants(city: str) -> tuple[str, ...]:
     key = (city or "").lower().strip()
     return CITY_ALIASES.get(key, (key,))
@@ -311,7 +316,11 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
             keywords.append(keyword)
 
     config = dict(config)
-    if worldwide:
+    # No city asked for is the normal case, and means the whole country with
+    # nothing filtered out by city. Naming cities narrows both the query and
+    # the results; --worldwide widens the LinkedIn side past India as well.
+    by_city = bool(locations) and not worldwide
+    if not by_city:
         # Naukri is an India-only board, so the widest it goes is a national
         # search with no city. "Worldwide" only really means anything on the
         # LinkedIn side.
@@ -322,14 +331,15 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
             for location in locations
             for keyword in keywords
         ]
-    # Score every requested city equally. jobs.yaml lists only Pune as
-    # preferred, which costs every Ahmedabad and Gurugram listing 8 points and
-    # buries them - on a list you asked to span three cities, that is just a
-    # Pune list with extra steps.
-    config["preferred_locations"] = ["Remote"] if worldwide else list(locations) + ["Remote"]
+    # Score every requested city equally - naming one city costs every listing
+    # in the others 8 points and buries them. With no city list there is no
+    # city preference at all, and score._location_score then scores every
+    # stated location alike.
+    config["preferred_locations"] = list(locations) + ["Remote"] if by_city else []
     # Read by search.gather, which turns it into Naukri's own jobAge facet.
     config["posted_within_days"] = posted_days
-    log.info("Searching %d keyword(s) across %s", len(keywords), ", ".join(locations))
+    log.info("Searching %d keyword(s) across %s", len(keywords),
+             ", ".join(locations) if by_city else ("every country" if worldwide else COUNTRY))
     if posted_days:
         log.info("Freshness filter: posted in the last %g day(s)", posted_days)
 
@@ -353,7 +363,7 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         finally:
             browser.close()
 
-    wanted = [variant for loc in locations for variant in city_variants(loc)]
+    wanted = [variant for loc in locations for variant in city_variants(loc)] if by_city else []
     kept = []
     stale = repeats = 0
     from naukri import localai
@@ -363,10 +373,10 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         score_mod.score(job, config)
         if job.score <= 0:
             continue
-        # Naukri happily returns Bengaluru jobs for a Pune search, so filter on
-        # the location the listing actually states.
+        # Naukri happily returns Bengaluru jobs for a Pune search, so when
+        # cities were named, filter on the location the listing actually states.
         text = (job.location or "").lower()
-        if not worldwide and not any(city in text for city in wanted) and "remote" not in text:
+        if wanted and not any(city in text for city in wanted) and "remote" not in text:
             continue
         if not include_applied and ledger.status(job.job_id) == "applied":
             continue
@@ -459,7 +469,7 @@ def summarise(path: Path, jobs: list, locations: list[str], cards: list | None =
     strong = sum(1 for j in jobs if (getattr(j, "score", 0) or 0) >= 72)
     lines = [
         "",
-        f"  {len(jobs)} job(s) across {', '.join(locations)}",
+        f"  {len(jobs)} job(s) across {', '.join(locations) if locations else 'all of ' + COUNTRY}",
         f"  {strong} scoring 72+ (the auto-apply bar)",
     ]
     if posted_days:
@@ -616,10 +626,22 @@ def gather_linkedin(config: dict, locations: list[str], posted_days: int = 30,
                     for card in linkedin_mod.search(page, keyword, None, posted_days, pages=1):
                         cards.setdefault(card["job_id"], card)
                     linkedin_mod.pause()
+            elif not locations:
+                # Country-wide: one national search per keyword, remote first,
+                # and no city to trim the results down to afterwards.
+                for keyword in keywords:
+                    for card in linkedin_mod.search(page, keyword, COUNTRY, posted_days,
+                                                    pages=2, remote_only=True):
+                        cards.setdefault(card["job_id"], card)
+                    linkedin_mod.pause()
+                for keyword in keywords:
+                    for card in linkedin_mod.search(page, keyword, COUNTRY, posted_days, pages=2):
+                        cards.setdefault(card["job_id"], card)
+                    linkedin_mod.pause()
             else:
                 for location in locations:
                     # LinkedIn wants a region string, not a bare city name.
-                    place = location if "," in location else f"{location}, India"
+                    place = location if "," in location else f"{location}, {COUNTRY}"
                     for keyword in keywords:
                         for card in linkedin_mod.search(page, keyword, place, posted_days, pages=1):
                             cards.setdefault(card["job_id"], card)
@@ -627,12 +649,13 @@ def gather_linkedin(config: dict, locations: list[str], posted_days: int = 30,
         finally:
             browser.close()
 
-    wanted = [variant for loc in locations for variant in city_variants(loc)]
+    wanted = ([variant for loc in locations for variant in city_variants(loc)]
+              if locations and not worldwide else [])
     window = posted_days if posted_days and posted_days < 30 else None
     kept = []
     for card in cards.values():
         text = (card.get("location") or "").lower()
-        if not worldwide and not any(city in text for city in wanted) and "remote" not in text:
+        if wanted and not any(city in text for city in wanted) and "remote" not in text:
             continue
         if exclude_ids and f"linkedin:{card.get('job_id')}" in exclude_ids:
             continue

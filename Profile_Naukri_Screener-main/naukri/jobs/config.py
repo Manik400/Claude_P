@@ -86,6 +86,11 @@ DEFAULTS = {
     # shortlist. None means "no separate attempt cap".
     "max_apply_attempts": None,
     "max_experience_gap_years": 2.0,
+    # The experience band you are actually searching for, in years: [min, max].
+    # Unset, it is read off your profile, which is only ever one number and so
+    # can never say "I am open to anything up to 2 years". The band drives both
+    # the boards' own experience facet and the "needs Ny, you have Ny" gate.
+    "experience_range": None,
     "include_recommended": True,
     # Answering screening questions is off until the drawer has been captured
     # with --jobs-probe and the selectors verified against it.
@@ -138,6 +143,35 @@ def profile_years(profile: dict) -> float | None:
     return round(total, 2)
 
 
+def _apply_experience_range(config: dict) -> None:
+    """Resolve experience_range into the two keys the rest of the code reads.
+
+    `experience_years` is the single number a board's experience facet takes -
+    the top of the band, because that is the widest search that still fits it.
+    `experience_top` is what the hard-reject gate measures a job's demand
+    against, so a band of 0-2 keeps a "2-5 years" posting (2 <= 2 + gap) and
+    drops a "7+ years" one, whatever the profile happens to say.
+    """
+    band = config.get("experience_range")
+    years = config.get("profile_years")
+    if band is None:
+        config["experience_years"] = years
+        config["experience_top"] = years
+        return
+    if isinstance(band, (int, float)):
+        band = [0, band]
+    try:
+        low, high = float(band[0]), float(band[1])
+    except (TypeError, ValueError, IndexError):
+        raise ConfigError(
+            "experience_range must be two numbers, [min, max] in years - e.g. [0, 2].")
+    if low > high:
+        low, high = high, low
+    config["experience_range"] = [low, high]
+    config["experience_years"] = high
+    config["experience_top"] = high
+
+
 def profile_skills(profile: dict) -> list[str]:
     """Key skills plus the skill column of the IT-skills table."""
     skills = list(profile.get("key_skills") or [])
@@ -174,6 +208,7 @@ def load(path: Path = CONFIG_PATH, profile: dict | None = None) -> dict:
 
     config["profile_skills"] = profile_skills(profile)
     config["profile_years"] = profile_years(profile)
+    _apply_experience_range(config)
     config["profile_text"] = " ".join(
         str(profile.get(field) or "")
         for field in ("resume_headline", "profile_summary", "current_designation")
@@ -208,9 +243,10 @@ def load(path: Path = CONFIG_PATH, profile: dict | None = None) -> dict:
 
     if not config["searches"]:
         config["searches"] = list(pack["searches"]) or _default_searches(profile, pack)
-    if not config["preferred_locations"]:
-        location = (profile.get("location") or "").split(",")[0].strip()
-        config["preferred_locations"] = [l for l in (location, "Remote") if l]
+    # Left empty on purpose: seeding this with the city off your profile makes
+    # every listing in every other city score 8 points lower, which is a
+    # city filter wearing a scoring hat. No entries means no city preference,
+    # and score._location_score then treats all of them alike.
 
     # What you saved in the dashboard's "My answers" form wins over jobs.yaml.
     from . import my_answers
@@ -234,7 +270,6 @@ def _default_searches(profile: dict, pack: dict) -> list[dict]:
     more usable jobs than paging deep into one query, and each result page is
     a fresh set of 20 rather than the long tail of a single ranking.
     """
-    location = (profile.get("location") or "").split(",")[0].strip() or None
     top_skills = profile_skills(profile)[:4]
     keywords = list(pack["seed_keywords"]) + top_skills
     seen, terms = set(), []
@@ -243,4 +278,6 @@ def _default_searches(profile: dict, pack: dict) -> list[dict]:
         if key not in seen:
             seen.add(key)
             terms.append(keyword)
-    return [{"keyword": k, "location": location} for k in terms[:5]]
+    # location None = the whole country. A city here would quietly narrow every
+    # search to wherever the profile happens to say you live.
+    return [{"keyword": k, "location": None} for k in terms[:5]]

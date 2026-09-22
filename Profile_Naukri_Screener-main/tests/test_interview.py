@@ -171,9 +171,13 @@ def test_matrix_counts_documents_not_mentions():
 
 
 def test_matrix_grades_evidence_by_where_it_came_from():
+    # Jenkins and Kubernetes rather than Playwright: the matrix is built from
+    # whichever role pack jobs.yaml names, and Playwright only exists in the QA
+    # one. These two live in roles/_common.yaml, so every pack has them and the
+    # test says the same thing whatever field the owner is hunting in.
     rows = {row["skill"]: row for row in skills.matrix(JOBS, PROFILE)}
     # Described in the experience bullets.
-    assert rows["Playwright"]["status"] == "strong"
+    assert rows["Jenkins"]["status"] == "strong"
     # In a skills list only, and under three stated years.
     assert rows["SQL"]["status"] == "moderate" if "SQL" in rows else True
     # Absent from the profile entirely.
@@ -190,7 +194,7 @@ def test_word_boundaries_hold():
 def test_study_order_puts_gaps_ahead_of_strengths():
     rows = skills.matrix(JOBS, PROFILE)
     order = [row["skill"] for row in skills.study_order(rows, 40)]
-    assert order.index("Kubernetes") < order.index("Playwright"), \
+    assert order.index("Kubernetes") < order.index("Jenkins"), \
         "an unmet requirement should outrank one you already have"
 
 

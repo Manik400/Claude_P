@@ -31,7 +31,7 @@ Playwright drives Chrome **headless by default** (nothing on screen); add `--sho
 | Rewrite headline / skills / summary | Read `data/profile.json`, draft new text into `changes.yaml` (copy from `changes.example.yaml`), run `main.py --apply` to preview, then **only after user says yes** `main.py --apply --yes` |
 | Bump profile for recruiter ranking | `main.py --refresh` (or `daily_refresh.bat`) |
 | Scan jobs, send nothing | `main.py --jobs` |
-| Ranked Excel of jobs | `main.py --jobs-export --top 30 [--locations "Pune,Gurgaon"] [--worldwide] [--posted-days 1 --new-only]` → `data/jobs/` |
+| Ranked Excel of jobs | `main.py --jobs-export --top 30 [--posted-days 1 --new-only]` → `data/jobs/` (country-wide, no city filter; `--locations "Pune,Gurgaon"` narrows it, `--worldwide` widens LinkedIn past India) |
 | Daily tracker page | `jobs_scan.bat` → `data/jobs/openings-<date>.html` (new jobs marked NEW) |
 | Actually apply | `main.py --jobs --yes --limit 3` (only after explicit consent) |
 | Jobs it couldn't auto-apply | `data/jobs/review_queue.json` (ranked) |

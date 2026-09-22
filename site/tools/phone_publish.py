@@ -128,10 +128,44 @@ def naukri_jobs_file(day):
     return out
 
 
+def published_titles(pages):
+    """(kind, title) of everything the live gh-pages index still carries.
+
+    The local "published" stamps say what this PC once pushed; they are not
+    evidence the page is still on the branch. A pruned report, a recreated
+    branch or a migration that dropped items all leave the stamp behind, and
+    then every later run reports "nothing new to publish" while the phone shows
+    no Naukri scans at all. Checking the branch instead makes a missing page
+    come back by itself on the next run.
+    """
+    p = os.path.join(pages, "data", "index.json")
+    if not os.path.exists(p):
+        return set()
+    try:
+        with open(p, encoding="utf-8") as f:
+            idx = json.load(f)
+    except (OSError, ValueError):
+        return set()
+    return {(i.get("kind"), i.get("title")) for i in idx.get("items") or []}
+
+
+def page_title(path):
+    """The (kind, title) one locally generated page is published under."""
+    name = os.path.basename(path)
+    m = re.search(r"(\d{4}-\d{2}-\d{2})(?:-r(\d+))?", name)
+    if name == "applications.html":
+        return "applications", "Applications sent"
+    if name.startswith("openings-"):
+        day = m.group(1) if m else ""
+        return "naukri", "Naukri openings %s%s" % (day or name, (" run " + m.group(2)) if m and m.group(2) else "")
+    return "interview", "Interview prep %s" % (name[len("interview-prep-"):-len(".html")])
+
+
 def cmd_naukri(a):
     cfg = load_config()
     pages = pages_dir(cfg)
     done = cfg.setdefault("published", {})
+    live = published_titles(pages)
     count = 0
     openings = sorted(glob.glob(os.path.join(NAUKRI, "data", "jobs", "openings-*.html")), key=os.path.getmtime)
     preps = sorted(glob.glob(os.path.join(NAUKRI, "data", "interview", "interview-prep-*.html")), key=os.path.getmtime)
@@ -143,21 +177,19 @@ def cmd_naukri(a):
     extra = [applications] if os.path.exists(applications) else []
     for path in openings[-a.max:] + preps[-a.max:] + extra:
         key = _stamp(path)
-        if key in done and not a.force:
+        kind, title = page_title(path)
+        if key in done and (kind, title) in live and not a.force:
             continue
         name = os.path.basename(path)
-        m = re.search(r"(\d{4}-\d{2}-\d{2})(?:-r(\d+))?", name)
-        if name == "applications.html":
-            title = "Applications sent"
-            publish(cfg, pages, "applications", path, title, replace=True)
-        elif name.startswith("openings-"):
+        if kind == "naukri":
+            m = re.search(r"(\d{4}-\d{2}-\d{2})", name)
             day = m.group(1) if m else ""
-            title = "Naukri openings %s%s" % (day or name, (" run " + m.group(2)) if m and m.group(2) else "")
-            publish(cfg, pages, "naukri", path, title, replace=True, attach=naukri_jobs_file(day) if day else None)
+            publish(cfg, pages, "naukri", path, title, replace=True,
+                    attach=naukri_jobs_file(day) if day else None)
         else:
-            title = "Interview prep %s" % (name[len("interview-prep-"):-len(".html")])
-            publish(cfg, pages, "interview", path, title, replace=True)
+            publish(cfg, pages, kind, path, title, replace=True)
         done[key] = title
+        live.add((kind, title))
         count += 1
     save_config(cfg)
     if count and not a.no_push:

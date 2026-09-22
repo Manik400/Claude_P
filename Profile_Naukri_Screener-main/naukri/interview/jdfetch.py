@@ -184,14 +184,32 @@ def fetch(jobs: list[dict], headless: bool = False) -> list[dict]:
         try:
             for index, job in enumerate(enriched, start=1):
                 before = len((job.get("description") or "").strip())
-                job.update(fetch_one(page, job))
+                try:
+                    job.update(fetch_one(page, job))
+                except Exception as exc:  # noqa: BLE001
+                    # One posting that crashes the tab must not cost the other
+                    # nine their JDs. The teaser text the scan already stored
+                    # stands in, exactly as it does for a navigation failure.
+                    log.warning("  %2d. %-42s failed (%s); keeping the teaser",
+                                index, (job.get("title") or "")[:42], str(exc)[:90])
+                    job.setdefault("jd_text", (job.get("description") or "").strip())
+                    job.setdefault("jd_source", "search-teaser")
+                    job.setdefault("jd_extras", {})
                 log.info("  %2d. %-42s %5d chars (%s, was %d)",
                          index, (job.get("title") or "")[:42],
                          len(job["jd_text"]), job["jd_source"], before)
                 if index < len(enriched):
                     _pause()
         finally:
-            browser.close()
+            # Naukri crashes the tab often enough that close() then fails with
+            # "Connection closed while reading from the driver". Every JD is
+            # already in `enriched` by this point, so letting that reach the
+            # caller threw away a whole prep run over a teardown.
+            try:
+                browser.close()
+            except Exception as exc:  # noqa: BLE001
+                log.warning("browser did not close cleanly (%s); JDs are already collected",
+                            str(exc)[:120])
 
     thin = [j for j in enriched if len(j.get("jd_text") or "") < 250]
     if thin:

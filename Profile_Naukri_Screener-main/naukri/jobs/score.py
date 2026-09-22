@@ -77,10 +77,12 @@ def hard_reject(job, config: dict) -> str | None:
         if not any(_skill_key(term) in haystack for term in must_have if term.strip()):
             return "matches none of must_have_any"
 
-    years = config.get("profile_years")
+    # The top of the band you are searching for, which is your own experience
+    # unless jobs.yaml widened it with experience_range.
+    years = config.get("experience_top", config.get("profile_years"))
     gap = config.get("max_experience_gap_years", 2.0)
     if years is not None and job.min_exp is not None and job.min_exp - years > gap:
-        return f"needs {job.min_exp:g}y, you have {years:g}y"
+        return f"needs {job.min_exp:g}y, looking for up to {years:g}y"
 
     return None
 
@@ -147,13 +149,24 @@ def _experience_score(job, config: dict) -> float:
 
 
 def _location_score(job, config: dict) -> float:
+    """0-10 for where the job is.
+
+    With no preferred_locations configured there is no city preference to
+    express, so every stated location scores alike and only remote gets the
+    bonus. Scoring them 2 in that case is a hidden city filter: it drops a
+    nationwide list by 8 points across the board and lets freshness and title
+    noise decide the order.
+    """
     text = (job.location or "").lower()
     if not text:
         return 5.0
     if "remote" in text:
         return 10.0
-    for preferred in config.get("preferred_locations") or []:
-        if preferred.lower().strip() and preferred.lower().strip() in text:
+    preferred = [p.lower().strip() for p in (config.get("preferred_locations") or []) if p.strip()]
+    if not preferred:
+        return 8.0
+    for city in preferred:
+        if city in text:
             return 10.0
     return 2.0
 

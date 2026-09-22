@@ -93,8 +93,8 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 
 1. `python main.py --jobs`: dry run. Searches, scores and writes a report, but **sends nothing**. Do this for a few days first.
 2. `python main.py --jobs-export --top 30`: writes a ranked Excel sheet with apply links to `data/jobs/`.
-   - `--locations "Pune,Gurgaon"` picks the cities to search.
-   - `--worldwide` includes remote LinkedIn jobs.
+   - Country-wide with no city filter by default. `--locations "Pune,Gurgaon"` narrows it to those cities (and drops everything outside them).
+   - `--worldwide` widens the LinkedIn half past India, remote first.
    - `--posted-days 1 --new-only` shows only today's new jobs.
 3. `jobs_scan.bat`: daily scan, then **applies** to what it found: Naukri one-click and questionnaire postings, LinkedIn Easy Apply. Company-site postings are left for you. Writes `data/jobs/openings-<date>.html`, a tracker page where every row shows *Applied by agent* / *Needs your answer* / *Company site*.
 4. `dashboard.bat`: the local dashboard. Edit the common answers form (CTC, phone, notice period, skill years, Yes/No on bond / contract / pay cut / office / shifts...), answer the questions the bot could not, and see every application with its answers and the replies pulled from Gmail. Save a Gmail app password under Settings for the reply check.

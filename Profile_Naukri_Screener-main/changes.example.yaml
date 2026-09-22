@@ -11,7 +11,7 @@ resume_headline: >-
 # ~1000 characters. Recruiters skim the first two lines - put your strongest
 # proof there, not a personality statement.
 profile_summary: >-
-  Replace me
+  Software Engineer with 2 years of experience designing and building production-grade distributed systems powering real-time traffic management at scale. Architected event-driven microservices processing 10,000+ real-time events per second through message brokers (Kafka, RabbitMQ), with automated CI/CD pipelines (Jenkins, GitHub Actions) enabling zero-downtime deployments. Strong backend expertise with relational databases (PostgreSQL), caching layers (Redis), cloud infrastructure (AWS — EC2, S3, RDS, Lambda), and containerized deployments (Docker). Built comprehensive test automation suites using JUnit and Mockito achieving 85%+ code coverage across critical services. Developed real-time monitoring and alerting systems using Grafana and Prometheus, reducing incident detection time by 70%. Full-stack experience building responsive web applications with React and cross-platform mobile apps with Flutter. Currently deepening expertise in Java, Spring Boot, and cloud-native architecture. Actively seeking backend or full-stack engineering roles in product-driven teams solving complex, high-throughput problems.
 
 # Naukri allows a limited number of key skills. Order matters - the first ones
 # carry the most weight in search matching.

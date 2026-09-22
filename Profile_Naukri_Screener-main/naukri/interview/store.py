@@ -46,6 +46,64 @@ def _write_json(path: Path, payload) -> Path:
     return path
 
 
+# ------------------------------------------------------- collective analysis
+
+def analysis_path(stamp: str) -> Path:
+    return PREP_DIR / f"analysis-{stamp}.json"
+
+
+def load_analysis(stamp: str, key: str) -> dict | None:
+    """The cached collective analysis for this run, if it is still the right one.
+
+    The analysis is by far the most expensive call in a prep run - ten full job
+    descriptions in, seven minutes and about a dollar out - and it happens
+    first, so every later failure (a dropped connection, a refused login, a
+    validation abort) used to throw it away and charge for it again on the next
+    attempt. `key` is a digest of the inputs, so an analysis is only reused when
+    it is the same Top 10 against the same profile.
+    """
+    cached = _read_json(analysis_path(stamp), None)
+    if isinstance(cached, dict) and cached.get("key") == key:
+        return cached.get("analysis")
+    return None
+
+
+def save_analysis(stamp: str, key: str, analysis: dict) -> Path:
+    return _write_json(analysis_path(stamp), {"key": key, "analysis": analysis})
+
+
+def partial_path(stamp: str) -> Path:
+    return PREP_DIR / f"partial-{stamp}.json"
+
+
+def load_partial(stamp: str, key: str) -> list[dict]:
+    """Question batches this run already generated before it was interrupted.
+
+    Same bargain as the cached analysis: a prep run makes seven-odd model calls
+    over twenty minutes, and a connection that drops on the fifth used to throw
+    away the four that had succeeded. Keyed on the same digest, so a changed
+    Top 10 starts clean.
+    """
+    saved = _read_json(partial_path(stamp), None)
+    if isinstance(saved, dict) and saved.get("key") == key:
+        got = saved.get("questions")
+        return got if isinstance(got, list) else []
+    return []
+
+
+def save_partial(stamp: str, key: str, questions: list[dict]) -> Path:
+    return _write_json(partial_path(stamp), {"key": key, "questions": questions})
+
+
+def clear_run_cache(stamp: str) -> None:
+    """Drop a finished run's checkpoints - the saved prep supersedes them."""
+    for path in (analysis_path(stamp), partial_path(stamp)):
+        try:
+            path.unlink()
+        except OSError:
+            pass
+
+
 # --------------------------------------------------------------- scan results
 
 def results_path(day: str | None = None) -> Path:

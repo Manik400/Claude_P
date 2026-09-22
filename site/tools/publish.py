@@ -120,6 +120,15 @@ def _convert(pages, rel, passphrase):
     return new
 
 
+def _has_encrypted(pages):
+    """True when anything under data/ is still an old encrypted envelope."""
+    for root, _dirs, files in os.walk(os.path.join(pages, "data")):
+        for name in files:
+            if name.endswith(".enc"):
+                return True
+    return False
+
+
 def migrate_plain(pages):
     """One-time: turn the encrypted files of the old site into plain ones.
 
@@ -127,11 +136,21 @@ def migrate_plain(pages):
     config) are rewritten in place; the rest are dropped from the index, because
     nobody can read them any more. Also converts the queue, the Track data and
     pending phone requests. Safe to run every publish: a plain site is a no-op.
+
+    With no passphrase in reach this does nothing at all. A GitHub runner has no
+    SITE_PASSPHRASE unless the secret is set, and "cannot decrypt" there means
+    "was not given the key", not "unreadable" - deleting on that reading is what
+    wiped every Naukri and interview report the PC had published.
     """
     sys.path.insert(0, HERE)
     import vault
 
     passphrase = vault.get_passphrase()
+    if not passphrase:
+        if _has_encrypted(pages):
+            print("publish: encrypted files found but no passphrase (set SITE_PASSPHRASE); "
+                  "leaving them untouched")
+        return
     idx = load_index(pages)
     kept, dropped, changed = [], 0, False
     for item in idx["items"]:

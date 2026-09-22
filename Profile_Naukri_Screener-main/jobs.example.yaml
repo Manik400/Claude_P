@@ -211,6 +211,11 @@ answer_rules:
     answer: "No"
   - match: "any gap in (your )?(education|career|employment)"
     answer: "No"
+  # "Can you join immediately?" is a fact question, and the honest answer is
+  # your notice period. Without this it falls through to the "willing to ...
+  # join" rule below and answers Yes, which is a promise you cannot keep.
+  - match: "join immediately|immediate join(ing|er)?|joining immediately|zero days notice"
+    answer: "No"
 
   # `skip: true` means "do not answer this one" - the question is abandoned and
   # the job goes to your queue, exactly as if no rule existed. That is NOT the
@@ -227,7 +232,7 @@ answer_rules:
   # Skill-claim questions. "Are you comfortable working on Java" is a claim
   # about your experience, not a willingness question, and the module never
   # invents experience. Put the technologies you have NOT worked in here.
-  - match: 'comfortable (working )?(on|with|in|using) .*(kotlin|scala|ruby|php|golang)'
+  - match: 'comfortable (working )?(on|with|in|using) .*(kotlin|scala|ruby|php|golang|rust|perl|salesforce|sap|abap|mainframe|cobol|drupal|magento)'
     skip: true
 
   # Things you are happy to agree to. Edit these - they are guesses about you.
@@ -237,6 +242,18 @@ answer_rules:
     answer: "Yes"
   - match: "willing to (work|travel|relocate|learn|join|take)"
     answer: "Yes"
+  # Work-arrangement questions phrased as "are you comfortable ...". These sit
+  # above the skill-claim skip below, which would otherwise swallow them.
+  - match: 'comfortable (with|in|to|working) .{0,40}(relocat|travel|shift|night|rotational|weekend|office|onsite|hybrid|remote|commut|notice period|work.?from.?home)'
+    answer: "Yes"
+  # "Are you comfortable working on Kubernetes?" is a claim about your
+  # experience, not a willingness question, and no catch-all can tell the two
+  # apart - it just reads the word "comfortable" and says Yes. Naming every
+  # technology you have not touched is impossible, so the phrasing itself is
+  # the signal: anything still asking "comfortable working on/with X" here is
+  # about a technology and goes to your queue instead of being agreed to.
+  - match: 'comfortable (working )?(on|with|in|using)\b'
+    skip: true
   - match: "comfortable (with|in|to)"
     answer: "Yes"
   # Catch-all for the remaining willingness questions. Single-quoted - see above.

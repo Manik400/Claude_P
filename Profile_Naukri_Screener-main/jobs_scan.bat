@@ -17,7 +17,7 @@ rem So a short list is the normal result - most mornings there are genuinely
 rem only a handful of new 24-hour-old postings. Drop both flags for the full
 rem standing list:
 rem
-rem     python main.py --jobs-export --worldwide --top 60
+rem     python main.py --jobs-export --top 60
 rem
 rem THIS RUN APPLIES. After the scan it clicks Apply on every Naukri posting
 rem it listed (one-click ones, and questionnaire ones it can answer from your
@@ -29,7 +29,7 @@ rem     python main.py --answer-questions
 rem and the next run applies to the jobs that were waiting on them.
 rem
 rem To scan without applying, drop the two flags at the bottom:
-rem     python main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only
+rem     python main.py --jobs-export --top 60 --posted-days 1 --new-only
 rem
 rem To prepare for what it finds, run interview_prep.bat afterwards - it takes
 rem this scan's Top 10 and builds a study page of 100 interview questions.
@@ -46,4 +46,9 @@ set "PY=python"
 if exist "..\venv\Scripts\python.exe" set "PY=..\venv\Scripts\python.exe"
 if exist ".venv\Scripts\python.exe" set "PY=.venv\Scripts\python.exe"
 
-"%PY%" main.py --jobs-export --worldwide --top 60 --posted-days 1 --new-only --apply-found --yes
+rem No --worldwide and no --locations: the scan covers the WHOLE COUNTRY with no
+rem city filter. --worldwide widened the LinkedIn half past India, which for a
+rem 0-2 year candidate on an India profile is mostly postings that cannot hire
+rem you; the worldwide hunt is job-hunt's job. Naming cities is the other
+rem extreme - it narrows the query AND throws away every listing outside them.
+"%PY%" main.py --jobs-export --top 60 --posted-days 1 --new-only --apply-found --yes

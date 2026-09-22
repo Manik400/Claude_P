@@ -150,8 +150,9 @@ def gather(page, config: dict) -> list[Job]:
         location = entry.get("location")
         pages = max(1, int(entry.get("pages", 1)))
         for page_no in range(1, pages + 1):
-            url = search_url(keyword, location, config.get("profile_years"), page_no,
-                             job_age=job_age)
+            url = search_url(keyword, location,
+                             config.get("experience_years", config.get("profile_years")),
+                             page_no, job_age=job_age)
             label = f"{keyword}" + (f" in {location}" if location else "") + (f" p{page_no}" if page_no > 1 else "")
             added = absorb(_capture(page, url, SEARCH_API), f"search:{label}")
             log.info("  %s: +%d new (%d total)", label, added, len(found))
