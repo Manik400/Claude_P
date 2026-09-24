@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-24T20:32:24Z",
+ "updated": "2026-09-24T20:40:16Z",
  "items": [
+  {
+   "id": "careers-20260924-204016-software",
+   "kind": "careers",
+   "title": "software",
+   "when": "2026-09-24T20:40:16Z",
+   "file": "data/careers/careers-20260924-204016-software.json",
+   "bytes": 132338,
+   "meta": {
+    "jobs": "61",
+    "relocation": "0",
+    "countries": "IN",
+    "experience": "1",
+    "reloc_mode": "any"
+   }
+  },
   {
    "id": "applications-20260924-203224-applications-sent",
    "kind": "applications",
