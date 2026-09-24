@@ -1,6 +1,25 @@
 {
- "updated": "2026-09-24T21:14:48Z",
+ "updated": "2026-09-24T21:33:52Z",
  "items": [
+  {
+   "id": "jobhunt-20260924-213352-software",
+   "kind": "jobhunt",
+   "title": "software",
+   "when": "2026-09-24T21:33:52Z",
+   "file": "data/jobhunt/jobhunt-20260924-213352-software.html",
+   "bytes": 29649,
+   "meta": {
+    "jobs": "0",
+    "countries": "IN",
+    "experience": "",
+    "days": "1",
+    "hours": "",
+    "window_hours": "24",
+    "platforms_asked": "apify-naukri",
+    "platforms": "",
+    "jobs_file": "data/jobhunt/jobhunt-20260924-213352-software.jobs.json"
+   }
+  },
   {
    "id": "applications-20260924-211448-applications-sent",
    "kind": "applications",
