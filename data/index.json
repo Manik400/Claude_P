@@ -1,6 +1,15 @@
 {
- "updated": "2026-09-24T21:33:52Z",
+ "updated": "2026-09-24T21:44:48Z",
  "items": [
+  {
+   "id": "applications-20260924-214448-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-09-24T21:44:48Z",
+   "file": "data/applications/applications-20260924-214448-applications-sent.html",
+   "bytes": 1993052,
+   "meta": {}
+  },
   {
    "id": "jobhunt-20260924-213352-software",
    "kind": "jobhunt",
@@ -19,15 +28,6 @@
     "platforms": "",
     "jobs_file": "data/jobhunt/jobhunt-20260924-213352-software.jobs.json"
    }
-  },
-  {
-   "id": "applications-20260924-211448-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-09-24T21:14:48Z",
-   "file": "data/applications/applications-20260924-211448-applications-sent.html",
-   "bytes": 1990177,
-   "meta": {}
   },
   {
    "id": "jobhunt-20260924-204918-software",
