@@ -1,6 +1,15 @@
 {
- "updated": "2026-09-24T20:40:16Z",
+ "updated": "2026-09-24T20:46:38Z",
  "items": [
+  {
+   "id": "applications-20260924-204638-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-09-24T20:46:38Z",
+   "file": "data/applications/applications-20260924-204638-applications-sent.html",
+   "bytes": 1980370,
+   "meta": {}
+  },
   {
    "id": "careers-20260924-204016-software",
    "kind": "careers",
@@ -15,15 +24,6 @@
     "experience": "1",
     "reloc_mode": "any"
    }
-  },
-  {
-   "id": "applications-20260924-203224-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-09-24T20:32:24Z",
-   "file": "data/applications/applications-20260924-203224-applications-sent.html",
-   "bytes": 1979125,
-   "meta": {}
   },
   {
    "id": "naukri-20260922-152239-naukri-openings-2026-09-21-run-6",
