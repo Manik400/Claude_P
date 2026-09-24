@@ -1,6 +1,25 @@
 {
- "updated": "2026-09-24T20:46:38Z",
+ "updated": "2026-09-24T20:49:18Z",
  "items": [
+  {
+   "id": "jobhunt-20260924-204918-software",
+   "kind": "jobhunt",
+   "title": "software",
+   "when": "2026-09-24T20:49:18Z",
+   "file": "data/jobhunt/jobhunt-20260924-204918-software.html",
+   "bytes": 468121,
+   "meta": {
+    "jobs": "87",
+    "countries": "IN",
+    "experience": "",
+    "days": "1",
+    "hours": "2",
+    "window_hours": "2",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads",
+    "jobs_file": "data/jobhunt/jobhunt-20260924-204918-software.jobs.json"
+   }
+  },
   {
    "id": "applications-20260924-204638-applications-sent",
    "kind": "applications",
