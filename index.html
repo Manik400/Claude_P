@@ -370,27 +370,36 @@
         <div id="run-need" class="msg info" hidden>Add a GitHub token in <b>Settings</b> first, then you can start searches from here.</div>
         <label>Job title(s) <span class="muted">(comma-separate several)</span></label>
         <input id="f-role" placeholder="python developer, backend engineer" autocapitalize="none">
-        <div class="row">
-          <div><label>Your experience (years)</label><input id="f-exp" placeholder="3 or 2-4" inputmode="numeric"></div>
-          <div><label>Posted within <span class="muted" id="f-win-sum"></span></label>
-            <div class="win">
+        <label>Your experience (years)</label><input id="f-exp" placeholder="3 or 2-4" inputmode="numeric">
+        <details class="filters sub" id="sf-win" open><summary><b>Posted within</b><span class="sum" id="f-win-sum"></span></summary>
+          <div class="fbody">
+            <div class="win" style="margin-top:10px">
               <input id="f-win-n" value="7" inputmode="decimal" aria-label="Posted within, how many">
               <select id="f-win-u" aria-label="hours or days"><option value="h">hours</option><option value="d" selected>days</option></select>
             </div>
-          </div>
-        </div>
         <div class="chips small" id="f-win-quick"></div>
         <div id="f-win-note" hidden>
           <label class="check"><input type="checkbox" id="f-undated"> Include postings with no time on them</label>
           <div class="hint">Under a day, a posting the board gave no time for is skipped — it cannot be shown to be inside the window, so "last 2 hours" really means it. Turn this on to keep them anyway.</div>
         </div>
-        <label>Countries <span class="muted">(India is always included; tap to add or drop the others)</span></label>
-        <div class="chips" id="f-countries"></div>
-        <input id="f-more" placeholder="Other countries: Estonia, Brazil…" autocapitalize="none" style="margin-top:8px">
-        <label>Platforms <span class="muted" id="f-plat-sum">All platforms</span></label>
-        <div class="chips small strip" id="f-platforms"></div>
-        <div class="hint">Nothing picked = every platform that is set up. The ones marked 🔑 only run when their API key is a repo secret (Settings → Coverage), so they stay out unless you tap them.</div>
-        <label class="check"><input type="checkbox" id="f-remote" checked> Include remote job boards</label>
+          </div>
+        </details>
+        <details class="filters sub" id="sf-cc" open><summary><b>Countries</b><span class="sum">India always included</span></summary>
+          <div class="fbody">
+            <label>Tap to add or drop countries</label>
+            <div class="chips" id="f-countries"></div>
+            <input id="f-more" placeholder="Other countries: Estonia, Brazil…" autocapitalize="none" style="margin-top:8px">
+          </div>
+        </details>
+        <details class="filters sub" id="sf-plat" open><summary><b>Platforms</b><span class="sum" id="f-plat-sum">All platforms</span></summary>
+          <div class="fbody">
+            <div class="chips small strip" id="f-platforms" style="margin-top:10px"></div>
+            <div class="hint">Nothing picked = every platform that is set up. The ones marked 🔑 only run when their API key is a repo secret (Settings → Coverage), so they stay out unless you tap them.</div>
+          </div>
+        </details>
+        <details class="filters sub" id="sf-remote" open><summary><b>Remote boards</b></summary>
+          <div class="fbody"><label class="check"><input type="checkbox" id="f-remote" checked> Include remote job boards</label></div>
+        </details>
         <details class="filters sub" id="sf-adv"><summary><b>Advanced</b><span class="sum" id="sf-adv-sum"></span></summary>
           <div class="fbody">
             <div class="row">
@@ -418,15 +427,26 @@
           <div><label>Experience filter</label>
             <select id="c-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
         </div>
-        <label>Countries <span class="muted">(ordered by how often employers there relocate foreign tech hires)</span></label>
-        <div class="chips" id="c-countries"></div>
-        <input id="c-more" placeholder="Other countries: Estonia, Israel, Brazil" autocapitalize="none" style="margin-top:8px">
-        <label class="check"><input type="checkbox" id="c-reloc" checked> Only jobs that clearly offer relocation</label>
-        <label class="check"><input type="checkbox" id="c-visa"> …or visa sponsorship</label>
-        <div class="row">
-          <div><label>Posted in last N days <span class="muted">(empty = all)</span></label><input id="c-days" inputmode="numeric"></div>
-          <div><label>Only these companies <span class="muted">(optional)</span></label><input id="c-companies" placeholder="agoda, adyen" autocapitalize="none"></div>
-        </div>
+        <details class="filters sub" id="cf-cc" open><summary><b>Countries</b><span class="sum">by how often they relocate tech hires</span></summary>
+          <div class="fbody">
+            <div class="chips" id="c-countries" style="margin-top:10px"></div>
+            <input id="c-more" placeholder="Other countries: Estonia, Israel, Brazil" autocapitalize="none" style="margin-top:8px">
+          </div>
+        </details>
+        <details class="filters sub" id="cf-relo" open><summary><b>Relocation</b></summary>
+          <div class="fbody">
+            <label class="check"><input type="checkbox" id="c-reloc" checked> Only jobs that clearly offer relocation</label>
+            <label class="check"><input type="checkbox" id="c-visa"> …or visa sponsorship</label>
+          </div>
+        </details>
+        <details class="filters sub" id="cf-when" open><summary><b>Posted &amp; companies</b></summary>
+          <div class="fbody">
+            <div class="row">
+              <div><label>Posted in last N days <span class="muted">(empty = all)</span></label><input id="c-days" inputmode="numeric"></div>
+              <div><label>Only these companies <span class="muted">(optional)</span></label><input id="c-companies" placeholder="agoda, adyen" autocapitalize="none"></div>
+            </div>
+          </div>
+        </details>
         <button class="primary" id="btn-careers">Search career pages</button>
         <div id="careers-msg"></div>
         <details class="hint"><summary id="c-list-sum">Company list</summary><div id="c-list-body">Loading…</div></details>
@@ -442,6 +462,8 @@
       <div class="hint">Made on your PC by the Naukri scan on its schedule; the queue run publishes them here. Tap one to queue its jobs.</div></div>
     <div class="card"><h2>Career-page searches</h2><div id="list-careers" class="muted">Loading…</div></div>
     <div class="card"><h2>Interview prep</h2><div id="list-interview" class="muted">Loading…</div></div>
+    <div class="card"><h2>Accuracy &amp; learning (PC)</h2><div id="list-accuracy" class="muted">Loading…</div>
+      <div class="hint">Day-by-day search accuracy, apply success / failed / pending per strategy, replies, interview prep, and what the scoring has learned. Rebuilt after every scan.</div></div>
     <div class="card"><h2>Applications sent (PC)</h2><div id="list-applications" class="muted">Loading…</div>
       <div class="hint">The Naukri screener's log of every application it sent, rebuilt after each run and published with the scans.</div></div>
     <div class="muted" id="index-updated"></div>
@@ -567,6 +589,8 @@
   function bindAcc(root) {
     (root || document).querySelectorAll("details.filters[id]").forEach(function (d) {
       if (d.dataset.accBound) return; d.dataset.accBound = "1";
+      var saved = store.get("acc." + d.id, null);
+      if (saved !== null) d.open = saved === "1";
       d.addEventListener("toggle", function () { store.set("acc." + d.id, d.open ? "1" : ""); });
     });
   }
@@ -756,7 +780,7 @@
     return fetch("data/index.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { items: [] }; })
       .then(function (j) {
         index = j;
-        ["jobhunt", "careers", "naukri", "interview", "applications"].forEach(function (kind) {
+        ["jobhunt", "careers", "naukri", "interview", "applications", "accuracy"].forEach(function (kind) {
           var items = (j.items || []).filter(function (i) { return i.kind === kind; });
           var box = $("list-" + kind);
           box.innerHTML = items.length ? items.map(reportRow).join("") : '<span class="muted">Nothing here yet.</span>';
@@ -1913,10 +1937,12 @@
     var h = '<div class="card"><div><b>' + esc(asked) + "</b></div>" +
       '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read" + (m.companies_link_only ? " · " + m.companies_link_only + " link only" : "") + " · " + (m.role_matches || 0) + " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" + (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
       (m.scored ? "" : '<div class="msg info">No resume match scores: store your resume with setup_phone.bat (RESUME_TEXT secret) and search again.</div>') +
-      '<label>Country <span class="muted">(best chance of getting hired first)</span></label>' +
-      '<div class="chips small">' + ccBtn("", "All · " + base.length) + rank.map(function (r) { return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n); }).join("") + "</div>" +
-      '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) + '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
-      '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div></div>";
+      acc("crf-cc", "Country", CV.country ? cname(CV.country) : "All countries",
+        '<div class="chips small" style="margin-top:10px">' + ccBtn("", "All · " + base.length) + rank.map(function (r) { return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n); }).join("") + "</div>" +
+        '<div class="hint">Ordered by best chance of getting hired first.</div>', "sub") +
+      acc("crf-opts", "Relocation · sort · match", [CV.reloc, CV.sort, CV.min ? CV.min + "%+" : "any match", CV.view].join(" · "),
+        '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) + '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
+        '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div>", "sub") + "</div>";
     if (CV.view === "companies") h += companiesHtml(jobs);
     else {
       var todo = jobs.filter(function (j) { return !marks.applied["c:" + j.id]; }), done = jobs.filter(function (j) { return marks.applied["c:" + j.id]; });
@@ -1927,7 +1953,7 @@
       if (done.length) h += '<div class="sect">Applied · ' + done.length + '</div><div class="jobs">' + done.map(cJobHtml).join("") + "</div>";
       h += removedHint(all.filter(function (j) { return marks.removed["c:" + j.id]; }).length, CV.showRemoved);
     }
-    box.innerHTML = h; box.scrollTop = top;
+    box.innerHTML = h; box.scrollTop = top; bindAcc(box);
     bindMarks(box, function (toggle) { if (toggle === true) CV.showRemoved = !CV.showRemoved; renderCareers(); });
   }
   // The "why it fits / gap" line the local model wrote for the top jobs (careers_bot summarize_top).
