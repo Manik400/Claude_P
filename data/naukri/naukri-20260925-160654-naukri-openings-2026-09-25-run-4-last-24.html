@@ -63,7 +63,7 @@
     font-size: 15px;
     line-height: 1.5;
   }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 80px; }
+  .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }
 
   header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
   .eyebrow {
@@ -75,7 +75,7 @@
     font-weight: 700; font-size: clamp(26px, 4vw, 36px);
     margin: 0; letter-spacing: -.02em; text-wrap: balance;
   }
-  .sub { color: var(--muted); max-width: 62ch; }
+  .sub { color: var(--muted); }
 
   .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
   .stat {
@@ -220,6 +220,8 @@
     <a href="openings-2026-09-25-r3.html">r3</a>
     <span class="here">r4</span>
     <a href="openings-2026-09-25-r5.html">r5</a>
+    <a href="openings-2026-09-25-r6.html">r6</a>
+    <a href="openings-2026-09-25-r7.html">r7</a>
     <span class="sep">|</span>
     <a href="openings-2026-09-21-r6.html">09-21</a>
     <a href="openings-2026-09-20-r8.html">09-20</a>
