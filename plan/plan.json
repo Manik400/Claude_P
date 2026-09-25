@@ -1,0 +1,4500 @@
+{
+ "version": 1,
+ "title": "75-Day SDE Plan",
+ "subtitle": "Modified 75 Hard for SDE interviews: DSA, HLD, LLD in C#, AWS then Azure, and daily habits",
+ "start": "2026-09-28",
+ "end": "2026-12-11",
+ "phases": [
+  {
+   "id": 1,
+   "name": "Foundations",
+   "days": [
+    1,
+    25
+   ],
+   "summary": "Arrays, windows, stacks, binary search, linked lists; OOP, SOLID, core patterns; scaling, databases, caching, queues; AWS core."
+  },
+  {
+   "id": 2,
+   "name": "Build and apply",
+   "days": [
+    26,
+    50
+   ],
+   "summary": "Trees, heaps, graphs, tries, intervals; classic LLD problems; APIs, microservices, real-time; serverless, containers, deploys."
+  },
+  {
+   "id": 3,
+   "name": "Azure and interview mode",
+   "days": [
+    51,
+    75
+   ],
+   "summary": "DP, backtracking, greedy, mixed sets; timed LLD mocks; HLD case studies; Azure mapped to AWS."
+  }
+ ],
+ "rules": [
+  "3 LeetCode a day: 2 in the morning, 1 at night. 30 minutes max per problem; if stuck, read the solution, mark it ↻ revisit and re-solve it on Sunday.",
+  "Floor vs full: on a drained day switch to Easy day - 3 easy LeetCode + 1 km walk + water + clean food + the HLD read still counts.",
+  "One theme a day: the HLD read, the LLD code and the cloud lab explain the same idea from three angles.",
+  "One cloud at a time: AWS for days 1–50, Azure for 51–75, each mapped to the AWS service you already know.",
+  "Cloud labs: always delete resources afterwards and keep a billing alarm on.",
+  "Never double up to catch up: missed tasks go to the catch-up list and get done on Saturday or Sunday.",
+  "Checkpoints on days 25, 50 and 75 have pass criteria - if one fails, repeat its weak topic before moving on."
+ ],
+ "schedule": {
+  "weekday": [
+   [
+    "7:00",
+    "Wake, 500 ml water",
+    "Start the water count before the phone"
+   ],
+   [
+    "7:15",
+    "Walk 1 km+ or 30 min workout",
+    "Outdoors if you can"
+   ],
+   [
+    "7:50",
+    "LeetCode #1 and #2",
+    "Fresh brain, hardest problem first; 30 min max each"
+   ],
+   [
+    "9:00",
+    "Breakfast, get ready",
+    "Fill a 1 L bottle for the desk"
+   ],
+   [
+    "10:00",
+    "Office",
+    "First litre done by lunch"
+   ],
+   [
+    "Lunch",
+    "HLD read, 25–30 min",
+    "The day's office topic; read or watch"
+   ],
+   [
+    "7:00 pm",
+    "Home, shower, dinner",
+    "Second litre done by now"
+   ],
+   [
+    "8:00 pm",
+    "Free time",
+    "Guilt-free, at least 1 hour"
+   ],
+   [
+    "9:00 pm",
+    "LLD 30 min + cloud 30 min, then LeetCode #3",
+    "Code the LLD in C#, then the cloud lab"
+   ],
+   [
+    "10:15 pm",
+    "Wind down",
+    "Screens down by 11"
+   ],
+   [
+    "11:15 pm",
+    "Sleep",
+    "Protect ~7.5 hours"
+   ]
+  ],
+  "saturday": [
+   [
+    "Morning",
+    "Longer walk or workout + 3 LeetCode",
+    "Hardest first"
+   ],
+   [
+    "Midday",
+    "2-hour build block",
+    "Tie the week's HLD, LLD and cloud into one small project"
+   ],
+   [
+    "Afternoon",
+    "Clean up cloud resources",
+    "Check the billing alarm"
+   ],
+   [
+    "Rest",
+    "Free",
+    ""
+   ]
+  ],
+  "sunday": [
+   [
+    "Morning",
+    "Easy 1 km walk + 3 LeetCode",
+    "Re-solve every ↻ revisit from the week first"
+   ],
+   [
+    "Midday",
+    "45 min: revise the week on one page",
+    "Say each topic out loud in 2 sentences"
+   ],
+   [
+    "Evening",
+    "Meal prep for the week",
+    "Plan Monday's first problem"
+   ],
+   [
+    "Rest",
+    "Free",
+    ""
+   ]
+  ]
+ },
+ "habits": [
+  {
+   "id": "walk",
+   "label": "Walk 1 km / 30 min exercise"
+  },
+  {
+   "id": "water",
+   "label": "Water 2.5–3 L (1 L by lunch, 2 L by 7 pm)",
+   "counter": {
+    "max": 3,
+    "step": 0.5,
+    "goal": 2.5,
+    "unit": "L"
+   }
+  },
+  {
+   "id": "food",
+   "label": "Healthy food, no junk"
+  },
+  {
+   "id": "chill",
+   "label": "1 hour to chill, guilt-free"
+  },
+  {
+   "id": "sleep",
+   "label": "Screens down by 11, sleep by 11:15"
+  }
+ ],
+ "easy_day": [
+  "3 LeetCode (the day's easiest, or Easy re-solves)",
+  "Walk 1 km",
+  "Water 2.5 L",
+  "Clean food",
+  "HLD read only"
+ ],
+ "patterns": {
+  "Arrays & hashing": "Trade memory for time: a HashMap / HashSet turns an O(n^2) scan into O(n).",
+  "Two pointers": "Sorted input or a palindrome? Move two indices toward each other instead of nesting loops.",
+  "Sliding window": "Grow the right edge, shrink the left while the window breaks the rule; track the best window.",
+  "Stack": "Anything 'nearest greater/smaller' or matching pairs is a monotonic or plain stack.",
+  "Binary search": "Search the answer space, not just arrays: find the first value where a yes/no check flips.",
+  "Linked list": "Draw it. Dummy head for edits, slow/fast pointers for middle and cycles, reverse in place.",
+  "Prefix sum": "sum(i..j) = prefix[j+1] - prefix[i]; a HashMap of prefix counts finds subarrays with target sums.",
+  "Arrays & matrix": "In-place tricks: reverse segments, swap by index, use the first row/column as markers.",
+  "Trees": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels.",
+  "Heap / priority queue": "Top-K or 'always the smallest next' = heap; keep it size K for O(n log K).",
+  "Graphs (BFS / DFS / union-find)": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies.",
+  "Trie": "Each node = one character with children map + end flag; prefix queries become O(length).",
+  "Intervals": "Sort by start (or end for greedy removal), then merge or compare neighbours.",
+  "Bit manipulation": "x & (x-1) drops the lowest set bit; XOR cancels pairs; shifts read bits one by one.",
+  "Advanced graphs (Dijkstra / MST)": "Weighted shortest path = Dijkstra with a min-heap; connect-all-cheaply = Prim/Kruskal.",
+  "Dynamic programming": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space.",
+  "Backtracking": "Choose → explore → un-choose; prune early; sort first when duplicates must be skipped.",
+  "Greedy": "Prove the local choice never hurts (exchange argument) before trusting it.",
+  "Hashing": "Map each item to a canonical key (sorted string, pattern, count signature) and compare keys.",
+  "Design data structures": "Combine structures: HashMap for lookup + array/list for order or random access.",
+  "Math & strings": "Handle signs, overflow and edge characters first; build results digit by digit.",
+  "Kadane / subarrays": "Best subarray ending here = max(x, best_ending_prev + x); keep a running global best.",
+  "Mixed interview set (LeetCode 75)": "Name the pattern in the first 2 minutes, say the brute force, then optimise out loud."
+ },
+ "days": [
+  {
+   "day": 1,
+   "date": "2026-09-28",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 1,
+   "week": 1,
+   "theme": "How the web works",
+   "dsa": {
+    "pattern": "Arrays & hashing",
+    "tip": "Trade memory for time: a HashMap / HashSet turns an O(n^2) scan into O(n)."
+   },
+   "leetcode": [
+    {
+     "name": "Two Sum",
+     "slug": "two-sum",
+     "url": "https://leetcode.com/problems/two-sum/",
+     "difficulty": "Easy",
+     "pattern": "Arrays & hashing"
+    },
+    {
+     "name": "Contains Duplicate",
+     "slug": "contains-duplicate",
+     "url": "https://leetcode.com/problems/contains-duplicate/",
+     "difficulty": "Easy",
+     "pattern": "Arrays & hashing"
+    },
+    {
+     "name": "Valid Anagram",
+     "slug": "valid-anagram",
+     "url": "https://leetcode.com/problems/valid-anagram/",
+     "difficulty": "Easy",
+     "pattern": "Arrays & hashing"
+    }
+   ],
+   "hld": {
+    "topic": "What happens when you type a URL: DNS, TCP, HTTP",
+    "points": [
+     "DNS resolves the name, TCP (+TLS) opens the connection, HTTP carries the request",
+     "Browser cache → OS → resolver → root/TLD/authoritative servers",
+     "Where latency is spent: DNS, handshake, server time, download"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Classes, objects and encapsulation in C#",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "AWS regions and AZs; free-tier account + billing alarm",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 2,
+   "date": "2026-09-29",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 1,
+   "week": 1,
+   "theme": "Scaling a server",
+   "dsa": {
+    "pattern": "Arrays & hashing",
+    "tip": "Trade memory for time: a HashMap / HashSet turns an O(n^2) scan into O(n)."
+   },
+   "leetcode": [
+    {
+     "name": "Group Anagrams",
+     "slug": "group-anagrams",
+     "url": "https://leetcode.com/problems/group-anagrams/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & hashing"
+    },
+    {
+     "name": "Top K Frequent Elements",
+     "slug": "top-k-frequent-elements",
+     "url": "https://leetcode.com/problems/top-k-frequent-elements/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & hashing"
+    },
+    {
+     "name": "Product of Array Except Self",
+     "slug": "product-of-array-except-self",
+     "url": "https://leetcode.com/problems/product-of-array-except-self/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & hashing"
+    }
+   ],
+   "hld": {
+    "topic": "Vertical vs horizontal scaling",
+    "points": [
+     "Vertical = bigger machine: simple, has a ceiling and a single point of failure",
+     "Horizontal = more machines: needs a load balancer and stateless app servers",
+     "Scale reads with replicas and caches before sharding writes"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Inheritance vs composition",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "IAM: users, groups, roles, policies, MFA",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 3,
+   "date": "2026-09-30",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 1,
+   "week": 1,
+   "theme": "Load balancing",
+   "dsa": {
+    "pattern": "Arrays & hashing",
+    "tip": "Trade memory for time: a HashMap / HashSet turns an O(n^2) scan into O(n)."
+   },
+   "leetcode": [
+    {
+     "name": "Valid Sudoku",
+     "slug": "valid-sudoku",
+     "url": "https://leetcode.com/problems/valid-sudoku/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & hashing"
+    },
+    {
+     "name": "Longest Consecutive Sequence",
+     "slug": "longest-consecutive-sequence",
+     "url": "https://leetcode.com/problems/longest-consecutive-sequence/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & hashing"
+    },
+    {
+     "name": "Majority Element",
+     "slug": "majority-element",
+     "url": "https://leetcode.com/problems/majority-element/",
+     "difficulty": "Easy",
+     "pattern": "Arrays & hashing"
+    }
+   ],
+   "hld": {
+    "topic": "Load balancers: L4 vs L7, round robin, least connections",
+    "points": [
+     "L4 balances TCP connections; L7 routes by path, header or cookie",
+     "Round robin vs least connections vs IP hash, and when each wins",
+     "Health checks remove bad nodes; the LB itself needs redundancy"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Polymorphism and interfaces: an ILoadBalancingStrategy",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "EC2: launch an instance, security groups, SSH",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 4,
+   "date": "2026-10-01",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 1,
+   "week": 1,
+   "theme": "Stateless services",
+   "dsa": {
+    "pattern": "Two pointers",
+    "tip": "Sorted input or a palindrome? Move two indices toward each other instead of nesting loops."
+   },
+   "leetcode": [
+    {
+     "name": "Valid Palindrome",
+     "slug": "valid-palindrome",
+     "url": "https://leetcode.com/problems/valid-palindrome/",
+     "difficulty": "Easy",
+     "pattern": "Two pointers"
+    },
+    {
+     "name": "Two Sum II - Input Array Is Sorted",
+     "slug": "two-sum-ii-input-array-is-sorted",
+     "url": "https://leetcode.com/problems/two-sum-ii-input-array-is-sorted/",
+     "difficulty": "Medium",
+     "pattern": "Two pointers"
+    },
+    {
+     "name": "3Sum",
+     "slug": "3sum",
+     "url": "https://leetcode.com/problems/3sum/",
+     "difficulty": "Medium",
+     "pattern": "Two pointers"
+    }
+   ],
+   "hld": {
+    "topic": "Stateless servers, sticky sessions, session stores",
+    "points": [
+     "Keep session state out of app servers so any server can take any request",
+     "Sticky sessions are a workaround with uneven load and lost sessions",
+     "Session stores: Redis or a DB with a TTL; JWT moves state to the client"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "SOLID part 1: Single Responsibility, Open/Closed",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "ALB + Auto Scaling Group",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 5,
+   "date": "2026-10-02",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 1,
+   "week": 1,
+   "theme": "APIs",
+   "dsa": {
+    "pattern": "Two pointers",
+    "tip": "Sorted input or a palindrome? Move two indices toward each other instead of nesting loops."
+   },
+   "leetcode": [
+    {
+     "name": "Container With Most Water",
+     "slug": "container-with-most-water",
+     "url": "https://leetcode.com/problems/container-with-most-water/",
+     "difficulty": "Medium",
+     "pattern": "Two pointers"
+    },
+    {
+     "name": "Remove Duplicates from Sorted Array",
+     "slug": "remove-duplicates-from-sorted-array",
+     "url": "https://leetcode.com/problems/remove-duplicates-from-sorted-array/",
+     "difficulty": "Easy",
+     "pattern": "Two pointers"
+    },
+    {
+     "name": "Move Zeroes",
+     "slug": "move-zeroes",
+     "url": "https://leetcode.com/problems/move-zeroes/",
+     "difficulty": "Easy",
+     "pattern": "Two pointers"
+    }
+   ],
+   "hld": {
+    "topic": "REST API design, status codes, idempotency",
+    "points": [
+     "Resources as nouns, HTTP verbs as actions, correct status codes (201, 400, 404, 409, 429)",
+     "Idempotency: PUT/DELETE are, POST is not unless you add an idempotency key",
+     "Versioning, pagination and consistent error bodies"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "SOLID part 2: Liskov, Interface Segregation, Dependency Inversion",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "S3: buckets, storage classes, static website",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 6,
+   "date": "2026-10-03",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 1,
+   "week": 1,
+   "theme": "Build: 3-tier app",
+   "dsa": {
+    "pattern": "Two pointers",
+    "tip": "Sorted input or a palindrome? Move two indices toward each other instead of nesting loops."
+   },
+   "leetcode": [
+    {
+     "name": "Trapping Rain Water",
+     "slug": "trapping-rain-water",
+     "url": "https://leetcode.com/problems/trapping-rain-water/",
+     "difficulty": "Hard",
+     "pattern": "Two pointers"
+    },
+    {
+     "name": "Merge Sorted Array",
+     "slug": "merge-sorted-array",
+     "url": "https://leetcode.com/problems/merge-sorted-array/",
+     "difficulty": "Easy",
+     "pattern": "Two pointers"
+    },
+    {
+     "name": "Reverse String",
+     "slug": "reverse-string",
+     "url": "https://leetcode.com/problems/reverse-string/",
+     "difficulty": "Easy",
+     "pattern": "Two pointers"
+    }
+   ],
+   "hld": {
+    "topic": "Draw a 3-tier app: LB → app servers → DB",
+    "points": [
+     "Tier 1 LB, tier 2 stateless app servers, tier 3 database",
+     "Where each tier fails and how it recovers",
+     "What changes at 10x traffic"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Refactor a notification sender using SOLID",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Static site on S3 + EC2 app behind an ALB (terminate after!)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 7,
+   "date": "2026-10-04",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 1,
+   "week": 1,
+   "theme": "Review week 1",
+   "dsa": {
+    "pattern": "Sliding window",
+    "tip": "Grow the right edge, shrink the left while the window breaks the rule; track the best window."
+   },
+   "leetcode": [
+    {
+     "name": "Best Time to Buy and Sell Stock",
+     "slug": "best-time-to-buy-and-sell-stock",
+     "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock/",
+     "difficulty": "Easy",
+     "pattern": "Sliding window"
+    },
+    {
+     "name": "Longest Substring Without Repeating Characters",
+     "slug": "longest-substring-without-repeating-characters",
+     "url": "https://leetcode.com/problems/longest-substring-without-repeating-characters/",
+     "difficulty": "Medium",
+     "pattern": "Sliding window"
+    },
+    {
+     "name": "Longest Repeating Character Replacement",
+     "slug": "longest-repeating-character-replacement",
+     "url": "https://leetcode.com/problems/longest-repeating-character-replacement/",
+     "difficulty": "Medium",
+     "pattern": "Sliding window"
+    }
+   ],
+   "hld": {
+    "topic": "Revise week 1 notes on one page",
+    "points": [
+     "One page: the web request path, scaling, LB, stateless, REST",
+     "Say each concept in two sentences without notes",
+     "List 3 weak spots for next week"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: 4 OOP pillars + SOLID in your own words",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Delete leftover resources, check billing",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 8,
+   "date": "2026-10-05",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 1,
+   "week": 2,
+   "theme": "Databases 101",
+   "dsa": {
+    "pattern": "Sliding window",
+    "tip": "Grow the right edge, shrink the left while the window breaks the rule; track the best window."
+   },
+   "leetcode": [
+    {
+     "name": "Permutation in String",
+     "slug": "permutation-in-string",
+     "url": "https://leetcode.com/problems/permutation-in-string/",
+     "difficulty": "Medium",
+     "pattern": "Sliding window"
+    },
+    {
+     "name": "Minimum Window Substring",
+     "slug": "minimum-window-substring",
+     "url": "https://leetcode.com/problems/minimum-window-substring/",
+     "difficulty": "Hard",
+     "pattern": "Sliding window"
+    },
+    {
+     "name": "Maximum Average Subarray I",
+     "slug": "maximum-average-subarray-i",
+     "url": "https://leetcode.com/problems/maximum-average-subarray-i/",
+     "difficulty": "Easy",
+     "pattern": "Sliding window"
+    }
+   ],
+   "hld": {
+    "topic": "SQL vs NoSQL and when to pick each",
+    "points": [
+     "SQL: schema, joins, ACID; NoSQL: flexible schema, horizontal scale",
+     "Pick by access pattern, consistency need and scale",
+     "Key-value, document, wide-column and graph stores, with one example each"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Singleton pattern (thread-safe, for a DB connection)",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "RDS: launch Postgres, connect from your laptop",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 9,
+   "date": "2026-10-06",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 1,
+   "week": 2,
+   "theme": "Indexing",
+   "dsa": {
+    "pattern": "Sliding window",
+    "tip": "Grow the right edge, shrink the left while the window breaks the rule; track the best window."
+   },
+   "leetcode": [
+    {
+     "name": "Sliding Window Maximum",
+     "slug": "sliding-window-maximum",
+     "url": "https://leetcode.com/problems/sliding-window-maximum/",
+     "difficulty": "Hard",
+     "pattern": "Sliding window"
+    },
+    {
+     "name": "Minimum Size Subarray Sum",
+     "slug": "minimum-size-subarray-sum",
+     "url": "https://leetcode.com/problems/minimum-size-subarray-sum/",
+     "difficulty": "Medium",
+     "pattern": "Sliding window"
+    },
+    {
+     "name": "Max Consecutive Ones III",
+     "slug": "max-consecutive-ones-iii",
+     "url": "https://leetcode.com/problems/max-consecutive-ones-iii/",
+     "difficulty": "Medium",
+     "pattern": "Sliding window"
+    }
+   ],
+   "hld": {
+    "topic": "Indexes, B-trees, why queries get slow",
+    "points": [
+     "An index is a sorted structure (B-tree) that trades write speed for read speed",
+     "Composite index column order matters (leftmost prefix)",
+     "Read EXPLAIN plans: full scan vs index seek"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Factory pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "RDS backups, snapshots, Multi-AZ",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 10,
+   "date": "2026-10-07",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 1,
+   "week": 2,
+   "theme": "Replication",
+   "dsa": {
+    "pattern": "Stack",
+    "tip": "Anything 'nearest greater/smaller' or matching pairs is a monotonic or plain stack."
+   },
+   "leetcode": [
+    {
+     "name": "Valid Parentheses",
+     "slug": "valid-parentheses",
+     "url": "https://leetcode.com/problems/valid-parentheses/",
+     "difficulty": "Easy",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Min Stack",
+     "slug": "min-stack",
+     "url": "https://leetcode.com/problems/min-stack/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Evaluate Reverse Polish Notation",
+     "slug": "evaluate-reverse-polish-notation",
+     "url": "https://leetcode.com/problems/evaluate-reverse-polish-notation/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    }
+   ],
+   "hld": {
+    "topic": "Primary-replica replication, read replicas, lag",
+    "points": [
+     "Primary takes writes, replicas serve reads",
+     "Async replication means lag: read-your-own-writes issues",
+     "Failover promotes a replica; watch for split brain"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Builder pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "RDS read replicas; DynamoDB intro",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 11,
+   "date": "2026-10-08",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 1,
+   "week": 2,
+   "theme": "Sharding",
+   "dsa": {
+    "pattern": "Stack",
+    "tip": "Anything 'nearest greater/smaller' or matching pairs is a monotonic or plain stack."
+   },
+   "leetcode": [
+    {
+     "name": "Generate Parentheses",
+     "slug": "generate-parentheses",
+     "url": "https://leetcode.com/problems/generate-parentheses/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Daily Temperatures",
+     "slug": "daily-temperatures",
+     "url": "https://leetcode.com/problems/daily-temperatures/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Car Fleet",
+     "slug": "car-fleet",
+     "url": "https://leetcode.com/problems/car-fleet/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    }
+   ],
+   "hld": {
+    "topic": "Partitioning, shard keys, hot spots",
+    "points": [
+     "Shard by a key that spreads load evenly",
+     "Hot spots come from celebrity keys or time-ordered keys",
+     "Cross-shard queries and rebalancing are the real cost"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Strategy pattern (a shard-key strategy)",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "DynamoDB partition keys and GSIs",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 12,
+   "date": "2026-10-09",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 1,
+   "week": 2,
+   "theme": "Transactions",
+   "dsa": {
+    "pattern": "Stack",
+    "tip": "Anything 'nearest greater/smaller' or matching pairs is a monotonic or plain stack."
+   },
+   "leetcode": [
+    {
+     "name": "Next Greater Element I",
+     "slug": "next-greater-element-i",
+     "url": "https://leetcode.com/problems/next-greater-element-i/",
+     "difficulty": "Easy",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Implement Queue using Stacks",
+     "slug": "implement-queue-using-stacks",
+     "url": "https://leetcode.com/problems/implement-queue-using-stacks/",
+     "difficulty": "Easy",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Simplify Path",
+     "slug": "simplify-path",
+     "url": "https://leetcode.com/problems/simplify-path/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    }
+   ],
+   "hld": {
+    "topic": "ACID and isolation levels",
+    "points": [
+     "ACID: atomicity, consistency, isolation, durability",
+     "Isolation levels vs anomalies: dirty read, non-repeatable read, phantom",
+     "When to use SERIALIZABLE and what it costs"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Repository pattern in C#",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "IAM roles for EC2 to read S3 without keys",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 13,
+   "date": "2026-10-10",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 1,
+   "week": 2,
+   "theme": "Build: library system",
+   "dsa": {
+    "pattern": "Stack",
+    "tip": "Anything 'nearest greater/smaller' or matching pairs is a monotonic or plain stack."
+   },
+   "leetcode": [
+    {
+     "name": "Largest Rectangle in Histogram",
+     "slug": "largest-rectangle-in-histogram",
+     "url": "https://leetcode.com/problems/largest-rectangle-in-histogram/",
+     "difficulty": "Hard",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Online Stock Span",
+     "slug": "online-stock-span",
+     "url": "https://leetcode.com/problems/online-stock-span/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    },
+    {
+     "name": "Decode String",
+     "slug": "decode-string",
+     "url": "https://leetcode.com/problems/decode-string/",
+     "difficulty": "Medium",
+     "pattern": "Stack"
+    }
+   ],
+   "hld": {
+    "topic": "Design the database for a library system",
+    "points": [
+     "Tables: Book, Copy, Member, Loan, Reservation",
+     "Keys, indexes and the queries they serve",
+     "One Book has many Copies; a Loan links a Copy to a Member"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Library Management System LLD (classes + relationships)",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Connect a .NET API on EC2 to RDS",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 14,
+   "date": "2026-10-11",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 1,
+   "week": 2,
+   "theme": "Review week 2",
+   "dsa": {
+    "pattern": "Binary search",
+    "tip": "Search the answer space, not just arrays: find the first value where a yes/no check flips."
+   },
+   "leetcode": [
+    {
+     "name": "Binary Search",
+     "slug": "binary-search",
+     "url": "https://leetcode.com/problems/binary-search/",
+     "difficulty": "Easy",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Search Insert Position",
+     "slug": "search-insert-position",
+     "url": "https://leetcode.com/problems/search-insert-position/",
+     "difficulty": "Easy",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Search a 2D Matrix",
+     "slug": "search-a-2d-matrix",
+     "url": "https://leetcode.com/problems/search-a-2d-matrix/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    }
+   ],
+   "hld": {
+    "topic": "CAP theorem basics + revise week 2",
+    "points": [
+     "CAP: during a partition choose consistency or availability",
+     "CP vs AP examples (bank ledger vs shopping cart)",
+     "Revise databases week on one page"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: Singleton, Factory, Builder, Strategy, Repository",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Clean up; draw your AWS setup so far",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 15,
+   "date": "2026-10-12",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 1,
+   "week": 3,
+   "theme": "Caching",
+   "dsa": {
+    "pattern": "Linked list",
+    "tip": "Draw it. Dummy head for edits, slow/fast pointers for middle and cycles, reverse in place."
+   },
+   "leetcode": [
+    {
+     "name": "LRU Cache",
+     "slug": "lru-cache",
+     "url": "https://leetcode.com/problems/lru-cache/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Reverse Linked List",
+     "slug": "reverse-linked-list",
+     "url": "https://leetcode.com/problems/reverse-linked-list/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Merge Two Sorted Lists",
+     "slug": "merge-two-sorted-lists",
+     "url": "https://leetcode.com/problems/merge-two-sorted-lists/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    }
+   ],
+   "hld": {
+    "topic": "Caching basics: where to cache, hit/miss",
+    "points": [
+     "Cache what is read often and changes rarely",
+     "Hit ratio, latency win and staleness risk",
+     "Layers: browser, CDN, app memory, Redis, DB buffer pool"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "LRU cache design: HashMap + doubly linked list",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "ElastiCache (Redis) intro",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 16,
+   "date": "2026-10-13",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 1,
+   "week": 3,
+   "theme": "Cache strategies",
+   "dsa": {
+    "pattern": "Linked list",
+    "tip": "Draw it. Dummy head for edits, slow/fast pointers for middle and cycles, reverse in place."
+   },
+   "leetcode": [
+    {
+     "name": "Linked List Cycle",
+     "slug": "linked-list-cycle",
+     "url": "https://leetcode.com/problems/linked-list-cycle/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Reorder List",
+     "slug": "reorder-list",
+     "url": "https://leetcode.com/problems/reorder-list/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Remove Nth Node From End of List",
+     "slug": "remove-nth-node-from-end-of-list",
+     "url": "https://leetcode.com/problems/remove-nth-node-from-end-of-list/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    }
+   ],
+   "hld": {
+    "topic": "Cache-aside, write-through, write-back, TTL, eviction",
+    "points": [
+     "Cache-aside, write-through, write-back and when each loses data",
+     "TTLs and eviction (LRU / LFU)",
+     "Stampede protection: locks, jitter, early refresh"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Decorator pattern: a caching repository",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Use Redis from a .NET API",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 17,
+   "date": "2026-10-14",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 1,
+   "week": 3,
+   "theme": "CDN",
+   "dsa": {
+    "pattern": "Linked list",
+    "tip": "Draw it. Dummy head for edits, slow/fast pointers for middle and cycles, reverse in place."
+   },
+   "leetcode": [
+    {
+     "name": "Copy List with Random Pointer",
+     "slug": "copy-list-with-random-pointer",
+     "url": "https://leetcode.com/problems/copy-list-with-random-pointer/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Add Two Numbers",
+     "slug": "add-two-numbers",
+     "url": "https://leetcode.com/problems/add-two-numbers/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Find the Duplicate Number",
+     "slug": "find-the-duplicate-number",
+     "url": "https://leetcode.com/problems/find-the-duplicate-number/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    }
+   ],
+   "hld": {
+    "topic": "CDNs and edge caching",
+    "points": [
+     "CDNs serve static content from edge locations near users",
+     "Cache keys, TTL and invalidation at the edge",
+     "Push vs pull CDN"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Proxy pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "CloudFront in front of S3",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 18,
+   "date": "2026-10-15",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 1,
+   "week": 3,
+   "theme": "Consistency",
+   "dsa": {
+    "pattern": "Binary search",
+    "tip": "Search the answer space, not just arrays: find the first value where a yes/no check flips."
+   },
+   "leetcode": [
+    {
+     "name": "Koko Eating Bananas",
+     "slug": "koko-eating-bananas",
+     "url": "https://leetcode.com/problems/koko-eating-bananas/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Find Minimum in Rotated Sorted Array",
+     "slug": "find-minimum-in-rotated-sorted-array",
+     "url": "https://leetcode.com/problems/find-minimum-in-rotated-sorted-array/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Search in Rotated Sorted Array",
+     "slug": "search-in-rotated-sorted-array",
+     "url": "https://leetcode.com/problems/search-in-rotated-sorted-array/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    }
+   ],
+   "hld": {
+    "topic": "Strong vs eventual consistency, cache invalidation",
+    "points": [
+     "Strong consistency: every read sees the latest write",
+     "Eventual consistency: replicas converge later",
+     "Cache invalidation on update: delete vs update the key"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Observer pattern (invalidate on update)",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Route 53 and routing policies",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 19,
+   "date": "2026-10-16",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 1,
+   "week": 3,
+   "theme": "Rate limiting",
+   "dsa": {
+    "pattern": "Binary search",
+    "tip": "Search the answer space, not just arrays: find the first value where a yes/no check flips."
+   },
+   "leetcode": [
+    {
+     "name": "Time Based Key-Value Store",
+     "slug": "time-based-key-value-store",
+     "url": "https://leetcode.com/problems/time-based-key-value-store/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Find First and Last Position of Element in Sorted Array",
+     "slug": "find-first-and-last-position-of-element-in-sorted-array",
+     "url": "https://leetcode.com/problems/find-first-and-last-position-of-element-in-sorted-array/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Sqrt(x)",
+     "slug": "sqrtx",
+     "url": "https://leetcode.com/problems/sqrtx/",
+     "difficulty": "Easy",
+     "pattern": "Binary search"
+    }
+   ],
+   "hld": {
+    "topic": "Token bucket, leaky bucket, sliding window",
+    "points": [
+     "Token bucket allows bursts; leaky bucket smooths output",
+     "Fixed window vs sliding window log vs sliding window counter",
+     "Where to enforce: gateway, service, per user or per IP"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Design a RateLimiter class",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "API Gateway throttling overview",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 20,
+   "date": "2026-10-17",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 1,
+   "week": 3,
+   "theme": "Build: rate limiter",
+   "dsa": {
+    "pattern": "Linked list",
+    "tip": "Draw it. Dummy head for edits, slow/fast pointers for middle and cycles, reverse in place."
+   },
+   "leetcode": [
+    {
+     "name": "Merge k Sorted Lists",
+     "slug": "merge-k-sorted-lists",
+     "url": "https://leetcode.com/problems/merge-k-sorted-lists/",
+     "difficulty": "Hard",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Intersection of Two Linked Lists",
+     "slug": "intersection-of-two-linked-lists",
+     "url": "https://leetcode.com/problems/intersection-of-two-linked-lists/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Palindrome Linked List",
+     "slug": "palindrome-linked-list",
+     "url": "https://leetcode.com/problems/palindrome-linked-list/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    }
+   ],
+   "hld": {
+    "topic": "Design a rate limiter end to end",
+    "points": [
+     "Requirements: per-user limits, low latency, distributed",
+     "Redis counters with expiry, atomic Lua scripts",
+     "Return 429 with a Retry-After header"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Implement token bucket in C# with unit tests",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "CloudFront + S3 + Route 53 together",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 21,
+   "date": "2026-10-18",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 1,
+   "week": 3,
+   "theme": "Review week 3",
+   "dsa": {
+    "pattern": "Linked list",
+    "tip": "Draw it. Dummy head for edits, slow/fast pointers for middle and cycles, reverse in place."
+   },
+   "leetcode": [
+    {
+     "name": "Middle of the Linked List",
+     "slug": "middle-of-the-linked-list",
+     "url": "https://leetcode.com/problems/middle-of-the-linked-list/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Remove Linked List Elements",
+     "slug": "remove-linked-list-elements",
+     "url": "https://leetcode.com/problems/remove-linked-list-elements/",
+     "difficulty": "Easy",
+     "pattern": "Linked list"
+    },
+    {
+     "name": "Reverse Linked List II",
+     "slug": "reverse-linked-list-ii",
+     "url": "https://leetcode.com/problems/reverse-linked-list-ii/",
+     "difficulty": "Medium",
+     "pattern": "Linked list"
+    }
+   ],
+   "hld": {
+    "topic": "Revise caching, CDN, consistency",
+    "points": [
+     "Revise caching, CDN and consistency on one page",
+     "Explain cache invalidation out loud",
+     "List weak spots"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: LRU, Decorator, Proxy, Observer",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Clean up, check billing",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 22,
+   "date": "2026-10-19",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 1,
+   "week": 4,
+   "theme": "Async processing",
+   "dsa": {
+    "pattern": "Prefix sum",
+    "tip": "sum(i..j) = prefix[j+1] - prefix[i]; a HashMap of prefix counts finds subarrays with target sums."
+   },
+   "leetcode": [
+    {
+     "name": "Subarray Sum Equals K",
+     "slug": "subarray-sum-equals-k",
+     "url": "https://leetcode.com/problems/subarray-sum-equals-k/",
+     "difficulty": "Medium",
+     "pattern": "Prefix sum"
+    },
+    {
+     "name": "Range Sum Query - Immutable",
+     "slug": "range-sum-query-immutable",
+     "url": "https://leetcode.com/problems/range-sum-query-immutable/",
+     "difficulty": "Easy",
+     "pattern": "Prefix sum"
+    },
+    {
+     "name": "Find Pivot Index",
+     "slug": "find-pivot-index",
+     "url": "https://leetcode.com/problems/find-pivot-index/",
+     "difficulty": "Easy",
+     "pattern": "Prefix sum"
+    }
+   ],
+   "hld": {
+    "topic": "Message queues, producers and consumers",
+    "points": [
+     "Queues decouple producers from consumers and absorb spikes",
+     "Consumers scale independently; backpressure",
+     "Ordering vs throughput trade-off"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Producer–consumer in C# with Channels",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "SQS standard vs FIFO",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 23,
+   "date": "2026-10-20",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 1,
+   "week": 4,
+   "theme": "Pub/sub",
+   "dsa": {
+    "pattern": "Prefix sum",
+    "tip": "sum(i..j) = prefix[j+1] - prefix[i]; a HashMap of prefix counts finds subarrays with target sums."
+   },
+   "leetcode": [
+    {
+     "name": "Contiguous Array",
+     "slug": "contiguous-array",
+     "url": "https://leetcode.com/problems/contiguous-array/",
+     "difficulty": "Medium",
+     "pattern": "Prefix sum"
+    },
+    {
+     "name": "Subarray Sums Divisible by K",
+     "slug": "subarray-sums-divisible-by-k",
+     "url": "https://leetcode.com/problems/subarray-sums-divisible-by-k/",
+     "difficulty": "Medium",
+     "pattern": "Prefix sum"
+    },
+    {
+     "name": "Find All Anagrams in a String",
+     "slug": "find-all-anagrams-in-a-string",
+     "url": "https://leetcode.com/problems/find-all-anagrams-in-a-string/",
+     "difficulty": "Medium",
+     "pattern": "Prefix sum"
+    }
+   ],
+   "hld": {
+    "topic": "Pub/sub vs queues, fan-out",
+    "points": [
+     "Queue = one consumer gets each message; pub/sub = every subscriber gets it",
+     "Fan-out: one event feeds many services",
+     "Topics, subscriptions and filters"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Build an in-memory event bus in C#",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "SNS + SNS→SQS fan-out",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 24,
+   "date": "2026-10-21",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 1,
+   "week": 4,
+   "theme": "Delivery guarantees",
+   "dsa": {
+    "pattern": "Binary search",
+    "tip": "Search the answer space, not just arrays: find the first value where a yes/no check flips."
+   },
+   "leetcode": [
+    {
+     "name": "Find Peak Element",
+     "slug": "find-peak-element",
+     "url": "https://leetcode.com/problems/find-peak-element/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Single Element in a Sorted Array",
+     "slug": "single-element-in-a-sorted-array",
+     "url": "https://leetcode.com/problems/single-element-in-a-sorted-array/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    },
+    {
+     "name": "Capacity To Ship Packages Within D Days",
+     "slug": "capacity-to-ship-packages-within-d-days",
+     "url": "https://leetcode.com/problems/capacity-to-ship-packages-within-d-days/",
+     "difficulty": "Medium",
+     "pattern": "Binary search"
+    }
+   ],
+   "hld": {
+    "topic": "At-least-once, exactly-once, idempotency, dead-letter queues",
+    "points": [
+     "At-least-once delivery means duplicates: make consumers idempotent",
+     "Exactly-once is expensive; dedupe keys are usually enough",
+     "Dead-letter queues catch poison messages; visibility timeout controls retries"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Command pattern for retryable jobs",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "SQS dead-letter queue, visibility timeout",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 25,
+   "date": "2026-10-22",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 1,
+   "week": 4,
+   "theme": "Phase 1 checkpoint",
+   "dsa": {
+    "pattern": "Arrays & matrix",
+    "tip": "In-place tricks: reverse segments, swap by index, use the first row/column as markers."
+   },
+   "leetcode": [
+    {
+     "name": "Sort Colors",
+     "slug": "sort-colors",
+     "url": "https://leetcode.com/problems/sort-colors/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & matrix"
+    },
+    {
+     "name": "Rotate Array",
+     "slug": "rotate-array",
+     "url": "https://leetcode.com/problems/rotate-array/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & matrix"
+    },
+    {
+     "name": "Rotate Image",
+     "slug": "rotate-image",
+     "url": "https://leetcode.com/problems/rotate-image/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & matrix"
+    }
+   ],
+   "hld": {
+    "topic": "Design a basic notification system",
+    "points": [
+     "Channels (email, SMS, push) behind one interface",
+     "Queue per channel, retries with backoff, user preferences",
+     "Checkpoint: explain it in 10 minutes"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Notification service LLD: Strategy for channels + Observer",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "AWS Cloud Practitioner practice test",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": [
+    "Solve 3 new mediums from Phase 1 patterns in 90 minutes",
+    "Explain a 3-tier app, caching and queues in 10 minutes without notes",
+    "Code a SOLID notification sender in C# with tests",
+    "AWS Cloud Practitioner practice test: 70%+"
+   ]
+  },
+  {
+   "day": 26,
+   "date": "2026-10-23",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 2,
+   "week": 4,
+   "theme": "Serverless",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Invert Binary Tree",
+     "slug": "invert-binary-tree",
+     "url": "https://leetcode.com/problems/invert-binary-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Maximum Depth of Binary Tree",
+     "slug": "maximum-depth-of-binary-tree",
+     "url": "https://leetcode.com/problems/maximum-depth-of-binary-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Same Tree",
+     "slug": "same-tree",
+     "url": "https://leetcode.com/problems/same-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Serverless vs servers: trade-offs",
+    "points": [
+     "Serverless: no servers to manage, pay per call, scales to zero",
+     "Cold starts, time limits and vendor lock-in",
+     "Good for spiky, event-driven work"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Template Method pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Lambda: deploy a .NET function",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 27,
+   "date": "2026-10-24",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 2,
+   "week": 4,
+   "theme": "Build: image pipeline",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Diameter of Binary Tree",
+     "slug": "diameter-of-binary-tree",
+     "url": "https://leetcode.com/problems/diameter-of-binary-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Balanced Binary Tree",
+     "slug": "balanced-binary-tree",
+     "url": "https://leetcode.com/problems/balanced-binary-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Subtree of Another Tree",
+     "slug": "subtree-of-another-tree",
+     "url": "https://leetcode.com/problems/subtree-of-another-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Design an image upload + thumbnail pipeline",
+    "points": [
+     "Upload to object storage, event triggers processing",
+     "Thumbnails generated asynchronously",
+     "Store metadata in a DB; serve images through a CDN"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Chain of Responsibility for processing steps",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "S3 upload triggers a Lambda",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 28,
+   "date": "2026-10-25",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 2,
+   "week": 4,
+   "theme": "Review week 4",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Symmetric Tree",
+     "slug": "symmetric-tree",
+     "url": "https://leetcode.com/problems/symmetric-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Path Sum",
+     "slug": "path-sum",
+     "url": "https://leetcode.com/problems/path-sum/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Binary Tree Paths",
+     "slug": "binary-tree-paths",
+     "url": "https://leetcode.com/problems/binary-tree-paths/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Revise all of Phase 1 on one page",
+    "points": [
+     "Revise all of Phase 1 on one page",
+     "Re-draw 3-tier app, cache, queue and rate limiter",
+     "Pick the 3 weakest topics"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: all patterns so far, one line each",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Clean up, check billing",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 29,
+   "date": "2026-10-26",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 2,
+   "week": 5,
+   "theme": "API gateway",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Binary Tree Level Order Traversal",
+     "slug": "binary-tree-level-order-traversal",
+     "url": "https://leetcode.com/problems/binary-tree-level-order-traversal/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Binary Tree Right Side View",
+     "slug": "binary-tree-right-side-view",
+     "url": "https://leetcode.com/problems/binary-tree-right-side-view/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Average of Levels in Binary Tree",
+     "slug": "average-of-levels-in-binary-tree",
+     "url": "https://leetcode.com/problems/average-of-levels-in-binary-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "API gateway, BFF, auth at the edge",
+    "points": [
+     "API gateway: routing, auth, rate limiting, TLS in one place",
+     "BFF: one backend per client type (web, mobile)",
+     "Auth at the edge vs in each service"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Facade pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "API Gateway + Lambda REST API",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 30,
+   "date": "2026-10-27",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 2,
+   "week": 5,
+   "theme": "Microservices",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Lowest Common Ancestor of a Binary Search Tree",
+     "slug": "lowest-common-ancestor-of-a-binary-search-tree",
+     "url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-search-tree/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Validate Binary Search Tree",
+     "slug": "validate-binary-search-tree",
+     "url": "https://leetcode.com/problems/validate-binary-search-tree/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Kth Smallest Element in a BST",
+     "slug": "kth-smallest-element-in-a-bst",
+     "url": "https://leetcode.com/problems/kth-smallest-element-in-a-bst/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Monolith vs microservices, sync vs async calls",
+    "points": [
+     "Monolith first; split by business capability",
+     "Sync (REST/gRPC) couples availability; async decouples",
+     "Data ownership: one DB per service"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Adapter pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Docker image → ECR",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 31,
+   "date": "2026-10-28",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 2,
+   "week": 5,
+   "theme": "Containers",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Construct Binary Tree from Preorder and Inorder Traversal",
+     "slug": "construct-binary-tree-from-preorder-and-inorder-traversal",
+     "url": "https://leetcode.com/problems/construct-binary-tree-from-preorder-and-inorder-traversal/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Count Good Nodes in Binary Tree",
+     "slug": "count-good-nodes-in-binary-tree",
+     "url": "https://leetcode.com/problems/count-good-nodes-in-binary-tree/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Lowest Common Ancestor of a Binary Tree",
+     "slug": "lowest-common-ancestor-of-a-binary-tree",
+     "url": "https://leetcode.com/problems/lowest-common-ancestor-of-a-binary-tree/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Service discovery and health checks",
+    "points": [
+     "Service discovery: registry or DNS",
+     "Liveness vs readiness health checks",
+     "Containers vs VMs"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Dependency injection deep dive in .NET",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "ECS Fargate: run your container",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 32,
+   "date": "2026-10-29",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 2,
+   "week": 5,
+   "theme": "Auth",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Serialize and Deserialize Binary Tree",
+     "slug": "serialize-and-deserialize-binary-tree",
+     "url": "https://leetcode.com/problems/serialize-and-deserialize-binary-tree/",
+     "difficulty": "Hard",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Delete Node in a BST",
+     "slug": "delete-node-in-a-bst",
+     "url": "https://leetcode.com/problems/delete-node-in-a-bst/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Convert Sorted Array to Binary Search Tree",
+     "slug": "convert-sorted-array-to-binary-search-tree",
+     "url": "https://leetcode.com/problems/convert-sorted-array-to-binary-search-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Authentication vs authorization, JWT, OAuth2",
+    "points": [
+     "Authentication = who you are; authorization = what you may do",
+     "JWT structure and why short expiry + refresh tokens",
+     "OAuth2 authorization code flow"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Design an auth module with interfaces",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Cognito basics",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 33,
+   "date": "2026-10-30",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 2,
+   "week": 5,
+   "theme": "Observability",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Search in a Binary Search Tree",
+     "slug": "search-in-a-binary-search-tree",
+     "url": "https://leetcode.com/problems/search-in-a-binary-search-tree/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Insert into a Binary Search Tree",
+     "slug": "insert-into-a-binary-search-tree",
+     "url": "https://leetcode.com/problems/insert-into-a-binary-search-tree/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Range Sum of BST",
+     "slug": "range-sum-of-bst",
+     "url": "https://leetcode.com/problems/range-sum-of-bst/",
+     "difficulty": "Easy",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Logs, metrics, traces",
+    "points": [
+     "Logs = events, metrics = numbers over time, traces = one request across services",
+     "Correlation IDs tie them together",
+     "Alert on symptoms (latency, errors), not causes"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Structured logging design",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "CloudWatch logs, metrics, alarms",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 34,
+   "date": "2026-10-31",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 2,
+   "week": 5,
+   "theme": "Build: URL shortener",
+   "dsa": {
+    "pattern": "Trees",
+    "tip": "Recursion returns what the parent needs; DFS for depth/paths, BFS (queue) for levels."
+   },
+   "leetcode": [
+    {
+     "name": "Binary Tree Maximum Path Sum",
+     "slug": "binary-tree-maximum-path-sum",
+     "url": "https://leetcode.com/problems/binary-tree-maximum-path-sum/",
+     "difficulty": "Hard",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Flatten Binary Tree to Linked List",
+     "slug": "flatten-binary-tree-to-linked-list",
+     "url": "https://leetcode.com/problems/flatten-binary-tree-to-linked-list/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    },
+    {
+     "name": "Populating Next Right Pointers in Each Node",
+     "slug": "populating-next-right-pointers-in-each-node",
+     "url": "https://leetcode.com/problems/populating-next-right-pointers-in-each-node/",
+     "difficulty": "Medium",
+     "pattern": "Trees"
+    }
+   ],
+   "hld": {
+    "topic": "Design a URL shortener",
+    "points": [
+     "Requirements: shorten, redirect, custom alias, expiry",
+     "Key generation: base62 counter vs hash; collisions",
+     "Read-heavy: cache hot links, 301 vs 302"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "URL shortener LLD: ID generator, base62",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Build it: API Gateway + Lambda + DynamoDB",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 35,
+   "date": "2026-11-01",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 2,
+   "week": 5,
+   "theme": "Review week 5",
+   "dsa": {
+    "pattern": "Heap / priority queue",
+    "tip": "Top-K or 'always the smallest next' = heap; keep it size K for O(n log K)."
+   },
+   "leetcode": [
+    {
+     "name": "Kth Largest Element in a Stream",
+     "slug": "kth-largest-element-in-a-stream",
+     "url": "https://leetcode.com/problems/kth-largest-element-in-a-stream/",
+     "difficulty": "Easy",
+     "pattern": "Heap / priority queue"
+    },
+    {
+     "name": "Last Stone Weight",
+     "slug": "last-stone-weight",
+     "url": "https://leetcode.com/problems/last-stone-weight/",
+     "difficulty": "Easy",
+     "pattern": "Heap / priority queue"
+    },
+    {
+     "name": "Kth Largest Element in an Array",
+     "slug": "kth-largest-element-in-an-array",
+     "url": "https://leetcode.com/problems/kth-largest-element-in-an-array/",
+     "difficulty": "Medium",
+     "pattern": "Heap / priority queue"
+    }
+   ],
+   "hld": {
+    "topic": "Revise APIs, microservices, auth",
+    "points": [
+     "Revise APIs, microservices and auth",
+     "Explain JWT and OAuth2 out loud",
+     "List weak spots"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: Facade, Adapter, DI",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Clean up, check billing",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 36,
+   "date": "2026-11-02",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 2,
+   "week": 6,
+   "theme": "Scheduling",
+   "dsa": {
+    "pattern": "Heap / priority queue",
+    "tip": "Top-K or 'always the smallest next' = heap; keep it size K for O(n log K)."
+   },
+   "leetcode": [
+    {
+     "name": "K Closest Points to Origin",
+     "slug": "k-closest-points-to-origin",
+     "url": "https://leetcode.com/problems/k-closest-points-to-origin/",
+     "difficulty": "Medium",
+     "pattern": "Heap / priority queue"
+    },
+    {
+     "name": "Task Scheduler",
+     "slug": "task-scheduler",
+     "url": "https://leetcode.com/problems/task-scheduler/",
+     "difficulty": "Medium",
+     "pattern": "Heap / priority queue"
+    },
+    {
+     "name": "Design Twitter",
+     "slug": "design-twitter",
+     "url": "https://leetcode.com/problems/design-twitter/",
+     "difficulty": "Medium",
+     "pattern": "Heap / priority queue"
+    }
+   ],
+   "hld": {
+    "topic": "Job schedulers and priority queues",
+    "points": [
+     "Scheduler: store jobs, pick due ones, run with retries",
+     "Priority queues order work",
+     "Distributed schedulers need locking so a job runs once"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Parking Lot part 1: requirements + entities",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "EventBridge scheduled rules",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 37,
+   "date": "2026-11-03",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 2,
+   "week": 6,
+   "theme": "Consistent hashing",
+   "dsa": {
+    "pattern": "Heap / priority queue",
+    "tip": "Top-K or 'always the smallest next' = heap; keep it size K for O(n log K)."
+   },
+   "leetcode": [
+    {
+     "name": "Find Median from Data Stream",
+     "slug": "find-median-from-data-stream",
+     "url": "https://leetcode.com/problems/find-median-from-data-stream/",
+     "difficulty": "Hard",
+     "pattern": "Heap / priority queue"
+    },
+    {
+     "name": "Reorganize String",
+     "slug": "reorganize-string",
+     "url": "https://leetcode.com/problems/reorganize-string/",
+     "difficulty": "Medium",
+     "pattern": "Heap / priority queue"
+    },
+    {
+     "name": "Sort Characters By Frequency",
+     "slug": "sort-characters-by-frequency",
+     "url": "https://leetcode.com/problems/sort-characters-by-frequency/",
+     "difficulty": "Medium",
+     "pattern": "Heap / priority queue"
+    }
+   ],
+   "hld": {
+    "topic": "Consistent hashing",
+    "points": [
+     "Hash ring: adding a node moves only nearby keys",
+     "Virtual nodes smooth out load",
+     "Used in caches, DynamoDB, Cassandra"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Parking Lot part 2: pricing strategy, spot allocation",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "VPC: public/private subnets, NAT",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 38,
+   "date": "2026-11-04",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 2,
+   "week": 6,
+   "theme": "Graphs",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Number of Islands",
+     "slug": "number-of-islands",
+     "url": "https://leetcode.com/problems/number-of-islands/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Clone Graph",
+     "slug": "clone-graph",
+     "url": "https://leetcode.com/problems/clone-graph/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Max Area of Island",
+     "slug": "max-area-of-island",
+     "url": "https://leetcode.com/problems/max-area-of-island/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "Modelling relationships, graph DB intro",
+    "points": [
+     "Model relationships as nodes and edges",
+     "Graph DBs for multi-hop queries (friends of friends)",
+     "When a relational DB is still fine"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Elevator system part 1: entities",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Security groups vs NACLs",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 39,
+   "date": "2026-11-05",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 2,
+   "week": 6,
+   "theme": "Coordination",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Rotting Oranges",
+     "slug": "rotting-oranges",
+     "url": "https://leetcode.com/problems/rotting-oranges/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Pacific Atlantic Water Flow",
+     "slug": "pacific-atlantic-water-flow",
+     "url": "https://leetcode.com/problems/pacific-atlantic-water-flow/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Surrounded Regions",
+     "slug": "surrounded-regions",
+     "url": "https://leetcode.com/problems/surrounded-regions/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "Heartbeats and leader election (basic)",
+    "points": [
+     "Heartbeats detect dead nodes",
+     "Leader election: one node coordinates (Raft idea at a high level)",
+     "Avoid split brain with quorums"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Elevator part 2: State pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Secrets Manager and Parameter Store",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 40,
+   "date": "2026-11-06",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 2,
+   "week": 6,
+   "theme": "Probabilistic tricks",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Course Schedule",
+     "slug": "course-schedule",
+     "url": "https://leetcode.com/problems/course-schedule/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Course Schedule II",
+     "slug": "course-schedule-ii",
+     "url": "https://leetcode.com/problems/course-schedule-ii/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Find the Town Judge",
+     "slug": "find-the-town-judge",
+     "url": "https://leetcode.com/problems/find-the-town-judge/",
+     "difficulty": "Easy",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "Bloom filters",
+    "points": [
+     "Bloom filter: 'definitely not' or 'maybe yes' with tiny memory",
+     "False-positive rate vs bits and hash functions",
+     "Uses: cache filters, username checks"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Vending machine with State pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "CloudFormation / infrastructure as code intro",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 41,
+   "date": "2026-11-07",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 2,
+   "week": 6,
+   "theme": "Build: parking system",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Redundant Connection",
+     "slug": "redundant-connection",
+     "url": "https://leetcode.com/problems/redundant-connection/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Number of Provinces",
+     "slug": "number-of-provinces",
+     "url": "https://leetcode.com/problems/number-of-provinces/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Find if Path Exists in Graph",
+     "slug": "find-if-path-exists-in-graph",
+     "url": "https://leetcode.com/problems/find-if-path-exists-in-graph/",
+     "difficulty": "Easy",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "HLD of a parking system (pairs with your LLD)",
+    "points": [
+     "Entry/exit gates, spot allocation, payment",
+     "Real-time availability per floor",
+     "Pairs with your Parking Lot LLD"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Vending machine: full implementation",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "GitHub Actions → deploy to ECS",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 42,
+   "date": "2026-11-08",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 2,
+   "week": 6,
+   "theme": "Review week 6",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Word Ladder",
+     "slug": "word-ladder",
+     "url": "https://leetcode.com/problems/word-ladder/",
+     "difficulty": "Hard",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Shortest Path in Binary Matrix",
+     "slug": "shortest-path-in-binary-matrix",
+     "url": "https://leetcode.com/problems/shortest-path-in-binary-matrix/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Open the Lock",
+     "slug": "open-the-lock",
+     "url": "https://leetcode.com/problems/open-the-lock/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "Revise scheduling, hashing, coordination",
+    "points": [
+     "Revise scheduling, hashing and coordination",
+     "Explain consistent hashing out loud",
+     "List weak spots"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: Parking Lot, Elevator, State",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Clean up, check billing",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 43,
+   "date": "2026-11-09",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 2,
+   "week": 7,
+   "theme": "Search",
+   "dsa": {
+    "pattern": "Trie",
+    "tip": "Each node = one character with children map + end flag; prefix queries become O(length)."
+   },
+   "leetcode": [
+    {
+     "name": "Implement Trie (Prefix Tree)",
+     "slug": "implement-trie-prefix-tree",
+     "url": "https://leetcode.com/problems/implement-trie-prefix-tree/",
+     "difficulty": "Medium",
+     "pattern": "Trie"
+    },
+    {
+     "name": "Design Add and Search Words Data Structure",
+     "slug": "design-add-and-search-words-data-structure",
+     "url": "https://leetcode.com/problems/design-add-and-search-words-data-structure/",
+     "difficulty": "Medium",
+     "pattern": "Trie"
+    },
+    {
+     "name": "Longest Common Prefix",
+     "slug": "longest-common-prefix",
+     "url": "https://leetcode.com/problems/longest-common-prefix/",
+     "difficulty": "Easy",
+     "pattern": "Trie"
+    }
+   ],
+   "hld": {
+    "topic": "Typeahead / autocomplete",
+    "points": [
+     "Typeahead: prefix → top suggestions",
+     "Trie with top-K cached per node, or search index",
+     "Update ranking offline, serve from memory"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Trie design",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "OpenSearch overview",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 44,
+   "date": "2026-11-10",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 2,
+   "week": 7,
+   "theme": "Pagination",
+   "dsa": {
+    "pattern": "Trie",
+    "tip": "Each node = one character with children map + end flag; prefix queries become O(length)."
+   },
+   "leetcode": [
+    {
+     "name": "Word Search II",
+     "slug": "word-search-ii",
+     "url": "https://leetcode.com/problems/word-search-ii/",
+     "difficulty": "Hard",
+     "pattern": "Trie"
+    },
+    {
+     "name": "Word Search",
+     "slug": "word-search",
+     "url": "https://leetcode.com/problems/word-search/",
+     "difficulty": "Medium",
+     "pattern": "Trie"
+    },
+    {
+     "name": "Search Suggestions System",
+     "slug": "search-suggestions-system",
+     "url": "https://leetcode.com/problems/search-suggestions-system/",
+     "difficulty": "Medium",
+     "pattern": "Trie"
+    }
+   ],
+   "hld": {
+    "topic": "Offset vs cursor pagination",
+    "points": [
+     "Offset pagination is simple but slow and unstable on big tables",
+     "Cursor pagination uses the last seen key",
+     "Return next-cursor tokens"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "BookMyShow part 1: entities",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "DynamoDB queries and pagination",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 45,
+   "date": "2026-11-11",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 2,
+   "week": 7,
+   "theme": "Concurrency",
+   "dsa": {
+    "pattern": "Intervals",
+    "tip": "Sort by start (or end for greedy removal), then merge or compare neighbours."
+   },
+   "leetcode": [
+    {
+     "name": "Merge Intervals",
+     "slug": "merge-intervals",
+     "url": "https://leetcode.com/problems/merge-intervals/",
+     "difficulty": "Medium",
+     "pattern": "Intervals"
+    },
+    {
+     "name": "Insert Interval",
+     "slug": "insert-interval",
+     "url": "https://leetcode.com/problems/insert-interval/",
+     "difficulty": "Medium",
+     "pattern": "Intervals"
+    },
+    {
+     "name": "Non-overlapping Intervals",
+     "slug": "non-overlapping-intervals",
+     "url": "https://leetcode.com/problems/non-overlapping-intervals/",
+     "difficulty": "Medium",
+     "pattern": "Intervals"
+    }
+   ],
+   "hld": {
+    "topic": "Optimistic vs pessimistic locking, distributed locks",
+    "points": [
+     "Optimistic locking: version check on write",
+     "Pessimistic locking: lock first, then write",
+     "Distributed locks with Redis and expiry"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "BookMyShow part 2: seat locking",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "DynamoDB conditional writes",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 46,
+   "date": "2026-11-12",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 2,
+   "week": 7,
+   "theme": "Real-time",
+   "dsa": {
+    "pattern": "Intervals",
+    "tip": "Sort by start (or end for greedy removal), then merge or compare neighbours."
+   },
+   "leetcode": [
+    {
+     "name": "Minimum Number of Arrows to Burst Balloons",
+     "slug": "minimum-number-of-arrows-to-burst-balloons",
+     "url": "https://leetcode.com/problems/minimum-number-of-arrows-to-burst-balloons/",
+     "difficulty": "Medium",
+     "pattern": "Intervals"
+    },
+    {
+     "name": "Interval List Intersections",
+     "slug": "interval-list-intersections",
+     "url": "https://leetcode.com/problems/interval-list-intersections/",
+     "difficulty": "Medium",
+     "pattern": "Intervals"
+    },
+    {
+     "name": "My Calendar I",
+     "slug": "my-calendar-i",
+     "url": "https://leetcode.com/problems/my-calendar-i/",
+     "difficulty": "Medium",
+     "pattern": "Intervals"
+    }
+   ],
+   "hld": {
+    "topic": "Polling, long polling, WebSockets",
+    "points": [
+     "Polling vs long polling vs WebSockets vs SSE",
+     "Connection servers + a pub/sub backbone",
+     "Presence and reconnect handling"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Chat LLD: user, room, message",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "API Gateway WebSockets",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 47,
+   "date": "2026-11-13",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 2,
+   "week": 7,
+   "theme": "Estimation",
+   "dsa": {
+    "pattern": "Bit manipulation",
+    "tip": "x & (x-1) drops the lowest set bit; XOR cancels pairs; shifts read bits one by one."
+   },
+   "leetcode": [
+    {
+     "name": "Single Number",
+     "slug": "single-number",
+     "url": "https://leetcode.com/problems/single-number/",
+     "difficulty": "Easy",
+     "pattern": "Bit manipulation"
+    },
+    {
+     "name": "Number of 1 Bits",
+     "slug": "number-of-1-bits",
+     "url": "https://leetcode.com/problems/number-of-1-bits/",
+     "difficulty": "Easy",
+     "pattern": "Bit manipulation"
+    },
+    {
+     "name": "Counting Bits",
+     "slug": "counting-bits",
+     "url": "https://leetcode.com/problems/counting-bits/",
+     "difficulty": "Easy",
+     "pattern": "Bit manipulation"
+    }
+   ],
+   "hld": {
+    "topic": "Back-of-envelope estimation",
+    "points": [
+     "Users → requests/sec → storage/day → bandwidth",
+     "Round numbers: 1 day ≈ 100k seconds",
+     "Estimate peak = 2-3x average"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Splitwise part 1: entities",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "AWS pricing and cost optimization",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 48,
+   "date": "2026-11-14",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 2,
+   "week": 7,
+   "theme": "Build: chat app",
+   "dsa": {
+    "pattern": "Advanced graphs (Dijkstra / MST)",
+    "tip": "Weighted shortest path = Dijkstra with a min-heap; connect-all-cheaply = Prim/Kruskal."
+   },
+   "leetcode": [
+    {
+     "name": "Network Delay Time",
+     "slug": "network-delay-time",
+     "url": "https://leetcode.com/problems/network-delay-time/",
+     "difficulty": "Medium",
+     "pattern": "Advanced graphs (Dijkstra / MST)"
+    },
+    {
+     "name": "Min Cost to Connect All Points",
+     "slug": "min-cost-to-connect-all-points",
+     "url": "https://leetcode.com/problems/min-cost-to-connect-all-points/",
+     "difficulty": "Medium",
+     "pattern": "Advanced graphs (Dijkstra / MST)"
+    },
+    {
+     "name": "Cheapest Flights Within K Stops",
+     "slug": "cheapest-flights-within-k-stops",
+     "url": "https://leetcode.com/problems/cheapest-flights-within-k-stops/",
+     "difficulty": "Medium",
+     "pattern": "Advanced graphs (Dijkstra / MST)"
+    }
+   ],
+   "hld": {
+    "topic": "Design a basic chat app",
+    "points": [
+     "1:1 and group chat over WebSockets",
+     "Message store, delivery and read receipts",
+     "Fan-out on write for groups"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Splitwise: full implementation",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Deploy a WebSocket/SignalR demo",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 49,
+   "date": "2026-11-15",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 2,
+   "week": 7,
+   "theme": "Review week 7",
+   "dsa": {
+    "pattern": "Bit manipulation",
+    "tip": "x & (x-1) drops the lowest set bit; XOR cancels pairs; shifts read bits one by one."
+   },
+   "leetcode": [
+    {
+     "name": "Reverse Bits",
+     "slug": "reverse-bits",
+     "url": "https://leetcode.com/problems/reverse-bits/",
+     "difficulty": "Easy",
+     "pattern": "Bit manipulation"
+    },
+    {
+     "name": "Missing Number",
+     "slug": "missing-number",
+     "url": "https://leetcode.com/problems/missing-number/",
+     "difficulty": "Easy",
+     "pattern": "Bit manipulation"
+    },
+    {
+     "name": "Sum of Two Integers",
+     "slug": "sum-of-two-integers",
+     "url": "https://leetcode.com/problems/sum-of-two-integers/",
+     "difficulty": "Medium",
+     "pattern": "Bit manipulation"
+    }
+   ],
+   "hld": {
+    "topic": "Revise search, concurrency, real-time",
+    "points": [
+     "Revise search, concurrency and real-time",
+     "Explain locking choices out loud",
+     "List weak spots"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: Trie, BookMyShow, Chat, Splitwise",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "Clean up, check billing",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 50,
+   "date": "2026-11-16",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 2,
+   "week": 8,
+   "theme": "Phase 2 checkpoint",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Climbing Stairs",
+     "slug": "climbing-stairs",
+     "url": "https://leetcode.com/problems/climbing-stairs/",
+     "difficulty": "Easy",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Min Cost Climbing Stairs",
+     "slug": "min-cost-climbing-stairs",
+     "url": "https://leetcode.com/problems/min-cost-climbing-stairs/",
+     "difficulty": "Easy",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "House Robber",
+     "slug": "house-robber",
+     "url": "https://leetcode.com/problems/house-robber/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Notification system v2: retries, preferences, rate limits",
+    "points": [
+     "Notification v2: retries, preferences, rate limits, templates",
+     "Priorities and quiet hours",
+     "Checkpoint: whiteboard it in 25 minutes"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Logger framework LLD",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "AWS",
+    "topic": "AWS Cloud Practitioner full mock",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": [
+    "Solve 1 tree, 1 graph and 1 heap medium in 75 minutes",
+    "Whiteboard notification system v2 in 25 minutes",
+    "Implement one classic LLD (Parking Lot or Splitwise) end to end in 60 minutes",
+    "AWS Cloud Practitioner full mock: 75%+"
+   ]
+  },
+  {
+   "day": 51,
+   "date": "2026-11-17",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 3,
+   "week": 8,
+   "theme": "Azure basics",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "House Robber II",
+     "slug": "house-robber-ii",
+     "url": "https://leetcode.com/problems/house-robber-ii/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Longest Palindromic Substring",
+     "slug": "longest-palindromic-substring",
+     "url": "https://leetcode.com/problems/longest-palindromic-substring/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Palindromic Substrings",
+     "slug": "palindromic-substrings",
+     "url": "https://leetcode.com/problems/palindromic-substrings/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Estimation practice on a real system",
+    "points": [
+     "Estimate a real system you use (e.g. WhatsApp) end to end",
+     "QPS, storage, bandwidth, servers",
+     "Say assumptions out loud"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Snake and Ladder LLD",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure subscriptions, resource groups, regions (vs AWS)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 52,
+   "date": "2026-11-18",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 3,
+   "week": 8,
+   "theme": "Identity",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Decode Ways",
+     "slug": "decode-ways",
+     "url": "https://leetcode.com/problems/decode-ways/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Coin Change",
+     "slug": "coin-change",
+     "url": "https://leetcode.com/problems/coin-change/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Maximum Product Subarray",
+     "slug": "maximum-product-subarray",
+     "url": "https://leetcode.com/problems/maximum-product-subarray/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Design Pastebin",
+    "points": [
+     "Pastebin: write once, read many",
+     "Object storage for content, DB for metadata",
+     "Expiry, access control, caching"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Tic-Tac-Toe LLD",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Entra ID and RBAC (vs IAM)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 53,
+   "date": "2026-11-19",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 3,
+   "week": 8,
+   "theme": "Compute",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Word Break",
+     "slug": "word-break",
+     "url": "https://leetcode.com/problems/word-break/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Longest Increasing Subsequence",
+     "slug": "longest-increasing-subsequence",
+     "url": "https://leetcode.com/problems/longest-increasing-subsequence/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Partition Equal Subset Sum",
+     "slug": "partition-equal-subset-sum",
+     "url": "https://leetcode.com/problems/partition-equal-subset-sum/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Design a basic key-value store",
+    "points": [
+     "Key-value store API: get, put, delete with TTL",
+     "Partitioning + replication + consistency level",
+     "Hinted handoff and read repair (idea level)"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "In-memory KV store with TTL",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure VMs, Scale Sets, Load Balancer (vs EC2/ASG/ELB)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 54,
+   "date": "2026-11-20",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 3,
+   "week": 8,
+   "theme": "Storage",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Fibonacci Number",
+     "slug": "fibonacci-number",
+     "url": "https://leetcode.com/problems/fibonacci-number/",
+     "difficulty": "Easy",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "N-th Tribonacci Number",
+     "slug": "n-th-tribonacci-number",
+     "url": "https://leetcode.com/problems/n-th-tribonacci-number/",
+     "difficulty": "Easy",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Pascal's Triangle",
+     "slug": "pascals-triangle",
+     "url": "https://leetcode.com/problems/pascals-triangle/",
+     "difficulty": "Easy",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Revise caching + CDN",
+    "points": [
+     "Revise caching strategies and CDNs",
+     "Re-draw cache-aside with invalidation",
+     "Map CloudFront → Front Door"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Revise LRU",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Blob Storage + Front Door (vs S3/CloudFront)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 55,
+   "date": "2026-11-21",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 3,
+   "week": 8,
+   "theme": "Build: .NET on Azure",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Unique Paths",
+     "slug": "unique-paths",
+     "url": "https://leetcode.com/problems/unique-paths/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Longest Common Subsequence",
+     "slug": "longest-common-subsequence",
+     "url": "https://leetcode.com/problems/longest-common-subsequence/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Best Time to Buy and Sell Stock with Cooldown",
+     "slug": "best-time-to-buy-and-sell-stock-with-cooldown",
+     "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-with-cooldown/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Design a basic web crawler",
+    "points": [
+     "Web crawler: URL frontier, fetchers, parser, dedupe",
+     "Politeness per domain, robots.txt",
+     "Store content and follow links breadth-first"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Cache with pluggable eviction (LRU/LFU strategy)",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Deploy your .NET API to App Service + Azure PostgreSQL",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 56,
+   "date": "2026-11-22",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 3,
+   "week": 8,
+   "theme": "Review week 8",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Coin Change II",
+     "slug": "coin-change-ii",
+     "url": "https://leetcode.com/problems/coin-change-ii/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Target Sum",
+     "slug": "target-sum",
+     "url": "https://leetcode.com/problems/target-sum/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Interleaving String",
+     "slug": "interleaving-string",
+     "url": "https://leetcode.com/problems/interleaving-string/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Revise Phase 3 so far",
+    "points": [
+     "Revise Phase 3 so far",
+     "Re-draw KV store and crawler",
+     "List weak spots"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: KV store, eviction strategies",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Clean up Azure resources",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 57,
+   "date": "2026-11-23",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 3,
+   "week": 9,
+   "theme": "Distributed rate limiting",
+   "dsa": {
+    "pattern": "Dynamic programming",
+    "tip": "Define dp[i] in words, write the recurrence, fix the base case, then optimise space."
+   },
+   "leetcode": [
+    {
+     "name": "Edit Distance",
+     "slug": "edit-distance",
+     "url": "https://leetcode.com/problems/edit-distance/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Minimum Path Sum",
+     "slug": "minimum-path-sum",
+     "url": "https://leetcode.com/problems/minimum-path-sum/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    },
+    {
+     "name": "Maximal Square",
+     "slug": "maximal-square",
+     "url": "https://leetcode.com/problems/maximal-square/",
+     "difficulty": "Medium",
+     "pattern": "Dynamic programming"
+    }
+   ],
+   "hld": {
+    "topic": "Rate limiter v2 with Redis",
+    "points": [
+     "Distributed rate limiting with Redis INCR / sliding window",
+     "Atomicity with Lua scripts",
+     "Fail open vs fail closed"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Add sliding window to your rate limiter",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure Cache for Redis",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 58,
+   "date": "2026-11-24",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 3,
+   "week": 9,
+   "theme": "Scheduling on Azure",
+   "dsa": {
+    "pattern": "Backtracking",
+    "tip": "Choose → explore → un-choose; prune early; sort first when duplicates must be skipped."
+   },
+   "leetcode": [
+    {
+     "name": "Subsets",
+     "slug": "subsets",
+     "url": "https://leetcode.com/problems/subsets/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    },
+    {
+     "name": "Combination Sum",
+     "slug": "combination-sum",
+     "url": "https://leetcode.com/problems/combination-sum/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    },
+    {
+     "name": "Permutations",
+     "slug": "permutations",
+     "url": "https://leetcode.com/problems/permutations/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    }
+   ],
+   "hld": {
+    "topic": "Design a job scheduler",
+    "points": [
+     "Job scheduler: API, store, dispatcher, workers",
+     "Exactly-once-ish with leases and idempotent jobs",
+     "Retries, backoff, dead letters"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Task scheduler LLD: priority queue + Command",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure Functions + timer triggers (vs Lambda/EventBridge)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 59,
+   "date": "2026-11-25",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 3,
+   "week": 9,
+   "theme": "Event-driven",
+   "dsa": {
+    "pattern": "Backtracking",
+    "tip": "Choose → explore → un-choose; prune early; sort first when duplicates must be skipped."
+   },
+   "leetcode": [
+    {
+     "name": "Subsets II",
+     "slug": "subsets-ii",
+     "url": "https://leetcode.com/problems/subsets-ii/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    },
+    {
+     "name": "Combination Sum II",
+     "slug": "combination-sum-ii",
+     "url": "https://leetcode.com/problems/combination-sum-ii/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    },
+    {
+     "name": "Palindrome Partitioning",
+     "slug": "palindrome-partitioning",
+     "url": "https://leetcode.com/problems/palindrome-partitioning/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    }
+   ],
+   "hld": {
+    "topic": "Design an event-driven order system",
+    "points": [
+     "Order service emits events; payment, inventory and shipping react",
+     "Saga pattern for multi-step transactions",
+     "Outbox pattern to publish reliably"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Order management with State pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Service Bus queues and topics (vs SQS/SNS)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 60,
+   "date": "2026-11-26",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 3,
+   "week": 9,
+   "theme": "File storage",
+   "dsa": {
+    "pattern": "Backtracking",
+    "tip": "Choose → explore → un-choose; prune early; sort first when duplicates must be skipped."
+   },
+   "leetcode": [
+    {
+     "name": "Letter Combinations of a Phone Number",
+     "slug": "letter-combinations-of-a-phone-number",
+     "url": "https://leetcode.com/problems/letter-combinations-of-a-phone-number/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    },
+    {
+     "name": "N-Queens",
+     "slug": "n-queens",
+     "url": "https://leetcode.com/problems/n-queens/",
+     "difficulty": "Hard",
+     "pattern": "Backtracking"
+    },
+    {
+     "name": "Combinations",
+     "slug": "combinations",
+     "url": "https://leetcode.com/problems/combinations/",
+     "difficulty": "Medium",
+     "pattern": "Backtracking"
+    }
+   ],
+   "hld": {
+    "topic": "Design Dropbox (basic)",
+    "points": [
+     "Dropbox: chunked upload, dedupe, sync",
+     "Metadata DB vs block storage",
+     "Conflict resolution across devices"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "File system LLD with Composite pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Storage accounts and SAS tokens",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 61,
+   "date": "2026-11-27",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 3,
+   "week": 9,
+   "theme": "Monitoring",
+   "dsa": {
+    "pattern": "Greedy",
+    "tip": "Prove the local choice never hurts (exchange argument) before trusting it."
+   },
+   "leetcode": [
+    {
+     "name": "Assign Cookies",
+     "slug": "assign-cookies",
+     "url": "https://leetcode.com/problems/assign-cookies/",
+     "difficulty": "Easy",
+     "pattern": "Greedy"
+    },
+    {
+     "name": "Lemonade Change",
+     "slug": "lemonade-change",
+     "url": "https://leetcode.com/problems/lemonade-change/",
+     "difficulty": "Easy",
+     "pattern": "Greedy"
+    },
+    {
+     "name": "Best Time to Buy and Sell Stock II",
+     "slug": "best-time-to-buy-and-sell-stock-ii",
+     "url": "https://leetcode.com/problems/best-time-to-buy-and-sell-stock-ii/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    }
+   ],
+   "hld": {
+    "topic": "Revise estimation",
+    "points": [
+     "Revise estimation",
+     "Two quick estimates from memory",
+     "Check your numbers against known systems"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Composite pattern recap",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure Monitor + App Insights (vs CloudWatch)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 62,
+   "date": "2026-11-28",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 3,
+   "week": 9,
+   "theme": "Build: your project story",
+   "dsa": {
+    "pattern": "Greedy",
+    "tip": "Prove the local choice never hurts (exchange argument) before trusting it."
+   },
+   "leetcode": [
+    {
+     "name": "Jump Game",
+     "slug": "jump-game",
+     "url": "https://leetcode.com/problems/jump-game/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    },
+    {
+     "name": "Jump Game II",
+     "slug": "jump-game-ii",
+     "url": "https://leetcode.com/problems/jump-game-ii/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    },
+    {
+     "name": "Gas Station",
+     "slug": "gas-station",
+     "url": "https://leetcode.com/problems/gas-station/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    }
+   ],
+   "hld": {
+    "topic": "Explain your traffic platform: data flow, queues, scale",
+    "points": [
+     "Tell your traffic platform story: data flow, queues, scale",
+     "What you would change at 10x",
+     "Practise the 5-minute version"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Timed mock: Parking Lot in 45 min",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Container Apps / AKS + ACR (vs ECS/ECR)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 63,
+   "date": "2026-11-29",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 3,
+   "week": 9,
+   "theme": "Review week 9",
+   "dsa": {
+    "pattern": "Greedy",
+    "tip": "Prove the local choice never hurts (exchange argument) before trusting it."
+   },
+   "leetcode": [
+    {
+     "name": "Partition Labels",
+     "slug": "partition-labels",
+     "url": "https://leetcode.com/problems/partition-labels/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    },
+    {
+     "name": "Hand of Straights",
+     "slug": "hand-of-straights",
+     "url": "https://leetcode.com/problems/hand-of-straights/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    },
+    {
+     "name": "Valid Parenthesis String",
+     "slug": "valid-parenthesis-string",
+     "url": "https://leetcode.com/problems/valid-parenthesis-string/",
+     "difficulty": "Medium",
+     "pattern": "Greedy"
+    }
+   ],
+   "hld": {
+    "topic": "Revise all HLD case studies",
+    "points": [
+     "Revise all HLD case studies",
+     "One template: requirements → estimate → API → data → design → scale",
+     "List weak spots"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Recap: Composite, Command, State",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Clean up Azure resources",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 64,
+   "date": "2026-11-30",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 3,
+   "week": 10,
+   "theme": "Leaderboards",
+   "dsa": {
+    "pattern": "Hashing",
+    "tip": "Map each item to a canonical key (sorted string, pattern, count signature) and compare keys."
+   },
+   "leetcode": [
+    {
+     "name": "Isomorphic Strings",
+     "slug": "isomorphic-strings",
+     "url": "https://leetcode.com/problems/isomorphic-strings/",
+     "difficulty": "Easy",
+     "pattern": "Hashing"
+    },
+    {
+     "name": "Word Pattern",
+     "slug": "word-pattern",
+     "url": "https://leetcode.com/problems/word-pattern/",
+     "difficulty": "Easy",
+     "pattern": "Hashing"
+    },
+    {
+     "name": "Determine if Two Strings Are Close",
+     "slug": "determine-if-two-strings-are-close",
+     "url": "https://leetcode.com/problems/determine-if-two-strings-are-close/",
+     "difficulty": "Medium",
+     "pattern": "Hashing"
+    }
+   ],
+   "hld": {
+    "topic": "Design a leaderboard",
+    "points": [
+     "Leaderboard: Redis sorted sets",
+     "Top-N and rank of a user",
+     "Sharded leaderboards for huge scale"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Leaderboard LLD with sorted structures",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Cosmos DB and partition keys (vs DynamoDB)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 65,
+   "date": "2026-12-01",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 3,
+   "week": 10,
+   "theme": "Social feed",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Is Graph Bipartite?",
+     "slug": "is-graph-bipartite",
+     "url": "https://leetcode.com/problems/is-graph-bipartite/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Evaluate Division",
+     "slug": "evaluate-division",
+     "url": "https://leetcode.com/problems/evaluate-division/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Find Eventual Safe States",
+     "slug": "find-eventual-safe-states",
+     "url": "https://leetcode.com/problems/find-eventual-safe-states/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "Design Instagram (upload + feed, basic)",
+    "points": [
+     "Instagram: upload pipeline + feed",
+     "Fan-out on write vs on read, celebrity problem",
+     "Media on CDN, metadata in DB"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Posts, followers, feed classes",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Event Grid (vs EventBridge)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 66,
+   "date": "2026-12-02",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 3,
+   "week": 10,
+   "theme": "Messaging",
+   "dsa": {
+    "pattern": "Design data structures",
+    "tip": "Combine structures: HashMap for lookup + array/list for order or random access."
+   },
+   "leetcode": [
+    {
+     "name": "Insert Delete GetRandom O(1)",
+     "slug": "insert-delete-getrandom-o1",
+     "url": "https://leetcode.com/problems/insert-delete-getrandom-o1/",
+     "difficulty": "Medium",
+     "pattern": "Design data structures"
+    },
+    {
+     "name": "Design HashMap",
+     "slug": "design-hashmap",
+     "url": "https://leetcode.com/problems/design-hashmap/",
+     "difficulty": "Easy",
+     "pattern": "Design data structures"
+    },
+    {
+     "name": "Design HashSet",
+     "slug": "design-hashset",
+     "url": "https://leetcode.com/problems/design-hashset/",
+     "difficulty": "Easy",
+     "pattern": "Design data structures"
+    }
+   ],
+   "hld": {
+    "topic": "Design WhatsApp: 1:1 messages, delivery ticks",
+    "points": [
+     "WhatsApp: persistent connections, message queue per user",
+     "Sent / delivered / read ticks",
+     "Offline delivery and end-to-end encryption (idea level)"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Message delivery states with State pattern",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure SignalR Service",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 67,
+   "date": "2026-12-03",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 3,
+   "week": 10,
+   "theme": "Video",
+   "dsa": {
+    "pattern": "Arrays & matrix",
+    "tip": "In-place tricks: reverse segments, swap by index, use the first row/column as markers."
+   },
+   "leetcode": [
+    {
+     "name": "First Missing Positive",
+     "slug": "first-missing-positive",
+     "url": "https://leetcode.com/problems/first-missing-positive/",
+     "difficulty": "Hard",
+     "pattern": "Arrays & matrix"
+    },
+    {
+     "name": "Spiral Matrix",
+     "slug": "spiral-matrix",
+     "url": "https://leetcode.com/problems/spiral-matrix/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & matrix"
+    },
+    {
+     "name": "Set Matrix Zeroes",
+     "slug": "set-matrix-zeroes",
+     "url": "https://leetcode.com/problems/set-matrix-zeroes/",
+     "difficulty": "Medium",
+     "pattern": "Arrays & matrix"
+    }
+   ],
+   "hld": {
+    "topic": "Design YouTube (upload, transcode, stream; basic)",
+    "points": [
+     "YouTube: upload, transcode to many resolutions, stream via CDN",
+     "Adaptive bitrate streaming",
+     "Metadata, views counting, recommendations (idea level)"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Transcoding pipeline with Chain of Responsibility",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Blob + Functions processing pipeline",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 68,
+   "date": "2026-12-04",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 3,
+   "week": 10,
+   "theme": "Cheat sheets",
+   "dsa": {
+    "pattern": "Math & strings",
+    "tip": "Handle signs, overflow and edge characters first; build results digit by digit."
+   },
+   "leetcode": [
+    {
+     "name": "Palindrome Number",
+     "slug": "palindrome-number",
+     "url": "https://leetcode.com/problems/palindrome-number/",
+     "difficulty": "Easy",
+     "pattern": "Math & strings"
+    },
+    {
+     "name": "Roman to Integer",
+     "slug": "roman-to-integer",
+     "url": "https://leetcode.com/problems/roman-to-integer/",
+     "difficulty": "Easy",
+     "pattern": "Math & strings"
+    },
+    {
+     "name": "Length of Last Word",
+     "slug": "length-of-last-word",
+     "url": "https://leetcode.com/problems/length-of-last-word/",
+     "difficulty": "Easy",
+     "pattern": "Math & strings"
+    }
+   ],
+   "hld": {
+    "topic": "One-page template for any HLD answer",
+    "points": [
+     "One-page HLD answer template",
+     "Checklist: requirements, numbers, API, schema, diagram, bottlenecks",
+     "Practise it on one random system"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "One-page pattern cheat sheet",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "AZ-900 practice test",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 69,
+   "date": "2026-12-05",
+   "weekday": "Sat",
+   "type": "Build Saturday",
+   "phase": 3,
+   "week": 10,
+   "theme": "Build: mocks",
+   "dsa": {
+    "pattern": "Kadane / subarrays",
+    "tip": "Best subarray ending here = max(x, best_ending_prev + x); keep a running global best."
+   },
+   "leetcode": [
+    {
+     "name": "Maximum Subarray",
+     "slug": "maximum-subarray",
+     "url": "https://leetcode.com/problems/maximum-subarray/",
+     "difficulty": "Medium",
+     "pattern": "Kadane / subarrays"
+    },
+    {
+     "name": "Maximum Sum Circular Subarray",
+     "slug": "maximum-sum-circular-subarray",
+     "url": "https://leetcode.com/problems/maximum-sum-circular-subarray/",
+     "difficulty": "Medium",
+     "pattern": "Kadane / subarrays"
+    },
+    {
+     "name": "Longest Subarray of 1's After Deleting One Element",
+     "slug": "longest-subarray-of-1s-after-deleting-one-element",
+     "url": "https://leetcode.com/problems/longest-subarray-of-1s-after-deleting-one-element/",
+     "difficulty": "Medium",
+     "pattern": "Kadane / subarrays"
+    }
+   ],
+   "hld": {
+    "topic": "Timed mock: design Uber (basic), out loud",
+    "points": [
+     "Timed mock: Uber basic, out loud, 45 min",
+     "Location updates, matching, trip state",
+     "Record and review one weak moment"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Timed mock: Elevator in 45 min",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "GitHub Actions → App Service",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 70,
+   "date": "2026-12-06",
+   "weekday": "Sun",
+   "type": "Review Sunday",
+   "phase": 3,
+   "week": 10,
+   "theme": "Review week 10",
+   "dsa": {
+    "pattern": "Math & strings",
+    "tip": "Handle signs, overflow and edge characters first; build results digit by digit."
+   },
+   "leetcode": [
+    {
+     "name": "String to Integer (atoi)",
+     "slug": "string-to-integer-atoi",
+     "url": "https://leetcode.com/problems/string-to-integer-atoi/",
+     "difficulty": "Medium",
+     "pattern": "Math & strings"
+    },
+    {
+     "name": "Multiply Strings",
+     "slug": "multiply-strings",
+     "url": "https://leetcode.com/problems/multiply-strings/",
+     "difficulty": "Medium",
+     "pattern": "Math & strings"
+    },
+    {
+     "name": "Integer to Roman",
+     "slug": "integer-to-roman",
+     "url": "https://leetcode.com/problems/integer-to-roman/",
+     "difficulty": "Medium",
+     "pattern": "Math & strings"
+    }
+   ],
+   "hld": {
+    "topic": "Revise weak areas from mocks",
+    "points": [
+     "Revise weak areas from the mocks",
+     "Redo one mock question in 20 minutes",
+     "List final gaps"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Revise weak areas from mocks",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Explain it out loud in 5 minutes, then write the one-line summary"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Clean up Azure resources",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 71,
+   "date": "2026-12-07",
+   "weekday": "Mon",
+   "type": "Office day",
+   "phase": 3,
+   "week": 11,
+   "theme": "Payments",
+   "dsa": {
+    "pattern": "Hashing",
+    "tip": "Map each item to a canonical key (sorted string, pattern, count signature) and compare keys."
+   },
+   "leetcode": [
+    {
+     "name": "Contains Duplicate II",
+     "slug": "contains-duplicate-ii",
+     "url": "https://leetcode.com/problems/contains-duplicate-ii/",
+     "difficulty": "Easy",
+     "pattern": "Hashing"
+    },
+    {
+     "name": "Summary Ranges",
+     "slug": "summary-ranges",
+     "url": "https://leetcode.com/problems/summary-ranges/",
+     "difficulty": "Easy",
+     "pattern": "Hashing"
+    },
+    {
+     "name": "Unique Number of Occurrences",
+     "slug": "unique-number-of-occurrences",
+     "url": "https://leetcode.com/problems/unique-number-of-occurrences/",
+     "difficulty": "Easy",
+     "pattern": "Hashing"
+    }
+   ],
+   "hld": {
+    "topic": "Design a payment system: idempotency, retries",
+    "points": [
+     "Payments: idempotency keys, retries, reconciliation",
+     "State machine: created → authorised → captured → refunded",
+     "Never lose or double-charge money"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Payment module: Strategy for payment methods",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Key Vault (vs Secrets Manager)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 72,
+   "date": "2026-12-08",
+   "weekday": "Tue",
+   "type": "Office day",
+   "phase": 3,
+   "week": 11,
+   "theme": "Booking",
+   "dsa": {
+    "pattern": "Graphs (BFS / DFS / union-find)",
+    "tip": "Grid or adjacency list; BFS for shortest steps, DFS for components, topo sort for dependencies."
+   },
+   "leetcode": [
+    {
+     "name": "Reorder Routes to Make All Paths Lead to the City Zero",
+     "slug": "reorder-routes-to-make-all-paths-lead-to-the-city-zero",
+     "url": "https://leetcode.com/problems/reorder-routes-to-make-all-paths-lead-to-the-city-zero/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Keys and Rooms",
+     "slug": "keys-and-rooms",
+     "url": "https://leetcode.com/problems/keys-and-rooms/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    },
+    {
+     "name": "Nearest Exit from Entrance in Maze",
+     "slug": "nearest-exit-from-entrance-in-maze",
+     "url": "https://leetcode.com/problems/nearest-exit-from-entrance-in-maze/",
+     "difficulty": "Medium",
+     "pattern": "Graphs (BFS / DFS / union-find)"
+    }
+   ],
+   "hld": {
+    "topic": "Design a ticket booking system",
+    "points": [
+     "Ticket booking: seat map, temporary holds, payment",
+     "Locking seats with expiry",
+     "Handling a flash sale"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Timed mock: BookMyShow",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Azure PostgreSQL Flexible Server (vs RDS)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 73,
+   "date": "2026-12-09",
+   "weekday": "Wed",
+   "type": "Office day",
+   "phase": 3,
+   "week": 11,
+   "theme": "Mock day",
+   "dsa": {
+    "pattern": "Mixed interview set (LeetCode 75)",
+    "tip": "Name the pattern in the first 2 minutes, say the brute force, then optimise out loud."
+   },
+   "leetcode": [
+    {
+     "name": "Merge Strings Alternately",
+     "slug": "merge-strings-alternately",
+     "url": "https://leetcode.com/problems/merge-strings-alternately/",
+     "difficulty": "Easy",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    },
+    {
+     "name": "Greatest Common Divisor of Strings",
+     "slug": "greatest-common-divisor-of-strings",
+     "url": "https://leetcode.com/problems/greatest-common-divisor-of-strings/",
+     "difficulty": "Easy",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    },
+    {
+     "name": "Can Place Flowers",
+     "slug": "can-place-flowers",
+     "url": "https://leetcode.com/problems/can-place-flowers/",
+     "difficulty": "Easy",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    }
+   ],
+   "hld": {
+    "topic": "Timed mock: URL shortener",
+    "points": [
+     "Timed mock: URL shortener, 35 min",
+     "Hit every section of your template",
+     "Score yourself 1-5 per section"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Timed mock: Splitwise",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "VNet and NSG (vs VPC and security groups)",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 74,
+   "date": "2026-12-10",
+   "weekday": "Thu",
+   "type": "Office day",
+   "phase": 3,
+   "week": 11,
+   "theme": "Tell your story",
+   "dsa": {
+    "pattern": "Mixed interview set (LeetCode 75)",
+    "tip": "Name the pattern in the first 2 minutes, say the brute force, then optimise out loud."
+   },
+   "leetcode": [
+    {
+     "name": "Kids With the Greatest Number of Candies",
+     "slug": "kids-with-the-greatest-number-of-candies",
+     "url": "https://leetcode.com/problems/kids-with-the-greatest-number-of-candies/",
+     "difficulty": "Easy",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    },
+    {
+     "name": "Reverse Vowels of a String",
+     "slug": "reverse-vowels-of-a-string",
+     "url": "https://leetcode.com/problems/reverse-vowels-of-a-string/",
+     "difficulty": "Easy",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    },
+    {
+     "name": "Reverse Words in a String",
+     "slug": "reverse-words-in-a-string",
+     "url": "https://leetcode.com/problems/reverse-words-in-a-string/",
+     "difficulty": "Medium",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    }
+   ],
+   "hld": {
+    "topic": "Explain your project in 5 min; record yourself",
+    "points": [
+     "Tell your project story in 5 minutes; record it",
+     "Problem → design → your part → impact numbers",
+     "Prepare 3 follow-up answers"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Explain design choices in your own codebase",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Build an AWS ↔ Azure mapping table",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": null
+  },
+  {
+   "day": 75,
+   "date": "2026-12-11",
+   "weekday": "Fri",
+   "type": "Light Friday",
+   "phase": 3,
+   "week": 11,
+   "theme": "Day 75: finish line",
+   "dsa": {
+    "pattern": "Mixed interview set (LeetCode 75)",
+    "tip": "Name the pattern in the first 2 minutes, say the brute force, then optimise out loud."
+   },
+   "leetcode": [
+    {
+     "name": "String Compression",
+     "slug": "string-compression",
+     "url": "https://leetcode.com/problems/string-compression/",
+     "difficulty": "Medium",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    },
+    {
+     "name": "Max Number of K-Sum Pairs",
+     "slug": "max-number-of-k-sum-pairs",
+     "url": "https://leetcode.com/problems/max-number-of-k-sum-pairs/",
+     "difficulty": "Medium",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    },
+    {
+     "name": "Increasing Triplet Subsequence",
+     "slug": "increasing-triplet-subsequence",
+     "url": "https://leetcode.com/problems/increasing-triplet-subsequence/",
+     "difficulty": "Medium",
+     "pattern": "Mixed interview set (LeetCode 75)"
+    }
+   ],
+   "hld": {
+    "topic": "Final mock: notification system",
+    "points": [
+     "Final mock: notification system",
+     "Final LLD mock: Parking Lot",
+     "Write what you will keep doing after Day 75"
+    ],
+    "when": "Lunch, 25–30 min (office topic)"
+   },
+   "lld": {
+    "topic": "Final mock: Parking Lot",
+    "when": "9:00 pm, 30 min",
+    "deliverable": "Working C# code pushed to your practice repo, with one unit test"
+   },
+   "cloud": {
+    "provider": "Azure",
+    "topic": "Write resume bullets for your cloud projects",
+    "when": "9:30 pm, 30 min",
+    "note": "Delete what you created and check the billing alarm."
+   },
+   "checkpoint": [
+    "Two timed mocks (HLD + LLD) completed and scored",
+    "225 LeetCode problems attempted; every ↻ revisit re-solved",
+    "Project story recorded in 5 minutes",
+    "Resume bullets written for AWS and Azure projects"
+   ]
+  }
+ ]
+}

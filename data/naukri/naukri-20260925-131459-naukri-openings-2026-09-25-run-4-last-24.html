@@ -1,0 +1,432 @@
+<title>Job Openings 2026-09-25 r4 - Last 24h</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #f2f4f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --line: #dde2e9;
+    --ink: #161b22;
+    --muted: #5b6675;
+    --accent: #1f5c8b;
+    --accent-soft: #e8f0f7;
+    --accent-on: #ffffff;
+    --new: #a15c07;
+    --new-soft: #fdf3e3;
+    --good: #166534;
+    --good-soft: #e6f4ea;
+    --shadow: 0 1px 2px rgba(22, 27, 34, .06), 0 4px 12px rgba(22, 27, 34, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1218;
+      --surface: #161c25;
+      --surface-2: #1b222c;
+      --line: #2a3441;
+      --ink: #e7ecf3;
+      --muted: #8d99a9;
+      --accent: #6aa9d8;
+      --accent-soft: #17293a;
+      --accent-on: #0e1218;
+      --new: #e0a54a;
+      --new-soft: #2e2413;
+      --good: #6ec48c;
+      --good-soft: #14291c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1218;
+    --surface: #161c25;
+    --surface-2: #1b222c;
+    --line: #2a3441;
+    --ink: #e7ecf3;
+    --muted: #8d99a9;
+    --accent: #6aa9d8;
+    --accent-soft: #17293a;
+    --accent-on: #0e1218;
+    --new: #e0a54a;
+    --new-soft: #2e2413;
+    --good: #6ec48c;
+    --good-soft: #14291c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; font-size: clamp(26px, 4vw, 36px);
+    margin: 0; letter-spacing: -.02em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); max-width: 62ch; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 116px; box-shadow: var(--shadow);
+  }
+  .stat b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 24px; font-weight: 500; line-height: 1.15;
+  }
+  .stat span {
+    font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .stat.is-applied b { color: var(--good); }
+  .stat.is-new b { color: var(--new); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--bg); padding: 12px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .chip {
+    font: 500 13px/1 Archivo, sans-serif;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 8px 13px; border-radius: 999px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1 1 auto; }
+  .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+  .bar-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding-right: 2px;
+  }
+  .search {
+    font: 400 14px "Source Sans 3", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 12px; min-width: 200px;
+  }
+
+  .group-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
+  }
+  .group-head h2 {
+    font-family: Archivo, sans-serif; font-size: 15px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin: 0;
+  }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--muted); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px 1fr 172px 120px 92px;
+    gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px; margin-bottom: 7px; box-shadow: var(--shadow);
+  }
+  .row.done { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--line)); }
+  .row.done .title a { text-decoration: line-through; opacity: .62; }
+  .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 15.5px; line-height: 1.3; }
+  .title a { color: var(--ink); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .company { color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
+  .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
+  .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
+
+  .meta { font-size: 13px; color: var(--muted); }
+  .meta div + div { margin-top: 3px; }
+  .rank {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 17px; text-align: right; color: var(--accent);
+  }
+  .rank small { display: block; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  .empty { color: var(--muted); padding: 26px 0; text-align: center; }
+
+  /* Shared with the interview-prep page, which links back here. */
+  nav.top {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  }
+  nav.top a, nav.top span.here {
+    font: 600 13.5px/1 Archivo, sans-serif; text-decoration: none;
+    padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
+    border-radius: 6px 6px 0 0;
+  }
+  nav.top a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.top span.here { color: var(--ink); border-bottom-color: var(--accent); }
+  nav.top a.disabled { opacity: .45; pointer-events: none; }
+
+  /* Each scan of the day keeps its own page, so this is how you get back to
+     the 08:52 list from the 18:11 one. */
+  nav.runs {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+    margin: -14px 0 20px; font: 400 12.5px/1.6 "Source Sans 3", sans-serif;
+  }
+  nav.runs .label { color: var(--muted); margin-right: 2px; }
+  nav.runs a, nav.runs span.here {
+    padding: 3px 9px; border-radius: 999px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted);
+    font: 500 12.5px/1.6 "IBM Plex Mono", monospace;
+  }
+  nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
+  nav.runs .sep { color: var(--line); padding: 0 4px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 30px 1fr; }
+    .meta, .rank { grid-column: 2; text-align: left; }
+    .rank { font-size: 15px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="top">
+    <span class="here">Job Scanner</span>
+    <a href="../interview/interview-prep-2026-09-20-r1.html#jobs" class="">Top 10 Jobs</a>
+    <a href="../interview/interview-prep-2026-09-20-r1.html" class="">Interview Preparation (2026-09-20-r1)</a>
+    <a href="applications.html">Applications sent</a>
+  </nav>
+
+  <nav class="runs">
+    <span class="label">Today&rsquo;s scans</span>
+    <a href="openings-2026-09-25-r1.html">r1</a>
+    <a href="openings-2026-09-25-r2.html">r2</a>
+    <a href="openings-2026-09-25-r3.html">r3</a>
+    <span class="here">r4</span>
+    <span class="sep">|</span>
+    <a href="openings-2026-09-21-r6.html">09-21</a>
+    <a href="openings-2026-09-20-r8.html">09-20</a>
+    <a href="openings-2026-09-19-r9.html">09-19</a>
+    <a href="openings-2026-09-18-r19.html">09-18</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">2026-09-25 &middot; scan 4 &middot; All locations &middot; posted in the last 24 hours &middot; first seen today</div>
+    <h1>98 openings, 98 new today</h1>
+    <p class="sub">Every opening this scan found, remote first. Tick a row when you have applied &mdash; ticks are saved in this browser and carry across every day&rsquo;s page.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="s-total">0</b><span>Openings</span></div>
+    <div class="stat is-new"><b id="s-new">0</b><span>New today</span></div>
+    <div class="stat"><b id="s-remote">0</b><span>Remote</span></div>
+    <div class="stat is-applied"><b id="s-applied">0</b><span>Applied</span></div>
+    <div class="stat"><b id="s-left">0</b><span>Still to do</span></div>
+  </div>
+
+  <div class="bar">
+    <details class="fgrp" data-acc="openings.show" open><summary>Show</summary><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+    </span></details>
+    <details class="fgrp" data-acc="openings.posted" open><summary>Posted</summary><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></details>
+    <span class="spacer"></span>
+    <details class="fgrp" data-acc="openings.search" open><summary>Search</summary><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></details>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Generated 2026-09-25 from 38 Naukri and 60 LinkedIn listings.
+    Naukri scores are 0&ndash;100 across skills, title, experience, location and freshness.
+    LinkedIn shows title match only &mdash; its cards carry no skills or experience range, so the two are not the same measure.</p>
+    <p>Ticks are stored in this browser under <code>jobtracker.applied</code>. Clearing site data clears them.</p>
+    <p>47 listing(s) carry no posted date - LinkedIn shows &ldquo;Promoted&rdquo; where the date would be. The Posted filters hide those rather than guessing at their age.</p>
+  </footer>
+</div>
+
+<script id="data" type="application/json">[{"id": "linkedin:4471862437", "board": "LinkedIn", "title": "Full Stack Engineer", "company": "TaskVerse", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471862437/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470301233", "board": "LinkedIn", "title": "Full Stack Engineer", "company": "Zetheta Algorithms Private Limited", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470301233/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471867270", "board": "LinkedIn", "title": "Backend Developer", "company": "TaskVerse", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471867270/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471823648", "board": "LinkedIn", "title": "Full Stack Developer", "company": "Flexiple", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471823648/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470141347", "board": "LinkedIn", "title": "Software Engineer", "company": "Appinventiv", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470141347/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471870176", "board": "LinkedIn", "title": "Software Engineer – Backend", "company": "TaskVerse", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471870176/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470301552", "board": "LinkedIn", "title": "Full Stack Web Developer", "company": "internmo", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 60, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470301552/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470094805", "board": "LinkedIn", "title": "Full Stack Web Developer", "company": "internmo", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 60, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470094805/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:240926503706", "board": "Naukri", "title": "Full Stack Developer", "company": "iOceane", "location": "Remote", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-ioceane-branding-services-remote-2-to-5-years-240926503706", "remote": true, "easy": false, "note": "js", "ai": "Fit: Candidate has 1 year of experience with relevant tech stack (Java, Spring Boot, React.js) and is open to any tech stack, matching the job's requirements.  Gap: Candidate lacks specific full-stack web development experience and modern frameworks like Node.js, Express, or Python, which are critical for a Full Stack role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470070456", "board": "LinkedIn", "title": "Senior Full Stack AI Product Engineer - Agentic AI", "company": "Talentgigs", "location": "Chennai, Tamil Nadu, India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 54, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470070456/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471822733", "board": "LinkedIn", "title": "4423- Software Development Engineer-II Backend", "company": "Innovaccer", "location": "Noida, Uttar Pradesh, India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 53, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471822733/", "remote": true, "easy": false, "note": "3 connections work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:240926042600", "board": "Naukri", "title": "Fullstack Web Developer", "company": "Infotech Launch Chattisgarh", "location": "Remote", "salary": "Not disclosed", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 49.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-fullstack-web-developer-infotech-launch-chattisgarh-kolkata-1-to-4-years-240926042600", "remote": true, "easy": false, "note": "react, MySQL", "ai": "Fit: Candidate has 1 year of experience with .NET, Spring Boot, and React.js, aligning well with the required stack. Strong DSA and full-stack skills suggest capability to handle complex web applications.  Gap: Candidate lacks specific experience with AI tools, debugging, MongoDB, and PostgreSQL, which are critical for this role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471877395", "board": "LinkedIn", "title": "Senior Backend Engineer - Java (6-month contract)", "company": "Proximity Works", "location": "India (Remote)", "salary": "", "experience": "", "posted": "3 hours ago", "age": 0, "rank": 47, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471877395/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471816971", "board": "LinkedIn", "title": "Software Engineer (AI Training)", "company": "Alignerr", "location": "Gurgaon, Haryana, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471816971/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470168055", "board": "LinkedIn", "title": ".NET Engineer", "company": "Reveation Labs", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470168055/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470115664", "board": "LinkedIn", "title": "Python Developer", "company": "CareerXperts Consulting", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470115664/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471881643", "board": "LinkedIn", "title": "Python Developer", "company": "HRM Counsel", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471881643/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470094460", "board": "LinkedIn", "title": "Java Backend Developer (6+ yrs)", "company": "MindBrain", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470094460/", "remote": true, "easy": true, "note": "Company review time is typically 1 week", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470088402", "board": "LinkedIn", "title": "Palantir Developer", "company": "iitjobs, Inc.", "location": "Pune District, Maharashtra, India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470088402/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471677244", "board": "LinkedIn", "title": "Software Engineer, Risk Management", "company": "Hyperproof", "location": "Bengaluru, Karnataka, India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471677244/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469684063", "board": "LinkedIn", "title": "Software Engineer | $45-$75/hr", "company": "Codefeast", "location": "India (Remote)", "salary": "$45/hr - $75/hr", "experience": "", "posted": "", "age": null, "rank": 32, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469684063/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469792989", "board": "LinkedIn", "title": "Software Engineer - Fully Remote | Upto $130/task Task based", "company": "Mercor", "location": "Mumbai Metropolitan Region (Remote)", "salary": "", "experience": "", "posted": "9 hours ago", "age": 0, "rank": 30, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469792989/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470068642", "board": "LinkedIn", "title": "Full-stack app developer (Part-time, Equity only)", "company": "PD Consulting", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 30, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470068642/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470147626", "board": "LinkedIn", "title": "Software Engineer – Open Source (Remote | $90–$175/hr)", "company": "Synthires", "location": "Bengaluru, Karnataka, India (Remote)", "salary": "$90/hr - $175/hr", "experience": "", "posted": "", "age": null, "rank": 30, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470147626/", "remote": true, "easy": true, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471896323", "board": "LinkedIn", "title": "Fullstack Engineer - HealthTech", "company": "Huzzle.com", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471896323/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470098609", "board": "LinkedIn", "title": "Back End Developer", "company": "Nexal IIT", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470098609/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471878961", "board": "LinkedIn", "title": "PYTHON DEVELOPMENT INTERN", "company": "Zenithbyte", "location": "India (Remote)", "salary": "Up to 7,500 INR/month", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471878961/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470315071", "board": "LinkedIn", "title": "Back End Developer", "company": "Nexal IIT", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470315071/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471876561", "board": "LinkedIn", "title": "Java Fullstack developer", "company": "GC Technologies Pvt Ltd", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471876561/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471866151", "board": "LinkedIn", "title": "Back End Developer", "company": "Sourcebae", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471866151/", "remote": true, "easy": true, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471622909", "board": "LinkedIn", "title": "Contract - .Net Developer", "company": "KPG99 INC", "location": "India (Remote)", "salary": "900K INR/yr - 1.3M INR/yr", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471622909/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470108399", "board": "LinkedIn", "title": "Software Developer - Fully Remote | Upto $30/hr", "company": "Mercor", "location": "Mumbai Metropolitan Region (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 23, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470108399/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469665787", "board": "LinkedIn", "title": "SDE-I (Frontend / React.js)", "company": "Versatile Club Employer of Record", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 20, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469665787/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469672365", "board": "LinkedIn", "title": "SDE-I (Frontend / React.js)", "company": "Versatile Club Employer of Record", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 20, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469672365/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469771362", "board": "LinkedIn", "title": "Full Stack Developer Intern | Entry Level | Fresher | React, Node.js, SQL, JavaScript | Remote", "company": "Skillzenloop", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 20, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469771362/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471834157", "board": "LinkedIn", "title": "Back End Developer (AI Infrastructure)", "company": "Alignerr", "location": "Chennai, Tamil Nadu, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "11 hours ago", "age": 0, "rank": 16, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471834157/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471834142", "board": "LinkedIn", "title": "Back End Developer (AI Infrastructure)", "company": "Alignerr", "location": "Hyderabad, Telangana, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "11 hours ago", "age": 0, "rank": 16, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471834142/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471828252", "board": "LinkedIn", "title": "Back End Developer (AI Infrastructure)", "company": "Alignerr", "location": "Bengaluru, Karnataka, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "11 hours ago", "age": 0, "rank": 16, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471828252/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471832174", "board": "LinkedIn", "title": "Back End Developer (AI Infrastructure)", "company": "Alignerr", "location": "Ahmedabad, Gujarat, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "11 hours ago", "age": 0, "rank": 16, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471832174/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471837079", "board": "LinkedIn", "title": "Back End Developer (AI Infrastructure)", "company": "Alignerr", "location": "Delhi, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "11 hours ago", "age": 0, "rank": 16, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471837079/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469430057", "board": "LinkedIn", "title": "SailPoint Developer – Remote Contract Opportunity", "company": "World Wide Technology", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 16, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469430057/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469774297", "board": "LinkedIn", "title": "HTML/CSS Developer Intern | Entry Level | Fresher | HTML5, CSS3, Responsive Design | Remote", "company": "Skillzenloop", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 7, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469774297/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469768446", "board": "LinkedIn", "title": "Front End Developer Intern | Entry Level | Fresher | HTML, CSS, JavaScript | Remote", "company": "Skillzenloop", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 7, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469768446/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470099067", "board": "LinkedIn", "title": "Remote Engineering Expert", "company": "Turing", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 0, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470099067/", "remote": true, "easy": true, "note": "3 connections work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926001093", "board": "Naukri", "title": "Software Development Engineer", "company": "Bct Consulting", "location": "Hyderabad", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "Today", "age": 0, "rank": 81.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-bct-consulting-hyderabad-1-to-3-years-250926001093", "remote": false, "easy": false, "note": "Java, Data Structures and Algorithms, Algorithms, Data structures, Data, Data structures", "ai": "Fit: Candidate has 1 year of experience with Java and Spring Boot, matching the backend requirement. Skills like Kafka and AWS align with the tech stack, though Python is preferred.  Gap: Lacks hands-on experience with DSA and specific cloud technologies like Docker/Kubernetes.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470092765", "board": "LinkedIn", "title": "Backend Developer", "company": "MailerMen", "location": "Hyderabad, Telangana, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470092765/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470032223", "board": "LinkedIn", "title": "Full Stack Developer", "company": "Ascendion", "location": "Gurgaon, Haryana, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470032223/", "remote": false, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470022488", "board": "LinkedIn", "title": "Full Stack Developer", "company": "Ascendion", "location": "Gurgaon, Haryana, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470022488/", "remote": false, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470090762", "board": "LinkedIn", "title": "Software Engineer", "company": "Scoutit", "location": "Bengaluru, Karnataka, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470090762/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471887227", "board": "LinkedIn", "title": "Software Development Engineer", "company": "Weekday AI (YC W21)", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "2 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471887227/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471881670", "board": "LinkedIn", "title": "Backend Developer", "company": "Capgemini", "location": "Hyderabad, Telangana, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471881670/", "remote": false, "easy": false, "note": "1 company alum works here 1 i2V Systems company alum works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4450708409", "board": "LinkedIn", "title": "Full Stack Engineer", "company": "Accenture in India", "location": "Gurugram, Haryana, India (On-site)", "salary": "", "experience": "", "posted": "9 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4450708409/", "remote": false, "easy": false, "note": "6 connections work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470162224", "board": "LinkedIn", "title": "Full Stack Engineer", "company": "Magure", "location": "Raipur, Chhattisgarh, India (On-site)", "salary": "", "experience": "", "posted": "7 minutes ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470162224/", "remote": false, "easy": true, "note": "Company review time is typically 1 week", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4469779160", "board": "LinkedIn", "title": "Full Stack Developer", "company": "Sosuv", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4469779160/", "remote": false, "easy": true, "note": "1 connection works here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4462199183", "board": "LinkedIn", "title": "Software Engineer - Full Stack", "company": "QAD", "location": "Pune/Pimpri-Chinchwad Area (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4462199183/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470063593", "board": "LinkedIn", "title": "Full Stack Engineer", "company": "Applicantz", "location": "Bengaluru, Karnataka, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470063593/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926914608", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 63.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-bengaluru-2-to-7-years-250926914608", "remote": false, "easy": false, "note": "css, software development, javascript, java", "ai": "Fit: Candidate has 1 year of experience, but job requires 2 years. Strong match in .NET, Java, and Spring Boot skills.  Gap: Candidate lacks 2 years of experience required by the job.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "linkedin:4471836551", "board": "LinkedIn", "title": "Software Engineer I at AiPrise", "company": "NexisGrow Jobs & Internships", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "9 hours ago", "age": 0, "rank": 60, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471836551/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:190926016685", "board": "Naukri", "title": "Java React Developer (2-3yrs) @ Infosys", "company": "Infosys", "location": "Hybrid - Hyderabad, Pune, Bengaluru", "salary": "Not disclosed", "experience": "2-3 Yrs", "posted": "Today", "age": 0, "rank": 58.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-java-react-developer-2-3yrs-infosys-infosys-hyderabad-pune-bengaluru-2-to-3-years-190926016685", "remote": false, "easy": false, "note": "Java, React.js, Spring Boot, Development, Stack", "ai": "Fit: Candidate has 2 years of experience with Java, Spring Boot, and React.js, matching the core stack requirements.  Gap: Candidate lacks specific POC experience and project details required for this role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:190926012114", "board": "Naukri", "title": "Java React Developer (2-3 yrs) @ Infosys", "company": "Infosys", "location": "Hybrid - Hyderabad, Pune, Bengaluru", "salary": "Not disclosed", "experience": "2-3 Yrs", "posted": "Today", "age": 0, "rank": 58.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-java-react-developer-2-3-yrs-infosys-infosys-hyderabad-pune-bengaluru-2-to-3-years-190926012114", "remote": false, "easy": false, "note": "Java, React.js, Spring Boot, Boot, Stack", "ai": "Fit: Candidate has 1 year of experience with Java, Spring Boot, and React.js, matching the core stack requirements. Strong project history in video surveillance and security analytics aligns well with the role's focus on building POCs and defini  Gap: Lacks 2+ years of experience; candidate needs additional exposure to full-stack development and complex system requirements beyond current scope.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:190526026701", "board": "Naukri", "title": "Software Developer", "company": "S&P Global Market Intelligence", "location": "Hybrid - Gurugram, Noida, Hyderabad", "salary": "Not disclosed", "experience": "3-8 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-s-p-global-market-intelligence-noida-hyderabad-gurugram-3-to-8-years-190526026701", "remote": false, "easy": false, "note": "C#, Java, Javascript", "ai": "Fit: Candidate has 1 year of experience in software engineering with strong skills in .NET, Java, and Spring Boot, aligning well with the job's tech stack.  Gap: Candidate lacks specific experience with C#, JavaScript, and database management (DBMS), which are key requirements for this role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926030815", "board": "Naukri", "title": "Walk-in tomorrow - .Net Fullstack Developer", "company": "Zuci Systems India", "location": "Chennai", "salary": "Not disclosed", "experience": "", "posted": "Just Now", "age": 0, "rank": 57.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-walk-in-tomorrow-net-fullstack-developer-zuci-systems-india-chennai-2-to-3-years-250926030815", "remote": false, "easy": false, "note": ".NET, React, Development, React.js", "ai": "Fit: Candidate has 1 year experience with .NET, Kafka, and Spring Boot, matching the core stack requirements.  Gap: Candidate lacks 2+ years experience and has no SQL Server experience.", "new": true, "first_seen": "2026-09-25", "status": "no-button", "status_note": "no apply control found"}, {"id": "naukri:250926006122", "board": "Naukri", "title": "Software Development Test Engineer - |", "company": "Popclub", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 56.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-test-engineer-popclub-bengaluru-1-to-3-years-250926006122", "remote": false, "easy": false, "note": "Java, Javascript", "ai": "Fit: Candidate has 1 year of experience in software development with strong skills in Java, Spring Boot, and AWS, aligning well with the core technical requirements.  Gap: Lacks 3+ years of testing/QA experience and specific automation framework (Appium/pytest) experience required for SDET role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926003274", "board": "Naukri", "title": "Java Developer", "company": "Explarity Solutions", "location": "Pune, Sangli", "salary": "3-6 Lacs PA", "experience": "2-3 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 55.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-java-developer-explarity-solutions-pune-sangli-2-to-3-years-250926003274", "remote": false, "easy": false, "note": "Java, Spring Boot, Microservices", "ai": "Fit: Candidate has 2 years of experience with Java, Spring Boot, and Microservices, matching the core requirements.  Gap: Lacks hands-on experience with CI/CD pipelines (Jenkins) and cloud deployment (AWS), which are critical for this role.", "new": true, "first_seen": "2026-09-25", "status": "questionnaire-failed", "status_note": "unsupported input for 'Please select the city you are currently residing or willing'"}, {"id": "naukri:030925010410", "board": "Naukri", "title": "Software Engineer", "company": "Morningstar", "location": "New Delhi", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 54.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-morningstar-new-delhi-2-to-5-years-030925010410", "remote": false, "easy": false, "note": "AWS", "ai": "Fit: Candidate has 2 years of experience and strong AWS skills, matching the role's 2.5 years requirement and AWS focus.  Gap: Candidate lacks 2.5 years of experience and specific data engineering experience with AWS services like S3, Glue, and Lambda.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926017186", "board": "Naukri", "title": "Fullstack Developer", "company": "Xtranet Technologies", "location": "Bhopal", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 53.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-fullstack-developer-xtranet-technologies-bhopal-2-to-7-years-250926017186", "remote": false, "easy": false, "note": ".NET, Flutter, React.js", "ai": "Fit: Candidate has 1 year of experience with .NET, React.js, and Kafka, matching the required stack. Strong in API integration and database management.  Gap: Limited experience in Flutter and Angular compared to the job's emphasis on full-stack proficiency.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470314033", "board": "LinkedIn", "title": "Backend Developer (Fresher)", "company": "MailerMen", "location": "Noida, Uttar Pradesh, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 53, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470314033/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471497630", "board": "LinkedIn", "title": "Java Backend Developer", "company": "Capgemini Engineering", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "21 hours ago", "age": 0, "rank": 53, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471497630/", "remote": false, "easy": false, "note": "2 school alumni work here 2 University School of Information, Communication & Technology (USICT) school alumni work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:240926504695", "board": "Naukri", "title": "Sr. Software Engineer", "company": "Yash Technologies", "location": "Indore", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 52.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sr-software-engineer-yash-technologies-indore-1-to-6-years-240926504695", "remote": false, "easy": false, "note": "js", "ai": "Fit: Candidate has 1 year of experience in software development with strong skills in Java, Spring Boot, and AWS, aligning well with the core technical requirements.  Gap: Candidate lacks specific experience with Twilio, SMS platforms, or healthcare compliance (TCPA, HIPAA) required for this role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926914541", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 52.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-7-years-250926914541", "remote": false, "easy": false, "note": "software development, software engineer", "ai": "Fit: Candidate has 1 year experience and 2 years tenure at I2V Systems, matching the 2+ years requirement. Skills like Java, Spring Boot, and React align with the job's tech stack.  Gap: Candidate lacks specific experience in debugging and optimizing software applications, which are core responsibilities for this role.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:240926504549", "board": "Naukri", "title": "Software Engineer II", "company": "Mastercard", "location": "Pune", "salary": "Not disclosed", "experience": "1-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 51.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-ii-mastercard-pune-1-to-7-years-240926504549", "remote": false, "easy": false, "note": "microservices", "ai": "Fit: Candidate has 2 years of experience with Java, Spring Boot, and microservices, matching the core tech stack and architectural requirements.  Gap: Lacks specific experience with Pivotal Cloud Foundry (PCF) and real-time systems, which are explicitly mentioned as desirable.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926500051", "board": "Naukri", "title": "Python Developer", "company": "Tamilzorous Infotech", "location": "Salem", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "Just Now", "age": 0, "rank": 49.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-tamilzorous-infotech-salem-1-to-6-years-250926500051", "remote": false, "easy": false, "note": "css, javascript", "ai": "Fit: Candidate has 1 year of experience in software engineering with strong skills in Java, Spring Boot, and AWS, aligning well with the backend development requirements.  Gap: Candidate lacks specific Python experience and knowledge of CSS/JavaScript, which are critical for this Python Developer role.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:190926016131", "board": "Naukri", "title": "Python Developer (Django + AWS) @ Infosys", "company": "Infosys", "location": "Hybrid - Hyderabad, Chennai, Bengaluru", "salary": "Not disclosed", "experience": "2-3 Yrs", "posted": "Today", "age": 0, "rank": 48.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-django-aws-infosys-infosys-hyderabad-chennai-bengaluru-2-to-3-years-190926016131", "remote": false, "easy": false, "note": "AWS, Development", "ai": "Fit: Candidate has 1 year of experience with Python, Django, and AWS, matching the core stack requirements.  Gap: Candidate lacks specific Django REST Framework experience and cloud deployment (Docker/CI/CD) exposure.", "new": true, "first_seen": "2026-09-25", "status": "questionnaire", "status_note": "cannot answer 'DOB (Date of Birth)' - no rule matches this question"}, {"id": "naukri:190926012759", "board": "Naukri", "title": "Python Developer (Django + AWS) @ Infosys", "company": "Infosys", "location": "Hybrid - Hyderabad, Pune, Bengaluru", "salary": "Not disclosed", "experience": "2-3 Yrs", "posted": "Today", "age": 0, "rank": 48.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-django-aws-infosys-infosys-hyderabad-pune-bengaluru-2-to-3-years-190926012759", "remote": false, "easy": false, "note": "AWS, Development", "ai": "Fit: Candidate has 1 year of experience with Python, Django, and AWS, matching the core stack requirements.  Gap: Candidate lacks specific Django REST Framework experience and cloud deployment (Docker/CI/CD) exposure.", "new": true, "first_seen": "2026-09-25", "status": "questionnaire", "status_note": "cannot answer 'DOB ( Date of Birth )' - no rule matches this question"}, {"id": "naukri:250926914011", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 48.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-bengaluru-2-to-7-years-250926914011", "remote": false, "easy": false, "note": "software development", "ai": "Fit: Candidate has 1 year of experience and 2 years total tenure at I2V Systems, matching the 2+ years requirement. Skills like Java, Spring Boot, and React align with the job's tech stack.  Gap: Candidate lacks specific project details and has no experience with c/c++, Flutter, or DBMS, which are critical for a Custom Software Engineer role.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "linkedin:4468726156", "board": "LinkedIn", "title": "Full Stack Engineer_ Dot Net", "company": "GridCrest by Kaynes", "location": "Kolkata, West Bengal, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 48, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4468726156/", "remote": false, "easy": true, "note": "Company review time is typically 1 week", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926913802", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 47.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-bengaluru-2-to-7-years-250926913802", "remote": false, "easy": false, "note": "software development", "ai": "Fit: Candidate has 1 year of experience in software development with relevant skills like Java, Spring Boot, and React.js, matching the job's tech stack requirements.  Gap: Candidate lacks specific SAP FI CO Finance expertise required by the job.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926914043", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 46.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-5-years-250926914043", "remote": false, "easy": false, "note": "analytical skills", "ai": "Fit: Candidate has 2 years of experience in software development with strong skills in .NET, Java, and Spring Boot, aligning well with the core technical requirements.  Gap: Candidate lacks 1+ year of experience and does not meet the minimum 3 years requirement specified in the job posting.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926500427", "board": "Naukri", "title": "Sr Full Stack Developer", "company": "Inventive Infotech", "location": "Pune", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "Just Now", "age": 0, "rank": 46.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sr-full-stack-developer-inventive-infotech-pune-1-to-6-years-250926500427", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 1 year of experience in software engineering with strong skills in .NET, Java, and Spring Boot, matching the job's tech stack requirements.  Gap: Significant gap: Candidate lacks 14 years of experience required for the Sr Full Stack Developer role.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926500048", "board": "Naukri", "title": "Node Js Developer", "company": "Tamilzorous Infotech", "location": "Salem", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "Just Now", "age": 0, "rank": 46.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-node-js-developer-tamilzorous-infotech-salem-1-to-6-years-250926500048", "remote": false, "easy": false, "note": "css, javascript", "ai": "Fit: Candidate has 1 year of experience with Node.js, matching the core requirement, and possesses strong backend skills in Java and Spring Boot, making them suitable for backend development.  Gap: Candidate lacks direct Node.js project experience and has no prior exposure to the specific technologies listed in the job description.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "linkedin:4471827675", "board": "LinkedIn", "title": "Java Full Stack Developer with Testing Experience", "company": "Meta Black", "location": "Chennai, Tamil Nadu, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 46, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471827675/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:210926027537", "board": "Naukri", "title": "Backend Python Developer-Pan India", "company": "Infosys", "location": "Hybrid - Hyderabad, Pune, Bengaluru", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 44.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-python-developer-pan-india-infosys-hyderabad-pune-bengaluru-2-to-5-years-210926027537", "remote": false, "easy": false, "note": "HTML", "ai": "Fit: Candidate has 1 year of experience in software engineering with strong skills in Java, Spring Boot, and AWS, aligning well with the backend requirements.  Gap: Candidate lacks specific Python experience and HTML knowledge, which are critical for this role.", "new": true, "first_seen": "2026-09-25", "status": "questionnaire", "status_note": "cannot answer 'Are you an ex-Infosys employee? If Yes: Please provide your Infosys Em' - no rule matches this question"}, {"id": "naukri:250926500184", "board": "Naukri", "title": "Python Developer", "company": "Kvontech Consultancy Services", "location": "Jaipur", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "Just Now", "age": 0, "rank": 43.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-kvon-tech-jaipur-1-to-3-years-250926500184", "remote": false, "easy": false, "note": "js", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926914298", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 43.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-7-years-250926914298", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:240926042405", "board": "Naukri", "title": "AI Fullstack Engineer", "company": "Vipsa Talent Solutions", "location": "Bengaluru", "salary": "Not disclosed", "experience": "0-2 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-ai-fullstack-engineer-vipsa-talent-solutions-bengaluru-0-to-2-years-240926042405", "remote": false, "easy": false, "note": "React", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "already", "status_note": "no button; page shows an existing application"}, {"id": "naukri:250926914291", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 43.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-5-years-250926914291", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926914162", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 43.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-5-years-250926914162", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:130726032080", "board": "Naukri", "title": "Python Django Developer - INF", "company": "Infosys", "location": "Hyderabad, Chennai, Bengaluru", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 42.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-django-developer-inf-infosys-hyderabad-chennai-bengaluru-2-to-5-years-130726032080", "remote": false, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "already", "status_note": "no button; page shows an existing application"}, {"id": "naukri:250926019950", "board": "Naukri", "title": "Python Software Developer", "company": "Bluetris Technologies", "location": "Jaipur(Malviya Nagar)", "salary": "Not disclosed", "experience": "1-2 Yrs", "posted": "Just Now", "age": 0, "rank": 42.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-software-developer-bluetris-technologies-jaipur-1-to-2-years-250926019950", "remote": false, "easy": true, "note": "", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "already", "status_note": "no button; page shows an existing application"}, {"id": "naukri:250926500060", "board": "Naukri", "title": "Backend Developer ( Laravel / PHP )", "company": "Fablead Developers Technolab", "location": "Surat", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "Just Now", "age": 0, "rank": 42.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-laravel-php-fablead-developers-technolab-surat-1-to-6-years-250926500060", "remote": false, "easy": false, "note": "css", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926030850", "board": "Naukri", "title": "Backend Developer- Business Applications & Intergration", "company": "Cosmo Films", "location": "New Delhi", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "Just Now", "age": 0, "rank": 41.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-business-applications-intergration-cosmo-films-new-delhi-2-to-6-years-250926030850", "remote": false, "easy": true, "note": "DBMS", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "unconfirmed", "status_note": "clicked, but the job page does not say Applied"}, {"id": "naukri:240926040925", "board": "Naukri", "title": "Django | Flask Developer-Bangalore", "company": "Infosys", "location": "Hybrid - Bengaluru", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 40.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-django-flask-developer-bangalore-infosys-bengaluru-2-to-5-years-240926040925", "remote": false, "easy": false, "note": "HTML", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926500028", "board": "Naukri", "title": "Python Django Developer", "company": "Prowesstics It Services", "location": "Chennai", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Just Now", "age": 0, "rank": 40.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-django-developer-prowesstics-it-services-chennai-2-to-5-years-250926500028", "remote": false, "easy": false, "note": "css", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4470310295", "board": "LinkedIn", "title": "Dotnet Developer", "company": "Renvio", "location": "Noida, Uttar Pradesh, India (On-site)", "salary": "", "experience": "", "posted": "19 minutes ago", "age": 0, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470310295/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471891723", "board": "LinkedIn", "title": "Software Engr I", "company": "Honeywell Technologies", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471891723/", "remote": false, "easy": false, "note": "2 connections work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926013235", "board": "Naukri", "title": "Python Developer - FastAPI / Flask (Product Engineering)", "company": "I2global Virtual Learning", "location": "Bengaluru(Koramangala)", "salary": "7-10 Lacs PA", "experience": "2-4 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 38.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-fastapi-flask-product-engineering-i2global-virtual-learning-bengaluru-2-to-4-years-250926013235", "remote": false, "easy": false, "note": "Engineering", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:240926504670", "board": "Naukri", "title": "Java GHCP Developer", "company": "Birlasoft", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 36.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-java-ghcp-developer-birlasoft-india-limited-bengaluru-2-to-5-years-240926504670", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:200826033092", "board": "Naukri", "title": "Python Django Developer - INF (2 To 9) YRS", "company": "Infosys", "location": "Hyderabad, Chennai, Bengaluru", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 35.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-django-developer-inf-2-to-9-yrs-infosys-hyderabad-chennai-bengaluru-2-to-7-years-200826033092", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}]</script>
+<script>
+  const ROWS = JSON.parse(document.getElementById('data').textContent);
+  const KEY = 'jobtracker.applied';
+  const TODAY = '2026-09-25';
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  let applied = load();
+  let filter = 'all';
+  let postedMax = null;   // null = any age
+  let query = '';
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function visible(r) {
+    if (filter === 'new' && !r.new) return false;
+    if (filter === 'remote' && !r.remote) return false;
+    if (filter === 'easy' && !r.easy) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    // Posted is a separate axis, so "remote" and "2 days" combine rather than
+    // replacing each other. A row with no readable date is excluded whenever a
+    // date filter is on - it cannot be shown to satisfy it.
+    if (postedMax !== null && (r.age === null || r.age > postedMax)) return false;
+    if (query) {
+      const hay = (r.title + ' ' + r.company + ' ' + r.location).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  }
+
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
+  function rowHtml(r) {
+    const done = !!applied[r.id] || r.status === 'applied';
+    const tags = [
+      statusTag(r),
+      r.new ? '<span class="tag new">New</span>' : '',
+      r.remote ? '<span class="tag remote">Remote</span>' : '',
+      r.easy ? '<span class="tag easy">One-click</span>' : '',
+      '<span class="tag">' + esc(r.board) + '</span>',
+      (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
+    ].join('');
+    return '' +
+      '<div class="row' + (done ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<input type="checkbox" ' + (done ? 'checked' : '') +
+          ' aria-label="Mark ' + esc(r.title) + ' as applied">' +
+        '<div>' +
+          '<div class="title"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></div>' +
+          '<div class="company">' + esc(r.company) + '</div>' +
+          '<div class="tags">' + tags + '</div>' +
+          (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
+        '</div>' +
+        '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
+          (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +
+        '<div class="meta">' + (r.experience ? '<div>' + esc(r.experience) + '</div>' : '') +
+          (r.posted ? '<div>' + esc(r.posted) + '</div>' : '') + '</div>' +
+        '<div class="rank">' + (r.rank == null ? '&mdash;' : esc(r.rank)) +
+          '<small>' + esc(r.rank_label) + '</small></div>' +
+      '</div>';
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    const shown = ROWS.filter(visible);
+    const boards = ['Naukri', 'LinkedIn'];
+    let html = '';
+    boards.forEach(board => {
+      const group = shown.filter(r => r.board === board);
+      if (!group.length) return;
+      html += '<div class="group-head"><h2>' + board + '</h2>' +
+              '<span class="count">' + group.length + ' shown</span></div>';
+      html += group.map(rowHtml).join('');
+    });
+    list.innerHTML = html || '<p class="empty">Nothing matches this filter.</p>';
+    stats();
+  }
+
+  function stats() {
+    const n = (id, v) => document.getElementById(id).textContent = v;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
+    n('s-total', ROWS.length);
+    n('s-new', ROWS.filter(r => r.new).length);
+    n('s-remote', ROWS.filter(r => r.remote).length);
+    n('s-applied', doneCount);
+    n('s-left', ROWS.length - doneCount);
+  }
+
+  document.getElementById('list').addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const row = e.target.closest('.row');
+    const id = row.getAttribute('data-id');
+    if (e.target.checked) applied[id] = { date: TODAY };
+    else delete applied[id];
+    save(applied);
+    row.classList.toggle('done', e.target.checked);
+    if (filter === 'todo') render(); else stats();
+  });
+
+  function wire(selector, apply) {
+    document.querySelectorAll(selector).forEach(chip => {
+      chip.addEventListener('click', () => {
+        apply(chip);
+        document.querySelectorAll(selector).forEach(c =>
+          c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      });
+    });
+  }
+  wire('.chip[data-filter]', chip => { filter = chip.dataset.filter; });
+  wire('.chip[data-posted]', chip => {
+    postedMax = chip.dataset.posted === 'any' ? null : Number(chip.dataset.posted);
+  });
+
+  document.getElementById('q').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 10px; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+</style>
+<script>
+(function () {
+  "use strict";
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+})();
+</script>
+

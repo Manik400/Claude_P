@@ -1,0 +1,433 @@
+<title>Job Openings 2026-09-25 r3 - Early</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  :root {
+    --bg: #f2f4f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --line: #dde2e9;
+    --ink: #161b22;
+    --muted: #5b6675;
+    --accent: #1f5c8b;
+    --accent-soft: #e8f0f7;
+    --accent-on: #ffffff;
+    --new: #a15c07;
+    --new-soft: #fdf3e3;
+    --good: #166534;
+    --good-soft: #e6f4ea;
+    --shadow: 0 1px 2px rgba(22, 27, 34, .06), 0 4px 12px rgba(22, 27, 34, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1218;
+      --surface: #161c25;
+      --surface-2: #1b222c;
+      --line: #2a3441;
+      --ink: #e7ecf3;
+      --muted: #8d99a9;
+      --accent: #6aa9d8;
+      --accent-soft: #17293a;
+      --accent-on: #0e1218;
+      --new: #e0a54a;
+      --new-soft: #2e2413;
+      --good: #6ec48c;
+      --good-soft: #14291c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1218;
+    --surface: #161c25;
+    --surface-2: #1b222c;
+    --line: #2a3441;
+    --ink: #e7ecf3;
+    --muted: #8d99a9;
+    --accent: #6aa9d8;
+    --accent-soft: #17293a;
+    --accent-on: #0e1218;
+    --new: #e0a54a;
+    --new-soft: #2e2413;
+    --good: #6ec48c;
+    --good-soft: #14291c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 15px;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 80px; }
+
+  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; font-size: clamp(26px, 4vw, 36px);
+    margin: 0; letter-spacing: -.02em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); max-width: 62ch; }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 116px; box-shadow: var(--shadow);
+  }
+  .stat b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 24px; font-weight: 500; line-height: 1.15;
+  }
+  .stat span {
+    font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .stat.is-applied b { color: var(--good); }
+  .stat.is-new b { color: var(--new); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--bg); padding: 12px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .chip {
+    font: 500 13px/1 Archivo, sans-serif;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 8px 13px; border-radius: 999px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1 1 auto; }
+  .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+  .bar-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding-right: 2px;
+  }
+  .search {
+    font: 400 14px "Source Sans 3", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 8px 12px; min-width: 200px;
+  }
+
+  .group-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
+  }
+  .group-head h2 {
+    font-family: Archivo, sans-serif; font-size: 15px; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin: 0;
+  }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--muted); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px 1fr 172px 120px 92px;
+    gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px; margin-bottom: 7px; box-shadow: var(--shadow);
+  }
+  .row.done { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--line)); }
+  .row.done .title a { text-decoration: line-through; opacity: .62; }
+  .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 15.5px; line-height: 1.3; }
+  .title a { color: var(--ink); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .company { color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
+  .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
+  .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+  .note { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
+
+  .meta { font-size: 13px; color: var(--muted); }
+  .meta div + div { margin-top: 3px; }
+  .rank {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 17px; text-align: right; color: var(--accent);
+  }
+  .rank small { display: block; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  .empty { color: var(--muted); padding: 26px 0; text-align: center; }
+
+  /* Shared with the interview-prep page, which links back here. */
+  nav.top {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  }
+  nav.top a, nav.top span.here {
+    font: 600 13.5px/1 Archivo, sans-serif; text-decoration: none;
+    padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
+    border-radius: 6px 6px 0 0;
+  }
+  nav.top a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.top span.here { color: var(--ink); border-bottom-color: var(--accent); }
+  nav.top a.disabled { opacity: .45; pointer-events: none; }
+
+  /* Each scan of the day keeps its own page, so this is how you get back to
+     the 08:52 list from the 18:11 one. */
+  nav.runs {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+    margin: -14px 0 20px; font: 400 12.5px/1.6 "Source Sans 3", sans-serif;
+  }
+  nav.runs .label { color: var(--muted); margin-right: 2px; }
+  nav.runs a, nav.runs span.here {
+    padding: 3px 9px; border-radius: 999px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted);
+    font: 500 12.5px/1.6 "IBM Plex Mono", monospace;
+  }
+  nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
+  nav.runs .sep { color: var(--line); padding: 0 4px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 30px 1fr; }
+    .meta, .rank { grid-column: 2; text-align: left; }
+    .rank { font-size: 15px; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="top">
+    <span class="here">Job Scanner</span>
+    <a href="../interview/interview-prep-2026-09-20-r1.html#jobs" class="">Top 10 Jobs</a>
+    <a href="../interview/interview-prep-2026-09-20-r1.html" class="">Interview Preparation (2026-09-20-r1)</a>
+    <a href="applications.html">Applications sent</a>
+  </nav>
+
+  <nav class="runs">
+    <span class="label">Today&rsquo;s scans</span>
+    <a href="openings-2026-09-25-r1.html">r1</a>
+    <a href="openings-2026-09-25-r2.html">r2</a>
+    <span class="here">r3</span>
+    <a href="openings-2026-09-25-r4.html">r4</a>
+    <a href="openings-2026-09-25-r5.html">r5</a>
+    <span class="sep">|</span>
+    <a href="openings-2026-09-21-r6.html">09-21</a>
+    <a href="openings-2026-09-20-r8.html">09-20</a>
+    <a href="openings-2026-09-19-r9.html">09-19</a>
+    <a href="openings-2026-09-18-r19.html">09-18</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">2026-09-25 &middot; scan 3 &middot; All locations &middot; posted in the last 24 hours &middot; early applicant (posted in the last few hours)</div>
+    <h1>23 openings, 23 new today</h1>
+    <p class="sub">Every opening this scan found, remote first. Tick a row when you have applied &mdash; ticks are saved in this browser and carry across every day&rsquo;s page.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="s-total">0</b><span>Openings</span></div>
+    <div class="stat is-new"><b id="s-new">0</b><span>New today</span></div>
+    <div class="stat"><b id="s-remote">0</b><span>Remote</span></div>
+    <div class="stat is-applied"><b id="s-applied">0</b><span>Applied</span></div>
+    <div class="stat"><b id="s-left">0</b><span>Still to do</span></div>
+  </div>
+
+  <div class="bar">
+    <details class="fgrp" data-acc="openings.show" open><summary>Show</summary><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+    </span></details>
+    <details class="fgrp" data-acc="openings.posted" open><summary>Posted</summary><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></details>
+    <span class="spacer"></span>
+    <details class="fgrp" data-acc="openings.search" open><summary>Search</summary><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></details>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Generated 2026-09-25 from 13 Naukri and 10 LinkedIn listings.
+    Naukri scores are 0&ndash;100 across skills, title, experience, location and freshness.
+    LinkedIn shows title match only &mdash; its cards carry no skills or experience range, so the two are not the same measure.</p>
+    <p>Ticks are stored in this browser under <code>jobtracker.applied</code>. Clearing site data clears them.</p>
+    <p>Every listing carries a posted date.</p>
+  </footer>
+</div>
+
+<script id="data" type="application/json">[{"id": "naukri:250926019104", "board": "Naukri", "title": "Senior Software Engineer (Go/Kubernetes & Applied AI)", "company": "Hinduja Global Solutions (HGS)", "location": "Remote", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "Just Now", "age": 0, "rank": 60.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-software-engineer-go-kubernetes-applied-ai-hinduja-global-solutions-hgs-bengaluru-2-to-6-years-250926019104", "remote": true, "easy": false, "note": "", "ai": "Fit: Candidate has 2 years of experience with Go, Kubernetes, and cloud-native skills, matching the core technical requirements.  Gap: Candidate lacks specific AI/ML experience and AI coding tooling expertise required by the role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471877395", "board": "LinkedIn", "title": "Senior Backend Engineer - Java (6-month contract)", "company": "Proximity Works", "location": "India (Remote)", "salary": "", "experience": "", "posted": "2 hours ago", "age": 0, "rank": 47, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471877395/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "questionnaire", "status_note": "cannot answer 'Yes No' - no rule matches this question"}, {"id": "linkedin:4470068642", "board": "LinkedIn", "title": "Full-stack app developer (Part-time, Equity only)", "company": "PD Consulting", "location": "India (Remote)", "salary": "", "experience": "", "posted": "6 hours ago", "age": 0, "rank": 30, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470068642/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "unconfirmed", "status_note": "dialog closed without a confirmation"}, {"id": "linkedin:4470306321", "board": "LinkedIn", "title": "Flutter Developer Intern", "company": "Small Fare", "location": "India (Remote)", "salary": "", "experience": "", "posted": "35 minutes ago", "age": 0, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470306321/", "remote": true, "easy": true, "note": "Company review time is typically 1 week", "new": true, "first_seen": "2026-09-25", "status": "applied", "status_note": "job page shows Applied"}, {"id": "linkedin:4470092765", "board": "LinkedIn", "title": "Backend Developer", "company": "MailerMen", "location": "Hyderabad, Telangana, India (Hybrid)", "salary": "", "experience": "", "posted": "26 minutes ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470092765/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "career-incomplete", "status_note": "cannot answer: Email me a round-up of new jobs. I can unsubscribe from any  (D:\\Manik\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20260925-1806-mailermen-backend-developer-incomplete.png)"}, {"id": "linkedin:4471887227", "board": "LinkedIn", "title": "Software Development Engineer", "company": "Weekday AI (YC W21)", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "2 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471887227/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "questionnaire", "status_note": "cannot answer '' - could not type into 'Search': Locator.click: Timeout 3000ms exceeded.\nCall log:\n  - waiting for locator(\"[data"}, {"id": "linkedin:4471866937", "board": "LinkedIn", "title": "Backend Developer", "company": "Capgemini Engineering", "location": "Hyderabad, Telangana, India (On-site)", "salary": "", "experience": "", "posted": "2 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471866937/", "remote": false, "easy": false, "note": "2 school alumni work here 2 University School of Information, Communication & Technology (USICT) school alumni work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471864278", "board": "LinkedIn", "title": "Full Stack Engineer", "company": "Weekday AI (YC W21)", "location": "Gurugram, Haryana, India (On-site)", "salary": "1.5M INR/yr - 2.5M INR/yr", "experience": "", "posted": "5 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471864278/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471891450", "board": "LinkedIn", "title": "Software Engineer", "company": "Acuity", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "1 hour ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471891450/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:030925010410", "board": "Naukri", "title": "Software Engineer", "company": "Morningstar", "location": "New Delhi", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 65.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-morningstar-new-delhi-2-to-5-years-030925010410", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 2 years of experience and strong AWS skills, matching the role's 2.5 years requirement and emphasis on data services like S3, Glue, and Lambda.  Gap: Candidate lacks 2.5 years of experience and specific experience with Terraform and CI/CD pipelines.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926914298", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-7-years-250926914298", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 1 year experience and 2 years tenure at I2V Systems, matching the 2+ years requirement. Skills like Java, Spring Boot, and React align with the job's tech stack.  Gap: Candidate lacks specific project details and lacks experience in c/c++, Flutter, or DBMS, which are critical for a Custom Software Engineer role.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926914011", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-bengaluru-2-to-7-years-250926914011", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 1 year experience and 2 years tenure at I2V Systems, matching the 2+ years requirement. Skills like Java, Spring Boot, and React align with the job's tech stack.  Gap: Candidate lacks specific project details and lacks experience in c/c++, Flutter, or DBMS, which are critical for a Custom Software Engineer role.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926914291", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-5-years-250926914291", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 2 years of experience, but job requires 3 years. Other skills like Kafka and Spring Boot are relevant.  Gap: Insufficient experience (2 vs 3 years) and outdated education requirement.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926914162", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-5-years-250926914162", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 2 years of experience, but job requires 3 years. Other skills like Kafka and Spring Boot are relevant.  Gap: Insufficient experience (2 vs 3 years) and outdated education requirement.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926913802", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-bengaluru-2-to-7-years-250926913802", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 1 year of experience in software development with strong skills in .NET, Java, and Spring Boot, aligning well with the core tech stack required for this role.  Gap: Significant gap in domain expertise; candidate lacks required SAP FI CO Finance knowledge and experience in financial systems.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:190526026701", "board": "Naukri", "title": "Software Developer", "company": "S&P Global Market Intelligence", "location": "Hybrid - Gurugram, Noida, Hyderabad", "salary": "Not disclosed", "experience": "3-8 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 58.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-s-p-global-market-intelligence-noida-hyderabad-gurugram-3-to-8-years-190526026701", "remote": false, "easy": false, "note": "C#, Java, Javascript", "ai": "Fit: Candidate has 1 year of experience in software engineering with strong skills in .NET, Java, and Spring Boot, aligning well with the job's tech stack.  Gap: Candidate lacks specific experience with C#, JavaScript, and database management (DBMS), which are key requirements for this role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926914043", "board": "Naukri", "title": "Custom Software Engineer", "company": "Accenture", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 57.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-custom-software-engineer-accenture-solutions-pvt-ltd-hyderabad-2-to-5-years-250926914043", "remote": false, "easy": false, "note": "", "ai": "Fit: Candidate has 2 years of experience, but the job requires 3 years. However, the candidate's strong skills in .NET, Java, and Spring Boot align well with the core requirements.  Gap: Candidate lacks 1 year of experience and no specific Power BI/DAX skills.", "new": true, "first_seen": "2026-09-25", "status": "career-error", "status_note": "could not press the company-site Apply button"}, {"id": "naukri:250926006122", "board": "Naukri", "title": "Software Development Test Engineer - |", "company": "Popclub", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 56.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-test-engineer-popclub-bengaluru-1-to-3-years-250926006122", "remote": false, "easy": false, "note": "Java, Javascript", "ai": "Fit: Candidate has 1 year of experience in software development with strong skills in Java, Spring Boot, and AWS, aligning well with the core technical requirements.  Gap: Lacks 3+ years of testing/QA experience and specific automation framework (Appium/pytest) experience required for SDET role.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926017186", "board": "Naukri", "title": "Fullstack Developer", "company": "Xtranet Technologies", "location": "Bhopal", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 53.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-fullstack-developer-xtranet-technologies-bhopal-2-to-7-years-250926017186", "remote": false, "easy": false, "note": ".NET, Flutter, React.js", "ai": "Fit: Candidate has 1 year of experience with .NET, React.js, and Kafka, matching the required stack. Strong in API integration and database management.  Gap: Limited experience in Flutter and Angular compared to the job's emphasis on full-stack proficiency.", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "linkedin:4471892349", "board": "LinkedIn", "title": "Backend Engineer (Freshers)", "company": "JobCrexa", "location": "Amravati, Maharashtra, India (On-site)", "salary": "", "experience": "", "posted": "1 hour ago", "age": 0, "rank": 53, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471892349/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926019950", "board": "Naukri", "title": "Python Software Developer", "company": "Bluetris Technologies", "location": "Jaipur(Malviya Nagar)", "salary": "Not disclosed", "experience": "1-2 Yrs", "posted": "Just Now", "age": 0, "rank": 42.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-software-developer-bluetris-technologies-jaipur-1-to-2-years-250926019950", "remote": false, "easy": true, "note": "", "ai": "Fit: Candidate has 1 year of experience with Python, Django, and FastAPI, matching the 1-2 years requirement. Skills like REST APIs, databases, and OOP align well with the job's core responsibilities.  Gap: Candidate lacks hands-on experience with Django and FastAPI specifically, plus no prior exposure to cloud deployment or containerization tools.", "new": true, "first_seen": "2026-09-25", "status": "unconfirmed", "status_note": "clicked, but the job page does not say Applied"}, {"id": "linkedin:4471891723", "board": "LinkedIn", "title": "Software Engr I", "company": "Honeywell Technologies", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "3 minutes ago", "age": 0, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471891723/", "remote": false, "easy": false, "note": "2 connections work here", "new": true, "first_seen": "2026-09-25", "status": "", "status_note": ""}, {"id": "naukri:250926013235", "board": "Naukri", "title": "Python Developer - FastAPI / Flask (Product Engineering)", "company": "I2global Virtual Learning", "location": "Bengaluru(Koramangala)", "salary": "7-10 Lacs PA", "experience": "2-4 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 38.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-fastapi-flask-product-engineering-i2global-virtual-learning-bengaluru-2-to-4-years-250926013235", "remote": false, "easy": false, "note": "Engineering", "ai": "Fit: Candidate has 1 year of experience with relevant tech stack (Java, Spring Boot) and strong DSA skills, aligning well with the core requirements.  Gap: Candidate lacks specific Python, FastAPI, and Flask experience required for this role.", "new": true, "first_seen": "2026-09-25", "status": "questionnaire", "status_note": "cannot answer 'How many years of experience do you have in FastAPI?' - no experience recorded for 'fastapi'"}]</script>
+<script>
+  const ROWS = JSON.parse(document.getElementById('data').textContent);
+  const KEY = 'jobtracker.applied';
+  const TODAY = '2026-09-25';
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  let applied = load();
+  let filter = 'all';
+  let postedMax = null;   // null = any age
+  let query = '';
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function visible(r) {
+    if (filter === 'new' && !r.new) return false;
+    if (filter === 'remote' && !r.remote) return false;
+    if (filter === 'easy' && !r.easy) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    // Posted is a separate axis, so "remote" and "2 days" combine rather than
+    // replacing each other. A row with no readable date is excluded whenever a
+    // date filter is on - it cannot be shown to satisfy it.
+    if (postedMax !== null && (r.age === null || r.age > postedMax)) return false;
+    if (query) {
+      const hay = (r.title + ' ' + r.company + ' ' + r.location).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  }
+
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
+  function rowHtml(r) {
+    const done = !!applied[r.id] || r.status === 'applied';
+    const tags = [
+      statusTag(r),
+      r.new ? '<span class="tag new">New</span>' : '',
+      r.remote ? '<span class="tag remote">Remote</span>' : '',
+      r.easy ? '<span class="tag easy">One-click</span>' : '',
+      '<span class="tag">' + esc(r.board) + '</span>',
+      (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
+    ].join('');
+    return '' +
+      '<div class="row' + (done ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<input type="checkbox" ' + (done ? 'checked' : '') +
+          ' aria-label="Mark ' + esc(r.title) + ' as applied">' +
+        '<div>' +
+          '<div class="title"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></div>' +
+          '<div class="company">' + esc(r.company) + '</div>' +
+          '<div class="tags">' + tags + '</div>' +
+          (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
+        '</div>' +
+        '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
+          (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +
+        '<div class="meta">' + (r.experience ? '<div>' + esc(r.experience) + '</div>' : '') +
+          (r.posted ? '<div>' + esc(r.posted) + '</div>' : '') + '</div>' +
+        '<div class="rank">' + (r.rank == null ? '&mdash;' : esc(r.rank)) +
+          '<small>' + esc(r.rank_label) + '</small></div>' +
+      '</div>';
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    const shown = ROWS.filter(visible);
+    const boards = ['Naukri', 'LinkedIn'];
+    let html = '';
+    boards.forEach(board => {
+      const group = shown.filter(r => r.board === board);
+      if (!group.length) return;
+      html += '<div class="group-head"><h2>' + board + '</h2>' +
+              '<span class="count">' + group.length + ' shown</span></div>';
+      html += group.map(rowHtml).join('');
+    });
+    list.innerHTML = html || '<p class="empty">Nothing matches this filter.</p>';
+    stats();
+  }
+
+  function stats() {
+    const n = (id, v) => document.getElementById(id).textContent = v;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
+    n('s-total', ROWS.length);
+    n('s-new', ROWS.filter(r => r.new).length);
+    n('s-remote', ROWS.filter(r => r.remote).length);
+    n('s-applied', doneCount);
+    n('s-left', ROWS.length - doneCount);
+  }
+
+  document.getElementById('list').addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const row = e.target.closest('.row');
+    const id = row.getAttribute('data-id');
+    if (e.target.checked) applied[id] = { date: TODAY };
+    else delete applied[id];
+    save(applied);
+    row.classList.toggle('done', e.target.checked);
+    if (filter === 'todo') render(); else stats();
+  });
+
+  function wire(selector, apply) {
+    document.querySelectorAll(selector).forEach(chip => {
+      chip.addEventListener('click', () => {
+        apply(chip);
+        document.querySelectorAll(selector).forEach(c =>
+          c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      });
+    });
+  }
+  wire('.chip[data-filter]', chip => { filter = chip.dataset.filter; });
+  wire('.chip[data-posted]', chip => {
+    postedMax = chip.dataset.posted === 'any' ? null : Number(chip.dataset.posted);
+  });
+
+  document.getElementById('q').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 10px; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+</style>
+<script>
+(function () {
+  "use strict";
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+})();
+</script>
+
