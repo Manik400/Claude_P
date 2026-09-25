@@ -357,10 +357,6 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
   @media (min-width: 900px) and (max-width: 1180px) { .top .kpis, .top > .spacer { display: none; } .top .views { margin-left: auto; } }
   @media (min-width: 900px) and (max-width: 1080px) { .top .sub { display: none; } }
 
-  /* ---- narrow date cards: drop the "x/13" count so the status chip always reads in full ---- */
-  .cell[data-day] { container-type: inline-size; }
-  @container (max-width: 135px) { .cnt { display: none; } .foot { justify-content: flex-end; } }
-
   /* ---- filters: each group is one line (label beside its chips) ---- */
   .fbody { align-items: center; row-gap: 8px; padding-top: 8px; padding-bottom: 8px; }
   .fbody > div { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
