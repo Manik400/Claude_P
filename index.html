@@ -308,6 +308,22 @@
     background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 14px; z-index: 30; max-width: 92vw; opacity: 0; transition: opacity .2s; pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,.25); }
   .toast.on { opacity: .97; }
   @media (min-width: 900px) { .toast { left: calc(var(--side-w) + (100vw - var(--side-w)) / 2); } }
+
+  /* ---------- site full screen: hides the side drawer / tab strip and the
+     headings so the page (or an open report) gets the whole window. Not the
+     browser's Fullscreen API - the window, address bar and taskbar stay. */
+  #btn-fs { position: fixed; top: calc(10px + env(safe-area-inset-top)); right: 12px; z-index: 25; opacity: .7; box-shadow: var(--shadow); }
+  #btn-fs:hover, #btn-fs:focus-visible { opacity: 1; }
+  #btn-fs .ic-exit { display: none; }
+  .brand { padding-right: 58px; }
+  .page-head, #viewer .vbar { padding-right: 50px; }
+  html.site-fs #btn-fs .ic-enter { display: none; }
+  html.site-fs #btn-fs .ic-exit { display: block; }
+  html.site-fs aside.side, html.site-fs .page-head, html.site-fs #viewer .vbar { display: none; }
+  html.site-fs .content { margin-left: 0; }
+  html.site-fs #viewer { left: 0; }
+  html.site-fs .toast { left: 50%; }
+  @media (min-width: 900px) { .brand { padding-right: 6px; } }
 </style>
 <!-- UI v2: the portfolio's look, one button away. The skin is scoped to
      data-ui="v2", so nothing here changes the classic page. -->
@@ -491,6 +507,28 @@
   <div class="frame" id="j-box" hidden></div>
 </div>
 <div class="toast" id="toast"></div>
+<button class="icon-btn" id="btn-fs" title="Full screen (hide menu and headings)" aria-pressed="false">
+  <svg class="ic-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
+  <svg class="ic-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
+</button>
+<script>
+(function () {
+  "use strict";
+  // Site full screen: a class on <html>, remembered per browser. Deliberately
+  // not requestFullscreen() - it only hides the page's own chrome.
+  var KEY = "jobhunt.siteFullscreen", root = document.documentElement, btn = document.getElementById("btn-fs");
+  function set(on) {
+    root.classList.toggle("site-fs", on);
+    btn.setAttribute("aria-pressed", on ? "true" : "false");
+    btn.title = on ? "Exit full screen (show menu and headings)" : "Full screen (hide menu and headings)";
+    try { on ? localStorage.setItem(KEY, "1") : localStorage.removeItem(KEY); } catch (e) { /* private window */ }
+  }
+  var saved = false;
+  try { saved = localStorage.getItem(KEY) === "1"; } catch (e) { /* private window */ }
+  set(saved);
+  btn.addEventListener("click", function () { set(!root.classList.contains("site-fs")); });
+})();
+</script>
 
 <script>
 (function () {
