@@ -1,6 +1,15 @@
 {
- "updated": "2026-09-25T14:46:21Z",
+ "updated": "2026-09-25T14:47:23Z",
  "items": [
+  {
+   "id": "accuracy-20260925-144723-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-09-25T14:47:23Z",
+   "file": "data/accuracy/accuracy-20260925-144723-accuracy-learning.html",
+   "bytes": 9261,
+   "meta": {}
+  },
   {
    "id": "naukri-20260925-144621-naukri-openings-2026-09-25-run-1-last-24",
    "kind": "naukri",
@@ -44,15 +53,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20260925-144621-naukri-openings-2026-09-25-run-6-last-24.jobs.json"
    }
-  },
-  {
-   "id": "accuracy-20260925-144621-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-09-25T14:46:21Z",
-   "file": "data/accuracy/accuracy-20260925-144621-accuracy-learning.html",
-   "bytes": 9261,
-   "meta": {}
   },
   {
    "id": "naukri-20260925-134140-naukri-openings-2026-09-25-run-4-last-24",
