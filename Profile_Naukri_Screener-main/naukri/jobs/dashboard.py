@@ -245,10 +245,10 @@ PAGE = r"""<!doctype html>
             --accent:#7ea2f0; --accent-soft:#1b2a4a; --good:#6ec48c; --good-soft:#14291c; --warn:#e2a24a; --warn-soft:#2e2413; --bad:#ef8a83; --bad-soft:#3a1a18; } }
   * { box-sizing: border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size:15px; line-height:1.5; }
-  .wrap { max-width:1100px; margin:0 auto; padding:24px 16px 80px; }
+  .wrap { max-width:none; margin:0; padding:24px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
   h1 { font-size:clamp(22px,4vw,30px); margin:0 0 4px; letter-spacing:-.02em; }
   h2 { font-size:18px; margin:26px 0 8px; }
-  .sub { color:var(--muted); margin:0 0 16px; max-width:75ch; }
+  .sub { color:var(--muted); margin:0 0 16px; }
   nav { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 20px; }
   nav button { border:1px solid var(--line); background:var(--surface); color:var(--muted); border-radius:999px; padding:7px 14px; font:inherit; cursor:pointer; }
   nav button[aria-pressed="true"] { color:var(--ink); border-color:var(--accent); background:var(--accent-soft); }

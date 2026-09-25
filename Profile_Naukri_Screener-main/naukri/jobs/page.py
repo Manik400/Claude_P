@@ -254,7 +254,7 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
     font-size: 15px;
     line-height: 1.5;
   }
-  .wrap { max-width: 1180px; margin: 0 auto; padding: 32px 20px 80px; }
+  .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
 
   header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
   .eyebrow {
@@ -266,7 +266,7 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
     font-weight: 700; font-size: clamp(26px, 4vw, 36px);
     margin: 0; letter-spacing: -.02em; text-wrap: balance;
   }
-  .sub { color: var(--muted); max-width: 62ch; }
+  .sub { color: var(--muted); }
 
   .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
   .stat {

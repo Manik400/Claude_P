@@ -31,7 +31,7 @@
   a { color: var(--accent); text-decoration: none; }
   a:hover { text-decoration: underline; }
   button { font: inherit; cursor: pointer; }
-  .wrap { max-width: 1240px; margin: 0 auto; padding: 0 16px; }
+  .wrap { max-width: none; margin: 0; padding: 0 clamp(14px, 2.2vw, 36px); }  /* fill the screen - no empty side margins */
 
   header.top { border-bottom: 1px solid var(--line); background: var(--card); }
   header.top .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; padding: 14px 16px; }

@@ -199,12 +199,12 @@ TEMPLATE = r"""<!doctype html>
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink);
          font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.5; }
-  .wrap { max-width: 1100px; margin: 0 auto; padding: 28px 16px 80px; }
+  .wrap { max-width: none; margin: 0; padding: 28px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
   nav.top { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; font-size: 14px; }
   nav.top a, nav.top .here { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: var(--muted); }
   nav.top .here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
   h1 { font-weight: 700; font-size: clamp(24px, 4vw, 34px); margin: 0 0 6px; letter-spacing: -.02em; }
-  .sub { color: var(--muted); max-width: 70ch; margin: 0 0 18px; }
+  .sub { color: var(--muted); margin: 0 0 18px; }
   .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
   .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; min-width: 110px; }
   .stat b { display: block; font-size: 22px; }

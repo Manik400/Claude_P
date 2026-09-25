@@ -595,7 +595,7 @@ def _page(rows: dict, learned: dict) -> str:
   @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg:#131211; --card:#1d1b19; --ink:#f2efea; --muted:#a39d95; --line:#322f2b; --ok:#4ade80; --bad:#f87171; --warn:#fbbf24; }} }}
   :root[data-theme="dark"] {{ --bg:#131211; --card:#1d1b19; --ink:#f2efea; --muted:#a39d95; --line:#322f2b; --ok:#4ade80; --bad:#f87171; --warn:#fbbf24; }}
   body {{ margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }}
-  main {{ max-width:1300px; margin:0 auto; padding:16px; }}
+  main {{ max-width:none; margin:0; padding:16px clamp(14px, 2.2vw, 36px); }}
   h1 {{ font-size:22px; margin:4px 0 2px; }} .sub {{ color:var(--muted); margin:0 0 14px; }}
   section {{ background:var(--card); border:1px solid var(--line); border-radius:12px; margin:0 0 14px; }}
   section > details.fgrp {{ display:block; border:0; padding:0; }}
