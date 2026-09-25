@@ -556,7 +556,7 @@ def _learned_summary(learned: dict, n: int = 12) -> dict:
 # ---------------------------------------------------------------- page
 
 def _page(rows: dict, learned: dict) -> str:
-    from .accordion import SNIPPET
+    from .accordion import HEAD, SNIPPET
     e = html.escape
     fmt = lambda v, suf="": "–" if v is None else f"{v:g}{suf}" if isinstance(v, (int, float)) else e(str(v))
 
@@ -589,6 +589,7 @@ def _page(rows: dict, learned: dict) -> str:
 
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+{HEAD}
 <title>Accuracy - Learning</title>
 <style>
   html {{ font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); }} @media (max-width: 899px) {{ html {{ font-size: 16px; }} }}  /* text scales with the screen */

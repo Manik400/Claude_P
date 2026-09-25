@@ -190,7 +190,8 @@ class Handler(BaseHTTPRequestHandler):
         if path == "/api/state":
             return self._json(state())
         if path in ("/", "/index.html"):
-            body = PAGE.encode("utf-8")
+            from ..accordion import HEAD as KIT_HEAD
+            body = PAGE.replace("__KIT_HEAD__", KIT_HEAD).encode("utf-8")
             self.send_response(200)
             self.send_header("Content-Type", "text/html; charset=utf-8")
             self.send_header("Content-Length", str(len(body)))
@@ -236,6 +237,7 @@ PAGE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+__KIT_HEAD__
 <title>Job agent dashboard</title>
 <style>
   html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
@@ -243,8 +245,11 @@ PAGE = r"""<!doctype html>
   :root { --bg:#f6f5f1; --surface:#fff; --surface-2:#f0efe9; --line:#dedbd2; --ink:#1c1b18; --muted:#6b6860;
           --accent:#2b5fd9; --accent-soft:#e6edfb; --good:#1e7f4a; --good-soft:#e3f3e9; --warn:#a45d00; --warn-soft:#fbeedb; --bad:#b3261e; --bad-soft:#fbe5e3; }
   @media (prefers-color-scheme: dark) {
-    :root { --bg:#141413; --surface:#1d1d1b; --surface-2:#262623; --line:#34342f; --ink:#ece9e1; --muted:#a09d94;
-            --accent:#7ea2f0; --accent-soft:#1b2a4a; --good:#6ec48c; --good-soft:#14291c; --warn:#e2a24a; --warn-soft:#2e2413; --bad:#ef8a83; --bad-soft:#3a1a18; } }
+    :root:not([data-theme="light"]) { --bg:#141413; --surface:#1d1d1b; --surface-2:#262623; --line:#34342f; --ink:#ece9e1; --muted:#a09d94;
+            --accent:#7ea2f0; --accent-soft:#1b2a4a; --good:#6ec48c; --good-soft:#14291c; --warn:#e2a24a; --warn-soft:#2e2413; --bad:#ef8a83; --bad-soft:#3a1a18; }
+  }
+  :root[data-theme="dark"] { --bg:#141413; --surface:#1d1d1b; --surface-2:#262623; --line:#34342f; --ink:#ece9e1; --muted:#a09d94;
+            --accent:#7ea2f0; --accent-soft:#1b2a4a; --good:#6ec48c; --good-soft:#14291c; --warn:#e2a24a; --warn-soft:#2e2413; --bad:#ef8a83; --bad-soft:#3a1a18; }
   * { box-sizing: border-box; }
   body { margin:0; background:var(--bg); color:var(--ink); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size: 0.9375rem; line-height:1.5; }
   .wrap { max-width:none; margin:0; padding:24px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */

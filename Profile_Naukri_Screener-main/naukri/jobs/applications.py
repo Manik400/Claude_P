@@ -25,7 +25,7 @@ import re
 from datetime import date, datetime
 from pathlib import Path
 
-from ..accordion import SNIPPET as ACC_SNIPPET
+from ..accordion import HEAD as KIT_HEAD, SNIPPET as ACC_SNIPPET
 
 log = logging.getLogger("naukri.jobs.applications")
 
@@ -180,6 +180,7 @@ TEMPLATE = r"""<!doctype html>
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
+__KIT_HEAD__
 <title>Applications sent</title>
 <style>
   html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
@@ -191,13 +192,19 @@ TEMPLATE = r"""<!doctype html>
     --bad: #b3261e; --bad-soft: #fbe5e3;
   }
   @media (prefers-color-scheme: dark) {
-    :root {
+    :root:not([data-theme="light"]) {
       --bg: #141413; --surface: #1d1d1b; --surface-2: #262623; --line: #34342f;
       --ink: #ece9e1; --muted: #a09d94; --accent: #7ea2f0; --accent-soft: #1b2a4a;
       --good: #6ec48c; --good-soft: #14291c; --warn: #e2a24a; --warn-soft: #2e2413;
       --bad: #ef8a83; --bad-soft: #3a1a18;
     }
   }
+  :root[data-theme="dark"] {
+      --bg: #141413; --surface: #1d1d1b; --surface-2: #262623; --line: #34342f;
+      --ink: #ece9e1; --muted: #a09d94; --accent: #7ea2f0; --accent-soft: #1b2a4a;
+      --good: #6ec48c; --good-soft: #14291c; --warn: #e2a24a; --warn-soft: #2e2413;
+      --bad: #ef8a83; --bad-soft: #3a1a18;
+    }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink);
          font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 0.9375rem; line-height: 1.5; }
@@ -386,6 +393,7 @@ def build_page() -> Path:
             .replace("__TODAY__", date.today().isoformat())
             .replace("__LABELS__", json.dumps(STATUS_LABELS))
             .replace("__ACC__", ACC_SNIPPET)
+            .replace("__KIT_HEAD__", KIT_HEAD)
             .replace("__DATA__", json.dumps(entries, ensure_ascii=False).replace("<", "\\u003c")))
     PAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
     PAGE_PATH.write_text(page, encoding="utf-8")

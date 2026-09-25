@@ -22,7 +22,7 @@ from pathlib import Path
 
 from . import dedupe, skills
 
-from ..accordion import SNIPPET as ACC_SNIPPET
+from ..accordion import HEAD as KIT_HEAD, SNIPPET as ACC_SNIPPET
 
 log = logging.getLogger("naukri.interview.page")
 
@@ -62,6 +62,7 @@ def _safe_json(payload) -> str:
 # takes the whole script down with it. Raw means what is written here is what
 # the browser receives. Nothing below may use Python escapes.
 TEMPLATE = r"""<meta name="viewport" content="width=device-width, initial-scale=1">
+__KIT_HEAD__
 <title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -994,6 +995,7 @@ def build(prep: dict, out_path: Path | None = None, dates: list[str] | None = No
     page = (TEMPLATE
             .replace("__TITLE__", f"Interview Prep {day}")
             .replace("__ACC__", ACC_SNIPPET)
+            .replace("__KIT_HEAD__", KIT_HEAD)
             .replace("__HEADING__", html.escape(heading))
             .replace("__SUBTITLE__", html.escape(subtitle))
             .replace("__DATELINE__", day)

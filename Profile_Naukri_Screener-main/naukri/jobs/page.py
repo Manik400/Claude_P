@@ -18,7 +18,7 @@ import logging
 from datetime import date, datetime
 from pathlib import Path
 
-from ..accordion import SNIPPET as ACC_SNIPPET
+from ..accordion import HEAD as KIT_HEAD, SNIPPET as ACC_SNIPPET
 
 log = logging.getLogger("naukri.jobs.page")
 
@@ -189,6 +189,7 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
 
 
 TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1">
+__KIT_HEAD__
 <title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -807,6 +808,7 @@ def build(results: dict, out_path: Path | None = None, today: str | None = None,
             # stored title or company contains one yet; this keeps it that way
             # if a recruiter ever pastes markup into a JD.
             .replace("__ACC__", ACC_SNIPPET)
+            .replace("__KIT_HEAD__", KIT_HEAD)
             .replace("__DATA__",
                      json.dumps(rows, ensure_ascii=False).replace("<", "\\u003c")))
 
