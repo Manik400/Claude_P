@@ -182,6 +182,8 @@ TEMPLATE = r"""<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Applications sent</title>
 <style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
   :root {
     --bg: #f6f5f1; --surface: #ffffff; --surface-2: #f0efe9; --line: #dedbd2;
     --ink: #1c1b18; --muted: #6b6860; --accent: #2b5fd9; --accent-soft: #e6edfb;
@@ -198,46 +200,46 @@ TEMPLATE = r"""<!doctype html>
   }
   * { box-sizing: border-box; }
   body { margin: 0; background: var(--bg); color: var(--ink);
-         font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 15px; line-height: 1.5; }
+         font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif; font-size: 0.9375rem; line-height: 1.5; }
   .wrap { max-width: none; margin: 0; padding: 28px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
-  nav.top { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; font-size: 14px; }
+  nav.top { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 20px; font-size: 0.875rem; }
   nav.top a, nav.top .here { padding: 5px 12px; border: 1px solid var(--line); border-radius: 999px; text-decoration: none; color: var(--muted); }
   nav.top .here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
   h1 { font-weight: 700; font-size: clamp(24px, 4vw, 34px); margin: 0 0 6px; letter-spacing: -.02em; }
   .sub { color: var(--muted); margin: 0 0 18px; }
   .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 0 0 18px; }
   .stat { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 10px 14px; min-width: 110px; }
-  .stat b { display: block; font-size: 22px; }
-  .stat span { color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .06em; }
+  .stat b { display: block; font-size: 1.375rem; }
+  .stat span { color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: .06em; }
   .bar { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; margin-bottom: 14px; }
-  .chip { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 13px; cursor: pointer; }
+  .chip { border: 1px solid var(--line); background: var(--surface); color: var(--muted); border-radius: 999px; padding: 5px 12px; font: inherit; font-size: 0.8125rem; cursor: pointer; }
   .chip[aria-pressed="true"] { color: var(--ink); border-color: var(--accent); background: var(--accent-soft); }
   .search { flex: 1; min-width: 180px; border: 1px solid var(--line); border-radius: 8px; padding: 7px 10px; font: inherit; background: var(--surface); color: var(--ink); }
-  .day { margin: 22px 0 8px; color: var(--muted); font-size: 12px; text-transform: uppercase; letter-spacing: .08em; }
+  .day { margin: 22px 0 8px; color: var(--muted); font-size: 0.75rem; text-transform: uppercase; letter-spacing: .08em; }
   .app { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 12px 14px; margin-bottom: 10px; }
   .head { display: flex; flex-wrap: wrap; gap: 6px 12px; align-items: baseline; }
-  .head a { color: var(--ink); font-weight: 600; text-decoration: none; font-size: 16px; }
+  .head a { color: var(--ink); font-weight: 600; text-decoration: none; font-size: 1rem; }
   .head a:hover { text-decoration: underline; }
   .company { color: var(--muted); }
-  .when { color: var(--muted); font-size: 13px; margin-left: auto; font-variant-numeric: tabular-nums; }
-  .tag { display: inline-block; font-size: 12px; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .when { color: var(--muted); font-size: 0.8125rem; margin-left: auto; font-variant-numeric: tabular-nums; }
+  .tag { display: inline-block; font-size: 0.75rem; padding: 1px 8px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
   .tag.ok { color: var(--good); background: var(--good-soft); border-color: transparent; }
   .tag.warn { color: var(--warn); background: var(--warn-soft); border-color: transparent; }
   .tag.bad { color: var(--bad); background: var(--bad-soft); border-color: transparent; }
   .tag.board { color: var(--accent); background: var(--accent-soft); border-color: transparent; }
-  .note { color: var(--muted); font-size: 13px; margin-top: 4px; }
-  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 14px; }
+  .note { color: var(--muted); font-size: 0.8125rem; margin-top: 4px; }
+  table { width: 100%; border-collapse: collapse; margin-top: 8px; font-size: 0.875rem; }
   th, td { text-align: left; vertical-align: top; padding: 6px 8px; border-top: 1px solid var(--line); }
-  th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; border-top: 0; }
+  th { color: var(--muted); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; letter-spacing: .05em; border-top: 0; }
   td.a { font-weight: 600; }
-  td.fix { color: var(--muted); font-size: 13px; }
+  td.fix { color: var(--muted); font-size: 0.8125rem; }
   /* phones: the answers table scrolls inside its card instead of widening the page */
   @media (max-width: 640px) { table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } }
   .app { overflow-wrap: anywhere; }
-  .blocked { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-size: 14px; }
+  .blocked { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-size: 0.875rem; }
   .empty { color: var(--muted); padding: 30px 0; text-align: center; }
-  footer { margin-top: 30px; color: var(--muted); font-size: 13px; }
-  code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 12px; }
+  footer { margin-top: 30px; color: var(--muted); font-size: 0.8125rem; }
+  code { font-family: "IBM Plex Mono", ui-monospace, monospace; font-size: 0.75rem; }
   @media (max-width: 640px) { .when { margin-left: 0; } th:nth-child(3), td:nth-child(3) { display: none; } }
 </style>
 </head>

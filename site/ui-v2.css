@@ -67,7 +67,7 @@
 :root[data-ui="v2"] label,
 :root[data-ui="v2"] th,
 :root[data-ui="v2"] .sect {
-  text-transform: uppercase; letter-spacing: .13em; font-size: 10.5px; color: var(--muted);
+  text-transform: uppercase; letter-spacing: .13em; font-size: 0.6562rem; color: var(--muted);
 }
 
 /* ---------- surfaces: square, bordered, hard shadow ---------- */
@@ -113,11 +113,11 @@
 /* chips: square outlines, the picked one inked in */
 :root[data-ui="v2"] .chips button {
   border: 2px solid var(--line); background: var(--card); color: var(--fg);
-  font-size: 11.5px; font-weight: 700; box-shadow: var(--v2-soft);
+  font-size: 0.7188rem; font-weight: 700; box-shadow: var(--v2-soft);
 }
 :root[data-ui="v2"] .chips button.on { background: var(--accent); color: #fff; }
 :root[data-ui="v2"] .pill,
-:root[data-ui="v2"] .chip { border: 2px solid var(--line); font-family: var(--v2-mono); font-size: 10.5px; font-weight: 700; }
+:root[data-ui="v2"] .chip { border: 2px solid var(--line); font-family: var(--v2-mono); font-size: 0.6562rem; font-weight: 700; }
 
 /* ---------- shell ---------- */
 :root[data-ui="v2"] aside.side { background: var(--card2); border-color: var(--line); border-bottom-width: 3px; }
@@ -125,7 +125,7 @@
 :root[data-ui="v2"] .brand h1 { font-family: var(--v2-display); }
 :root[data-ui="v2"] nav.tabs button {
   border-radius: 0; border: 0; border-bottom: 3px solid transparent; background: transparent;
-  color: var(--muted); font-weight: 700; font-size: 12.5px;
+  color: var(--muted); font-weight: 700; font-size: 0.7812rem;
 }
 :root[data-ui="v2"] nav.tabs button.on,
 :root[data-ui="v2"] nav.tabs button[aria-selected="true"] { color: var(--accent); border-bottom-color: var(--accent); background: transparent; }
@@ -151,7 +151,7 @@
 /* ---------- the toggle itself ---------- */
 .ui-switch {
   display: inline-flex; align-items: center; gap: 6px; cursor: pointer;
-  font: 700 11px/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase;
+  font: 700 0.6875rem/1 ui-monospace, Menlo, Consolas, monospace; letter-spacing: .12em; text-transform: uppercase;
   padding: 7px 9px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--muted);
 }
 .ui-switch:hover { color: var(--accent); }

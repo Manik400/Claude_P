@@ -591,25 +591,27 @@ def _page(rows: dict, learned: dict) -> str:
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Accuracy - Learning</title>
 <style>
+  html {{ font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); }} @media (max-width: 899px) {{ html {{ font-size: 16px; }} }}  /* text scales with the screen */
+
   :root {{ --bg:#f6f5f2; --card:#fff; --ink:#1c1917; --muted:#6b6560; --line:#e4e0da; --ok:#15803d; --bad:#b91c1c; --warn:#b45309; }}
   @media (prefers-color-scheme: dark) {{ :root:not([data-theme="light"]) {{ --bg:#131211; --card:#1d1b19; --ink:#f2efea; --muted:#a39d95; --line:#322f2b; --ok:#4ade80; --bad:#f87171; --warn:#fbbf24; }} }}
   :root[data-theme="dark"] {{ --bg:#131211; --card:#1d1b19; --ink:#f2efea; --muted:#a39d95; --line:#322f2b; --ok:#4ade80; --bad:#f87171; --warn:#fbbf24; }}
-  body {{ margin:0; background:var(--bg); color:var(--ink); font:14px/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }}
+  body {{ margin:0; background:var(--bg); color:var(--ink); font:0.875rem/1.5 -apple-system,"Segoe UI",Roboto,sans-serif; }}
   main {{ max-width:none; margin:0; padding:16px clamp(14px, 2.2vw, 36px); }}
-  h1 {{ font-size:22px; margin:4px 0 2px; }} .sub {{ color:var(--muted); margin:0 0 14px; }}
+  h1 {{ font-size: 1.375rem; margin:4px 0 2px; }} .sub {{ color:var(--muted); margin:0 0 14px; }}
   section {{ background:var(--card); border:1px solid var(--line); border-radius:12px; margin:0 0 14px; }}
   section > details.fgrp {{ display:block; border:0; padding:0; }}
-  section > details.fgrp > summary {{ display:flex; padding:12px 14px; font-size:14px; font-weight:600; letter-spacing:0;
+  section > details.fgrp > summary {{ display:flex; padding:12px 14px; font-size: 0.875rem; font-weight:600; letter-spacing:0;
     text-transform:none; opacity:1; }}
   .body {{ padding:0 14px 14px; overflow-x:auto; }}
-  table {{ border-collapse:collapse; width:100%; font-size:13px; }}
+  table {{ border-collapse:collapse; width:100%; font-size: 0.8125rem; }}
   th, td {{ text-align:left; padding:6px 8px; border-top:1px solid var(--line); white-space:nowrap; }}
-  th {{ color:var(--muted); font-weight:600; font-size:12px; }}
+  th {{ color:var(--muted); font-weight:600; font-size: 0.75rem; }}
   td.k {{ white-space:normal; min-width:180px; color:var(--muted); }}
   .ok {{ color:var(--ok); }} .bad {{ color:var(--bad); }} .warn {{ color:var(--warn); }}
-  ul {{ margin:6px 0; padding-left:18px; }} code {{ font-size:12px; }}
+  ul {{ margin:6px 0; padding-left:18px; }} code {{ font-size: 0.75rem; }}
   .cols {{ display:grid; grid-template-columns:repeat(auto-fit,minmax(260px,1fr)); gap:10px 24px; }}
-  .note {{ color:var(--muted); font-size:13px; }}
+  .note {{ color:var(--muted); font-size: 0.8125rem; }}
 </style></head><body><main>
 <h1>Accuracy &amp; learning</h1>
 <p class="sub">Rebuilt after every scan · updated {e(datetime.now().strftime('%Y-%m-%d %H:%M'))} · learning is {status}</p>

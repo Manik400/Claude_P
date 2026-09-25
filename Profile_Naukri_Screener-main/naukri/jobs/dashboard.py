@@ -238,16 +238,18 @@ PAGE = r"""<!doctype html>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Job agent dashboard</title>
 <style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
   :root { --bg:#f6f5f1; --surface:#fff; --surface-2:#f0efe9; --line:#dedbd2; --ink:#1c1b18; --muted:#6b6860;
           --accent:#2b5fd9; --accent-soft:#e6edfb; --good:#1e7f4a; --good-soft:#e3f3e9; --warn:#a45d00; --warn-soft:#fbeedb; --bad:#b3261e; --bad-soft:#fbe5e3; }
   @media (prefers-color-scheme: dark) {
     :root { --bg:#141413; --surface:#1d1d1b; --surface-2:#262623; --line:#34342f; --ink:#ece9e1; --muted:#a09d94;
             --accent:#7ea2f0; --accent-soft:#1b2a4a; --good:#6ec48c; --good-soft:#14291c; --warn:#e2a24a; --warn-soft:#2e2413; --bad:#ef8a83; --bad-soft:#3a1a18; } }
   * { box-sizing: border-box; }
-  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size:15px; line-height:1.5; }
+  body { margin:0; background:var(--bg); color:var(--ink); font-family:"Source Sans 3",ui-sans-serif,system-ui,sans-serif; font-size: 0.9375rem; line-height:1.5; }
   .wrap { max-width:none; margin:0; padding:24px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
   h1 { font-size:clamp(22px,4vw,30px); margin:0 0 4px; letter-spacing:-.02em; }
-  h2 { font-size:18px; margin:26px 0 8px; }
+  h2 { font-size: 1.125rem; margin:26px 0 8px; }
   .sub { color:var(--muted); margin:0 0 16px; }
   nav { display:flex; flex-wrap:wrap; gap:8px; margin:14px 0 20px; }
   nav button { border:1px solid var(--line); background:var(--surface); color:var(--muted); border-radius:999px; padding:7px 14px; font:inherit; cursor:pointer; }
@@ -255,19 +257,19 @@ PAGE = r"""<!doctype html>
   section { display:none; } section.on { display:block; }
   .card { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:14px 16px; margin-bottom:12px; }
   .grid { display:grid; grid-template-columns:repeat(auto-fill,minmax(260px,1fr)); gap:12px; }
-  label { display:block; font-size:13px; color:var(--muted); margin-bottom:3px; }
+  label { display:block; font-size: 0.8125rem; color:var(--muted); margin-bottom:3px; }
   input[type=text], input[type=number], input[type=email], input[type=password], select, textarea {
     width:100%; border:1px solid var(--line); border-radius:8px; padding:7px 10px; font:inherit; background:var(--surface); color:var(--ink); }
   textarea { min-height:60px; }
-  .hint { font-size:12px; color:var(--muted); margin-top:2px; }
+  .hint { font-size: 0.75rem; color:var(--muted); margin-top:2px; }
   .btn { border:1px solid var(--accent); background:var(--accent); color:#fff; border-radius:8px; padding:8px 16px; font:inherit; cursor:pointer; }
   .btn.ghost { background:transparent; color:var(--accent); }
-  .btn.small { padding:4px 10px; font-size:13px; }
+  .btn.small { padding:4px 10px; font-size: 0.8125rem; }
   .row { display:flex; gap:10px; align-items:center; flex-wrap:wrap; }
-  table { width:100%; border-collapse:collapse; font-size:14px; }
+  table { width:100%; border-collapse:collapse; font-size: 0.875rem; }
   th, td { text-align:left; vertical-align:top; padding:7px 8px; border-top:1px solid var(--line); }
-  th { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.05em; border-top:0; }
-  .tag { display:inline-block; font-size:12px; padding:1px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); white-space:nowrap; }
+  th { color:var(--muted); font-size: 0.75rem; text-transform:uppercase; letter-spacing:.05em; border-top:0; }
+  .tag { display:inline-block; font-size: 0.75rem; padding:1px 8px; border-radius:999px; border:1px solid var(--line); color:var(--muted); white-space:nowrap; }
   .tag.ok { color:var(--good); background:var(--good-soft); border-color:transparent; }
   .tag.warn { color:var(--warn); background:var(--warn-soft); border-color:transparent; }
   .tag.bad { color:var(--bad); background:var(--bad-soft); border-color:transparent; }
@@ -277,17 +279,17 @@ PAGE = r"""<!doctype html>
   .app { border-top:1px solid var(--line); padding:10px 0; }
   .app .head { display:flex; flex-wrap:wrap; gap:6px 12px; align-items:baseline; }
   .app .head a { color:var(--ink); font-weight:600; text-decoration:none; }
-  .app .when { color:var(--muted); font-size:13px; margin-left:auto; }
-  .app details { margin-top:6px; } summary { cursor:pointer; color:var(--muted); font-size:13px; }
-  .mail { padding:6px 0 6px 10px; border-left:3px solid var(--line); margin-top:6px; font-size:13px; }
+  .app .when { color:var(--muted); font-size: 0.8125rem; margin-left:auto; }
+  .app details { margin-top:6px; } summary { cursor:pointer; color:var(--muted); font-size: 0.8125rem; }
+  .mail { padding:6px 0 6px 10px; border-left:3px solid var(--line); margin-top:6px; font-size: 0.8125rem; }
   .mail b { display:block; }
   .policy { display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; padding:6px 0; border-top:1px solid var(--line); }
-  .policy .opts label { display:inline; margin-right:10px; font-size:14px; color:var(--ink); }
+  .policy .opts label { display:inline; margin-right:10px; font-size: 0.875rem; color:var(--ink); }
   .stats { display:flex; flex-wrap:wrap; gap:10px; margin-bottom:12px; }
   .stat { background:var(--surface); border:1px solid var(--line); border-radius:10px; padding:8px 14px; min-width:100px; }
-  .stat b { display:block; font-size:20px; } .stat span { color:var(--muted); font-size:12px; text-transform:uppercase; letter-spacing:.05em; }
+  .stat b { display:block; font-size: 1.25rem; } .stat span { color:var(--muted); font-size: 0.75rem; text-transform:uppercase; letter-spacing:.05em; }
   .empty { color:var(--muted); padding:16px 0; }
-  code { font-family:ui-monospace,monospace; font-size:12px; }
+  code { font-family:ui-monospace,monospace; font-size: 0.75rem; }
   @media (max-width:640px) { .app .when { margin-left:0; } }
 </style>
 </head>

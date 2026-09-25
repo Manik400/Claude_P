@@ -194,6 +194,8 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
   :root {
     --bg: #f2f4f7;
     --surface: #ffffff;
@@ -251,7 +253,7 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
     background: var(--bg);
     color: var(--ink);
     font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
-    font-size: 15px;
+    font-size: 0.9375rem;
     line-height: 1.5;
   }
   .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
@@ -259,7 +261,7 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
   header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
   .eyebrow {
     font-family: "IBM Plex Mono", ui-monospace, monospace;
-    font-size: 12px; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+    font-size: 0.75rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
   }
   h1 {
     font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
@@ -275,10 +277,10 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
   }
   .stat b {
     display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
-    font-size: 24px; font-weight: 500; line-height: 1.15;
+    font-size: 1.5rem; font-weight: 500; line-height: 1.15;
   }
   .stat span {
-    font-size: 11px; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-size: 0.6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
     font-family: "IBM Plex Mono", monospace;
   }
   .stat.is-applied b { color: var(--good); }
@@ -287,25 +289,26 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
   .bar {
     position: sticky; top: 0; z-index: 5;
     display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
-    background: var(--bg); padding: 12px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+    background: var(--bg); padding: 6px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
   }
   .chip {
-    font: 500 13px/1 Archivo, sans-serif;
+    font: 500 0.8125rem/1 Archivo, sans-serif;
     border: 1px solid var(--line); background: var(--surface); color: var(--ink);
-    padding: 8px 13px; border-radius: 999px; cursor: pointer;
+    padding: 5px 11px; border-radius: 999px; cursor: pointer;
   }
   .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  @media (max-height: 760px) { .bar { position: static; } }
   .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
   .spacer { flex: 1 1 auto; }
   .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
   .bar-label {
-    font-family: "IBM Plex Mono", monospace; font-size: 11px; letter-spacing: .08em;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6875rem; letter-spacing: .08em;
     text-transform: uppercase; color: var(--muted); padding-right: 2px;
   }
   .search {
-    font: 400 14px "Source Sans 3", sans-serif; color: var(--ink);
+    font: 400 0.875rem "Source Sans 3", sans-serif; color: var(--ink);
     background: var(--surface); border: 1px solid var(--line);
-    border-radius: 8px; padding: 8px 12px; min-width: 200px;
+    border-radius: 8px; padding: 5px 10px; min-width: 180px; flex: 1 1 200px;
   }
 
   .group-head {
@@ -313,10 +316,10 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
     margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
   }
   .group-head h2 {
-    font-family: Archivo, sans-serif; font-size: 15px; font-weight: 700;
+    font-family: Archivo, sans-serif; font-size: 0.9375rem; font-weight: 700;
     letter-spacing: .06em; text-transform: uppercase; margin: 0;
   }
-  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 13px; color: var(--muted); }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.8125rem; color: var(--muted); }
 
   .row {
     display: grid;
@@ -329,29 +332,29 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
   .row.done .title a { text-decoration: line-through; opacity: .62; }
   .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
 
-  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 15.5px; line-height: 1.3; }
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 0.9688rem; line-height: 1.3; }
   .title a { color: var(--ink); text-decoration: none; }
   .title a:hover { color: var(--accent); text-decoration: underline; }
-  .company { color: var(--muted); font-size: 13.5px; margin-top: 2px; }
+  .company { color: var(--muted); font-size: 0.8438rem; margin-top: 2px; }
   .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
   .tag {
-    font-family: "IBM Plex Mono", monospace; font-size: 10.5px; letter-spacing: .05em;
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6562rem; letter-spacing: .05em;
     text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
     border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
   }
   .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
   .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
   .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
-  .note { color: var(--muted); font-size: 12.5px; margin-top: 6px; }
+  .note { color: var(--muted); font-size: 0.7812rem; margin-top: 6px; }
   .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
 
-  .meta { font-size: 13px; color: var(--muted); }
+  .meta { font-size: 0.8125rem; color: var(--muted); }
   .meta div + div { margin-top: 3px; }
   .rank {
     font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
-    font-size: 17px; text-align: right; color: var(--accent);
+    font-size: 1.0625rem; text-align: right; color: var(--accent);
   }
-  .rank small { display: block; font-size: 9.5px; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+  .rank small { display: block; font-size: 0.5938rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
 
   .empty { color: var(--muted); padding: 26px 0; text-align: center; }
 
@@ -361,7 +364,7 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
     border-bottom: 1px solid var(--line); margin-bottom: 22px;
   }
   nav.top a, nav.top span.here {
-    font: 600 13.5px/1 Archivo, sans-serif; text-decoration: none;
+    font: 600 0.8438rem/1 Archivo, sans-serif; text-decoration: none;
     padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
     border-radius: 6px 6px 0 0;
   }
@@ -373,25 +376,25 @@ TEMPLATE = """<meta name="viewport" content="width=device-width, initial-scale=1
      the 08:52 list from the 18:11 one. */
   nav.runs {
     display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
-    margin: -14px 0 20px; font: 400 12.5px/1.6 "Source Sans 3", sans-serif;
+    margin: -14px 0 20px; font: 400 0.7812rem/1.6 "Source Sans 3", sans-serif;
   }
   nav.runs .label { color: var(--muted); margin-right: 2px; }
   nav.runs a, nav.runs span.here {
     padding: 3px 9px; border-radius: 999px; text-decoration: none;
     border: 1px solid var(--line); color: var(--muted);
-    font: 500 12.5px/1.6 "IBM Plex Mono", monospace;
+    font: 500 0.7812rem/1.6 "IBM Plex Mono", monospace;
   }
   nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
   nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
   nav.runs .sep { color: var(--line); padding: 0 4px; }
 
-  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 13px; }
-  footer code { font-family: "IBM Plex Mono", monospace; font-size: 12px; }
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8125rem; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; }
 
   @media (max-width: 760px) {
     .row { grid-template-columns: 30px 1fr; }
     .meta, .rank { grid-column: 2; text-align: left; }
-    .rank { font-size: 15px; }
+    .rank { font-size: 0.9375rem; }
   }
   @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
 </style>

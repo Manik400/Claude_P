@@ -17,14 +17,17 @@ SNIPPET = r"""
   details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
     border-radius: 12px; padding: 3px 6px; }
   details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
-    font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
     padding: 4px 4px; white-space: nowrap; user-select: none; }
   details.fgrp > summary::-webkit-details-marker { display: none; }
-  details.fgrp > summary::before { content: "\25B8"; font-size: 10px; transition: transform .15s; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 0.625rem; transition: transform .15s; }
   details.fgrp[open] > summary::before { transform: rotate(90deg); }
   details.fgrp > summary:hover { opacity: 1; }
   details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
   details.fgrp:not([open]) { opacity: .9; }
+  /* thin scrollbars that follow the page's light / dark theme */
+  :root { color-scheme: light dark; } :root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+  * { scrollbar-width: thin; }
 </style>
 <script>
 (function () {
