@@ -343,8 +343,8 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
   }
   @media (min-width: 1360px) { .wrap.qa3 .qa { position: relative; top: 0; height: 100%; max-height: none; min-height: 0; } }
   /* short windows: date cards drop the theme line, then the counts, instead of overflowing */
-  @media (min-width: 900px) and (max-height: 820px) { .cell .th { display: none; } }
-  @media (min-width: 900px) and (max-height: 660px) { .cell .foot { display: none; } .cell { gap: 3px; padding: 6px 8px; } }
+  @media (min-width: 900px) and (max-height: 700px) { .cell .th { display: none; } }
+  @media (min-width: 900px) and (max-height: 600px) { .cell .foot { display: none; } .cell { gap: 3px; padding: 6px 8px; } }
   @media (max-width: 899px) { html.sheet-open, html.sheet-open body { overflow: hidden; } }
 
   /* ---- header stays on one row on desktop; the stats shrink before anything wraps ---- */
@@ -356,6 +356,31 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
   @media (min-width: 900px) and (max-width: 1500px) { .kpi span { display: none; } .kpi { padding: 5px 9px; } }
   @media (min-width: 900px) and (max-width: 1180px) { .top .kpis, .top > .spacer { display: none; } .top .views { margin-left: auto; } }
   @media (min-width: 900px) and (max-width: 1080px) { .top .sub { display: none; } }
+
+  /* ---- "starts in N days" / "finished" banner above the calendar ---- */
+  .notice { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; margin: 10px 0 0; padding: 9px 12px; border-radius: 12px;
+    background: var(--accent-bg); color: var(--fg); border: 1px solid var(--accent); font-size: 0.85rem; }
+  .notice b { color: var(--accent); }
+  .notice .btn { padding: 4px 10px; font-size: 0.78rem; margin-left: auto; }
+  :root[data-ui="v2"] .notice { border-radius: 0; border-width: 2px; box-shadow: 3px 3px 0 var(--line); }
+
+  /* ---- tablet widths (600-899): date cards show the theme and the status, not just the date ---- */
+  @media (min-width: 600px) and (max-width: 899px) {
+    .cell { min-height: 84px; align-items: stretch; padding: 6px 7px; gap: 4px; }
+    .cell .d { justify-content: flex-start; }
+    .cell .d .pd { display: inline-block; font-size: 0.62rem; padding: 0 4px; }
+    .cell .th { display: block; font-size: 0.72rem; }
+    .cell .mini, .cell .dots { display: none !important; }
+    .cell .bar { width: 100%; }
+    .cell .foot { display: flex; justify-content: flex-end; } .cell .cnt { display: none; }
+    .cell .st { font-size: 0.6rem; padding: 1px 5px; }
+  }
+  /* phones: the status dot is visible for every plan day (upcoming = an outlined ring) */
+  .dot.up { background: transparent !important; border: 1.5px solid var(--muted); }
+
+  /* ---- narrow date cards: drop the "x/13" count so the status chip always reads in full ---- */
+  .cell[data-day] { container-type: inline-size; }
+  @container (max-width: 135px) { .cnt { display: none; } .foot { justify-content: flex-end; } }
 
   /* ---- filters: each group is one line (label beside its chips) ---- */
   .fbody { align-items: center; row-gap: 8px; padding-top: 8px; padding-bottom: 8px; }
@@ -441,6 +466,7 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
           <div><div class="flabel">Show</div><div class="chips" id="f-show"></div></div>
           <div><div class="flabel">Phase</div><div class="chips" id="f-phase"></div></div>
         </div></details>
+      <div class="notice" id="notice" hidden></div>
       <div class="legend"><span><i style="background:var(--ok)"></i>Completed</span><span><i style="background:var(--warn)"></i>Partial</span>
         <span><i style="background:var(--bad)"></i>Missed</span><span><i style="background:var(--accent)"></i>Today</span>
         <span><i style="background:var(--rest)"></i>Sunday review</span><span><i style="background:var(--info)"></i>Checkpoint</span>
@@ -582,7 +608,7 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
       '<div class="th">' + esc(d.theme) + "</div>" + '<div class="mini">D' + d.day + "</div>" +
       '<div class="bar"><i style="width:' + pct + "%;background:" + ST_COLOR[st] + '"></i></div>' +
       '<div class="foot"><span class="cnt">' + p.done + "/" + p.total + '</span><span class="st ' + st + '">' + ST_LABEL[st] + "</span></div>" +
-      '<div class="dots"><span class="dot" style="background:' + ST_COLOR[st] + '"></span></div></button>';
+      '<div class="dots"><span class="dot ' + st + '" style="background:' + ST_COLOR[st] + '"></span></div></button>';
   }
   function renderCal() {
     var m = UI.month, y = +m.slice(0, 4), mo = +m.slice(5, 7) - 1;
@@ -596,6 +622,16 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
       h += cellHtml(c, inMonth);
     }
     $("cal").innerHTML = h;
+    // before Day 1 or after Day 75 the month is mostly blank dates - say why, and offer a way in
+    var nb = $("notice"), toGo = diffDays(startISO(), TODAY), over = diffDays(TODAY, dateOf(75));
+    if (toGo > 0) {
+      nb.innerHTML = "<span>Day 1 is <b>" + esc(nice(startISO(), true)) + "</b> · " + toGo + (toGo === 1 ? " day" : " days") +
+        " to go. The dates before it are not part of the plan.</span>" + '<button class="btn" data-day="1">Preview Day 1 ›</button>';
+      nb.hidden = false;
+    } else if (over > 0) {
+      nb.innerHTML = "<span>The plan finished on <b>" + esc(nice(dateOf(75), true)) + "</b>. Every day is still here to review.</span>";
+      nb.hidden = false;
+    } else nb.hidden = true;
   }
   function monthOf(isoStr) { return isoStr.slice(0, 7) + "-01"; }
   function shiftMonth(n) { var d = parse(UI.month); d.setUTCMonth(d.getUTCMonth() + n); UI.month = iso(d); renderCal(); }
