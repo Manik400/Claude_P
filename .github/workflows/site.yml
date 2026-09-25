@@ -12,6 +12,8 @@ on:
     paths:
       - "site/index.html"
       - "site/tools/publish.py"
+      - "sde-75-day-plan/index.html"
+      - "sde-75-day-plan/plan.json"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 

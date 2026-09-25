@@ -323,6 +323,13 @@
   html.site-fs .content { margin-left: 0; }
   html.site-fs #viewer { left: 0; }
   html.site-fs .toast { left: 50%; }
+
+  /* Plan tab: the tracker fills the space under the header (and all of it in site full screen) */
+  #plan-frame { display: block; width: 100%; border: 0; border-radius: 14px; background: var(--bg);
+    height: calc(100vh - 150px); height: calc(100dvh - 150px); }
+  html.plan-on main { max-width: none; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; }
+  @media (min-width: 900px) { #plan-frame { height: calc(100vh - 110px); height: calc(100dvh - 110px); } html.plan-on main { padding: 14px 18px; } }
+  html.site-fs #plan-frame { height: calc(100vh - 20px); height: calc(100dvh - 20px); }
   @media (min-width: 900px) { .brand { padding-right: 6px; } }
 </style>
 <!-- UI v2: the portfolio's look, one button away. The skin is scoped to
@@ -345,6 +352,7 @@
     <button data-tab="jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>Jobs</button>
     <button data-tab="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Queue<span class="dot" id="dot-queue" hidden></span></button>
     <button data-tab="track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Track</button>
+    <button data-tab="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 15l2 2 4-4"/></svg>Plan</button>
     <button data-tab="settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>Settings</button>
   </nav>
   <div class="side-foot">
@@ -480,6 +488,10 @@
   </section>
 
   <!-- -------------------------------------------------------------- Settings -->
+  <!-- The 75-Day SDE Plan (sde-75-day-plan/, published to plan/). Same origin,
+       so it reads the GitHub token and the theme this page keeps in localStorage. -->
+  <section id="tab-plan" hidden><iframe id="plan-frame" title="75-Day SDE Plan" data-src="plan/"></iframe></section>
+
   <section id="tab-settings" hidden>
     <div class="card">
       <h2>Appearance</h2>
@@ -488,7 +500,7 @@
     </div>
     <div class="card">
       <h2>This phone</h2>
-      <label>GitHub token <span class="muted">(fine-grained: this repo only, Actions read+write)</span></label>
+      <label>GitHub token <span class="muted">(fine-grained: this repo only, Actions + Contents read+write)</span></label>
       <input id="s-token" type="password" autocomplete="off" placeholder="github_pat_…">
       <label>Repository</label>
       <input id="s-repo" placeholder="owner/repo" autocapitalize="none">
@@ -503,7 +515,7 @@
       <ol class="muted" style="font-size:14px">
         <li>GitHub → Settings → Developer settings → Personal access tokens → <b>Fine-grained tokens</b> → Generate.</li>
         <li>Repository access: <b>Only select repositories</b> → this repo.</li>
-        <li>Permissions: <b>Actions: Read and write</b>. Leave the rest at defaults.</li>
+        <li>Permissions: <b>Actions: Read and write</b> and <b>Contents: Read and write</b> (Contents lets the Plan tab sync your ticks). Leave the rest at defaults.</li>
         <li>Copy it into the field above and Save.</li>
       </ol>
     </div>
@@ -717,16 +729,19 @@
   }
 
   // ---- tabs
-  var TABS = ["home", "search", "jobs", "queue", "track", "settings"];
+  var TABS = ["home", "search", "jobs", "queue", "track", "plan", "settings"];
   var tabs = document.querySelectorAll("nav.tabs button");
   var TITLES = { home: ["Home", "what is happening right now"], search: ["Search", "start a run on GitHub; results land under Jobs"],
     jobs: ["Jobs", "every report, newest first"], queue: ["Queue", "what your PC applies to, and the rules"],
-    track: ["Track", "applications, replies and your answers"], settings: ["Settings", "this phone only"] };
+    track: ["Track", "applications, replies and your answers"], plan: ["Plan", "75-day SDE plan - calendar, daily tasks, progress"],
+    settings: ["Settings", "this phone only"] };
   function showTab(name) {
     if (TABS.indexOf(name) < 0) name = "home";
     tabs.forEach(function (b) { b.classList.toggle("on", b.dataset.tab === name); if (b.dataset.tab === name && b.scrollIntoView) try { b.scrollIntoView({ inline: "nearest", block: "nearest" }); } catch (e) {} });
     $("page-title").textContent = TITLES[name][0]; $("page-sub").textContent = TITLES[name][1];
     TABS.forEach(function (t) { $("tab-" + t).hidden = t !== name; });
+    document.documentElement.classList.toggle("plan-on", name === "plan");
+    if (name === "plan" && !$("plan-frame").src) $("plan-frame").src = $("plan-frame").dataset.src;  // load on first open
     store.set("tab", name);
     try { history.replaceState(history.state, "", "#" + name); } catch (e) {}
     if (name === "home") { loadIndex(); loadQueue().then(renderHome); loadRuns("jobhunt.yml", null); loadRuns("careers.yml", null); }

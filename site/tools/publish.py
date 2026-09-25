@@ -205,6 +205,12 @@ def publish_site(a):
         src = os.path.join(SITE_DIR, name)
         if os.path.exists(src):
             shutil.copyfile(src, os.path.join(a.pages, name))
+    # The 75-Day SDE Plan tracker (the site's Plan tab) lives at plan/.
+    plan_src = os.path.join(os.path.dirname(SITE_DIR), "sde-75-day-plan")
+    if os.path.exists(os.path.join(plan_src, "index.html")):
+        os.makedirs(os.path.join(a.pages, "plan"), exist_ok=True)
+        for name in ("index.html", "plan.json"):
+            shutil.copyfile(os.path.join(plan_src, name), os.path.join(a.pages, "plan", name))
     with open(os.path.join(a.pages, ".nojekyll"), "w") as f:
         f.write("")
     if not os.path.exists(os.path.join(a.pages, "data", "index.json")):

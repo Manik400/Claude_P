@@ -1,0 +1,357 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>75-Day SDE Plan</title>
+<!-- Design mockup only: static sample data, rendered to PNGs by render.py.
+     ?view=desktop | mcal | mday | mstats   &theme=light | dark -->
+<style>
+  :root {
+    --bg: #f5f4f1; --card: #ffffff; --card2: #faf9f7; --fg: #1c1917; --muted: #6b6560; --line: #e6e2dc; --line2: #f0ede8;
+    --accent: #15803d; --accent-bg: rgba(21,128,61,.10); --accent-fg: #fff;
+    --ok: #15803d; --ok-bg: rgba(21,128,61,.12);
+    --warn: #b45309; --warn-bg: rgba(180,83,9,.13);
+    --bad: #b91c1c; --bad-bg: rgba(185,28,28,.10);
+    --info: #1d4ed8; --info-bg: rgba(29,78,216,.10);
+    --rest: #7c3aed; --rest-bg: rgba(124,58,237,.10);
+    --chip: #ecebe7; --shadow: 0 1px 2px rgba(28,25,23,.05), 0 2px 10px rgba(28,25,23,.05);
+    --weekend: #f0eee9;
+  }
+  :root[data-theme="dark"] {
+    --bg: #131211; --card: #1d1b19; --card2: #232120; --fg: #f2efea; --muted: #a39d95; --line: #322f2b; --line2: #292623;
+    --accent: #34c26a; --accent-bg: rgba(52,194,106,.14); --accent-fg: #0d1f13;
+    --ok: #4ade80; --ok-bg: rgba(74,222,128,.14);
+    --warn: #fbbf24; --warn-bg: rgba(251,191,36,.14);
+    --bad: #f87171; --bad-bg: rgba(248,113,113,.14);
+    --info: #60a5fa; --info-bg: rgba(96,165,250,.14);
+    --rest: #a78bfa; --rest-bg: rgba(167,139,250,.14);
+    --chip: #2b2825; --shadow: 0 1px 2px rgba(0,0,0,.4);
+    --weekend: #1a1816;
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--fg);
+    font: 14px/1.45 -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; }
+  button { font: inherit; color: inherit; }
+  .muted { color: var(--muted); }
+
+  /* ------------------------------------------------ header */
+  .top { display: flex; align-items: center; gap: 14px; padding: 16px 22px; background: var(--card); border-bottom: 1px solid var(--line); }
+  .top h1 { margin: 0; font-size: 20px; letter-spacing: -.01em; }
+  .top .sub { font-size: 12.5px; color: var(--muted); }
+  .monthnav { display: flex; align-items: center; gap: 6px; margin-left: 18px; }
+  .monthnav b { font-size: 17px; min-width: 132px; text-align: center; }
+  .ib { width: 34px; height: 34px; border-radius: 10px; border: 1px solid var(--line); background: var(--card); display: grid; place-items: center; cursor: pointer; }
+  .btn { border: 1px solid var(--line); background: var(--card); border-radius: 10px; padding: 7px 12px; font-weight: 600; font-size: 13px; }
+  .btn.acc { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+  .spacer { flex: 1; }
+  .kpis { display: flex; gap: 10px; align-items: center; }
+  .kpi { display: flex; align-items: center; gap: 8px; padding: 6px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--card2); }
+  .kpi b { font-size: 16px; } .kpi span { font-size: 11.5px; color: var(--muted); line-height: 1.15; }
+  .ring { --p: 0; width: 38px; height: 38px; border-radius: 50%; display: grid; place-items: center; font-size: 11px; font-weight: 700;
+    background: conic-gradient(var(--accent) calc(var(--p) * 1%), var(--line) 0); }
+  .ring::before { content: ""; position: absolute; }
+  .ring i { width: 30px; height: 30px; border-radius: 50%; background: var(--card2); display: grid; place-items: center; font-style: normal; }
+  .sync { display: inline-flex; align-items: center; gap: 6px; font-size: 12px; color: var(--muted); }
+  .sync::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--ok); }
+
+  /* ------------------------------------------------ filters (same accordion as the site) */
+  details.filters { background: var(--card); border: 1px solid var(--line); border-radius: 12px; }
+  details.filters > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 9px 14px; cursor: pointer; }
+  details.filters > summary::-webkit-details-marker { display: none; }
+  details.filters > summary b { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+  details.filters > summary .sum { flex: 1; font-size: 13px; }
+  details.filters > summary::after { content: "▾"; color: var(--muted); transition: transform .15s; }
+  details.filters[open] > summary::after { transform: rotate(180deg); }
+  .fbody { border-top: 1px solid var(--line2); padding: 10px 14px 12px; display: flex; gap: 18px; flex-wrap: wrap; }
+  .chips { display: flex; gap: 6px; flex-wrap: wrap; }
+  .chips button { border: 1px solid var(--line); background: var(--card); border-radius: 999px; padding: 5px 11px; font-size: 12.5px; }
+  .chips button.on { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); font-weight: 600; }
+  .flabel { font-size: 11.5px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-bottom: 6px; }
+
+  /* ------------------------------------------------ calendar */
+  .wrap { display: grid; grid-template-columns: minmax(0, 1fr) 440px; gap: 18px; padding: 16px 22px 22px; align-items: start; }
+  .legend { display: flex; gap: 14px; flex-wrap: wrap; font-size: 12px; color: var(--muted); margin: 12px 2px 10px; }
+  .legend i { display: inline-block; width: 9px; height: 9px; border-radius: 3px; margin-right: 5px; vertical-align: 0; }
+  .cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 8px; }
+  .dow { font-size: 11.5px; font-weight: 600; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; padding: 0 4px 2px; }
+  .dow.we { color: var(--bad); }
+  .cell { background: var(--card); border: 1px solid var(--line); border-radius: 12px; padding: 8px 9px 9px; min-height: 104px;
+    display: flex; flex-direction: column; gap: 5px; box-shadow: var(--shadow); cursor: pointer; position: relative; }
+  .cell.we { background: var(--weekend); }
+  .cell.out { opacity: .38; box-shadow: none; }
+  .cell.sel { outline: 2px solid var(--accent); outline-offset: 1px; }
+  .cell.today { border-color: var(--accent); box-shadow: 0 0 0 3px var(--accent-bg); }
+  .cell .d { display: flex; align-items: center; gap: 6px; }
+  .cell .d b { font-size: 15px; }
+  .cell.we .d b { color: var(--bad); }
+  .cell .d .pd { margin-left: auto; font-size: 10.5px; font-weight: 700; color: var(--muted); background: var(--chip); border-radius: 6px; padding: 1px 6px; }
+  .cell .th { font-size: 12px; color: var(--muted); line-height: 1.25; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .bar { height: 5px; border-radius: 3px; background: var(--line); overflow: hidden; margin-top: auto; }
+  .bar i { display: block; height: 100%; border-radius: 3px; }
+  .foot { display: flex; align-items: center; justify-content: space-between; gap: 6px; }
+  .cnt { font-size: 11px; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .st { font-size: 10.5px; font-weight: 700; border-radius: 999px; padding: 2px 7px; white-space: nowrap; }
+  .st.done { background: var(--ok-bg); color: var(--ok); }
+  .st.part { background: var(--warn-bg); color: var(--warn); }
+  .st.miss { background: var(--bad-bg); color: var(--bad); }
+  .st.today { background: var(--accent); color: var(--accent-fg); }
+  .st.up { background: var(--chip); color: var(--muted); }
+  .st.rest { background: var(--rest-bg); color: var(--rest); }
+  .st.ms { background: var(--info-bg); color: var(--info); }
+  .flag { position: absolute; top: -7px; right: 8px; font-size: 10px; font-weight: 700; background: var(--info); color: #fff; border-radius: 6px; padding: 1px 6px; }
+
+  /* ------------------------------------------------ day panel */
+  .panel { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.08); overflow: hidden; position: sticky; top: 16px; }
+  .ph { padding: 14px 16px 12px; border-bottom: 1px solid var(--line2); }
+  .ph .row1 { display: flex; align-items: center; gap: 8px; }
+  .ph .row1 .t { flex: 1; min-width: 0; }
+  .ph .date { font-size: 12px; color: var(--muted); font-weight: 600; letter-spacing: .02em; }
+  .ph h2 { margin: 1px 0 0; font-size: 18px; letter-spacing: -.01em; }
+  .tags { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 8px; }
+  .tag { font-size: 11px; font-weight: 600; border-radius: 6px; padding: 2px 7px; background: var(--chip); color: var(--muted); }
+  .tag.ph1 { background: var(--info-bg); color: var(--info); }
+  .prog { display: flex; align-items: center; gap: 10px; margin-top: 10px; }
+  .prog .bar { flex: 1; height: 8px; margin: 0; }
+  .prog b { font-size: 13px; font-variant-numeric: tabular-nums; }
+  .mode { display: flex; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; margin-top: 10px; }
+  .mode button { flex: 1; border: 0; background: none; padding: 6px; border-radius: 8px; font-size: 12.5px; color: var(--muted); }
+  .mode button.on { background: var(--card); color: var(--fg); font-weight: 600; box-shadow: var(--shadow); }
+  .timeline { display: flex; gap: 6px; overflow: hidden; padding: 10px 16px; border-bottom: 1px solid var(--line2); background: var(--card2); }
+  .tl { flex: none; font-size: 11px; border: 1px solid var(--line); border-radius: 8px; padding: 4px 8px; background: var(--card); }
+  .tl b { display: block; font-size: 10.5px; color: var(--muted); font-weight: 600; }
+  .tl.now { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-bg); }
+
+  .sec { border-bottom: 1px solid var(--line2); }
+  .sec > summary { list-style: none; display: flex; align-items: center; gap: 10px; padding: 11px 16px; cursor: pointer; }
+  .sec > summary::-webkit-details-marker { display: none; }
+  .sec > summary .ic { width: 28px; height: 28px; border-radius: 8px; display: grid; place-items: center; font-size: 14px; flex: none; }
+  .sec > summary .nm { flex: 1; font-weight: 600; }
+  .sec > summary .nm small { display: block; font-weight: 400; color: var(--muted); font-size: 12px; }
+  .sec > summary .c { font-size: 12px; font-weight: 700; border-radius: 999px; padding: 2px 8px; background: var(--chip); color: var(--muted); }
+  .sec > summary .c.full { background: var(--ok-bg); color: var(--ok); }
+  .sec > summary::after { content: "▾"; color: var(--muted); transition: transform .15s; }
+  .sec[open] > summary::after { transform: rotate(180deg); }
+  .sb { padding: 0 16px 12px 54px; }
+  .task { display: flex; align-items: flex-start; gap: 10px; padding: 7px 0; border-top: 1px dashed var(--line2); }
+  .task:first-child { border-top: 0; }
+  .cb { width: 20px; height: 20px; border-radius: 6px; border: 2px solid var(--line); flex: none; margin-top: 1px; display: grid; place-items: center; font-size: 12px; font-weight: 800; color: transparent; }
+  .cb.on { background: var(--accent); border-color: var(--accent); color: var(--accent-fg); }
+  .task .tx { flex: 1; min-width: 0; }
+  .task .tx a { color: var(--fg); font-weight: 600; text-decoration: none; }
+  .task .tx a::after { content: " ↗"; color: var(--muted); font-weight: 400; font-size: 11px; }
+  .task.on .tx a, .task.on .tx > span:first-child { color: var(--muted); text-decoration: line-through; }
+  .meta { display: flex; gap: 6px; flex-wrap: wrap; margin-top: 3px; }
+  .df { font-size: 10.5px; font-weight: 700; border-radius: 5px; padding: 1px 6px; }
+  .df.e { background: var(--ok-bg); color: var(--ok); } .df.m { background: var(--warn-bg); color: var(--warn); } .df.h { background: var(--bad-bg); color: var(--bad); }
+  .pt { font-size: 10.5px; color: var(--muted); border: 1px solid var(--line); border-radius: 5px; padding: 0 6px; }
+  .rv { font-size: 11px; color: var(--info); border: 1px solid var(--info-bg); background: var(--info-bg); border-radius: 6px; padding: 1px 7px; flex: none; margin-top: 1px; }
+  .kp { margin: 4px 0 2px; padding-left: 16px; color: var(--muted); font-size: 12.5px; }
+  .kp li { margin: 2px 0; }
+  .warnbox { font-size: 12px; color: var(--warn); background: var(--warn-bg); border-radius: 8px; padding: 6px 9px; margin-top: 6px; }
+  .water { display: flex; gap: 5px; align-items: center; margin-top: 4px; }
+  .water i { width: 22px; height: 28px; border-radius: 5px 5px 7px 7px; border: 2px solid var(--info); position: relative; overflow: hidden; }
+  .water i.f::after { content: ""; position: absolute; inset: 35% 0 0; background: var(--info); opacity: .85; }
+  .water span { font-size: 12px; color: var(--muted); margin-left: 4px; }
+  .note { width: 100%; min-height: 58px; border: 1px solid var(--line); border-radius: 10px; background: var(--card2); padding: 8px 10px; font-size: 12.5px; color: var(--muted); }
+  .pfoot { display: flex; gap: 8px; padding: 12px 16px; }
+  .pfoot .btn { flex: 1; text-align: center; }
+
+  /* ------------------------------------------------ mobile */
+  body.m .top { flex-wrap: wrap; padding: 12px 14px 10px; gap: 10px; }
+  body.m .top h1 { font-size: 17px; }
+  body.m .monthnav { margin: 0; width: 100%; }
+  body.m .top .kpis, body.m .top .spacer { display: none; }
+  body.shot .tabbar { position: static; }
+  html, body { overflow-x: hidden; }
+  body.m .kpirow .kpi b { font-size: 15px; }
+  body.m .monthnav b { flex: 1; text-align: left; font-size: 16px; min-width: 0; }
+  body.m .wrap { grid-template-columns: 1fr; padding: 10px 12px 16px; gap: 12px; }
+  body.m .cal { gap: 4px; }
+  body.m .dow { font-size: 10px; text-align: center; padding: 0; }
+  body.m .cell { min-height: 58px; padding: 5px 4px 6px; gap: 3px; border-radius: 10px; align-items: center; box-shadow: none; }
+  body.m .cell .d { justify-content: center; }
+  body.m .cell .d b { font-size: 13.5px; }
+  body.m .cell .d .pd, body.m .cell .th, body.m .cell .foot, body.m .flag { display: none; }
+  body.m .cell .dots { display: flex; gap: 3px; justify-content: center; }
+  body.m .cell .mini { font-size: 9.5px; font-weight: 700; color: var(--muted); }
+  .dots { display: none; }
+  .dot { width: 7px; height: 7px; border-radius: 50%; }
+  .mini { display: none; }
+  body.m .cell .mini { display: block; }
+  body.m .bar { width: 80%; height: 4px; margin-top: auto; }
+  .kpirow { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .kpirow .kpi { flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; }
+  .todaycard { background: var(--card); border: 1px solid var(--accent); border-radius: 14px; padding: 12px 14px; box-shadow: 0 0 0 3px var(--accent-bg); }
+  .todaycard h3 { margin: 2px 0 6px; font-size: 15px; }
+  .nextup { display: flex; flex-direction: column; gap: 6px; margin-top: 8px; }
+  .nextup div { display: flex; gap: 8px; align-items: center; font-size: 13px; }
+  .tabbar { position: sticky; left: 0; right: 0; bottom: 0; z-index: 5; display: flex; background: var(--card); border-top: 1px solid var(--line); padding: 6px 8px 10px; }
+  .tabbar button { flex: 1; border: 0; background: none; display: flex; flex-direction: column; align-items: center; gap: 2px; font-size: 11px; color: var(--muted); padding: 4px; border-radius: 10px; }
+  .tabbar button.on { color: var(--accent); background: var(--accent-bg); font-weight: 600; }
+  .tabbar svg { width: 20px; height: 20px; }
+  .sheet { background: var(--card); min-height: 100vh; }
+  .sheet .grab { width: 40px; height: 4px; border-radius: 2px; background: var(--line); margin: 8px auto 2px; }
+  .swipehint { text-align: center; font-size: 11px; color: var(--muted); padding: 6px 0 2px; }
+  body.m .sb { padding-left: 16px; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
+  .card h3 { margin: 0 0 10px; font-size: 12px; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; }
+  .phases { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; text-align: center; }
+  .phases .ring { width: 64px; height: 64px; margin: 0 auto 6px; font-size: 13px; }
+  .phases .ring i { width: 52px; height: 52px; background: var(--card); }
+  .phases small { display: block; color: var(--muted); font-size: 11.5px; }
+  .hbar { display: grid; grid-template-columns: 112px 1fr 44px; gap: 8px; align-items: center; font-size: 12.5px; margin: 6px 0; }
+  .hbar .bar { margin: 0; height: 8px; }
+  .hbar span:last-child { text-align: right; color: var(--muted); font-variant-numeric: tabular-nums; }
+  .streaks { display: grid; grid-template-columns: repeat(2, 1fr); gap: 8px; }
+  .streaks div { background: var(--card2); border: 1px solid var(--line2); border-radius: 10px; padding: 8px 10px; }
+  .streaks b { font-size: 18px; } .streaks span { display: block; font-size: 11.5px; color: var(--muted); }
+  .catch { display: flex; align-items: center; gap: 8px; padding: 7px 0; border-top: 1px dashed var(--line2); font-size: 13px; }
+  .catch:first-of-type { border-top: 0; }
+  .ms { display: flex; gap: 8px; }
+  .ms div { flex: 1; border: 1px solid var(--line); border-radius: 10px; padding: 8px; text-align: center; font-size: 12px; }
+  .ms div b { display: block; font-size: 14px; }
+  .ms div.on { border-color: var(--ok); background: var(--ok-bg); }
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+(function () {
+  "use strict";
+  var q = new URLSearchParams(location.search);
+  var view = q.get("view") || "desktop";
+  document.documentElement.setAttribute("data-theme", q.get("theme") || "light");
+  if (view !== "desktop") document.body.classList.add("m");
+  if (q.get("shot")) document.body.classList.add("shot");
+
+  // ---- sample data: Day 1 = Thu 1 Oct 2026, "today" = Wed 14 Oct (Day 14)
+  var THEMES = ["How the web works", "Scaling a server", "Load balancing", "Stateless services", "APIs", "Build: URL shortener v1", "Weekly review",
+    "SQL vs NoSQL", "Indexes", "Replication", "Sharding", "Caching", "Build: cache layer", "Caching strategies", "CDNs", "Message queues",
+    "Pub/sub", "Rate limiting", "Consistent hashing", "Build: rate limiter", "Weekly review", "CAP theorem", "Consensus", "Search", "Checkpoint 1",
+    "Microservices", "API gateway", "Service mesh", "Build: notifications", "Weekly review", "Observability"];
+  var STATUS = { 1: "done", 2: "done", 3: "done", 4: "part", 5: "done", 6: "done", 7: "done", 8: "done", 9: "miss", 10: "done", 11: "part", 12: "done", 13: "done", 14: "today" };
+  var FRAC = { done: 1, part: .55, miss: 0, today: .45 };
+  function dayOf(date) { return date >= 1 ? date : null; }  // October: date n == plan day n
+
+  function cellHtml(y, m, d, dow, inMonth) {
+    var pd = inMonth && m === 9 ? dayOf(d) : (m === 10 ? 31 + d : null);
+    var we = dow === 0 || dow === 6;
+    var st = inMonth ? (STATUS[pd] || "up") : "out";
+    if (inMonth && dow === 0 && st === "up") st = "rest";
+    var theme = pd ? THEMES[(pd - 1) % THEMES.length] : "";
+    if (inMonth && pd === 25) st = "ms";
+    var tot = dow === 0 ? 6 : st === "today" ? 13 : 12, frac = FRAC[st] != null ? FRAC[st] : 0, done = st === "today" ? 6 : Math.round(tot * frac);
+    var color = { done: "var(--ok)", part: "var(--warn)", miss: "var(--bad)", today: "var(--accent)" }[st] || "var(--line)";
+    var label = { done: "Completed", part: "Partial", miss: "Missed", today: "Today", up: "Upcoming", rest: "Review", ms: "Checkpoint", out: "" }[st];
+    var dots = st === "done" ? "var(--ok)" : st === "part" ? "var(--warn)" : st === "miss" ? "var(--bad)" : st === "today" ? "var(--accent)" : st === "rest" ? "var(--rest)" : "var(--line)";
+    return '<div class="cell' + (we ? " we" : "") + (!inMonth ? " out" : "") + (st === "today" ? " today sel" : "") + '">' +
+      
+      '<div class="d"><b>' + d + "</b>" + (pd && inMonth ? '<span class="pd">D' + pd + "</span>" : "") + "</div>" +
+      (inMonth ? '<div class="th">' + theme + "</div>" : "") +
+      (inMonth ? '<div class="mini">D' + pd + "</div>" : "") +
+      (inMonth ? '<div class="bar"><i style="width:' + Math.round(frac * 100) + "%;background:" + color + '"></i></div>' : "") +
+      (inMonth ? '<div class="foot"><span class="cnt">' + done + "/" + tot + '</span><span class="st ' + st + '">' + label + "</span></div>" : "") +
+      (inMonth ? '<div class="dots"><span class="dot" style="background:' + dots + '"></span></div>' : "") +
+      "</div>";
+  }
+
+  function calendar() {
+    var y = 2026, m = 9, first = new Date(y, m, 1).getDay(), days = 31;
+    var h = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"].map(function (n, i) { return '<div class="dow' + (i === 0 || i === 6 ? " we" : "") + '">' + n + "</div>"; }).join("");
+    for (var i = 0; i < first; i++) h += cellHtml(y, 8, 27 + i, i, false);
+    for (var d = 1; d <= days; d++) h += cellHtml(y, m, d, (first + d - 1) % 7, true);
+    var trail = (7 - (first + days) % 7) % 7;
+    for (var t = 1; t <= trail; t++) h += cellHtml(y, 10, t, (first + days + t - 1) % 7, false);
+    return '<div class="cal">' + h + "</div>";
+  }
+
+  var ICON = {
+    lc: ["&lt;/&gt;", "var(--accent-bg)", "var(--accent)"], hld: ["◎", "var(--info-bg)", "var(--info)"], lld: ["{ }", "var(--rest-bg)", "var(--rest)"],
+    cloud: ["☁", "var(--warn-bg)", "var(--warn)"], office: ["▣", "var(--chip)", "var(--muted)"], hab: ["♥", "var(--bad-bg)", "var(--bad)"], note: ["✎", "var(--chip)", "var(--muted)"]
+  };
+  function sec(key, name, sub, count, full, open, body) {
+    var ic = ICON[key];
+    return '<details class="sec"' + (open ? " open" : "") + '><summary><span class="ic" style="background:' + ic[1] + ";color:" + ic[2] + '">' + ic[0] + "</span>" +
+      '<span class="nm">' + name + "<small>" + sub + "</small></span>" + (count ? '<span class="c' + (full ? " full" : "") + '">' + count + "</span>" : "") + "</summary>" +
+      '<div class="sb">' + body + "</div></details>";
+  }
+  function task(on, text, meta, right) {
+    return '<div class="task' + (on ? " on" : "") + '"><span class="cb' + (on ? " on" : "") + '">✓</span><div class="tx">' + text + (meta ? '<div class="meta">' + meta + "</div>" : "") + "</div>" + (right || "") + "</div>";
+  }
+  function panel() {
+    return '<div class="ph"><div class="row1"><button class="ib">‹</button><div class="t"><div class="date">WED · 14 OCT 2026 · DAY 14 OF 75</div>' +
+      '<h2>Caching strategies</h2></div><button class="ib">›</button></div>' +
+      '<div class="tags"><span class="tag ph1">Phase 1 · Foundations</span><span class="tag">Week 2</span><span class="tag">AWS</span><span class="tag">Office day</span></div>' +
+      '<div class="prog"><div class="bar"><i style="width:45%;background:var(--accent)"></i></div><b>6 / 13</b></div>' +
+      '<div class="mode"><button class="on">Full day</button><button>Easy day (minimum)</button></div></div>' +
+      '<div class="timeline"><div class="tl"><b>7:15</b>Walk 1 km</div><div class="tl"><b>7:50</b>LC #1 #2</div><div class="tl"><b>Lunch</b>HLD 25m</div><div class="tl now"><b>9:00 pm</b>LLD + Cloud</div><div class="tl"><b>10:00</b>LC #3</div></div>' +
+      sec("lc", "LeetCode", "Two pointers · 30 min max each", "2/3", false, true,
+        task(true, '<a>Two Sum II - Input Array Is Sorted</a>', '<span class="df m">Medium</span><span class="pt">Two pointers</span><span class="pt">#167</span>') +
+        task(true, '<a>3Sum</a>', '<span class="df m">Medium</span><span class="pt">Two pointers</span><span class="pt">#15</span>') +
+        task(false, '<a>Trapping Rain Water</a>', '<span class="df h">Hard</span><span class="pt">Two pointers</span><span class="pt">#42</span>', '<span class="rv">↻ Revisit</span>') +
+        task(false, '<span>Re-solve: Valid Sudoku</span>', '<span class="pt">spaced repeat · from Day 7</span>')) +
+      sec("hld", "HLD read", "Cache-aside, write-through, write-back", "0/1", false, true,
+        '<ul class="kp"><li>When each write policy loses data, and why</li><li>TTLs, eviction (LRU/LFU) and the thundering herd</li><li>Where Redis sits in front of the database</li></ul>' +
+        task(false, "<span>Read + one-page summary</span>", '<span class="pt">25 min · lunch</span>')) +
+      sec("lld", "LLD build · C#", "LRU cache with generics", "1/2", false, false, "") +
+      sec("cloud", "Cloud lab · AWS", "ElastiCache Redis cluster", "0/1", false, false, "") +
+      sec("office", "Office topic", "30 min: cache metrics in CloudWatch", "1/1", true, false, "") +
+      sec("hab", "Habits", "the daily non-negotiables", "2/5", false, true,
+        task(true, "<span>Walk 1 km / 30 min exercise</span>") +
+        '<div class="task"><span class="cb on">✓</span><div class="tx"><span>Water 2.5–3 L</span><div class="water"><i class="f"></i><i class="f"></i><i class="f"></i><i></i><i></i><i></i><span>1.5 / 3 L</span></div></div></div>' +
+        task(false, "<span>Healthy food, no junk</span>") + task(false, "<span>1 hour to chill</span>") + task(false, "<span>Screens down by 11, sleep 11:15</span>")) +
+      sec("note", "Notes", "what was hard today", "", false, false, "") +
+      '<div class="pfoot"><button class="btn">Mark all done</button><button class="btn acc">Next day ›</button></div>';
+  }
+
+  var header = '<div class="top"><div><h1>75-Day SDE Plan</h1><div class="sub">1 Oct – 14 Dec 2026 · synced <span class="sync">just now</span></div></div>' +
+    '<div class="monthnav"><button class="ib">‹</button><b>October 2026</b><button class="ib">›</button><button class="btn">Today</button></div>' +
+    '<div class="spacer"></div><div class="kpis">' +
+    '<div class="kpi"><div class="ring" style="--p:15;position:relative"><i>15%</i></div><span>overall<br>11 of 75 days</span></div>' +
+    '<div class="kpi"><b>🔥 5</b><span>day<br>streak</span></div>' +
+    '<div class="kpi"><b>35</b><span>LeetCode<br>of 225</span></div>' +
+    '<div class="kpi"><b style="color:var(--bad)">1</b><span>day to<br>catch up</span></div></div></div>';
+  var filters = '<details class="filters" open><summary><b>Filters</b><span class="sum">All days · all phases</span></summary><div class="fbody">' +
+    '<div><div class="flabel">Show</div><div class="chips"><button class="on">All</button><button>Incomplete</button><button>Missed</button><button>Completed</button></div></div>' +
+    '<div><div class="flabel">Phase</div><div class="chips"><button class="on">All</button><button>1 · Foundations</button><button>2 · Build</button><button>3 · Azure + interviews</button></div></div></div></details>';
+  var legend = '<div class="legend"><span><i style="background:var(--ok)"></i>Completed</span><span><i style="background:var(--warn)"></i>Partial</span><span><i style="background:var(--bad)"></i>Missed</span>' +
+    '<span><i style="background:var(--accent)"></i>Today</span><span><i style="background:var(--rest)"></i>Sunday review</span><span><i style="background:var(--line)"></i>Upcoming</span></div>';
+  var tabbar = '<div class="tabbar"><button' + (view === "mcal" ? ' class="on"' : "") + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>Calendar</button>' +
+    '<button' + (view === "mday" ? ' class="on"' : "") + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Today</button>' +
+    '<button' + (view === "mstats" ? ' class="on"' : "") + '><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button></div>';
+
+  var app = document.getElementById("app");
+  if (view === "desktop") {
+    app.innerHTML = header + '<div class="wrap"><div>' + filters + legend + calendar() + '</div><aside class="panel">' + panel() + "</aside></div>";
+  } else if (view === "mcal") {
+    app.innerHTML = header + '<div class="wrap"><div class="kpirow"><div class="kpi"><b>15%</b><span>overall · 11/75</span></div><div class="kpi"><b>🔥 5</b><span>day streak</span></div><div class="kpi"><b>35<small class="muted" style="font-weight:500">/225</small></b><span>LeetCode</span></div></div><div>' + legend.replace('class="legend"', 'class="legend" style="margin-top:0"') + calendar() + "</div>" +
+      '<div class="todaycard"><div class="date muted" style="font-size:11.5px;font-weight:600">TODAY · WED 14 OCT · DAY 14</div><h3>Caching strategies</h3>' +
+      '<div class="prog" style="margin:0"><div class="bar" style="height:7px"><i style="width:45%;background:var(--accent)"></i></div><b style="font-size:12.5px">6 / 13</b></div>' +
+      '<div class="nextup"><div><span class="cb"></span>LC: Trapping Rain Water <span class="df h">Hard</span></div><div><span class="cb"></span>HLD: cache-aside vs write-back</div><div><span class="cb"></span>Cloud: ElastiCache lab</div></div></div>' +
+      filters.replace(" open>", ">") + "</div>" + tabbar;
+  } else if (view === "mday") {
+    app.innerHTML = '<div class="sheet"><div class="grab"></div><div class="swipehint">‹ swipe for previous / next day ›</div>' + panel() + "</div>" + tabbar;
+  } else {
+    app.innerHTML = header +
+      '<div class="wrap"><div class="kpirow"><div class="kpi"><b>15%</b><span>overall · 11/75 days</span></div><div class="kpi"><b>🔥 5</b><span>day streak · best 8</span></div><div class="kpi"><b>35</b><span>LeetCode of 225</span></div></div>' +
+      '<div class="card"><h3>Phases</h3><div class="phases">' +
+      '<div><div class="ring" style="--p:44;position:relative"><i>44%</i></div>Foundations<small>Days 1–25</small></div>' +
+      '<div><div class="ring" style="--p:0;position:relative"><i>0%</i></div>Build &amp; apply<small>Days 26–50</small></div>' +
+      '<div><div class="ring" style="--p:0;position:relative"><i>0%</i></div>Azure + interviews<small>Days 51–75</small></div></div></div>' +
+      '<div class="card"><h3>LeetCode by pattern</h3>' +
+      [["Arrays & hashing", 12, 12], ["Two pointers", 8, 10], ["Sliding window", 6, 9], ["Stack", 5, 8], ["Binary search", 4, 10], ["Linked list", 0, 11]].map(function (r) {
+        return '<div class="hbar"><span>' + r[0] + '</span><div class="bar"><i style="width:' + Math.round(100 * r[1] / r[2]) + '%;background:var(--accent)"></i></div><span>' + r[1] + "/" + r[2] + "</span></div>"; }).join("") + "</div>" +
+      '<div class="card"><h3>Habit streaks</h3><div class="streaks"><div><b>🚶 12</b><span>walk / exercise</span></div><div><b>💧 9</b><span>water 2.5 L+</span></div><div><b>🥗 6</b><span>healthy food</span></div><div><b>😴 4</b><span>sleep by 11:15</span></div></div></div>' +
+      '<div class="card"><h3>Catch up · 4 open tasks</h3>' +
+      '<div class="catch"><span class="st miss">Day 9</span>LC: Search in Rotated Sorted Array</div>' +
+      '<div class="catch"><span class="st miss">Day 9</span>Cloud: RDS read replica lab</div>' +
+      '<div class="catch"><span class="st part">Day 11</span>LLD: consistent-hash ring in C#</div>' +
+      '<div class="catch"><span class="st part">Day 4</span>HLD: sticky sessions summary</div></div>' +
+      '<div class="card"><h3>Milestones</h3><div class="ms"><div><b>Day 25</b>Checkpoint 1<br><span class="muted">11 days to go</span></div><div><b>Day 50</b>Checkpoint 2</div><div><b>Day 75</b>Mock + finish</div></div></div>' +
+      "</div>" + tabbar;
+  }
+})();
+</script>
+</body>
+</html>
