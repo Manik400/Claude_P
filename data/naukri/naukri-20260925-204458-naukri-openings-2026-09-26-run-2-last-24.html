@@ -1,0 +1,522 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function () {
+  try {
+    var r = document.documentElement, t = localStorage.getItem('jh:theme') || 'auto';
+    if (t === 'light' || t === 'dark') r.setAttribute('data-theme', t);
+    if (localStorage.getItem('jh:ui') === 'v2') {
+      r.setAttribute('data-ui', 'v2');
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'; document.head.appendChild(l);
+    }
+  } catch (e) { /* private window: follow the device */ }
+})();</script>
+
+<title>Job Openings 2026-09-26 r2 - Last 24h</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
+  :root {
+    --bg: #f2f4f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --line: #dde2e9;
+    --ink: #161b22;
+    --muted: #5b6675;
+    --accent: #1f5c8b;
+    --accent-soft: #e8f0f7;
+    --accent-on: #ffffff;
+    --new: #a15c07;
+    --new-soft: #fdf3e3;
+    --good: #166534;
+    --good-soft: #e6f4ea;
+    --shadow: 0 1px 2px rgba(22, 27, 34, .06), 0 4px 12px rgba(22, 27, 34, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1218;
+      --surface: #161c25;
+      --surface-2: #1b222c;
+      --line: #2a3441;
+      --ink: #e7ecf3;
+      --muted: #8d99a9;
+      --accent: #6aa9d8;
+      --accent-soft: #17293a;
+      --accent-on: #0e1218;
+      --new: #e0a54a;
+      --new-soft: #2e2413;
+      --good: #6ec48c;
+      --good-soft: #14291c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1218;
+    --surface: #161c25;
+    --surface-2: #1b222c;
+    --line: #2a3441;
+    --ink: #e7ecf3;
+    --muted: #8d99a9;
+    --accent: #6aa9d8;
+    --accent-soft: #17293a;
+    --accent-on: #0e1218;
+    --new: #e0a54a;
+    --new-soft: #2e2413;
+    --good: #6ec48c;
+    --good-soft: #14291c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
+
+  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.75rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; font-size: clamp(26px, 4vw, 36px);
+    margin: 0; letter-spacing: -.02em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 116px; box-shadow: var(--shadow);
+  }
+  .stat b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.5rem; font-weight: 500; line-height: 1.15;
+  }
+  .stat span {
+    font-size: 0.6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .stat.is-applied b { color: var(--good); }
+  .stat.is-new b { color: var(--new); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--bg); padding: 6px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .chip {
+    font: 500 0.8125rem/1 Archivo, sans-serif;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  @media (max-height: 760px) { .bar { position: static; } }
+  .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1 1 auto; }
+  .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+  .bar-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6875rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding-right: 2px;
+  }
+  .search {
+    font: 400 0.875rem "Source Sans 3", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 10px; min-width: 180px; flex: 1 1 200px;
+  }
+
+  .group-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
+  }
+  .group-head h2 {
+    font-family: Archivo, sans-serif; font-size: 0.9375rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin: 0;
+  }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.8125rem; color: var(--muted); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px 1fr 172px 120px 92px;
+    gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px; margin-bottom: 7px; box-shadow: var(--shadow);
+  }
+  .row.done { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--line)); }
+  .row.done .title a { text-decoration: line-through; opacity: .62; }
+  .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 0.9688rem; line-height: 1.3; }
+  .title a { color: var(--ink); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .company { color: var(--muted); font-size: 0.8438rem; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6562rem; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
+  .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
+  .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+  .note { color: var(--muted); font-size: 0.7812rem; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
+
+  .meta { font-size: 0.8125rem; color: var(--muted); }
+  .meta div + div { margin-top: 3px; }
+  .rank {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.0625rem; text-align: right; color: var(--accent);
+  }
+  .rank small { display: block; font-size: 0.5938rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  .empty { color: var(--muted); padding: 26px 0; text-align: center; }
+
+  /* Shared with the interview-prep page, which links back here. */
+  nav.top {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  }
+  nav.top a, nav.top span.here {
+    font: 600 0.8438rem/1 Archivo, sans-serif; text-decoration: none;
+    padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
+    border-radius: 6px 6px 0 0;
+  }
+  nav.top a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.top span.here { color: var(--ink); border-bottom-color: var(--accent); }
+  nav.top a.disabled { opacity: .45; pointer-events: none; }
+
+  /* Each scan of the day keeps its own page, so this is how you get back to
+     the 08:52 list from the 18:11 one. */
+  nav.runs {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+    margin: -14px 0 20px; font: 400 0.7812rem/1.6 "Source Sans 3", sans-serif;
+  }
+  nav.runs .label { color: var(--muted); margin-right: 2px; }
+  nav.runs a, nav.runs span.here {
+    padding: 3px 9px; border-radius: 999px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted);
+    font: 500 0.7812rem/1.6 "IBM Plex Mono", monospace;
+  }
+  nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
+  nav.runs .sep { color: var(--line); padding: 0 4px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8125rem; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 30px 1fr; }
+    .meta, .rank { grid-column: 2; text-align: left; }
+    .rank { font-size: 0.9375rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="top">
+    <span class="here">Job Scanner</span>
+    <a href="../interview/interview-prep-2026-09-20-r1.html#jobs" class="">Top 10 Jobs</a>
+    <a href="../interview/interview-prep-2026-09-20-r1.html" class="">Interview Preparation (2026-09-20-r1)</a>
+    <a href="applications.html">Applications sent</a>
+  </nav>
+
+  <nav class="runs">
+    <span class="label">Today&rsquo;s scans</span>
+    <a href="openings-2026-09-26-r1.html">r1</a>
+    <span class="here">r2</span>
+    <span class="sep">|</span>
+    <a href="openings-2026-09-25-r8.html">09-25</a>
+    <a href="openings-2026-09-21-r6.html">09-21</a>
+    <a href="openings-2026-09-20-r8.html">09-20</a>
+    <a href="openings-2026-09-19-r9.html">09-19</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">2026-09-26 &middot; scan 2 &middot; All locations &middot; posted in the last 24 hours &middot; first seen today</div>
+    <h1>25 openings, 25 new today</h1>
+    <p class="sub">Every opening this scan found, remote first. Tick a row when you have applied &mdash; ticks are saved in this browser and carry across every day&rsquo;s page.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="s-total">0</b><span>Openings</span></div>
+    <div class="stat is-new"><b id="s-new">0</b><span>New today</span></div>
+    <div class="stat"><b id="s-remote">0</b><span>Remote</span></div>
+    <div class="stat is-applied"><b id="s-applied">0</b><span>Applied</span></div>
+    <div class="stat"><b id="s-left">0</b><span>Still to do</span></div>
+  </div>
+
+  <div class="bar">
+    <details class="fgrp" data-acc="openings.show" open><summary>Show</summary><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+    </span></details>
+    <details class="fgrp" data-acc="openings.posted" open><summary>Posted</summary><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></details>
+    <span class="spacer"></span>
+    <details class="fgrp" data-acc="openings.search" open><summary>Search</summary><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></details>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Generated 2026-09-26 from 0 Naukri and 25 LinkedIn listings.
+    Naukri scores are 0&ndash;100 across skills, title, experience, location and freshness.
+    LinkedIn shows title match only &mdash; its cards carry no skills or experience range, so the two are not the same measure.</p>
+    <p>Ticks are stored in this browser under <code>jobtracker.applied</code>. Clearing site data clears them.</p>
+    <p>20 listing(s) carry no posted date - LinkedIn shows &ldquo;Promoted&rdquo; where the date would be. The Posted filters hide those rather than guessing at their age.</p>
+  </footer>
+</div>
+
+<script id="data" type="application/json">[{"id": "linkedin:4472065469", "board": "LinkedIn", "title": "Senior Software Engineer ( Node.js and TypeScript)", "company": "Upstack Data", "location": "Pune District, Maharashtra, India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 54, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4472065469/", "remote": true, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "", "status_note": ""}, {"id": "linkedin:4471817941", "board": "LinkedIn", "title": "Software Engineer (AI Training)", "company": "Alignerr", "location": "Mysuru, Karnataka, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "19 hours ago", "age": 0, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471817941/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4471835158", "board": "LinkedIn", "title": "Software Engineer (AI Training)", "company": "Alignerr", "location": "Ahmedabad, Gujarat, India (Remote)", "salary": "$20/hr - $100/hr", "experience": "", "posted": "19 hours ago", "age": 0, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471835158/", "remote": true, "easy": false, "note": "1 connection works here", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4471802197", "board": "LinkedIn", "title": "Senior AI Engineer (React + TypeScript) - Remote - Pakistan", "company": "FullStack", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 32, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471802197/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "no-form", "status_note": "no application form or Apply button found on the company page"}, {"id": "linkedin:4472067541", "board": "LinkedIn", "title": "PYTHON DEVELOPMENT INTERN", "company": "Zenithbyte", "location": "India (Remote)", "salary": "Up to 7,500 INR/month", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4472067541/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "career-unconfirmed", "status_note": "pressed Submit, no confirmation seen (D:\\Manik\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20260926-0153-zenithbyte-python-development-intern-after.png)"}, {"id": "linkedin:4470326547", "board": "LinkedIn", "title": "Artificial Intelligence Engineer", "company": "internmo", "location": "India (Remote)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470326547/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "no-button", "status_note": "no apply control found"}, {"id": "linkedin:4470392661", "board": "LinkedIn", "title": "Full Stack Developer Intern | Entry Level | Fresher | React, Node.js, JavaScript, SQL | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 20, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470392661/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4470711013", "board": "LinkedIn", "title": "Software Developer Intern | Entry Level | Fresher | Python, Java, SQL, Git | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 14, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470711013/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4470394645", "board": "LinkedIn", "title": "MERN Stack Developer Intern | Entry Level | Fresher | MongoDB, Express.js, React.js, Node.js | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 12, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470394645/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4470709139", "board": "LinkedIn", "title": "Backend Developer Intern | Entry Level | Fresher | Python, Node.js, SQL, REST APIs | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 12, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470709139/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4470707252", "board": "LinkedIn", "title": "Python Developer Intern | Entry Level | Fresher | Python, SQL, Git | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 9, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470707252/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4470392651", "board": "LinkedIn", "title": "Java Developer Intern | Entry Level | Fresher | Java, SQL, Spring Boot, Git | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 7, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470392651/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "linkedin:4470389874", "board": "LinkedIn", "title": "Java Developer Intern | Entry Level | Fresher | Java, Spring Boot, SQL, REST API | Remote", "company": "Crossing Infotech", "location": "India (Remote)", "salary": "16.5K INR/month", "experience": "", "posted": "", "age": null, "rank": 7, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470389874/", "remote": true, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "no-button", "status_note": "no apply control found"}, {"id": "linkedin:4471865289", "board": "LinkedIn", "title": "Software Engineer", "company": "UNESCO Chair on Environmental Law and Sustainable Development at HBKU", "location": "Modinagar, Uttar Pradesh, India (On-site)", "salary": "", "experience": "", "posted": "13 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471865289/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "login-required", "status_note": "the site asks for a login / account"}, {"id": "linkedin:4472054189", "board": "LinkedIn", "title": "Software Engineer", "company": "EngRadar", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "3 hours ago", "age": 0, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4472054189/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "captcha", "status_note": "the form has a CAPTCHA - apply by hand"}, {"id": "linkedin:4472052020", "board": "LinkedIn", "title": "Software Engineer", "company": "Volvo Group", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4472052020/", "remote": false, "easy": false, "note": "3 connections work here", "new": true, "first_seen": "2026-09-26", "status": "no-form", "status_note": "no application form or Apply button found on the company page"}, {"id": "linkedin:4471885573", "board": "LinkedIn", "title": "Frontend Developer", "company": "Rusk Media", "location": "Delhi, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 80, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471885573/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "questionnaire", "status_note": "cannot answer 'Yes No' - no rule matches this question"}, {"id": "linkedin:4470188283", "board": "LinkedIn", "title": "Software Development Engineer- 2 (Fullstack Development)", "company": "Papaya Global", "location": "Bengaluru, Karnataka, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 60, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470188283/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "questionnaire", "status_note": "cannot answer 'Depuis combien d’années utilisez-vous Java ?' - no rule matches this question"}, {"id": "linkedin:4472066552", "board": "LinkedIn", "title": "Sr. Fullstack Developer", "company": "AspiringIT", "location": "Hyderabad, Telangana, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 47, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4472066552/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "questionnaire", "status_note": "cannot answer 'Yes No' - no rule matches this question"}, {"id": "linkedin:4462844101", "board": "LinkedIn", "title": "Software Engineer II, BI", "company": "Cohere Health", "location": "Hyderabad, Telangana, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4462844101/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "captcha", "status_note": "the form has a CAPTCHA - apply by hand"}, {"id": "linkedin:4470195484", "board": "LinkedIn", "title": "Full-Stack Developer (.Net/Angular/Azure)", "company": "Dow", "location": "Navi Mumbai, Maharashtra, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 40, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470195484/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "no-form", "status_note": "no application form or Apply button found on the company page"}, {"id": "linkedin:4471860167", "board": "LinkedIn", "title": "Full Stack Data Engineer – Python, React, Snowflake & Azure", "company": "Teamware Solutions", "location": "Bengaluru, Karnataka, India (Hybrid)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 30, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4471860167/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "questionnaire", "status_note": "cannot answer 'Yes No' - no rule matches this question"}, {"id": "linkedin:4470141603", "board": "LinkedIn", "title": "Technical Lead & Sr Developers Web And Blockchain Applications", "company": "Bitfia Technologies", "location": "Delhi, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 30, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470141603/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "questionnaire", "status_note": "cannot answer 'How many years of work experience do you have with AI Code Generation?' - no experience recorded for 'ai code generation'"}, {"id": "linkedin:4470193561", "board": "LinkedIn", "title": "Back End Developer", "company": "Bajaj Broking", "location": "Bengaluru, Karnataka, India (On-site)", "salary": "", "experience": "", "posted": "35 minutes ago", "age": 0, "rank": 27, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470193561/", "remote": false, "easy": false, "note": "", "new": true, "first_seen": "2026-09-26", "status": "career-incomplete", "status_note": "filled 3 field(s) but found no Submit button (D:\\Manik\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20260926-0210-bajaj-broking-back-end-developer-nosubmit.png)"}, {"id": "linkedin:4470072560", "board": "LinkedIn", "title": "AI Engineer - Cloud & MLops", "company": "Talentgigs", "location": "Hyderabad, Telangana, India (On-site)", "salary": "", "experience": "", "posted": "", "age": null, "rank": 20, "rank_label": "title match", "url": "https://www.linkedin.com/jobs/view/4470072560/", "remote": false, "easy": true, "note": "", "new": true, "first_seen": "2026-09-26", "status": "questionnaire", "status_note": "cannot answer 'How many years of exp in RAG?' - no experience recorded for 'rag'"}]</script>
+<script>
+  const ROWS = JSON.parse(document.getElementById('data').textContent);
+  const KEY = 'jobtracker.applied';
+  const TODAY = '2026-09-26';
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  let applied = load();
+  let filter = 'all';
+  let postedMax = null;   // null = any age
+  let query = '';
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function visible(r) {
+    if (filter === 'new' && !r.new) return false;
+    if (filter === 'remote' && !r.remote) return false;
+    if (filter === 'easy' && !r.easy) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    // Posted is a separate axis, so "remote" and "2 days" combine rather than
+    // replacing each other. A row with no readable date is excluded whenever a
+    // date filter is on - it cannot be shown to satisfy it.
+    if (postedMax !== null && (r.age === null || r.age > postedMax)) return false;
+    if (query) {
+      const hay = (r.title + ' ' + r.company + ' ' + r.location).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  }
+
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
+  function rowHtml(r) {
+    const done = !!applied[r.id] || r.status === 'applied';
+    const tags = [
+      statusTag(r),
+      r.new ? '<span class="tag new">New</span>' : '',
+      r.remote ? '<span class="tag remote">Remote</span>' : '',
+      r.easy ? '<span class="tag easy">One-click</span>' : '',
+      '<span class="tag">' + esc(r.board) + '</span>',
+      (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
+    ].join('');
+    return '' +
+      '<div class="row' + (done ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<input type="checkbox" ' + (done ? 'checked' : '') +
+          ' aria-label="Mark ' + esc(r.title) + ' as applied">' +
+        '<div>' +
+          '<div class="title"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></div>' +
+          '<div class="company">' + esc(r.company) + '</div>' +
+          '<div class="tags">' + tags + '</div>' +
+          (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
+        '</div>' +
+        '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
+          (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +
+        '<div class="meta">' + (r.experience ? '<div>' + esc(r.experience) + '</div>' : '') +
+          (r.posted ? '<div>' + esc(r.posted) + '</div>' : '') + '</div>' +
+        '<div class="rank">' + (r.rank == null ? '&mdash;' : esc(r.rank)) +
+          '<small>' + esc(r.rank_label) + '</small></div>' +
+      '</div>';
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    const shown = ROWS.filter(visible);
+    const boards = ['Naukri', 'LinkedIn'];
+    let html = '';
+    boards.forEach(board => {
+      const group = shown.filter(r => r.board === board);
+      if (!group.length) return;
+      html += '<div class="group-head"><h2>' + board + '</h2>' +
+              '<span class="count">' + group.length + ' shown</span></div>';
+      html += group.map(rowHtml).join('');
+    });
+    list.innerHTML = html || '<p class="empty">Nothing matches this filter.</p>';
+    stats();
+  }
+
+  function stats() {
+    const n = (id, v) => document.getElementById(id).textContent = v;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
+    n('s-total', ROWS.length);
+    n('s-new', ROWS.filter(r => r.new).length);
+    n('s-remote', ROWS.filter(r => r.remote).length);
+    n('s-applied', doneCount);
+    n('s-left', ROWS.length - doneCount);
+  }
+
+  document.getElementById('list').addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const row = e.target.closest('.row');
+    const id = row.getAttribute('data-id');
+    if (e.target.checked) applied[id] = { date: TODAY };
+    else delete applied[id];
+    save(applied);
+    row.classList.toggle('done', e.target.checked);
+    if (filter === 'todo') render(); else stats();
+  });
+
+  function wire(selector, apply) {
+    document.querySelectorAll(selector).forEach(chip => {
+      chip.addEventListener('click', () => {
+        apply(chip);
+        document.querySelectorAll(selector).forEach(c =>
+          c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      });
+    });
+  }
+  wire('.chip[data-filter]', chip => { filter = chip.dataset.filter; });
+  wire('.chip[data-posted]', chip => {
+    postedMax = chip.dataset.posted === 'any' ? null : Number(chip.dataset.posted);
+  });
+
+  document.getElementById('q').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 0.625rem; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+
+  /* the whole filter toolbar can be hidden: only its Filters button stays */
+  .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(127,127,127,.35);
+    background: transparent; color: inherit; opacity: .85; flex: none; }
+  .tb-toggle:hover { opacity: 1; }
+  .tb-toggle::after { content: "\25B4"; font-size: 0.7rem; }
+  .tb-hidden .tb-toggle::after { content: "\25BE"; }
+  .tb-hidden > :not(.tb-toggle) { display: none !important; }
+  .tb-hidden { padding-top: 4px !important; padding-bottom: 4px !important; }
+
+  /* thin scrollbars that follow the page's light / dark theme */
+  :root { color-scheme: light dark; } :root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+  * { scrollbar-width: thin; }
+
+  /* V2 skin (the site's portfolio look): one layer over each page's own variables */
+  :root[data-ui="v2"] {
+    --bg: #E9EAE4; --surface: #FFFFFF; --surface-2: #F5F6F2; --card: #FFFFFF; --card2: #F5F6F2;
+    --ink: #11151A; --fg: #11151A; --muted: #4E575F; --line: #11151A; --line2: #C9CCC3;
+    --accent: #EE3D28; --accent-on: #FFFFFF; --accent-soft: rgba(238,61,40,.12); --accent-bg: rgba(238,61,40,.12);
+    --v2-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; --v2-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root[data-ui="v2"]:not([data-theme="light"]) {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); } }
+  :root[data-ui="v2"][data-theme="dark"] {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); }
+  :root[data-ui="v2"] body, :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea {
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+    font-family: var(--v2-mono); letter-spacing: .02em; }
+  :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
+  :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
+  :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,
+  :root[data-ui="v2"] .q, :root[data-ui="v2"] .row, :root[data-ui="v2"] article { border-color: var(--line) !important; box-shadow: 3px 3px 0 var(--line); }
+</style>
+<script>
+(function () {
+  "use strict";
+  // collapsible filter groups, open / closed remembered
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+
+  // a Filters button on every filter toolbar: hides / shows the whole bar
+  var kind = (document.title || "page").split(/\s+/).slice(0, 2).join("-").toLowerCase();
+  var bars = Array.prototype.filter.call(document.querySelectorAll(".bar-tools, section.controls, div.bar"), function (el) {
+    return el.querySelector(".chip, input[type=search], .search, select");   // a real filter bar, not a progress bar
+  });
+  bars.forEach(function (bar, i) {
+    if (bar.querySelector(":scope > .tb-toggle")) return;
+    var key = "tb:" + kind + ":" + i, btn = document.createElement("button");
+    btn.type = "button"; btn.className = "tb-toggle";
+    function paint(hidden) {
+      bar.classList.toggle("tb-hidden", hidden);
+      btn.textContent = hidden ? "Show filters" : "Filters";
+      btn.setAttribute("aria-expanded", hidden ? "false" : "true");
+      btn.title = hidden ? "Show the filters" : "Hide the filters";
+    }
+    var hidden = false;
+    try { hidden = localStorage.getItem(key) === "1"; } catch (e) {}
+    bar.insertBefore(btn, bar.firstChild);
+    paint(hidden);
+    btn.addEventListener("click", function () {
+      var h = !bar.classList.contains("tb-hidden"); paint(h);
+      try { h ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch (e) {}
+    });
+  });
+
+  // the site's theme / skin changed while this page is open: follow it
+  window.addEventListener("storage", function (e) {
+    if (e.key !== "jh:theme" && e.key !== "jh:ui") return;
+    var r = document.documentElement, t = localStorage.getItem("jh:theme") || "auto";
+    if (t === "light" || t === "dark") r.setAttribute("data-theme", t); else r.removeAttribute("data-theme");
+    if (localStorage.getItem("jh:ui") === "v2") r.setAttribute("data-ui", "v2"); else r.removeAttribute("data-ui");
+  });
+})();
+</script>
+
