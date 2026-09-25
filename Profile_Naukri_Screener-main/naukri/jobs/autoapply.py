@@ -290,7 +290,11 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     if per_run is not None:
         budget = min(budget, max(0, int(per_run)))
     naukri_jobs = []
-    for job in sorted(kept, key=lambda j: getattr(j, "score", 0) or 0, reverse=True):
+    from naukri import learning
+    # Score first, weighted by the learned chance this job's apply route works
+    # (one-click / questionnaire / company site) - see naukri/learning.py.
+    for job in sorted(kept, key=lambda j: (getattr(j, "score", 0) or 0) * learning.job_priority(j),
+                      reverse=True):
         status = ledger.status(job.job_id)
         if (status in DONE or status == WAITING) and not (career_on and career_untried(job.job_id)):
             continue

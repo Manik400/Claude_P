@@ -60,6 +60,9 @@
   .chip.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
   .range { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 13px; }
   .range input { width: 120px; }
+  details.fgrp[data-acc="report.search"] { flex: 1 1 280px; }
+  details.fgrp[data-acc="report.search"] > .fbody { width: calc(100% - 80px); }
+  details.fgrp[data-acc="report.search"] input[type=search] { width: 100%; min-width: 0; }
   details.srcs { margin: 0 0 6px; }
   details.srcs summary { cursor: pointer; color: var(--muted); font-size: 13px; }
   .srcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; padding: 8px 0 4px; font-size: 12.5px; }
@@ -128,18 +131,32 @@
 <nav class="tabs"><div class="wrap" id="tabs"></div></nav>
 
 <section class="controls"><div class="wrap">
-  <input type="search" id="q" placeholder="Search title, company, skills…">
-  <span class="range" id="scoreRange"><label for="minScore">Min score</label><input type="range" id="minScore" min="0" max="100" step="5" value="0"><b id="minScoreV">0</b></span>
-  <span class="chips" id="fitChips"></span>
-  <select id="remote"><option value="any">Remote: any</option><option value="only">Remote only</option><option value="no">On-site / hybrid only</option></select>
-  <select id="sort"></select>
-  <select id="srcSel"><option value="">All sources</option></select>
-  <span class="chips">
-    <button class="chip" id="onlySaved">★ Saved</button>
-    <button class="chip" id="hideApplied">Hide applied</button>
-    <button class="chip" id="showHidden">Show removed</button>
-    <button class="chip" id="titleOnly">Title match only</button>
-  </span>
+  <details class="fgrp" data-acc="report.search" open><summary>Search</summary><span class="fbody">
+    <input type="search" id="q" placeholder="Search title, company, skills…">
+  </span></details>
+  <details class="fgrp" data-acc="report.score" open><summary>Score</summary><span class="fbody">
+    <span class="range" id="scoreRange"><label for="minScore">Min score</label><input type="range" id="minScore" min="0" max="100" step="5" value="0"><b id="minScoreV">0</b></span>
+  </span></details>
+  <details class="fgrp" data-acc="report.fit" open><summary>Experience fit</summary><span class="fbody">
+    <span class="chips" id="fitChips"></span>
+  </span></details>
+  <details class="fgrp" data-acc="report.remote" open><summary>Remote</summary><span class="fbody">
+    <select id="remote"><option value="any">Remote: any</option><option value="only">Remote only</option><option value="no">On-site / hybrid only</option></select>
+  </span></details>
+  <details class="fgrp" data-acc="report.sort" open><summary>Sort</summary><span class="fbody">
+    <select id="sort"></select>
+  </span></details>
+  <details class="fgrp" data-acc="report.source" open><summary>Source</summary><span class="fbody">
+    <select id="srcSel"><option value="">All sources</option></select>
+  </span></details>
+  <details class="fgrp" data-acc="report.show" open><summary>Show</summary><span class="fbody">
+    <span class="chips">
+      <button class="chip" id="onlySaved">★ Saved</button>
+      <button class="chip" id="hideApplied">Hide applied</button>
+      <button class="chip" id="showHidden">Show removed</button>
+      <button class="chip" id="titleOnly">Title match only</button>
+    </span>
+  </span></details>
   <button class="iconbtn" id="csv">Export CSV</button>
   <button class="iconbtn" id="reset">Reset</button>
 </div></section>
@@ -355,6 +372,31 @@
     save(STATE_KEY, S); render();
   };
   render();
+})();
+</script>
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 11px; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 10px; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+</style>
+<script>
+(function () {
+  "use strict";
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
 })();
 </script>
 </body>

@@ -190,13 +190,15 @@ def prepare(jobs, config: dict) -> int:
     One embedding of the profile, one batch for the jobs - the model is the
     expensive part, so it is never called per job inside score().
     """
-    from naukri import localai
+    from naukri import learning, localai
     if not jobs or not localai.available("embed"):
         return 0
+    texts = [f"{job.title}. Skills: {', '.join(job.skills or [])}. {(job.description or '')[:1500]}" for job in jobs]
+    # what you liked / removed before, as embedding centroids (naukri/learning.py)
+    learning.prepare_taste(jobs, texts)
     reference = config.get("profile_evidence") or config.get("profile_text") or ""
     if not reference.strip():
         return 0
-    texts = [f"{job.title}. Skills: {', '.join(job.skills or [])}. {(job.description or '')[:1500]}" for job in jobs]
     sims = localai.semantic_scores(reference, texts)
     if not sims:
         return 0
@@ -230,7 +232,13 @@ def score(job, config: dict) -> dict:
         "location": _location_score(job, config),
         "freshness": _freshness_score(job),
     })
-    job.score = round(sum(breakdown.values()), 1)
+    # Self-learning: +/- a few points from what worked before (naukri/learning.py).
+    # 0 until enough outcomes exist, and left out of the breakdown when 0.
+    from naukri import learning
+    learned = learning.adjustment(job)
+    if learned:
+        breakdown["learned"] = learned
+    job.score = round(max(0.0, sum(breakdown.values())), 1)
     job.score_breakdown = breakdown
     job.matched_skills = matched
     return breakdown

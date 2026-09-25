@@ -162,7 +162,8 @@ def _click_input(page, idx: int) -> None:
 
 
 def _errors(info: dict) -> str:
-    found = ERROR_RE.findall(info.get("text") or "")
+    # finditer, not findall: ERROR_RE has groups, so findall returns tuples.
+    found = [m.group(0) for m in ERROR_RE.finditer(info.get("text") or "")]
     return ", ".join(sorted(set(f.lower() for f in found))) if found else ""
 
 

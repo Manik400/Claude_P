@@ -149,15 +149,29 @@ def published_titles(pages):
     return {(i.get("kind"), i.get("title")) for i in idx.get("items") or []}
 
 
+def _scan_kind(path):
+    """" - Early" etc. from the page's <title>, written by naukri/jobs/page.py."""
+    try:
+        with open(path, encoding="utf-8") as f:
+            head = f.read(4096)
+    except OSError:
+        return ""
+    m = re.search(r"<title>[^<]*?( - [^<]+)</title>", head)
+    return m.group(1) if m else ""
+
+
 def page_title(path):
     """The (kind, title) one locally generated page is published under."""
     name = os.path.basename(path)
     m = re.search(r"(\d{4}-\d{2}-\d{2})(?:-r(\d+))?", name)
     if name == "applications.html":
         return "applications", "Applications sent"
+    if name == "accuracy.html":
+        return "accuracy", "Accuracy & learning"
     if name.startswith("openings-"):
         day = m.group(1) if m else ""
-        return "naukri", "Naukri openings %s%s" % (day or name, (" run " + m.group(2)) if m and m.group(2) else "")
+        title = "Naukri openings %s%s" % (day or name, (" run " + m.group(2)) if m and m.group(2) else "")
+        return "naukri", title + _scan_kind(path)
     return "interview", "Interview prep %s" % (name[len("interview-prep-"):-len(".html")])
 
 
@@ -174,7 +188,9 @@ def cmd_naukri(a):
     # resolves those clicks against the published copies, so the log page
     # travels with the scans. One copy is kept, replaced whenever it changes.
     applications = os.path.join(NAUKRI, "data", "jobs", "applications.html")
-    extra = [applications] if os.path.exists(applications) else []
+    # The daily accuracy / self-learning page (naukri/learning.py), one copy.
+    accuracy = os.path.join(NAUKRI, "data", "metrics", "accuracy.html")
+    extra = [p for p in (applications, accuracy) if os.path.exists(p)]
     for path in openings[-a.max:] + preps[-a.max:] + extra:
         key = _stamp(path)
         kind, title = page_title(path)

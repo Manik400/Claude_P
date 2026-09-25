@@ -141,19 +141,62 @@ def _cookies_from(state_path: Path) -> list[dict]:
     return out
 
 
-def launch(p, headless: bool, states: list[Path] | None = None) -> SimplifyBrowser:
+# Chrome exits with 21 (RESULT_CODE_PROFILE_IN_USE) when another process has
+# PROFILE_DIR open - the phone queue (JobHuntApply) and a scan both apply
+# through this one profile. Wait for the other run instead of giving up.
+PROFILE_BUSY_WAIT_S = int(os.environ.get("SIMPLIFY_PROFILE_WAIT") or 900)
+
+
+_UA_CACHE: dict = {}
+
+
+def _plain_user_agent(p, channel: str | None) -> str | None:
+    """This Chrome's user agent without the "HeadlessChrome" tag.
+
+    Headless Chrome announces itself in its user agent and Akamai refuses
+    exactly that (session.new_context strips it for the scan's browser). A
+    persistent context takes user_agent only at launch, so read it from a
+    throwaway headless browser of the same channel first - about two seconds.
+    """
+    if channel not in _UA_CACHE:
+        ua = None
+        try:
+            probe = p.chromium.launch(channel=channel, headless=True)
+            try:
+                ua = probe.new_page().evaluate("navigator.userAgent")
+            finally:
+                probe.close()
+        except Exception as exc:
+            log.debug("Simplify browser: user-agent probe on %s failed (%s)", channel, exc)
+        _UA_CACHE[channel] = ua.replace("HeadlessChrome", "Chrome") if ua else None
+    return _UA_CACHE[channel]
+
+
+def _profile_busy(exc: Exception | None) -> bool:
+    return exc is not None and "exitCode=21" in str(exc)
+
+
+def launch(p, headless: bool, states: list[Path] | None = None,
+           offscreen: bool = False) -> SimplifyBrowser:
     """Chromium with Simplify loaded, plus the boards' saved logins.
 
     Extensions need a persistent context; in the background the new headless
     mode carries them. The Naukri / LinkedIn cookies are added on every
     launch, so a session refreshed by --login is picked up next run.
+
+    `offscreen` starts a headed window parked outside every monitor - the
+    fallback when Naukri's Akamai refuses the headless browser.
     """
-    from ..session import background
+    import time
+
+    from ..session import OFFSCREEN_ARGS, background
 
     ext = extension_dir()
     if not ext:
         raise RuntimeError(why_not_ready())
-    if background():
+    if offscreen:
+        headless = False  # headed, but off every screen (session.OFFSCREEN_ARGS)
+    elif background():
         headless = True   # never a window on screen unless --show (see session.background)
     os.makedirs(PROFILE_DIR, exist_ok=True)
     # Google's sign-in refuses a browser that announces automation ("this
@@ -165,17 +208,29 @@ def launch(p, headless: bool, states: list[Path] | None = None) -> SimplifyBrows
             "--disable-features=CalculateNativeWinOcclusion"]
     if headless:
         args.append("--headless=new")
+    elif offscreen:
+        args += [a for a in OFFSCREEN_ARGS if a not in args]
     kwargs = dict(headless=False, args=args, ignore_default_args=["--enable-automation"],
                   viewport={"width": 1366, "height": 900} if headless else None)
     channels = [os.environ.get("SIMPLIFY_CHANNEL") or "chrome", "msedge", None]
     context, last = None, None
-    for channel in channels:
-        try:
-            context = p.chromium.launch_persistent_context(PROFILE_DIR, channel=channel, **kwargs)
+    deadline = time.time() + PROFILE_BUSY_WAIT_S
+    while True:
+        for channel in channels:
+            try:
+                ua = _plain_user_agent(p, channel) if headless else None
+                context = p.chromium.launch_persistent_context(
+                    PROFILE_DIR, channel=channel, **kwargs, **({"user_agent": ua} if ua else {}))
+                break
+            except Exception as exc:  # that browser is not installed: try the next
+                last = exc
+                log.debug("Simplify browser: %s failed (%s)", channel or "bundled chromium", exc)
+                if _profile_busy(exc):
+                    break  # every channel would hit the same locked profile
+        if context is not None or not _profile_busy(last) or time.time() > deadline:
             break
-        except Exception as exc:  # that browser is not installed: try the next
-            last = exc
-            log.debug("Simplify browser: %s failed (%s)", channel or "bundled chromium", exc)
+        log.info("Simplify profile is in use by another run - waiting 30s")
+        time.sleep(30)
     if context is None:
         raise RuntimeError(f"could not start a browser for Simplify: {last}")
     cookies: list[dict] = []
@@ -213,16 +268,25 @@ def open_naukri(p, headless: bool):
     on a selector further down.
     """
     from .. import selectors as S
-    from ..session import NotLoggedIn, is_logged_in
+    from ..session import NotLoggedIn, background, blocked, is_logged_in
 
-    browser = launch(p, headless=headless, states=_states())
-    page = browser.context.new_page()
-    page.goto(S.PROFILE_URL, wait_until="domcontentloaded", timeout=60000)
-    page.wait_for_timeout(4000)
-    if not is_logged_in(page):
+    # Headless first; if Akamai answers "Access Denied", the same off-screen
+    # window fallback session.open_profile uses for the scan.
+    attempts = [False, True] if (headless or background()) else [False]
+    for n, offscreen in enumerate(attempts, 1):
+        browser = launch(p, headless=headless, states=_states(), offscreen=offscreen)
+        page = browser.context.new_page()
+        page.goto(S.PROFILE_URL, wait_until="domcontentloaded", timeout=60000)
+        page.wait_for_timeout(4000)
+        if is_logged_in(page):
+            return browser, browser.context, page
+        was_blocked = blocked(page)
         browser.close()
-        raise NotLoggedIn("Saved Naukri session has expired. Run: python main.py --login")
-    return browser, browser.context, page
+        if was_blocked and n < len(attempts):
+            log.warning("Naukri refused the headless Simplify browser - retrying off-screen")
+            continue
+        break
+    raise NotLoggedIn("Saved Naukri session has expired. Run: python main.py --login")
 
 
 def open_linkedin(p, headless: bool):

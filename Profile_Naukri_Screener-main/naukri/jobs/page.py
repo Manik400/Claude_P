@@ -18,6 +18,8 @@ import logging
 from datetime import date, datetime
 from pathlib import Path
 
+from ..accordion import SNIPPET as ACC_SNIPPET
+
 log = logging.getLogger("naukri.jobs.page")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -418,19 +420,23 @@ TEMPLATE = """<title>__TITLE__</title>
   </div>
 
   <div class="bar">
-    <button class="chip" data-filter="all" aria-pressed="true">All</button>
-    <button class="chip" data-filter="new" aria-pressed="false">New today</button>
-    <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
-    <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
-    <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
-    <span class="bar-sep" aria-hidden="true"></span>
-    <span class="bar-label">Posted</span>
-    <button class="chip" data-posted="any" aria-pressed="true">Any</button>
-    <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
-    <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
-    <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    <details class="fgrp" data-acc="openings.show" open><summary>Show</summary><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+    </span></details>
+    <details class="fgrp" data-acc="openings.posted" open><summary>Posted</summary><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></details>
     <span class="spacer"></span>
-    <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    <details class="fgrp" data-acc="openings.search" open><summary>Search</summary><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></details>
   </div>
 
   <div id="list"></div>
@@ -576,6 +582,7 @@ TEMPLATE = """<title>__TITLE__</title>
 
   render();
 </script>
+__ACC__
 """
 
 
@@ -713,6 +720,20 @@ def refresh_prep_navs() -> int:
     return patched
 
 
+def scan_kind(results: dict) -> str:
+    """" - Early" / " - Last 24h" / " - All jobs": which of the day's scans this is.
+
+    The phone site reads it back off the <title> to label each run.
+    """
+    if results.get("early"):
+        return " - Early"
+    if results.get("posted_days") == 1:
+        return " - Last 24h"
+    if not results.get("posted_days") and not results.get("new_only"):
+        return " - All jobs"
+    return ""
+
+
 def build(results: dict, out_path: Path | None = None, today: str | None = None,
           run: int | None = None) -> Path:
     """Write the dated tracker page. Returns the path."""
@@ -745,6 +766,8 @@ def build(results: dict, out_path: Path | None = None, today: str | None = None,
                      + ("24 hours" if window == 1 else f"{window:g} days"))
     if results.get("new_only"):
         parts.append("first seen today")
+    if results.get("early"):
+        parts.append("early applicant (posted in the last few hours)")
     scope_html = " &middot; ".join(parts)
     new_count = sum(1 for r in rows if r["new"])
     undated = sum(1 for r in rows if r["age"] is None)
@@ -766,7 +789,7 @@ def build(results: dict, out_path: Path | None = None, today: str | None = None,
             .replace("__PREP_STATE__", prep_state)
             .replace("__PREP_HINT__", html.escape(prep_hint))
             .replace("__RUNS__", runs_html)
-            .replace("__TITLE__", f"Job Openings {today} r{this_run}")
+            .replace("__TITLE__", f"Job Openings {today} r{this_run}{scan_kind(results)}")
             .replace("__HEADING__", f"{len(rows)} openings, {new_count} new today")
             .replace("__DATELINE__", f"{today} &middot; scan {this_run}")
             .replace("__SCOPE__", scope_html)
@@ -779,6 +802,7 @@ def build(results: dict, out_path: Path | None = None, today: str | None = None,
             # block early is "</script", and json.dumps leaves "<" alone. No
             # stored title or company contains one yet; this keeps it that way
             # if a recruiter ever pastes markup into a JD.
+            .replace("__ACC__", ACC_SNIPPET)
             .replace("__DATA__",
                      json.dumps(rows, ensure_ascii=False).replace("<", "\\u003c")))
 

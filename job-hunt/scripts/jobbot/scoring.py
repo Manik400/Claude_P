@@ -16,6 +16,26 @@ from collections import Counter
 
 from .textutil import content_tokens, strip_accents
 
+
+def _learner():
+    """The Naukri screener's self-learning model (naukri/learning.py), when the
+    sibling project and its data/metrics/learned.json are here - on the PC, not
+    on GitHub Actions, where this is None and scores are left as they were."""
+    if os.environ.get("JOBHUNT_LEARNING", "").strip() == "0":
+        return None
+    try:
+        import sys
+        from .autoapply import sibling_dir
+        root = sibling_dir()
+        if not root:
+            return None
+        if root not in sys.path:
+            sys.path.insert(0, root)
+        from naukri import learning
+        return learning if learning.model().get("active") else None
+    except Exception:
+        return None
+
 FIT_SCORE = {"fit": 1.0, "stretch": 0.65, "unknown": 0.55, "over": 0.7, "no": 0.15}
 _SINGLE_LETTER = re.compile(r"(?<![A-Za-z0-9+#./-])([CR])(?![A-Za-z0-9+#&./-])")
 
@@ -105,6 +125,7 @@ def score_jobs(jobs, resume_text, vocab=None, ai=None):
     to compare), or a module with the same interface.
     """
     vocab = vocab or Vocab()
+    learner = None if ai is False else _learner()   # ai=False keeps tests deterministic
     resume_skills = vocab.find(resume_text)
     resume_tokens = content_tokens(strip_accents(resume_text))
     resume_token_set = set(resume_tokens)
@@ -137,6 +158,13 @@ def score_jobs(jobs, resume_text, vocab=None, ai=None):
         else:
             score = 100 * (0.45 * cos_scaled + 0.35 * title_align + 0.20 * exp)
             confidence = "low"
+        if learner is not None:
+            from types import SimpleNamespace
+            adj = learner.adjustment(SimpleNamespace(title=j.title, company=j.company, source="",
+                                                     skills=matched + missing))
+            if adj:
+                j.extra["learned"] = adj
+                score += adj
         j.score = round(max(0.0, min(100.0, score)), 1)
         j.matched_skills = matched[:12]
         j.missing_skills = missing[:8]

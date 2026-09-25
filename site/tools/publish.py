@@ -22,7 +22,7 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE_DIR = os.path.dirname(HERE)
-KEEP = {"jobhunt": 40, "careers": 30, "naukri": 40, "interview": 20, "applications": 1}
+KEEP = {"jobhunt": 40, "careers": 30, "naukri": 40, "interview": 20, "applications": 1, "accuracy": 1}
 EXT = {"careers": "json"}   # everything else is an HTML page
 
 

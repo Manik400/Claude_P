@@ -22,6 +22,7 @@ a full list of what changed rather than the leftovers of a stale one.
 from __future__ import annotations
 
 import logging
+import re
 from datetime import date
 from pathlib import Path
 from urllib.parse import quote_plus
@@ -113,6 +114,46 @@ def card_posted_within(card: dict, days: float | None) -> bool:
         return True
     age = label_age_days(linkedin_posted(card))
     return age is None or age <= days
+
+
+EARLY_HOURS = 6.0
+
+
+def label_age_hours(text: str | None) -> float | None:
+    """Hours since posting, from "Just now" / "3 hours ago" / "Few Hours Ago".
+
+    Only labels that are younger than a day have an hour reading; anything in
+    days returns None, which the early filter treats as not early.
+    """
+    if not text:
+        return None
+    low = str(text).strip().lower()
+    if "just now" in low:
+        return 0.0
+    match = re.search(r"(\d+)\s*(minute|min|hour|hr)", low)
+    if match:
+        n = float(match.group(1))
+        return n / 60 if match.group(2).startswith("min") else n
+    if "few hours" in low:
+        return 3.0
+    return None
+
+
+def is_early(job, hours: float = EARLY_HOURS) -> bool:
+    """A Naukri listing posted within the last `hours` - apply before the rush."""
+    age = job.age_days
+    age_h = age * 24 if age is not None else label_age_hours(job.posted_label)
+    return age_h is not None and age_h <= hours
+
+
+def card_is_early(card: dict, hours: float = EARLY_HOURS) -> bool:
+    """A LinkedIn card LinkedIn flags "Be an early applicant", or posted within `hours`."""
+    text = " ".join([card.get("insight") or ""] + list(card.get("footer") or [])
+                    + list(card.get("metadata") or []))
+    if "early applicant" in text.lower():
+        return True
+    age_h = label_age_hours(linkedin_posted(card))
+    return age_h is not None and age_h <= hours
 
 
 STATUS_CHOICES = '"To apply,Applied,Shortlisted,Rejected,Not interested"'
@@ -286,7 +327,8 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         worldwide: bool = False, posted_days: float | None = None,
         new_only: bool = False, apply: bool = False, dry_run: bool = True,
         apply_report: dict | None = None,
-        apply_limit: int | None = None) -> tuple[Path, list, list]:
+        apply_limit: int | None = None,
+        early: bool = False) -> tuple[Path, list, list]:
     """Search the given cities, rank, and write the spreadsheet.
 
     `posted_days` restricts the run to listings posted inside that window
@@ -294,6 +336,10 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
     then enforced again on the results. `new_only` drops anything that has
     already appeared on an earlier day's tracker page, so a daily scan reports
     what changed since yesterday instead of re-listing the same postings.
+
+    `early` keeps only postings young enough to be an early applicant on:
+    posted in the last EARLY_HOURS, or flagged "Be an early applicant" by
+    LinkedIn. Both boards are searched with a 1-day window for it.
 
     `apply` runs autoapply over what was found - Naukri applies and LinkedIn
     Easy Apply - before the page is written, so every row carries its outcome.
@@ -314,6 +360,11 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         if keyword and keyword.lower() not in seen:
             seen.add(keyword.lower())
             keywords.append(keyword)
+
+    if early:
+        posted_days = 1
+        log.info("Early filter: posted in the last %g hour(s) or flagged early applicant",
+                 EARLY_HOURS)
 
     config = dict(config)
     # No city asked for is the normal case, and means the whole country with
@@ -388,6 +439,8 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         if f"naukri:{job.job_id}" in already_listed:
             repeats += 1
             continue
+        if early and not is_early(job):
+            continue
         kept.append(job)
 
     if posted_days:
@@ -409,16 +462,25 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
             cards = gather_linkedin(config, locations, top=top, headless=headless,
                                     worldwide=worldwide,
                                     posted_days=int(posted_days) if posted_days else 30,
-                                    exclude_ids=already_listed)
+                                    exclude_ids=already_listed, early=early)
             log.info("LinkedIn: %d card(s) after filtering", len(cards))
         except Exception as exc:
             # A LinkedIn failure must not cost you the Naukri sheet.
             log.warning("LinkedIn search skipped: %s", str(exc)[:200])
 
+    outcomes: dict = {}
     if apply:
         from . import autoapply
-        outcomes = autoapply.run(kept, cards, config, profile, headless=headless,
-                                 dry_run=dry_run, per_run=apply_limit)
+        # A failed apply pass (Naukri blocking the headless browser, an expired
+        # session, the Simplify profile locked by another run) must not cost
+        # the day's page - the scan itself succeeded, so write it regardless.
+        try:
+            outcomes = autoapply.run(kept, cards, config, profile, headless=headless,
+                                     dry_run=dry_run, per_run=apply_limit)
+        except Exception as exc:
+            log.warning("Apply step failed, writing the page without it: %s",
+                        str(exc).splitlines()[0][:200])
+            outcomes = {}
         if apply_report is not None:
             apply_report.update(outcomes)
         # The ledger was rewritten by the apply pass; reload so the sheet and
@@ -445,6 +507,7 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         "worldwide": worldwide,
         "posted_days": posted_days,
         "new_only": new_only,
+        "early": early,
         "naukri": [
             dict(job.to_dict(), score=job.score,
                  matched_skills=getattr(job, "matched_skills", []),
@@ -460,6 +523,12 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
 
     from . import page as page_mod
     results["_page"] = str(page_mod.build(results))
+
+    try:
+        from naukri import learning
+        learning.log_scan(results, kept, cards, outcomes)
+    except Exception as exc:  # the metrics must never cost the scan
+        log.warning("Could not log scan metrics: %s", exc)
 
     return path, kept, cards
 
@@ -591,7 +660,8 @@ def add_linkedin_sheet(workbook, cards: list[dict], config: dict, ledger: Ledger
 def gather_linkedin(config: dict, locations: list[str], posted_days: int = 30,
                     top: int = 30, headless: bool = False,
                     worldwide: bool = False,
-                    exclude_ids: set[str] | None = None) -> list[dict]:
+                    exclude_ids: set[str] | None = None,
+                    early: bool = False) -> list[dict]:
     """Search LinkedIn for the configured keywords across the given cities.
 
     `posted_days` goes straight into LinkedIn's own f_TPR window, so the
@@ -660,6 +730,8 @@ def gather_linkedin(config: dict, locations: list[str], posted_days: int = 30,
         if exclude_ids and f"linkedin:{card.get('job_id')}" in exclude_ids:
             continue
         if not card_posted_within(card, window):
+            continue
+        if early and not card_is_early(card):
             continue
         card["_match"] = title_match(card, config)
         card["_remote"] = bool(card.get("remote_filtered")) or "remote" in text

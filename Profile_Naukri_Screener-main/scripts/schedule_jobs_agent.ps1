@@ -42,8 +42,11 @@ param(
     #          where the Top 10 has barely moved and questions carry over.
     # scanpublish scan, then push the new openings page to the phone site
     #          (jobs_scan_and_publish.bat; set up once with site\setup_phone.bat).
+    # scan3    at 10:00 and 16:00, three scans back to back - last 24h, early
+    #          applicant, all jobs - then publish all three to the phone site
+    #          (jobs_scan_3way.bat). Ignores -Times/-NightTimes.
     # apply    submit real applications. Read jobs_agent.bat before using it.
-    [ValidateSet("scan", "scanprep", "scanpublish", "apply")]
+    [ValidateSet("scan", "scanprep", "scanpublish", "scan3", "apply")]
     [string]$Mode = "scan",
     [switch]$Remove,
     [string[]]$Times = @("08:52=5", "13:23=5", "18:11=10"),
@@ -58,6 +61,7 @@ $batch  = switch ($Mode) {
     "apply"    { Join-Path $root "jobs_agent.bat" }
     "scanprep" { Join-Path $root "jobs_scan_and_prep.bat" }
     "scanpublish" { Join-Path $root "jobs_scan_and_publish.bat" }
+    "scan3"    { Join-Path $root "jobs_scan_3way.bat" }
     default    { Join-Path $root "jobs_scan.bat" }
 }
 
@@ -112,6 +116,13 @@ $settings = New-ScheduledTaskSettingsSet `
     -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
     -MultipleInstances IgnoreNew
 
+# Three scans plus publishing take far longer than one scan.
+if ($Mode -eq "scan3") {
+    $Times = @("10:00=5", "16:00=5")
+    $NightTimes = @()
+    $settings.ExecutionTimeLimit = "PT4H"
+}
+
 $scanOnly = Join-Path $root "jobs_scan.bat"
 $slots = @()
 foreach ($t in $Times)      { $slots += @{ spec = $t; batch = $batch;    mode = $Mode } }
@@ -138,6 +149,39 @@ foreach ($slot in $slots) {
         -Settings $settings `
         -Description "Naukri + LinkedIn job agent ($($slot.mode)) - run $i of $($slots.Count), $capText." | Out-Null
     Write-Host "Scheduled $name at $time  ($($slot.mode), $capText)"
+}
+
+# scan3 also gets a catch-up task: whenever the laptop wakes from sleep, you
+# log on, or you unlock it, jobs_catchup.bat runs whichever of the current
+# slot's three scans are missing (none before 10:00; nothing if all are there).
+# The 2-minute delay lets Wi-Fi come back first; scan3.py also waits for it.
+if ($Mode -eq "scan3") {
+    $catchup = Join-Path $root "jobs_catchup.bat"
+    $catchAction = New-ScheduledTaskAction `
+        -Execute "$env:SystemRoot\System32\wscript.exe" `
+        -Argument "//B //Nologo `"$launcher`" `"$catchup`" NAUKRI_APPLY_LIMIT=5" `
+        -WorkingDirectory $root
+    $logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
+    $logon.Delay = "PT2M"
+    $unlockClass = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskSessionStateChangeTrigger
+    $unlock = New-CimInstance -CimClass $unlockClass -ClientOnly -Property @{
+        StateChange = 8; UserId = "$env:USERDOMAIN\$env:USERNAME"; Delay = "PT2M"; Enabled = $true }
+    $eventClass = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskEventTrigger
+    $wake = New-CimInstance -CimClass $eventClass -ClientOnly -Property @{
+        Enabled = $true; Delay = "PT2M"
+        Subscription = '<QueryList><Query Id="0" Path="System"><Select Path="System">*[System[Provider[@Name=''Microsoft-Windows-Power-Troubleshooter''] and EventID=1]]</Select></Query></QueryList>' }
+    # ...and when a network connects (NetworkProfile 10000): a run that lost
+    # Wi-Fi half-way fills in its missing scans as soon as it is back.
+    $net = New-CimInstance -CimClass $eventClass -ClientOnly -Property @{
+        Enabled = $true; Delay = "PT1M"
+        Subscription = '<QueryList><Query Id="0" Path="Microsoft-Windows-NetworkProfile/Operational"><Select Path="Microsoft-Windows-NetworkProfile/Operational">*[System[EventID=10000]]</Select></Query></QueryList>' }
+    Register-ScheduledTask `
+        -TaskName "$prefix-Catchup" `
+        -Action $catchAction `
+        -Trigger @($logon, $unlock, $wake, $net) `
+        -Settings $settings `
+        -Description "Naukri job agent catch-up: after wake/logon/unlock, run the 10:00/16:00 scans that are missing today, then publish." | Out-Null
+    Write-Host "Scheduled $prefix-Catchup on wake from sleep, logon, unlock and network reconnect"
 }
 
 Write-Host ""

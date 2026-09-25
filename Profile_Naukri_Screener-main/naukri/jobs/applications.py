@@ -25,6 +25,8 @@ import re
 from datetime import date, datetime
 from pathlib import Path
 
+from ..accordion import SNIPPET as ACC_SNIPPET
+
 log = logging.getLogger("naukri.jobs.applications")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -254,14 +256,20 @@ TEMPLATE = r"""<!doctype html>
   </div>
 
   <div class="bar">
-    <button class="chip" data-status="all" aria-pressed="true">All</button>
-    <button class="chip" data-status="applied" aria-pressed="false">Applied</button>
-    <button class="chip" data-status="questionnaire" aria-pressed="false">Needs your answer</button>
-    <button class="chip" data-status="other" aria-pressed="false">Other outcomes</button>
-    <button class="chip" data-board="all" aria-pressed="true">Both boards</button>
-    <button class="chip" data-board="naukri" aria-pressed="false">Naukri</button>
-    <button class="chip" data-board="linkedin" aria-pressed="false">LinkedIn</button>
-    <input class="search" id="q" type="search" placeholder="Filter by title, company or question" aria-label="Filter">
+    <details class="fgrp" data-acc="apps.status" open><summary>Status</summary><span class="fbody">
+      <button class="chip" data-status="all" aria-pressed="true">All</button>
+      <button class="chip" data-status="applied" aria-pressed="false">Applied</button>
+      <button class="chip" data-status="questionnaire" aria-pressed="false">Needs your answer</button>
+      <button class="chip" data-status="other" aria-pressed="false">Other outcomes</button>
+    </span></details>
+    <details class="fgrp" data-acc="apps.board" open><summary>Board</summary><span class="fbody">
+      <button class="chip" data-board="all" aria-pressed="true">Both boards</button>
+      <button class="chip" data-board="naukri" aria-pressed="false">Naukri</button>
+      <button class="chip" data-board="linkedin" aria-pressed="false">LinkedIn</button>
+    </span></details>
+    <details class="fgrp" data-acc="apps.search" open><summary>Search</summary><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title, company or question" aria-label="Filter">
+    </span></details>
   </div>
 
   <div id="list"></div>
@@ -349,6 +357,7 @@ TEMPLATE = r"""<!doctype html>
   document.getElementById('q').addEventListener('input', e => { query = e.target.value.trim().toLowerCase(); render(); });
   render();
 </script>
+__ACC__
 </body>
 </html>
 """
@@ -371,6 +380,7 @@ def build_page() -> Path:
             .replace("__GENERATED__", datetime.now().strftime("%Y-%m-%d %H:%M"))
             .replace("__TODAY__", date.today().isoformat())
             .replace("__LABELS__", json.dumps(STATUS_LABELS))
+            .replace("__ACC__", ACC_SNIPPET)
             .replace("__DATA__", json.dumps(entries, ensure_ascii=False).replace("<", "\\u003c")))
     PAGE_PATH.parent.mkdir(parents=True, exist_ok=True)
     PAGE_PATH.write_text(page, encoding="utf-8")

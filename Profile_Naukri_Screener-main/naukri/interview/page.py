@@ -22,6 +22,8 @@ from pathlib import Path
 
 from . import dedupe, skills
 
+from ..accordion import SNIPPET as ACC_SNIPPET
+
 log = logging.getLogger("naukri.interview.page")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -470,19 +472,27 @@ TEMPLATE = r"""<title>__TITLE__</title>
       question carried into tomorrow&rsquo;s set stays marked.</p>
 
     <div class="bar-tools">
-      <button class="chip" data-level="all" aria-pressed="true">All <small id="n-all">0</small></button>
-      <button class="chip" data-level="basic" aria-pressed="false">Basic <small id="n-basic">0</small></button>
-      <button class="chip" data-level="intermediate" aria-pressed="false">Intermediate <small id="n-intermediate">0</small></button>
-      <button class="chip" data-level="advanced" aria-pressed="false">Advanced <small id="n-advanced">0</small></button>
+      <details class="fgrp" data-acc="prep.level" open><summary>Level</summary><span class="fbody">
+        <button class="chip" data-level="all" aria-pressed="true">All <small id="n-all">0</small></button>
+        <button class="chip" data-level="basic" aria-pressed="false">Basic <small id="n-basic">0</small></button>
+        <button class="chip" data-level="intermediate" aria-pressed="false">Intermediate <small id="n-intermediate">0</small></button>
+        <button class="chip" data-level="advanced" aria-pressed="false">Advanced <small id="n-advanced">0</small></button>
+      </span></details>
       <span class="spacer"></span>
-      <select class="picker" id="skillpick" aria-label="Filter by skill">__SKILL_OPTIONS__</select>
-      <select class="picker" id="statuspick" aria-label="Filter by progress">
-        <option value="all">Any status</option>
-        <option value="todo">Not marked</option>
-        <option value="learned">Learned</option>
-        <option value="revise">Needs revision</option>
-      </select>
-      <input class="search" id="q" type="search" placeholder="Search questions and answers" aria-label="Search questions and answers">
+      <details class="fgrp" data-acc="prep.skill" open><summary>Skill</summary><span class="fbody">
+        <select class="picker" id="skillpick" aria-label="Filter by skill">__SKILL_OPTIONS__</select>
+      </span></details>
+      <details class="fgrp" data-acc="prep.progress" open><summary>Progress</summary><span class="fbody">
+        <select class="picker" id="statuspick" aria-label="Filter by progress">
+          <option value="all">Any status</option>
+          <option value="todo">Not marked</option>
+          <option value="learned">Learned</option>
+          <option value="revise">Needs revision</option>
+        </select>
+      </span></details>
+      <details class="fgrp" data-acc="prep.search" open><summary>Search</summary><span class="fbody">
+        <input class="search" id="q" type="search" placeholder="Search questions and answers" aria-label="Search questions and answers">
+      </span></details>
       <button class="ghost" id="expand-all">Expand all</button>
       <button class="ghost" id="collapse-all">Collapse all</button>
     </div>
@@ -732,6 +742,7 @@ TEMPLATE = r"""<title>__TITLE__</title>
 
   render();
 </script>
+__ACC__
 """
 
 
@@ -976,6 +987,7 @@ def build(prep: dict, out_path: Path | None = None, dates: list[str] | None = No
 
     page = (TEMPLATE
             .replace("__TITLE__", f"Interview Prep {day}")
+            .replace("__ACC__", ACC_SNIPPET)
             .replace("__HEADING__", html.escape(heading))
             .replace("__SUBTITLE__", html.escape(subtitle))
             .replace("__DATELINE__", day)

@@ -113,6 +113,10 @@ def main() -> int:
     action.add_argument("--applications", action="store_true",
                         help="List every application the agent attempted, with each screening "
                              "answer and where it came from, and rebuild data/jobs/applications.html")
+    action.add_argument("--learn", action="store_true",
+                        help="Relearn score adjustments from outcomes (data/metrics/learned.json)")
+    action.add_argument("--accuracy", action="store_true",
+                        help="Relearn, then rebuild the daily accuracy file and page (data/metrics/)")
     action.add_argument("--answer-questions", action="store_true", dest="answer_questions",
                         help="Answer the screening questions that stopped applications "
                              "(data/jobs/questions.yaml); the next run applies with them")
@@ -156,6 +160,9 @@ def main() -> int:
                         help="With --jobs-export: keep jobs already applied to")
     parser.add_argument("--posted-days", type=float, default=None, dest="posted_days", metavar="N",
                         help="With --jobs-export: only listings posted in the last N days (1 = last 24 hours)")
+    parser.add_argument("--early", action="store_true",
+                        help="With --jobs-export: only postings from the last few hours, or "
+                             "flagged 'Be an early applicant' on LinkedIn")
     parser.add_argument("--new-only", action="store_true", dest="new_only",
                         help="With --jobs-export: only jobs not already listed on an earlier day's page")
     parser.add_argument("--date", metavar="YYYY-MM-DD",
@@ -242,13 +249,24 @@ def main() -> int:
                 new_only=args.new_only,
                 apply=args.apply_found, dry_run=not args.yes,
                 apply_report=apply_report,
-                apply_limit=_apply_limit(args))
+                apply_limit=_apply_limit(args),
+                early=args.early)
             print(jobs_export.summarise(path, jobs, locations, cards,
-                                        posted_days=args.posted_days,
+                                        posted_days=1 if args.early else args.posted_days,
                                         new_only=args.new_only))
             if args.apply_found:
                 from naukri.jobs import autoapply
                 print(autoapply.summarise(apply_report))
+            return 0
+
+        if args.learn or args.accuracy:
+            from naukri import learning
+            if args.accuracy:
+                print(f"  Accuracy page: {learning.build_accuracy()}")
+            else:
+                m = learning.learn()
+                print(f"  Learned from {m['labels']} labelled job(s); "
+                      f"{'active' if m['active'] else 'collecting'}; {len(m['weights'])} feature weight(s)")
             return 0
 
         if args.answer_questions:
