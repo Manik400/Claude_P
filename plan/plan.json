@@ -2629,9 +2629,9 @@
     }
    ],
    "sql": {
-    "name": "Classes More Than 5 Students",
+    "name": "Classes With at Least 5 Students",
     "difficulty": "Easy",
-    "url": "https://leetcode.com/problems/classes-more-than-5-students/"
+    "url": "https://leetcode.com/problems/classes-with-at-least-5-students/"
    },
    "design": {
     "name": "Single-Threaded CPU",
@@ -5213,9 +5213,9 @@
     }
    ],
    "sql": {
-    "name": "Swap Salary",
+    "name": "Swap Sex of Employees",
     "difficulty": "Easy",
-    "url": "https://leetcode.com/problems/swap-salary/"
+    "url": "https://leetcode.com/problems/swap-sex-of-employees/"
    },
    "design": {
     "name": "Design a Food Rating System",
