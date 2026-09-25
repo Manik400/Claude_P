@@ -1,0 +1,977 @@
+[
+ {
+  "day": 1,
+  "type": "Office day",
+  "theme": "How the web works",
+  "hld_topic": "What happens when you type a URL: DNS, TCP, HTTP",
+  "hld_points": [
+   "DNS resolves the name, TCP (+TLS) opens the connection, HTTP carries the request",
+   "Browser cache → OS → resolver → root/TLD/authoritative servers",
+   "Where latency is spent: DNS, handshake, server time, download"
+  ],
+  "lld_topic": "Classes, objects and encapsulation in C#",
+  "cloud": "AWS: AWS regions and AZs; free-tier account + billing alarm"
+ },
+ {
+  "day": 2,
+  "type": "Office day",
+  "theme": "Scaling a server",
+  "hld_topic": "Vertical vs horizontal scaling",
+  "hld_points": [
+   "Vertical = bigger machine: simple, has a ceiling and a single point of failure",
+   "Horizontal = more machines: needs a load balancer and stateless app servers",
+   "Scale reads with replicas and caches before sharding writes"
+  ],
+  "lld_topic": "Inheritance vs composition",
+  "cloud": "AWS: IAM: users, groups, roles, policies, MFA"
+ },
+ {
+  "day": 3,
+  "type": "Office day",
+  "theme": "Load balancing",
+  "hld_topic": "Load balancers: L4 vs L7, round robin, least connections",
+  "hld_points": [
+   "L4 balances TCP connections; L7 routes by path, header or cookie",
+   "Round robin vs least connections vs IP hash, and when each wins",
+   "Health checks remove bad nodes; the LB itself needs redundancy"
+  ],
+  "lld_topic": "Polymorphism and interfaces: an ILoadBalancingStrategy",
+  "cloud": "AWS: EC2: launch an instance, security groups, SSH"
+ },
+ {
+  "day": 4,
+  "type": "Office day",
+  "theme": "Stateless services",
+  "hld_topic": "Stateless servers, sticky sessions, session stores",
+  "hld_points": [
+   "Keep session state out of app servers so any server can take any request",
+   "Sticky sessions are a workaround with uneven load and lost sessions",
+   "Session stores: Redis or a DB with a TTL; JWT moves state to the client"
+  ],
+  "lld_topic": "SOLID part 1: Single Responsibility, Open/Closed",
+  "cloud": "AWS: ALB + Auto Scaling Group"
+ },
+ {
+  "day": 5,
+  "type": "Light Friday",
+  "theme": "APIs",
+  "hld_topic": "REST API design, status codes, idempotency",
+  "hld_points": [
+   "Resources as nouns, HTTP verbs as actions, correct status codes (201, 400, 404, 409, 429)",
+   "Idempotency: PUT/DELETE are, POST is not unless you add an idempotency key",
+   "Versioning, pagination and consistent error bodies"
+  ],
+  "lld_topic": "SOLID part 2: Liskov, Interface Segregation, Dependency Inversion",
+  "cloud": "AWS: S3: buckets, storage classes, static website"
+ },
+ {
+  "day": 6,
+  "type": "Build Saturday",
+  "theme": "Build: 3-tier app",
+  "hld_topic": "Draw a 3-tier app: LB → app servers → DB",
+  "hld_points": [
+   "Tier 1 LB, tier 2 stateless app servers, tier 3 database",
+   "Where each tier fails and how it recovers",
+   "What changes at 10x traffic"
+  ],
+  "lld_topic": "Refactor a notification sender using SOLID",
+  "cloud": "AWS: Static site on S3 + EC2 app behind an ALB (terminate after!)"
+ },
+ {
+  "day": 7,
+  "type": "Review Sunday",
+  "theme": "Review week 1",
+  "hld_topic": "Revise week 1 notes on one page",
+  "hld_points": [
+   "One page: the web request path, scaling, LB, stateless, REST",
+   "Say each concept in two sentences without notes",
+   "List 3 weak spots for next week"
+  ],
+  "lld_topic": "Recap: 4 OOP pillars + SOLID in your own words",
+  "cloud": "AWS: Delete leftover resources, check billing"
+ },
+ {
+  "day": 8,
+  "type": "Office day",
+  "theme": "Databases 101",
+  "hld_topic": "SQL vs NoSQL and when to pick each",
+  "hld_points": [
+   "SQL: schema, joins, ACID; NoSQL: flexible schema, horizontal scale",
+   "Pick by access pattern, consistency need and scale",
+   "Key-value, document, wide-column and graph stores, with one example each"
+  ],
+  "lld_topic": "Singleton pattern (thread-safe, for a DB connection)",
+  "cloud": "AWS: RDS: launch Postgres, connect from your laptop"
+ },
+ {
+  "day": 9,
+  "type": "Office day",
+  "theme": "Indexing",
+  "hld_topic": "Indexes, B-trees, why queries get slow",
+  "hld_points": [
+   "An index is a sorted structure (B-tree) that trades write speed for read speed",
+   "Composite index column order matters (leftmost prefix)",
+   "Read EXPLAIN plans: full scan vs index seek"
+  ],
+  "lld_topic": "Factory pattern",
+  "cloud": "AWS: RDS backups, snapshots, Multi-AZ"
+ },
+ {
+  "day": 10,
+  "type": "Office day",
+  "theme": "Replication",
+  "hld_topic": "Primary-replica replication, read replicas, lag",
+  "hld_points": [
+   "Primary takes writes, replicas serve reads",
+   "Async replication means lag: read-your-own-writes issues",
+   "Failover promotes a replica; watch for split brain"
+  ],
+  "lld_topic": "Builder pattern",
+  "cloud": "AWS: RDS read replicas; DynamoDB intro"
+ },
+ {
+  "day": 11,
+  "type": "Office day",
+  "theme": "Sharding",
+  "hld_topic": "Partitioning, shard keys, hot spots",
+  "hld_points": [
+   "Shard by a key that spreads load evenly",
+   "Hot spots come from celebrity keys or time-ordered keys",
+   "Cross-shard queries and rebalancing are the real cost"
+  ],
+  "lld_topic": "Strategy pattern (a shard-key strategy)",
+  "cloud": "AWS: DynamoDB partition keys and GSIs"
+ },
+ {
+  "day": 12,
+  "type": "Light Friday",
+  "theme": "Transactions",
+  "hld_topic": "ACID and isolation levels",
+  "hld_points": [
+   "ACID: atomicity, consistency, isolation, durability",
+   "Isolation levels vs anomalies: dirty read, non-repeatable read, phantom",
+   "When to use SERIALIZABLE and what it costs"
+  ],
+  "lld_topic": "Repository pattern in C#",
+  "cloud": "AWS: IAM roles for EC2 to read S3 without keys"
+ },
+ {
+  "day": 13,
+  "type": "Build Saturday",
+  "theme": "Build: library system",
+  "hld_topic": "Design the database for a library system",
+  "hld_points": [
+   "Tables: Book, Copy, Member, Loan, Reservation",
+   "Keys, indexes and the queries they serve",
+   "One Book has many Copies; a Loan links a Copy to a Member"
+  ],
+  "lld_topic": "Library Management System LLD (classes + relationships)",
+  "cloud": "AWS: Connect a .NET API on EC2 to RDS"
+ },
+ {
+  "day": 14,
+  "type": "Review Sunday",
+  "theme": "Review week 2",
+  "hld_topic": "CAP theorem basics + revise week 2",
+  "hld_points": [
+   "CAP: during a partition choose consistency or availability",
+   "CP vs AP examples (bank ledger vs shopping cart)",
+   "Revise databases week on one page"
+  ],
+  "lld_topic": "Recap: Singleton, Factory, Builder, Strategy, Repository",
+  "cloud": "AWS: Clean up; draw your AWS setup so far"
+ },
+ {
+  "day": 15,
+  "type": "Office day",
+  "theme": "Caching",
+  "hld_topic": "Caching basics: where to cache, hit/miss",
+  "hld_points": [
+   "Cache what is read often and changes rarely",
+   "Hit ratio, latency win and staleness risk",
+   "Layers: browser, CDN, app memory, Redis, DB buffer pool"
+  ],
+  "lld_topic": "LRU cache design: HashMap + doubly linked list",
+  "cloud": "AWS: ElastiCache (Redis) intro"
+ },
+ {
+  "day": 16,
+  "type": "Office day",
+  "theme": "Cache strategies",
+  "hld_topic": "Cache-aside, write-through, write-back, TTL, eviction",
+  "hld_points": [
+   "Cache-aside, write-through, write-back and when each loses data",
+   "TTLs and eviction (LRU / LFU)",
+   "Stampede protection: locks, jitter, early refresh"
+  ],
+  "lld_topic": "Decorator pattern: a caching repository",
+  "cloud": "AWS: Use Redis from a .NET API"
+ },
+ {
+  "day": 17,
+  "type": "Office day",
+  "theme": "CDN",
+  "hld_topic": "CDNs and edge caching",
+  "hld_points": [
+   "CDNs serve static content from edge locations near users",
+   "Cache keys, TTL and invalidation at the edge",
+   "Push vs pull CDN"
+  ],
+  "lld_topic": "Proxy pattern",
+  "cloud": "AWS: CloudFront in front of S3"
+ },
+ {
+  "day": 18,
+  "type": "Office day",
+  "theme": "Consistency",
+  "hld_topic": "Strong vs eventual consistency, cache invalidation",
+  "hld_points": [
+   "Strong consistency: every read sees the latest write",
+   "Eventual consistency: replicas converge later",
+   "Cache invalidation on update: delete vs update the key"
+  ],
+  "lld_topic": "Observer pattern (invalidate on update)",
+  "cloud": "AWS: Route 53 and routing policies"
+ },
+ {
+  "day": 19,
+  "type": "Light Friday",
+  "theme": "Rate limiting",
+  "hld_topic": "Token bucket, leaky bucket, sliding window",
+  "hld_points": [
+   "Token bucket allows bursts; leaky bucket smooths output",
+   "Fixed window vs sliding window log vs sliding window counter",
+   "Where to enforce: gateway, service, per user or per IP"
+  ],
+  "lld_topic": "Design a RateLimiter class",
+  "cloud": "AWS: API Gateway throttling overview"
+ },
+ {
+  "day": 20,
+  "type": "Build Saturday",
+  "theme": "Build: rate limiter",
+  "hld_topic": "Design a rate limiter end to end",
+  "hld_points": [
+   "Requirements: per-user limits, low latency, distributed",
+   "Redis counters with expiry, atomic Lua scripts",
+   "Return 429 with a Retry-After header"
+  ],
+  "lld_topic": "Implement token bucket in C# with unit tests",
+  "cloud": "AWS: CloudFront + S3 + Route 53 together"
+ },
+ {
+  "day": 21,
+  "type": "Review Sunday",
+  "theme": "Review week 3",
+  "hld_topic": "Revise caching, CDN, consistency",
+  "hld_points": [
+   "Revise caching, CDN and consistency on one page",
+   "Explain cache invalidation out loud",
+   "List weak spots"
+  ],
+  "lld_topic": "Recap: LRU, Decorator, Proxy, Observer",
+  "cloud": "AWS: Clean up, check billing"
+ },
+ {
+  "day": 22,
+  "type": "Office day",
+  "theme": "Async processing",
+  "hld_topic": "Message queues, producers and consumers",
+  "hld_points": [
+   "Queues decouple producers from consumers and absorb spikes",
+   "Consumers scale independently; backpressure",
+   "Ordering vs throughput trade-off"
+  ],
+  "lld_topic": "Producer–consumer in C# with Channels",
+  "cloud": "AWS: SQS standard vs FIFO"
+ },
+ {
+  "day": 23,
+  "type": "Office day",
+  "theme": "Pub/sub",
+  "hld_topic": "Pub/sub vs queues, fan-out",
+  "hld_points": [
+   "Queue = one consumer gets each message; pub/sub = every subscriber gets it",
+   "Fan-out: one event feeds many services",
+   "Topics, subscriptions and filters"
+  ],
+  "lld_topic": "Build an in-memory event bus in C#",
+  "cloud": "AWS: SNS + SNS→SQS fan-out"
+ },
+ {
+  "day": 24,
+  "type": "Office day",
+  "theme": "Delivery guarantees",
+  "hld_topic": "At-least-once, exactly-once, idempotency, dead-letter queues",
+  "hld_points": [
+   "At-least-once delivery means duplicates: make consumers idempotent",
+   "Exactly-once is expensive; dedupe keys are usually enough",
+   "Dead-letter queues catch poison messages; visibility timeout controls retries"
+  ],
+  "lld_topic": "Command pattern for retryable jobs",
+  "cloud": "AWS: SQS dead-letter queue, visibility timeout"
+ },
+ {
+  "day": 25,
+  "type": "Office day",
+  "theme": "Phase 1 checkpoint",
+  "hld_topic": "Design a basic notification system",
+  "hld_points": [
+   "Channels (email, SMS, push) behind one interface",
+   "Queue per channel, retries with backoff, user preferences",
+   "Checkpoint: explain it in 10 minutes"
+  ],
+  "lld_topic": "Notification service LLD: Strategy for channels + Observer",
+  "cloud": "AWS: AWS Cloud Practitioner practice test"
+ },
+ {
+  "day": 26,
+  "type": "Light Friday",
+  "theme": "Serverless",
+  "hld_topic": "Serverless vs servers: trade-offs",
+  "hld_points": [
+   "Serverless: no servers to manage, pay per call, scales to zero",
+   "Cold starts, time limits and vendor lock-in",
+   "Good for spiky, event-driven work"
+  ],
+  "lld_topic": "Template Method pattern",
+  "cloud": "AWS: Lambda: deploy a .NET function"
+ },
+ {
+  "day": 27,
+  "type": "Build Saturday",
+  "theme": "Build: image pipeline",
+  "hld_topic": "Design an image upload + thumbnail pipeline",
+  "hld_points": [
+   "Upload to object storage, event triggers processing",
+   "Thumbnails generated asynchronously",
+   "Store metadata in a DB; serve images through a CDN"
+  ],
+  "lld_topic": "Chain of Responsibility for processing steps",
+  "cloud": "AWS: S3 upload triggers a Lambda"
+ },
+ {
+  "day": 28,
+  "type": "Review Sunday",
+  "theme": "Review week 4",
+  "hld_topic": "Revise all of Phase 1 on one page",
+  "hld_points": [
+   "Revise all of Phase 1 on one page",
+   "Re-draw 3-tier app, cache, queue and rate limiter",
+   "Pick the 3 weakest topics"
+  ],
+  "lld_topic": "Recap: all patterns so far, one line each",
+  "cloud": "AWS: Clean up, check billing"
+ },
+ {
+  "day": 29,
+  "type": "Office day",
+  "theme": "API gateway",
+  "hld_topic": "API gateway, BFF, auth at the edge",
+  "hld_points": [
+   "API gateway: routing, auth, rate limiting, TLS in one place",
+   "BFF: one backend per client type (web, mobile)",
+   "Auth at the edge vs in each service"
+  ],
+  "lld_topic": "Facade pattern",
+  "cloud": "AWS: API Gateway + Lambda REST API"
+ },
+ {
+  "day": 30,
+  "type": "Office day",
+  "theme": "Microservices",
+  "hld_topic": "Monolith vs microservices, sync vs async calls",
+  "hld_points": [
+   "Monolith first; split by business capability",
+   "Sync (REST/gRPC) couples availability; async decouples",
+   "Data ownership: one DB per service"
+  ],
+  "lld_topic": "Adapter pattern",
+  "cloud": "AWS: Docker image → ECR"
+ },
+ {
+  "day": 31,
+  "type": "Office day",
+  "theme": "Containers",
+  "hld_topic": "Service discovery and health checks",
+  "hld_points": [
+   "Service discovery: registry or DNS",
+   "Liveness vs readiness health checks",
+   "Containers vs VMs"
+  ],
+  "lld_topic": "Dependency injection deep dive in .NET",
+  "cloud": "AWS: ECS Fargate: run your container"
+ },
+ {
+  "day": 32,
+  "type": "Office day",
+  "theme": "Auth",
+  "hld_topic": "Authentication vs authorization, JWT, OAuth2",
+  "hld_points": [
+   "Authentication = who you are; authorization = what you may do",
+   "JWT structure and why short expiry + refresh tokens",
+   "OAuth2 authorization code flow"
+  ],
+  "lld_topic": "Design an auth module with interfaces",
+  "cloud": "AWS: Cognito basics"
+ },
+ {
+  "day": 33,
+  "type": "Light Friday",
+  "theme": "Observability",
+  "hld_topic": "Logs, metrics, traces",
+  "hld_points": [
+   "Logs = events, metrics = numbers over time, traces = one request across services",
+   "Correlation IDs tie them together",
+   "Alert on symptoms (latency, errors), not causes"
+  ],
+  "lld_topic": "Structured logging design",
+  "cloud": "AWS: CloudWatch logs, metrics, alarms"
+ },
+ {
+  "day": 34,
+  "type": "Build Saturday",
+  "theme": "Build: URL shortener",
+  "hld_topic": "Design a URL shortener",
+  "hld_points": [
+   "Requirements: shorten, redirect, custom alias, expiry",
+   "Key generation: base62 counter vs hash; collisions",
+   "Read-heavy: cache hot links, 301 vs 302"
+  ],
+  "lld_topic": "URL shortener LLD: ID generator, base62",
+  "cloud": "AWS: Build it: API Gateway + Lambda + DynamoDB"
+ },
+ {
+  "day": 35,
+  "type": "Review Sunday",
+  "theme": "Review week 5",
+  "hld_topic": "Revise APIs, microservices, auth",
+  "hld_points": [
+   "Revise APIs, microservices and auth",
+   "Explain JWT and OAuth2 out loud",
+   "List weak spots"
+  ],
+  "lld_topic": "Recap: Facade, Adapter, DI",
+  "cloud": "AWS: Clean up, check billing"
+ },
+ {
+  "day": 36,
+  "type": "Office day",
+  "theme": "Scheduling",
+  "hld_topic": "Job schedulers and priority queues",
+  "hld_points": [
+   "Scheduler: store jobs, pick due ones, run with retries",
+   "Priority queues order work",
+   "Distributed schedulers need locking so a job runs once"
+  ],
+  "lld_topic": "Parking Lot part 1: requirements + entities",
+  "cloud": "AWS: EventBridge scheduled rules"
+ },
+ {
+  "day": 37,
+  "type": "Office day",
+  "theme": "Consistent hashing",
+  "hld_topic": "Consistent hashing",
+  "hld_points": [
+   "Hash ring: adding a node moves only nearby keys",
+   "Virtual nodes smooth out load",
+   "Used in caches, DynamoDB, Cassandra"
+  ],
+  "lld_topic": "Parking Lot part 2: pricing strategy, spot allocation",
+  "cloud": "AWS: VPC: public/private subnets, NAT"
+ },
+ {
+  "day": 38,
+  "type": "Office day",
+  "theme": "Graphs",
+  "hld_topic": "Modelling relationships, graph DB intro",
+  "hld_points": [
+   "Model relationships as nodes and edges",
+   "Graph DBs for multi-hop queries (friends of friends)",
+   "When a relational DB is still fine"
+  ],
+  "lld_topic": "Elevator system part 1: entities",
+  "cloud": "AWS: Security groups vs NACLs"
+ },
+ {
+  "day": 39,
+  "type": "Office day",
+  "theme": "Coordination",
+  "hld_topic": "Heartbeats and leader election (basic)",
+  "hld_points": [
+   "Heartbeats detect dead nodes",
+   "Leader election: one node coordinates (Raft idea at a high level)",
+   "Avoid split brain with quorums"
+  ],
+  "lld_topic": "Elevator part 2: State pattern",
+  "cloud": "AWS: Secrets Manager and Parameter Store"
+ },
+ {
+  "day": 40,
+  "type": "Light Friday",
+  "theme": "Probabilistic tricks",
+  "hld_topic": "Bloom filters",
+  "hld_points": [
+   "Bloom filter: 'definitely not' or 'maybe yes' with tiny memory",
+   "False-positive rate vs bits and hash functions",
+   "Uses: cache filters, username checks"
+  ],
+  "lld_topic": "Vending machine with State pattern",
+  "cloud": "AWS: CloudFormation / infrastructure as code intro"
+ },
+ {
+  "day": 41,
+  "type": "Build Saturday",
+  "theme": "Build: parking system",
+  "hld_topic": "HLD of a parking system (pairs with your LLD)",
+  "hld_points": [
+   "Entry/exit gates, spot allocation, payment",
+   "Real-time availability per floor",
+   "Pairs with your Parking Lot LLD"
+  ],
+  "lld_topic": "Vending machine: full implementation",
+  "cloud": "AWS: GitHub Actions → deploy to ECS"
+ },
+ {
+  "day": 42,
+  "type": "Review Sunday",
+  "theme": "Review week 6",
+  "hld_topic": "Revise scheduling, hashing, coordination",
+  "hld_points": [
+   "Revise scheduling, hashing and coordination",
+   "Explain consistent hashing out loud",
+   "List weak spots"
+  ],
+  "lld_topic": "Recap: Parking Lot, Elevator, State",
+  "cloud": "AWS: Clean up, check billing"
+ },
+ {
+  "day": 43,
+  "type": "Office day",
+  "theme": "Search",
+  "hld_topic": "Typeahead / autocomplete",
+  "hld_points": [
+   "Typeahead: prefix → top suggestions",
+   "Trie with top-K cached per node, or search index",
+   "Update ranking offline, serve from memory"
+  ],
+  "lld_topic": "Trie design",
+  "cloud": "AWS: OpenSearch overview"
+ },
+ {
+  "day": 44,
+  "type": "Office day",
+  "theme": "Pagination",
+  "hld_topic": "Offset vs cursor pagination",
+  "hld_points": [
+   "Offset pagination is simple but slow and unstable on big tables",
+   "Cursor pagination uses the last seen key",
+   "Return next-cursor tokens"
+  ],
+  "lld_topic": "BookMyShow part 1: entities",
+  "cloud": "AWS: DynamoDB queries and pagination"
+ },
+ {
+  "day": 45,
+  "type": "Office day",
+  "theme": "Concurrency",
+  "hld_topic": "Optimistic vs pessimistic locking, distributed locks",
+  "hld_points": [
+   "Optimistic locking: version check on write",
+   "Pessimistic locking: lock first, then write",
+   "Distributed locks with Redis and expiry"
+  ],
+  "lld_topic": "BookMyShow part 2: seat locking",
+  "cloud": "AWS: DynamoDB conditional writes"
+ },
+ {
+  "day": 46,
+  "type": "Office day",
+  "theme": "Real-time",
+  "hld_topic": "Polling, long polling, WebSockets",
+  "hld_points": [
+   "Polling vs long polling vs WebSockets vs SSE",
+   "Connection servers + a pub/sub backbone",
+   "Presence and reconnect handling"
+  ],
+  "lld_topic": "Chat LLD: user, room, message",
+  "cloud": "AWS: API Gateway WebSockets"
+ },
+ {
+  "day": 47,
+  "type": "Light Friday",
+  "theme": "Estimation",
+  "hld_topic": "Back-of-envelope estimation",
+  "hld_points": [
+   "Users → requests/sec → storage/day → bandwidth",
+   "Round numbers: 1 day ≈ 100k seconds",
+   "Estimate peak = 2-3x average"
+  ],
+  "lld_topic": "Splitwise part 1: entities",
+  "cloud": "AWS: AWS pricing and cost optimization"
+ },
+ {
+  "day": 48,
+  "type": "Build Saturday",
+  "theme": "Build: chat app",
+  "hld_topic": "Design a basic chat app",
+  "hld_points": [
+   "1:1 and group chat over WebSockets",
+   "Message store, delivery and read receipts",
+   "Fan-out on write for groups"
+  ],
+  "lld_topic": "Splitwise: full implementation",
+  "cloud": "AWS: Deploy a WebSocket/SignalR demo"
+ },
+ {
+  "day": 49,
+  "type": "Review Sunday",
+  "theme": "Review week 7",
+  "hld_topic": "Revise search, concurrency, real-time",
+  "hld_points": [
+   "Revise search, concurrency and real-time",
+   "Explain locking choices out loud",
+   "List weak spots"
+  ],
+  "lld_topic": "Recap: Trie, BookMyShow, Chat, Splitwise",
+  "cloud": "AWS: Clean up, check billing"
+ },
+ {
+  "day": 50,
+  "type": "Office day",
+  "theme": "Phase 2 checkpoint",
+  "hld_topic": "Notification system v2: retries, preferences, rate limits",
+  "hld_points": [
+   "Notification v2: retries, preferences, rate limits, templates",
+   "Priorities and quiet hours",
+   "Checkpoint: whiteboard it in 25 minutes"
+  ],
+  "lld_topic": "Logger framework LLD",
+  "cloud": "AWS: AWS Cloud Practitioner full mock"
+ },
+ {
+  "day": 51,
+  "type": "Office day",
+  "theme": "Azure basics",
+  "hld_topic": "Estimation practice on a real system",
+  "hld_points": [
+   "Estimate a real system you use (e.g. WhatsApp) end to end",
+   "QPS, storage, bandwidth, servers",
+   "Say assumptions out loud"
+  ],
+  "lld_topic": "Snake and Ladder LLD",
+  "cloud": "Azure: Azure subscriptions, resource groups, regions (vs AWS)"
+ },
+ {
+  "day": 52,
+  "type": "Office day",
+  "theme": "Identity",
+  "hld_topic": "Design Pastebin",
+  "hld_points": [
+   "Pastebin: write once, read many",
+   "Object storage for content, DB for metadata",
+   "Expiry, access control, caching"
+  ],
+  "lld_topic": "Tic-Tac-Toe LLD",
+  "cloud": "Azure: Entra ID and RBAC (vs IAM)"
+ },
+ {
+  "day": 53,
+  "type": "Office day",
+  "theme": "Compute",
+  "hld_topic": "Design a basic key-value store",
+  "hld_points": [
+   "Key-value store API: get, put, delete with TTL",
+   "Partitioning + replication + consistency level",
+   "Hinted handoff and read repair (idea level)"
+  ],
+  "lld_topic": "In-memory KV store with TTL",
+  "cloud": "Azure: Azure VMs, Scale Sets, Load Balancer (vs EC2/ASG/ELB)"
+ },
+ {
+  "day": 54,
+  "type": "Light Friday",
+  "theme": "Storage",
+  "hld_topic": "Revise caching + CDN",
+  "hld_points": [
+   "Revise caching strategies and CDNs",
+   "Re-draw cache-aside with invalidation",
+   "Map CloudFront → Front Door"
+  ],
+  "lld_topic": "Revise LRU",
+  "cloud": "Azure: Blob Storage + Front Door (vs S3/CloudFront)"
+ },
+ {
+  "day": 55,
+  "type": "Build Saturday",
+  "theme": "Build: .NET on Azure",
+  "hld_topic": "Design a basic web crawler",
+  "hld_points": [
+   "Web crawler: URL frontier, fetchers, parser, dedupe",
+   "Politeness per domain, robots.txt",
+   "Store content and follow links breadth-first"
+  ],
+  "lld_topic": "Cache with pluggable eviction (LRU/LFU strategy)",
+  "cloud": "Azure: Deploy your .NET API to App Service + Azure PostgreSQL"
+ },
+ {
+  "day": 56,
+  "type": "Review Sunday",
+  "theme": "Review week 8",
+  "hld_topic": "Revise Phase 3 so far",
+  "hld_points": [
+   "Revise Phase 3 so far",
+   "Re-draw KV store and crawler",
+   "List weak spots"
+  ],
+  "lld_topic": "Recap: KV store, eviction strategies",
+  "cloud": "Azure: Clean up Azure resources"
+ },
+ {
+  "day": 57,
+  "type": "Office day",
+  "theme": "Distributed rate limiting",
+  "hld_topic": "Rate limiter v2 with Redis",
+  "hld_points": [
+   "Distributed rate limiting with Redis INCR / sliding window",
+   "Atomicity with Lua scripts",
+   "Fail open vs fail closed"
+  ],
+  "lld_topic": "Add sliding window to your rate limiter",
+  "cloud": "Azure: Azure Cache for Redis"
+ },
+ {
+  "day": 58,
+  "type": "Office day",
+  "theme": "Scheduling on Azure",
+  "hld_topic": "Design a job scheduler",
+  "hld_points": [
+   "Job scheduler: API, store, dispatcher, workers",
+   "Exactly-once-ish with leases and idempotent jobs",
+   "Retries, backoff, dead letters"
+  ],
+  "lld_topic": "Task scheduler LLD: priority queue + Command",
+  "cloud": "Azure: Azure Functions + timer triggers (vs Lambda/EventBridge)"
+ },
+ {
+  "day": 59,
+  "type": "Office day",
+  "theme": "Event-driven",
+  "hld_topic": "Design an event-driven order system",
+  "hld_points": [
+   "Order service emits events; payment, inventory and shipping react",
+   "Saga pattern for multi-step transactions",
+   "Outbox pattern to publish reliably"
+  ],
+  "lld_topic": "Order management with State pattern",
+  "cloud": "Azure: Service Bus queues and topics (vs SQS/SNS)"
+ },
+ {
+  "day": 60,
+  "type": "Office day",
+  "theme": "File storage",
+  "hld_topic": "Design Dropbox (basic)",
+  "hld_points": [
+   "Dropbox: chunked upload, dedupe, sync",
+   "Metadata DB vs block storage",
+   "Conflict resolution across devices"
+  ],
+  "lld_topic": "File system LLD with Composite pattern",
+  "cloud": "Azure: Storage accounts and SAS tokens"
+ },
+ {
+  "day": 61,
+  "type": "Light Friday",
+  "theme": "Monitoring",
+  "hld_topic": "Revise estimation",
+  "hld_points": [
+   "Revise estimation",
+   "Two quick estimates from memory",
+   "Check your numbers against known systems"
+  ],
+  "lld_topic": "Composite pattern recap",
+  "cloud": "Azure: Azure Monitor + App Insights (vs CloudWatch)"
+ },
+ {
+  "day": 62,
+  "type": "Build Saturday",
+  "theme": "Build: your project story",
+  "hld_topic": "Explain your traffic platform: data flow, queues, scale",
+  "hld_points": [
+   "Tell your traffic platform story: data flow, queues, scale",
+   "What you would change at 10x",
+   "Practise the 5-minute version"
+  ],
+  "lld_topic": "Timed mock: Parking Lot in 45 min",
+  "cloud": "Azure: Container Apps / AKS + ACR (vs ECS/ECR)"
+ },
+ {
+  "day": 63,
+  "type": "Review Sunday",
+  "theme": "Review week 9",
+  "hld_topic": "Revise all HLD case studies",
+  "hld_points": [
+   "Revise all HLD case studies",
+   "One template: requirements → estimate → API → data → design → scale",
+   "List weak spots"
+  ],
+  "lld_topic": "Recap: Composite, Command, State",
+  "cloud": "Azure: Clean up Azure resources"
+ },
+ {
+  "day": 64,
+  "type": "Office day",
+  "theme": "Leaderboards",
+  "hld_topic": "Design a leaderboard",
+  "hld_points": [
+   "Leaderboard: Redis sorted sets",
+   "Top-N and rank of a user",
+   "Sharded leaderboards for huge scale"
+  ],
+  "lld_topic": "Leaderboard LLD with sorted structures",
+  "cloud": "Azure: Cosmos DB and partition keys (vs DynamoDB)"
+ },
+ {
+  "day": 65,
+  "type": "Office day",
+  "theme": "Social feed",
+  "hld_topic": "Design Instagram (upload + feed, basic)",
+  "hld_points": [
+   "Instagram: upload pipeline + feed",
+   "Fan-out on write vs on read, celebrity problem",
+   "Media on CDN, metadata in DB"
+  ],
+  "lld_topic": "Posts, followers, feed classes",
+  "cloud": "Azure: Event Grid (vs EventBridge)"
+ },
+ {
+  "day": 66,
+  "type": "Office day",
+  "theme": "Messaging",
+  "hld_topic": "Design WhatsApp: 1:1 messages, delivery ticks",
+  "hld_points": [
+   "WhatsApp: persistent connections, message queue per user",
+   "Sent / delivered / read ticks",
+   "Offline delivery and end-to-end encryption (idea level)"
+  ],
+  "lld_topic": "Message delivery states with State pattern",
+  "cloud": "Azure: Azure SignalR Service"
+ },
+ {
+  "day": 67,
+  "type": "Office day",
+  "theme": "Video",
+  "hld_topic": "Design YouTube (upload, transcode, stream; basic)",
+  "hld_points": [
+   "YouTube: upload, transcode to many resolutions, stream via CDN",
+   "Adaptive bitrate streaming",
+   "Metadata, views counting, recommendations (idea level)"
+  ],
+  "lld_topic": "Transcoding pipeline with Chain of Responsibility",
+  "cloud": "Azure: Blob + Functions processing pipeline"
+ },
+ {
+  "day": 68,
+  "type": "Light Friday",
+  "theme": "Cheat sheets",
+  "hld_topic": "One-page template for any HLD answer",
+  "hld_points": [
+   "One-page HLD answer template",
+   "Checklist: requirements, numbers, API, schema, diagram, bottlenecks",
+   "Practise it on one random system"
+  ],
+  "lld_topic": "One-page pattern cheat sheet",
+  "cloud": "Azure: AZ-900 practice test"
+ },
+ {
+  "day": 69,
+  "type": "Build Saturday",
+  "theme": "Build: mocks",
+  "hld_topic": "Timed mock: design Uber (basic), out loud",
+  "hld_points": [
+   "Timed mock: Uber basic, out loud, 45 min",
+   "Location updates, matching, trip state",
+   "Record and review one weak moment"
+  ],
+  "lld_topic": "Timed mock: Elevator in 45 min",
+  "cloud": "Azure: GitHub Actions → App Service"
+ },
+ {
+  "day": 70,
+  "type": "Review Sunday",
+  "theme": "Review week 10",
+  "hld_topic": "Revise weak areas from mocks",
+  "hld_points": [
+   "Revise weak areas from the mocks",
+   "Redo one mock question in 20 minutes",
+   "List final gaps"
+  ],
+  "lld_topic": "Revise weak areas from mocks",
+  "cloud": "Azure: Clean up Azure resources"
+ },
+ {
+  "day": 71,
+  "type": "Office day",
+  "theme": "Payments",
+  "hld_topic": "Design a payment system: idempotency, retries",
+  "hld_points": [
+   "Payments: idempotency keys, retries, reconciliation",
+   "State machine: created → authorised → captured → refunded",
+   "Never lose or double-charge money"
+  ],
+  "lld_topic": "Payment module: Strategy for payment methods",
+  "cloud": "Azure: Key Vault (vs Secrets Manager)"
+ },
+ {
+  "day": 72,
+  "type": "Office day",
+  "theme": "Booking",
+  "hld_topic": "Design a ticket booking system",
+  "hld_points": [
+   "Ticket booking: seat map, temporary holds, payment",
+   "Locking seats with expiry",
+   "Handling a flash sale"
+  ],
+  "lld_topic": "Timed mock: BookMyShow",
+  "cloud": "Azure: Azure PostgreSQL Flexible Server (vs RDS)"
+ },
+ {
+  "day": 73,
+  "type": "Office day",
+  "theme": "Mock day",
+  "hld_topic": "Timed mock: URL shortener",
+  "hld_points": [
+   "Timed mock: URL shortener, 35 min",
+   "Hit every section of your template",
+   "Score yourself 1-5 per section"
+  ],
+  "lld_topic": "Timed mock: Splitwise",
+  "cloud": "Azure: VNet and NSG (vs VPC and security groups)"
+ },
+ {
+  "day": 74,
+  "type": "Office day",
+  "theme": "Tell your story",
+  "hld_topic": "Explain your project in 5 min; record yourself",
+  "hld_points": [
+   "Tell your project story in 5 minutes; record it",
+   "Problem → design → your part → impact numbers",
+   "Prepare 3 follow-up answers"
+  ],
+  "lld_topic": "Explain design choices in your own codebase",
+  "cloud": "Azure: Build an AWS ↔ Azure mapping table"
+ },
+ {
+  "day": 75,
+  "type": "Light Friday",
+  "theme": "Day 75: finish line",
+  "hld_topic": "Final mock: notification system",
+  "hld_points": [
+   "Final mock: notification system",
+   "Final LLD mock: Parking Lot",
+   "Write what you will keep doing after Day 75"
+  ],
+  "lld_topic": "Final mock: Parking Lot",
+  "cloud": "Azure: Write resume bullets for your cloud projects"
+ }
+]

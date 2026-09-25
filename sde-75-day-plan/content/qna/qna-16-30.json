@@ -1,0 +1,992 @@
+{
+ "16": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is the cache-aside (lazy loading) pattern?",
+    "a": "The application checks the cache first; on a miss it reads from the database, writes the result into the cache and returns it. On writes it updates the database and deletes (or updates) the cache key. It is the most common pattern because the cache only holds data that is actually requested and a cache outage just degrades to DB reads. The downside is a slower first request and a window where stale data can be served."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between write-through and write-back (write-behind) caching?",
+    "a": "In write-through, every write goes to the cache and the database synchronously, so the cache is always fresh but write latency is higher. In write-back, the write goes only to the cache and is flushed to the database later in batches, giving very fast writes. Write-back can lose data if the cache node crashes before flushing, so it suits counters or metrics, not payments."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do TTL and eviction policies like LRU and LFU differ, and when would you choose each?",
+    "a": "TTL expires a key after a fixed time regardless of memory pressure; it bounds staleness. Eviction decides what to remove when memory is full.\n- LRU evicts the least recently used key; good default for recency-driven access like sessions.\n- LFU evicts the least frequently used key; better when a stable set of hot items exists (product catalog) and one-off scans should not flush them.\nIn Redis you set maxmemory-policy such as allkeys-lru or volatile-lfu, and usually combine it with TTLs."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which caching strategy can lose data or serve stale data, and in what failure scenario?",
+    "a": "- Cache-aside: stale reads if the DB update succeeds but the cache delete fails, or a race writes an old value back after the delete.\n- Write-through: little data loss, but if the DB write fails after the cache write you get a cache holding an uncommitted value unless you order and roll back carefully.\n- Write-back: real data loss if the cache node dies before dirty entries are flushed.\n- Write-around (write to DB only): no loss, but the next read is a miss."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is a cache stampede (thundering herd) and how do you prevent it?",
+    "a": "When a hot key expires, thousands of concurrent requests miss at once and all hit the database, which can take it down. Fixes:\n- Mutex / single-flight: only one request recomputes (e.g. Redis SET NX lock) while others wait or serve stale.\n- TTL jitter: add random seconds to TTLs so keys do not expire together.\n- Probabilistic early refresh: refresh a key shortly before expiry in the background.\n- Serve stale while revalidating, and pre-warm hot keys after deploys."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you keep a Redis cache and SQL database consistent under concurrent updates in a cache-aside setup?",
+    "a": "Update the DB first, then delete the key (not update it), because concurrent updates setting values can land out of order. To close the race where a slow reader writes an old value after the delete, use a short TTL as a safety net, a delayed double delete, or versioned values (only write if version is newer). For stronger guarantees, drive invalidation from the DB change stream (CDC/outbox) so a missed delete is retried. Accept that cache-aside gives eventual consistency and keep TTLs short for sensitive data."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Decorator pattern?",
+    "a": "Decorator wraps an object that implements an interface with another object implementing the same interface, adding behaviour before or after delegating to the inner one. It lets you add responsibilities such as caching, logging or retries without modifying the original class or using inheritance. Decorators can be stacked, and callers are unaware they are talking to a wrapper. It is a direct application of the Open/Closed Principle."
+   },
+   {
+    "level": "Basic",
+    "q": "How is Decorator different from inheritance for adding behaviour?",
+    "a": "Inheritance adds behaviour at compile time and leads to a class explosion when you need combinations (CachedLoggedRepo, LoggedRetryRepo, ...). Decorator composes behaviour at runtime, so N decorators give any combination by stacking. It also works on sealed classes and third-party types since it only needs the interface. The cost is more small objects and slightly harder debugging of the call chain."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a caching decorator for an IProductRepository in C#.",
+    "a": "Wrap the real repository and check an IMemoryCache first:\n```csharp\npublic class CachedProductRepository : IProductRepository {\n    private readonly IProductRepository _inner; private readonly IMemoryCache _cache;\n    public CachedProductRepository(IProductRepository inner, IMemoryCache cache)\n        { _inner = inner; _cache = cache; }\n    public async Task<Product?> GetAsync(int id) =>\n        await _cache.GetOrCreateAsync($\"product:{id}\", e => {\n            e.AbsoluteExpirationRelativeToNow = TimeSpan.FromMinutes(5);\n            return _inner.GetAsync(id); });\n    public async Task UpdateAsync(Product p) {\n        await _inner.UpdateAsync(p); _cache.Remove($\"product:{p.Id}\"); }\n}\n```\nWrites go to the inner repository first and then invalidate the key."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you register a decorator with ASP.NET Core dependency injection?",
+    "a": "The built-in container has no native decorate method, so you register the concrete inner type and then register the interface with a factory that wraps it: services.AddScoped<SqlProductRepository>(); services.AddScoped<IProductRepository>(sp => new CachedProductRepository(sp.GetRequiredService<SqlProductRepository>(), sp.GetRequiredService<IMemoryCache>())). Alternatively use Scrutor's services.Decorate<IProductRepository, CachedProductRepository>(). Make sure lifetimes are compatible, for example a singleton decorator must not capture a scoped DbContext."
+   },
+   {
+    "level": "Advanced",
+    "q": "When stacking decorators (caching, logging, retry), does order matter? Give an example.",
+    "a": "Yes, each decorator wraps the next so order changes behaviour. If Logging wraps Caching, you log every call including cache hits; if Caching wraps Logging, only misses reach the logger. Retry should sit inside Caching (closest to the real call) so you retry the DB call, not a cache lookup, and a circuit breaker usually goes between retry and the real call. Document the composition in one place, typically the DI registration."
+   },
+   {
+    "level": "Advanced",
+    "q": "Decorator vs Proxy vs Adapter: how do you tell them apart in an interview?",
+    "a": "- Decorator: same interface, adds behaviour, usually stackable and composed by the client.\n- Proxy: same interface, controls access to the real object (lazy loading, remote call, authorization, caching) and often manages its lifecycle.\n- Adapter: different interface, converts one interface into another the client expects.\nStructurally Decorator and Proxy look identical; the difference is intent: enrich behaviour versus control access."
+   }
+  ]
+ },
+ "17": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is a CDN and why use one?",
+    "a": "A Content Delivery Network is a set of geographically distributed edge servers (PoPs) that cache content close to users. It reduces latency, offloads traffic from the origin, absorbs traffic spikes and provides DDoS protection and TLS termination at the edge. Typical content is images, JS/CSS, videos and downloadable files; examples are CloudFront, Akamai and Cloudflare."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between a push CDN and a pull CDN?",
+    "a": "In a pull CDN the edge fetches content from the origin on the first request (cache miss) and caches it for the TTL; it is easy to operate and suits sites with lots of content and unpredictable access. In a push CDN you upload content to the CDN proactively whenever it changes; it suits large, rarely changing files like video or software releases and gives you control over what lives at the edge. Most web apps use pull."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is a CDN cache key and why does it matter?",
+    "a": "The cache key is what the edge uses to decide if two requests are the same object, by default host plus path, optionally query string, headers and cookies. Including too much (e.g. all cookies or a tracking query param) fragments the cache and kills the hit ratio. Including too little can serve the wrong variant, e.g. the wrong language or a logged-in page to another user. Keep keys minimal and vary only on what really changes the response."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you invalidate content cached on a CDN?",
+    "a": "- Explicit invalidation/purge API (CloudFront invalidations) for a path or wildcard; it is slow to propagate and may cost money.\n- Short TTLs with Cache-Control max-age and s-maxage.\n- Best practice: versioned or fingerprinted file names (app.3f9a1c.js) with very long TTLs, so a deploy just references new URLs and nothing needs purging.\nHTML entry pages get short TTLs while hashed assets are cached for a year as immutable."
+   },
+   {
+    "level": "Advanced",
+    "q": "Can a CDN cache dynamic or API responses? What are the risks?",
+    "a": "Yes, if the response is the same for many users, such as a product listing or public config, you can cache it with short TTLs (seconds) and stale-while-revalidate. Personalized responses must not be cached, or must be keyed by user, and must send Cache-Control: private or no-store; a mistake here leaks one user's data to another. Edges can also do request collapsing so only one request per key goes to origin. Edge compute (Lambda@Edge, CloudFront Functions) can assemble semi-dynamic content."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you protect the origin behind a CDN and handle a cold cache after a deploy?",
+    "a": "Restrict the origin so only the CDN can reach it: S3 with Origin Access Control, or a secret header / IP allowlist for an ALB. Use an origin shield (a regional mid-tier cache) so many edges share one fetch. After a deploy or purge, pre-warm popular URLs and rely on request collapsing so the origin is not flooded. Set sensible error caching and serve stale on origin errors to stay up if the origin fails."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Proxy pattern?",
+    "a": "A proxy is an object with the same interface as a real subject that stands in front of it and controls access to it. The client talks to the proxy exactly as it would to the real object. Common reasons are lazy creation, access control, remote communication, caching and logging."
+   },
+   {
+    "level": "Basic",
+    "q": "Name the common types of proxies with examples.",
+    "a": "- Virtual proxy: delays creating an expensive object until needed (Lazy<T>, EF Core lazy-loading proxies).\n- Protection proxy: checks permissions before forwarding.\n- Remote proxy: represents an object in another process (gRPC or WCF client stubs, typed HttpClient).\n- Caching proxy: returns stored results for repeated calls.\n- Smart reference: counts references or logs access."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Write a protection proxy in C# that checks a user's role before deleting a document.",
+    "a": "```csharp\npublic class SecureDocumentService : IDocumentService {\n    private readonly IDocumentService _real; private readonly ICurrentUser _user;\n    public SecureDocumentService(IDocumentService real, ICurrentUser user)\n        { _real = real; _user = user; }\n    public Document Get(int id) => _real.Get(id);\n    public void Delete(int id) {\n        if (!_user.IsInRole(\"Admin\"))\n            throw new UnauthorizedAccessException();\n        _real.Delete(id);\n    }\n}\n```\nThe client depends on IDocumentService and does not know a proxy is in place."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does Lazy<T> relate to the virtual proxy idea?",
+    "a": "Lazy<T> defers creating an expensive object until .Value is first accessed and then reuses it, which is exactly what a virtual proxy does. By default it is thread-safe (LazyThreadSafetyMode.ExecutionAndPublication) so only one thread runs the factory. A full virtual proxy goes further by implementing the subject's interface so callers are unaware of laziness, as EF Core's lazy-loading proxies do for navigation properties."
+   },
+   {
+    "level": "Advanced",
+    "q": "Where do you see the Proxy pattern in .NET frameworks?",
+    "a": "- EF Core lazy-loading proxies subclass entities to load navigation properties on first access.\n- Castle DynamicProxy (used by Moq and interception libraries) generates proxies at runtime for AOP concerns like logging or transactions.\n- DispatchProxy in System.Reflection creates interface proxies at runtime.\n- gRPC generated clients and Refit typed HTTP clients are remote proxies.\n- YARP is a reverse proxy at the network level, the same idea at infrastructure scale."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you build a generic logging proxy for any interface without writing a class per interface?",
+    "a": "Use System.Reflection.DispatchProxy: derive from DispatchProxy, override Invoke(MethodInfo, object[]) to log, time and forward the call to the wrapped target via targetMethod.Invoke, then create it with DispatchProxy.Create<IService, LoggingProxy<IService>>(). Handle async methods by inspecting whether the return is a Task and attaching a continuation. Trade-offs: reflection overhead and harder debugging; source generators or Castle DynamicProxy are alternatives."
+   }
+  ]
+ },
+ "18": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is the difference between strong and eventual consistency?",
+    "a": "With strong consistency every read returns the result of the latest completed write, as if there were a single copy of the data. With eventual consistency replicas may return stale values for a while but converge to the same value if no new writes arrive. Strong consistency costs latency and availability because nodes must coordinate; eventual consistency gives low latency and high availability."
+   },
+   {
+    "level": "Basic",
+    "q": "Give examples of where you would use strong versus eventual consistency.",
+    "a": "Strong: bank balances, inventory decrement at checkout, seat booking, unique username registration, anything where acting on stale data causes real harm. Eventual: like counts, view counters, news feeds, product reviews, search indexes and analytics dashboards. Many systems mix both, e.g. strongly consistent orders but an eventually consistent order-history read model."
+   },
+   {
+    "level": "Intermediate",
+    "q": "When the underlying data is updated, should you delete the cache key or update it? Why?",
+    "a": "Deleting is usually preferred. If two writers update the cache concurrently, their set operations can arrive out of order and leave the older value in the cache indefinitely; a delete is idempotent and the next read repopulates from the source of truth. Updating also wastes work computing values that may never be read. Update-in-place makes sense only when the value is cheap and writes are serialized, such as a single writer or versioned writes."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is read-your-own-writes consistency and how do you provide it?",
+    "a": "It guarantees a user always sees their own updates, even if other users see them later. Techniques:\n- Route that user's reads to the primary for a short time after a write.\n- Track the write's log position or timestamp and only read from replicas that have caught up.\n- Update or invalidate the user's cache entry synchronously on write.\n- Return the new state in the write response so the client shows it directly."
+   },
+   {
+    "level": "Advanced",
+    "q": "What consistency models sit between strong and eventual?",
+    "a": "- Linearizable: strongest, real-time ordering of all operations.\n- Sequential: all nodes see the same order, not necessarily real-time.\n- Causal: operations that are causally related are seen in order by everyone (a reply after its post).\n- Session guarantees: read-your-writes, monotonic reads (never go back in time), monotonic writes.\nDatabases like Cosmos DB expose these as tunable levels (strong, bounded staleness, session, consistent prefix, eventual)."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do quorum reads and writes provide consistency in a replicated store?",
+    "a": "With N replicas, a write waits for W acknowledgements and a read queries R replicas. If R + W > N, the read and write sets overlap, so at least one replica in every read has the latest write and the client picks the newest version. Typical is N=3, W=2, R=2. Lowering W or R improves latency and availability but allows stale reads; Cassandra and DynamoDB expose this as tunable consistency levels."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Observer pattern?",
+    "a": "Observer defines a one-to-many dependency: a subject keeps a list of observers and notifies all of them when its state changes. Observers subscribe and unsubscribe at runtime, and the subject knows them only through an interface, so they are loosely coupled. Typical uses are UI events, cache invalidation on update and domain events."
+   },
+   {
+    "level": "Basic",
+    "q": "How does C# support the Observer pattern natively?",
+    "a": "C# events and delegates are the language-level implementation: the publisher declares public event EventHandler<T> Changed; subscribers attach with += and detach with -=, and the publisher raises it with Changed?.Invoke(this, args). .NET also has IObservable<T>/IObserver<T> for push-based streams, which Reactive Extensions (Rx.NET) builds on. For in-process domain events, libraries like MediatR notifications are commonly used."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a product repository that notifies observers so caches can invalidate on update.",
+    "a": "```csharp\npublic interface IProductObserver { void OnProductChanged(int id); }\npublic class ProductRepository {\n    private readonly List<IProductObserver> _observers = new();\n    public void Subscribe(IProductObserver o) => _observers.Add(o);\n    public void Unsubscribe(IProductObserver o) => _observers.Remove(o);\n    public void Update(Product p) {\n        SaveToDb(p);\n        foreach (var o in _observers) o.OnProductChanged(p.Id);\n    }\n}\npublic class CacheInvalidator(IMemoryCache c) : IProductObserver {\n    public void OnProductChanged(int id) => c.Remove($\"product:{id}\"); }\n```\nNew reactions (search reindex, audit) are added as observers without touching the repository."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What memory leak can the Observer pattern cause in .NET and how do you avoid it?",
+    "a": "The subject holds strong references to subscribers through its delegate list, so a short-lived subscriber attached to a long-lived publisher (static or singleton) is never garbage collected. Fixes: always unsubscribe with -= (implement IDisposable and detach in Dispose), return an IDisposable subscription token as IObservable does, or use weak event patterns such as WeakEventManager. This is a classic cause of growing memory in long-running services."
+   },
+   {
+    "level": "Advanced",
+    "q": "What problems arise when one observer throws or is slow, and how do you design around them?",
+    "a": "With synchronous notification, an exception in one observer stops the others from being notified and may fail the original operation, and a slow observer blocks the publisher. Mitigations: wrap each observer call in try/catch and log, notify asynchronously via a queue or Channel, make observers idempotent, and decide whether notifications are best-effort or must be guaranteed. For guaranteed cross-service notifications, use an outbox plus a message broker instead of in-memory observers."
+   },
+   {
+    "level": "Advanced",
+    "q": "Observer vs Pub/Sub: what is the difference?",
+    "a": "In Observer the subject knows its observers (through an interface) and calls them directly, usually synchronously and in-process. In Pub/Sub publishers and subscribers do not know each other; a broker or event bus sits in the middle, routes by topic and can deliver asynchronously and across processes. Pub/Sub adds decoupling, buffering and scalability at the cost of infrastructure and eventual delivery. Observer is fine inside one component; Pub/Sub for cross-service events."
+   }
+  ]
+ },
+ "19": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Why do we need rate limiting?",
+    "a": "Rate limiting caps how many requests a client can make in a time window. It protects services from overload and abuse (brute-force logins, scrapers, DDoS), ensures fair usage between tenants, controls cost of expensive downstream calls and enforces paid API tiers. Rejected requests typically get HTTP 429 Too Many Requests."
+   },
+   {
+    "level": "Basic",
+    "q": "How does the token bucket algorithm work?",
+    "a": "A bucket holds up to a capacity of tokens and is refilled at a fixed rate (e.g. 10 tokens per second). Each request consumes a token; if the bucket is empty the request is rejected or delayed. Because tokens accumulate up to capacity, it allows short bursts while enforcing the average rate. It needs only two values per client: token count and last refill time."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare token bucket and leaky bucket.",
+    "a": "Token bucket allows bursts up to bucket capacity and limits the average rate; it is the common choice for APIs (AWS API Gateway, Stripe). Leaky bucket queues requests and processes them at a constant rate, smoothing output; bursts are queued or dropped if the queue is full. Use leaky bucket when a downstream needs a steady rate, such as a payment provider or SMS gateway; use token bucket when short bursts are acceptable."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare fixed window, sliding window log and sliding window counter.",
+    "a": "- Fixed window: count per clock window (per minute); simple but allows up to 2x the limit at window boundaries.\n- Sliding window log: store the timestamp of every request and count those in the last N seconds; exact but memory-heavy.\n- Sliding window counter: combine current and previous window counts weighted by overlap, e.g. current + previous * (1 - elapsed fraction); close to exact with O(1) memory. This hybrid is the usual production choice."
+   },
+   {
+    "level": "Advanced",
+    "q": "Where should rate limiting be enforced, and what key should you limit on?",
+    "a": "Enforce coarse limits at the edge (CDN/WAF, API gateway) to reject abuse cheaply, and fine-grained business limits in the service (e.g. 5 OTPs per phone per hour). Keys can be user ID or API key for authenticated traffic, IP for anonymous traffic (careful with NAT and shared corporate IPs), and endpoint for expensive routes. Often multiple limits combine: global, per tenant, per user and per endpoint."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you rate limit when your service runs on many instances?",
+    "a": "Local in-memory limits per instance multiply the effective limit by the instance count and break with uneven load balancing. Use a shared store such as Redis with atomic operations (INCR with EXPIRE, or a Lua script for token bucket) so all instances see the same counter. To reduce latency, you can keep local token buckets that periodically sync or take batches of tokens from Redis, accepting slight inaccuracy. Decide fail-open vs fail-closed if Redis is unavailable."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What interface would you define for a RateLimiter class?",
+    "a": "Keep it minimal and algorithm-agnostic, for example: public interface IRateLimiter { bool TryAcquire(string clientKey); } or an async version returning a result with Allowed and RetryAfter. Concrete classes (TokenBucketLimiter, SlidingWindowLimiter) implement it, and the algorithm is chosen via Strategy/DI. Depend on an IClock abstraction instead of DateTime.UtcNow so it is testable."
+   },
+   {
+    "level": "Basic",
+    "q": "What state does each rate limiting algorithm need per client?",
+    "a": "- Token bucket: current token count and last refill timestamp.\n- Leaky bucket: a queue (or water level) and last leak time.\n- Fixed window: counter and window start.\n- Sliding window log: a queue of request timestamps.\n- Sliding window counter: current and previous window counts plus window start.\nStore it in a ConcurrentDictionary<string, TState> keyed by client."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a fixed-window rate limiter class in C#.",
+    "a": "```csharp\npublic class FixedWindowLimiter(int limit, TimeSpan window, IClock clock) : IRateLimiter {\n    private class Window { public DateTime Start; public int Count; }\n    private readonly ConcurrentDictionary<string, Window> _windows = new();\n    public bool TryAcquire(string key) {\n        var w = _windows.GetOrAdd(key, _ => new Window { Start = clock.UtcNow });\n        lock (w) {\n            var now = clock.UtcNow;\n            if (now - w.Start >= window) { w.Start = now; w.Count = 0; }\n            if (w.Count >= limit) return false;\n            w.Count++; return true;\n        } }\n}\n```\nThe lock is per client, so different clients never block each other."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you make a rate limiter thread-safe in C#?",
+    "a": "Use a ConcurrentDictionary for the per-client map so lookups and inserts are safe. For the per-client state, either lock on a per-client state object (simple and correct), or use immutable state with AddOrUpdate / compare-and-swap via Interlocked.CompareExchange. Avoid a single global lock, which serializes all clients. Also clean up idle keys periodically to avoid unbounded memory growth."
+   },
+   {
+    "level": "Advanced",
+    "q": "What does .NET provide out of the box for rate limiting?",
+    "a": "Since .NET 7, System.Threading.RateLimiting provides FixedWindowRateLimiter, SlidingWindowRateLimiter, TokenBucketRateLimiter and ConcurrencyLimiter, plus PartitionedRateLimiter to limit per key. ASP.NET Core adds middleware: builder.Services.AddRateLimiter(o => o.AddTokenBucketLimiter(\"api\", ...)) and app.UseRateLimiter(), with [EnableRateLimiting(\"api\")] on endpoints and a configurable RejectionStatusCode (429). These are in-process only; for distributed limits you still need Redis."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you design the RateLimiter classes so rules are configurable per endpoint and per tier?",
+    "a": "Separate concerns: a RateLimitRule (limit, window, algorithm) loaded from config; a key resolver strategy (by user, API key, IP); a limiter factory that creates the right IRateLimiter for a rule; and a storage abstraction (in-memory or Redis) so algorithms work locally or distributed. A RateLimitMiddleware resolves the rule for the route and tier, builds the key, calls TryAcquire and returns 429 with Retry-After. This follows Strategy for algorithms and Open/Closed for adding new ones."
+   }
+  ]
+ },
+ "20": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the functional and non-functional requirements of a distributed rate limiter?",
+    "a": "Functional: limit requests per user, API key or IP according to configurable rules, return 429 when exceeded and tell the client when to retry. Non-functional: very low added latency (a few ms), high availability (the limiter must not take the API down), accuracy across many servers, scale to millions of keys, and observability of rejections."
+   },
+   {
+    "level": "Basic",
+    "q": "What should an API return when a client is rate limited?",
+    "a": "HTTP 429 Too Many Requests with a Retry-After header (seconds or an HTTP date) telling the client when to try again. Also useful are informational headers such as X-RateLimit-Limit, X-RateLimit-Remaining and X-RateLimit-Reset (or the standard RateLimit headers draft) on every response. Clients should back off with exponential backoff and jitter instead of hammering the endpoint."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you implement a rate limiter with Redis counters?",
+    "a": "For a fixed window, build a key like rl:{userId}:{minute}, run INCR and, if the result is 1, set EXPIRE to the window length; reject if the count exceeds the limit. For a sliding window log, use a sorted set: ZADD the timestamp, ZREMRANGEBYSCORE to drop old entries, ZCARD to count. Keys expire on their own so memory stays bounded. Redis is fast (sub-millisecond) and shared by all API instances."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why use a Lua script in Redis for rate limiting?",
+    "a": "Operations like read tokens, compute refill, decrement and write back are several commands; run separately from many servers they race and allow more requests than the limit (check-then-act problem). A Lua script executes atomically on the Redis server, so the whole read-modify-write happens as one step, with a single network round trip. MULTI/EXEC cannot branch on intermediate results, which is why Lua is preferred for token bucket."
+   },
+   {
+    "level": "Advanced",
+    "q": "Draw the end-to-end architecture of a rate limiter for a large API.",
+    "a": "- Client -> CDN/WAF (coarse IP limits) -> API gateway or middleware that calls the rate limiter.\n- Rules service/config stored in a DB and cached in memory on every node, refreshed periodically.\n- Redis cluster holding counters, sharded by key, with replicas; atomic Lua scripts.\n- Allowed requests go to backend services; rejected ones get 429 + Retry-After.\n- Metrics and logs of rejections to monitoring; optionally a queue to defer non-urgent requests instead of dropping them."
+   },
+   {
+    "level": "Advanced",
+    "q": "What happens if Redis is down or slow, and how do you handle multi-region rate limiting?",
+    "a": "Choose fail-open (allow requests, protect availability) for most APIs, or fail-closed for security-critical limits like login attempts, and use a short timeout plus a circuit breaker with a local in-memory fallback limiter. For multiple regions, keep counters local per region and accept that a global limit is approximated (for example split the quota per region), or asynchronously sync counts. Cross-region synchronous checks add too much latency, so exactness is traded for speed."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What does a TokenBucket class need as fields and methods?",
+    "a": "Fields: capacity, refill rate (tokens per second), current tokens (double), last refill time, a lock object and an injected clock. Methods: a private Refill() that adds elapsed * rate tokens capped at capacity and updates the timestamp, and a public TryConsume(int tokens = 1) that refills then consumes if enough tokens exist. Start the bucket full so the first burst is allowed."
+   },
+   {
+    "level": "Basic",
+    "q": "Why inject a clock (IClock or TimeProvider) into a rate limiter?",
+    "a": "Rate limiting depends on time; if the class calls DateTime.UtcNow directly, tests must sleep, which makes them slow and flaky. Injecting an abstraction lets tests advance time deterministically. .NET 8 ships TimeProvider with FakeTimeProvider in Microsoft.Extensions.TimeProvider.Testing for exactly this. It also follows the Dependency Inversion Principle."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a thread-safe token bucket in C#.",
+    "a": "```csharp\npublic class TokenBucket {\n    private readonly double _capacity, _ratePerSec; private readonly TimeProvider _time;\n    private double _tokens; private long _last; private readonly object _lock = new();\n    public TokenBucket(double capacity, double ratePerSec, TimeProvider time) {\n        _capacity = _tokens = capacity; _ratePerSec = ratePerSec; _time = time;\n        _last = time.GetTimestamp(); }\n    public bool TryConsume(int n = 1) { lock (_lock) {\n        var now = _time.GetTimestamp();\n        _tokens = Math.Min(_capacity, _tokens + _time.GetElapsedTime(_last, now).TotalSeconds * _ratePerSec);\n        _last = now;\n        if (_tokens < n) return false; _tokens -= n; return true; } }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which unit tests would you write for a token bucket?",
+    "a": "- Allows up to capacity requests immediately, then rejects the next one.\n- After advancing the fake clock by 1/rate seconds, exactly one more request is allowed.\n- Tokens never exceed capacity after a long idle period.\n- Consuming more tokens than available fails and does not change the count.\n- Constructor rejects invalid arguments (zero or negative capacity/rate).\n- A concurrency test: N parallel TryConsume calls allow exactly capacity successes."
+   },
+   {
+    "level": "Advanced",
+    "q": "Write an xUnit test that verifies refill using a fake clock.",
+    "a": "```csharp\n[Fact]\npublic void Refills_after_time_passes() {\n    var clock = new FakeTimeProvider();\n    var bucket = new TokenBucket(capacity: 2, ratePerSec: 1, clock);\n    Assert.True(bucket.TryConsume());\n    Assert.True(bucket.TryConsume());\n    Assert.False(bucket.TryConsume());\n    clock.Advance(TimeSpan.FromSeconds(1));\n    Assert.True(bucket.TryConsume());\n    Assert.False(bucket.TryConsume());\n}\n```\nNo Thread.Sleep, so the test is fast and deterministic."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you test the token bucket for thread-safety, and what could go wrong without the lock?",
+    "a": "Start with capacity N and no refill (frozen fake clock), run many parallel TryConsume calls with Parallel.For or Task.WhenAll, count successes with Interlocked.Increment and assert exactly N succeeded. Without the lock, two threads can read the same token count, both see enough tokens and both decrement, so more than N requests pass (lost update), and doubles are not updated atomically. Repeat the test many iterations because race conditions are nondeterministic."
+   }
+  ]
+ },
+ "21": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: what should and should not be cached?",
+    "a": "Cache data that is read often, changes rarely and is expensive to compute or fetch: product details, config, user profiles, rendered pages, aggregated results. Avoid caching highly volatile data, data needing strict consistency (balances), large rarely-read blobs and personalized data in shared caches without per-user keys. Always set a TTL and know the source of truth."
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: list the caching layers from client to database.",
+    "a": "Browser cache (Cache-Control, ETag) -> CDN edge -> API gateway/reverse proxy cache -> in-process app memory (IMemoryCache) -> distributed cache (Redis) -> database buffer pool. Each layer closer to the user saves more latency but is harder to invalidate. Hit ratio = hits / (hits + misses), and each layer's misses fall through to the next."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Explain cache invalidation out loud: what are your options and trade-offs?",
+    "a": "- TTL expiry: simple, bounded staleness, no coordination.\n- Delete on write (cache-aside): fresh after update, small race windows.\n- Write-through: cache updated with every write, higher write latency.\n- Event-driven invalidation via CDC or pub/sub: works across services and multiple caches, eventually consistent.\n- Versioned keys or URLs: never invalidate, just change the key (best for CDN assets).\nIn an interview, combine delete-on-write with a TTL as a safety net."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: how do CDN caching and application caching differ?",
+    "a": "A CDN caches whole HTTP responses at edge locations near users, controlled by HTTP headers (Cache-Control, s-maxage) and invalidated by purge or versioned URLs; best for static and public content. An application cache (in-memory or Redis) stores objects or query results close to the service, controlled in code, and can hold per-user or computed data. They complement each other: CDN cuts network latency, app cache cuts database load."
+   },
+   {
+    "level": "Advanced",
+    "q": "A user updates their profile but still sees old data. Walk through possible causes across the stack.",
+    "a": "- Browser cache served an old response due to long max-age.\n- CDN cached the API response or page with a user-agnostic cache key.\n- App cache key was not deleted, or a race re-populated it with the old value.\n- Read went to a lagging replica (no read-your-own-writes).\n- Another service's local cache did not receive the invalidation event.\nFix by checking each layer's headers and TTLs and adding read-your-writes for the author."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: CAP, strong vs eventual consistency, and where caching fits in.",
+    "a": "CAP says during a network partition you choose consistency or availability; caches are effectively AP replicas of the database, so any cache introduces eventual consistency unless you bypass it for critical reads. Strong consistency needs coordination (quorums, single leader); eventual consistency trades freshness for latency and availability. Pick per use case: balances and inventory read from the primary, feeds and product pages from cache."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: what data structures make an LRU cache O(1), and why both?",
+    "a": "A hash map from key to a node gives O(1) lookup, and a doubly linked list ordered by recency gives O(1) move-to-front and remove-from-tail. The map alone cannot track order; the list alone cannot find keys fast. The doubly linked list is needed so a node can unlink itself using its prev pointer. In C#: Dictionary<TKey, LinkedListNode<Entry>> plus LinkedList<Entry>."
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: one line each on Decorator, Proxy and Observer.",
+    "a": "- Decorator: wraps an object with the same interface to add behaviour, stackable (caching repository).\n- Proxy: same interface, controls access to the real object (lazy loading, security, remote).\n- Observer: a subject notifies subscribed observers when its state changes (cache invalidation on update)."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Write the Get method of an LRU cache in C#.",
+    "a": "```csharp\npublic bool TryGet(TKey key, out TValue value) {\n    if (_map.TryGetValue(key, out var node)) {\n        _list.Remove(node);        // O(1) with the node reference\n        _list.AddFirst(node);      // mark as most recently used\n        value = node.Value.Value;\n        return true;\n    }\n    value = default!;\n    return false;\n}\n```\nPut adds at the front and, when over capacity, removes _list.Last and its key from the map."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How would you make the LRU cache thread-safe, and what is the trade-off?",
+    "a": "The simplest correct approach is a single lock around Get and Put, because even Get mutates the list order, so a ReaderWriterLockSlim does not help much. This serializes access and can bottleneck under heavy load. Alternatives: shard the cache into N segments each with its own lock (hash the key to pick a segment), or use approximate LRU like MemoryCache or Redis does to avoid strict ordering on every read."
+   },
+   {
+    "level": "Advanced",
+    "q": "How can Decorator and Observer combine for a caching repository with invalidation across instances?",
+    "a": "A CachedRepository decorator serves reads from cache and deletes the key on local writes. Because other instances hold their own caches, the write also publishes an event (Redis pub/sub or a broker), and each instance runs an observer/subscriber that deletes the key locally. The decorator handles the read path, the observer handles invalidation, and the real repository stays untouched. Add TTLs in case an invalidation message is lost."
+   },
+   {
+    "level": "Advanced",
+    "q": "Decorator and Proxy look identical in code. How do you justify which one you used?",
+    "a": "State the intent. If the wrapper adds optional, composable behaviour and the client builds the stack (logging plus caching plus retry), it is a Decorator. If the wrapper controls access or lifecycle of one real subject, often creating it itself (lazy loading, permission checks, remote stubs), it is a Proxy. A caching wrapper can be described either way; say decorator when stacking it through DI, caching proxy when it hides an expensive remote object."
+   }
+  ]
+ },
+ "22": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is a message queue and why use one?",
+    "a": "A message queue is a buffer where producers put messages and consumers take them off asynchronously. It decouples the two sides in time and availability: the producer does not wait for processing and the consumer can be down temporarily. It absorbs traffic spikes, enables retries and lets you scale consumers independently. Examples: RabbitMQ, Amazon SQS, Azure Service Bus, Kafka."
+   },
+   {
+    "level": "Basic",
+    "q": "Give typical use cases for queues in a backend system.",
+    "a": "- Sending emails, SMS and push notifications after an action.\n- Order processing, payments and invoice generation outside the request path.\n- Image and video processing, report and PDF generation.\n- Smoothing bursty writes to a database or a rate-limited third-party API.\n- Integrating services so one failure does not cascade to others."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is backpressure and how do you handle it when consumers cannot keep up?",
+    "a": "Backpressure is the signal that a downstream stage is slower than upstream, visible as growing queue depth and message age. Options: scale consumers out (autoscale on queue length), use bounded queues that block or reject producers, throttle or rate-limit producers, shed low-priority work, and batch processing to increase throughput. Monitor queue depth and oldest message age and alert on them."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do consumers scale, and what is the competing consumers pattern?",
+    "a": "Multiple consumer instances read from the same queue and each message goes to exactly one of them, so throughput grows roughly linearly with consumer count until the database or downstream becomes the bottleneck. The broker balances work (SQS visibility timeout, RabbitMQ prefetch). Consumers must be stateless and idempotent, since a message can be redelivered to another instance if one crashes."
+   },
+   {
+    "level": "Advanced",
+    "q": "Explain the ordering versus throughput trade-off in message queues.",
+    "a": "Strict global ordering means one consumer processes messages one at a time, which caps throughput. The usual compromise is ordering per key: Kafka partitions by key and SQS FIFO uses message group IDs, so messages for one order or user stay ordered while different keys process in parallel. Retries also break ordering, so either block the key until success or design consumers to tolerate out-of-order messages using versions or timestamps."
+   },
+   {
+    "level": "Advanced",
+    "q": "Kafka vs RabbitMQ vs SQS: how do you choose?",
+    "a": "- RabbitMQ: traditional broker with flexible routing (exchanges), per-message ack, messages deleted after consumption; good for task queues and complex routing.\n- Kafka: distributed append-only log, very high throughput, retention and replay, ordering per partition, consumer groups; good for event streaming and analytics.\n- SQS: fully managed, near-unlimited scale, standard (at-least-once, best-effort order) or FIFO; good default on AWS with minimal operations.\nChoose by need for replay, ordering, routing and operational effort."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is System.Threading.Channels and why use it?",
+    "a": "Channels provide an in-process, thread-safe, async producer-consumer queue: Channel<T> has a Writer (ChannelWriter<T>) and a Reader (ChannelReader<T>). Producers await WriteAsync and consumers await ReadAllAsync without blocking threads. It is faster and more async-friendly than BlockingCollection and is ideal for background work queues in ASP.NET Core."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between bounded and unbounded channels?",
+    "a": "Channel.CreateUnbounded<T>() never blocks writers but can grow without limit and exhaust memory if consumers are slow. Channel.CreateBounded<T>(capacity) applies backpressure: when full, BoundedChannelFullMode decides whether WriteAsync waits (Wait) or drops the oldest, newest or incoming item. Prefer bounded channels in production so the system degrades gracefully."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Write a simple producer-consumer with Channels in C#.",
+    "a": "```csharp\nvar channel = Channel.CreateBounded<int>(new BoundedChannelOptions(100)\n    { FullMode = BoundedChannelFullMode.Wait });\nvar producer = Task.Run(async () => {\n    for (int i = 0; i < 1000; i++) await channel.Writer.WriteAsync(i);\n    channel.Writer.Complete();\n});\nvar consumer = Task.Run(async () => {\n    await foreach (var item in channel.Reader.ReadAllAsync())\n        Console.WriteLine($\"Processed {item}\");\n});\nawait Task.WhenAll(producer, consumer);\n```\nComplete() tells the reader no more items will come, so ReadAllAsync ends."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you use a Channel as a background job queue in ASP.NET Core?",
+    "a": "Register a singleton IBackgroundQueue wrapping a bounded Channel<Func<CancellationToken, Task>> (or a job DTO). Controllers enqueue work and return 202 Accepted immediately. A BackgroundService reads from the channel in ExecuteAsync with await foreach over ReadAllAsync(stoppingToken) and runs each job inside try/catch, creating a DI scope per job for scoped services like DbContext. Note that work is lost on process crash, so durable jobs need a real broker."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you run multiple consumers on one channel and shut down gracefully?",
+    "a": "Start N tasks that each await foreach over the same channel.Reader.ReadAllAsync(token); the channel guarantees each item is read by only one consumer. Set SingleReader = false (and SingleWriter as appropriate) in options. For graceful shutdown, call Writer.Complete() so consumers drain remaining items and exit, then await Task.WhenAll on the consumer tasks, respecting a timeout via the cancellation token. Handle exceptions per item so one failure does not kill a consumer loop."
+   },
+   {
+    "level": "Advanced",
+    "q": "Channels vs BlockingCollection vs ConcurrentQueue: when to use which?",
+    "a": "ConcurrentQueue is a lock-free thread-safe collection with no waiting; consumers must poll. BlockingCollection adds blocking Take and bounded capacity but blocks threads, which is wasteful in async code. Channels are async-first: waiting consumers do not hold a thread, they support bounded backpressure, completion and cancellation. In modern .NET async services, Channels are the default; BlockingCollection only suits legacy synchronous code."
+   }
+  ]
+ },
+ "23": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is the difference between a queue and pub/sub?",
+    "a": "In a queue (point-to-point) each message is processed by exactly one consumer, which is used to distribute work. In pub/sub a publisher sends an event to a topic and every subscriber receives its own copy, which is used to broadcast facts to many interested services. Queues model commands (do this); pub/sub models events (this happened)."
+   },
+   {
+    "level": "Basic",
+    "q": "What is fan-out and give an example.",
+    "a": "Fan-out is one event delivered to many independent consumers. Example: an OrderPlaced event goes to inventory (reserve stock), payment, email notification, analytics and a search indexer. The order service publishes once and does not know or wait for the others, so new consumers can be added without changing the producer."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Explain topics, subscriptions and filters.",
+    "a": "A topic is a named channel that publishers send events to. A subscription is a durable queue attached to the topic for one consumer group; each subscription gets a copy of every matching message and tracks its own progress. Filters (message attributes, SQL-like rules in Azure Service Bus, SNS filter policies) let a subscription receive only relevant events, such as only orders with country = IN, reducing wasted processing."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you implement fan-out on AWS, and why SNS + SQS instead of SNS alone?",
+    "a": "Publish to an SNS topic and subscribe one SQS queue per consuming service. SNS alone pushes to endpoints and has limited retry; if a consumer is down the message may be lost. Putting an SQS queue per subscriber gives each service durable buffering, its own retry and DLQ, independent scaling and the ability to be offline temporarily. EventBridge is an alternative with richer content-based routing."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does Kafka implement pub/sub and scaling at the same time?",
+    "a": "A topic is split into partitions. Each consumer group gets every message (pub/sub across groups), while within a group each partition is assigned to one consumer (queue semantics within the group). So fan-out comes from multiple groups and parallelism from partitions. Messages are retained for a period, so new subscribers can replay history by resetting offsets."
+   },
+   {
+    "level": "Advanced",
+    "q": "What challenges come with event-driven pub/sub architectures?",
+    "a": "- Eventual consistency between services and harder debugging; you need correlation IDs and distributed tracing.\n- Duplicate and out-of-order events; consumers must be idempotent.\n- Schema evolution: versioned events and a schema registry to avoid breaking subscribers.\n- Dual-write problem: saving to the DB and publishing must be atomic, solved with the transactional outbox.\n- Hidden coupling on event contents and hard-to-see flows across many subscribers."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is an in-memory event bus?",
+    "a": "An in-process component where publishers call Publish(event) and handlers registered for that event type are invoked, without publishers knowing the handlers. It decouples modules inside one application, for example raising a domain event when an order is placed. It is not durable and does not cross process boundaries; for that you use a message broker."
+   },
+   {
+    "level": "Basic",
+    "q": "What would the interface of an event bus look like in C#?",
+    "a": "A minimal interface: public interface IEventBus { void Subscribe<T>(Func<T, Task> handler); void Unsubscribe<T>(Func<T, Task> handler); Task PublishAsync<T>(T evt); }. Alternatively handlers implement IEventHandler<T> { Task HandleAsync(T evt); } and are resolved from DI. Events are simple immutable records like public record OrderPlaced(Guid OrderId, decimal Total);"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a simple thread-safe in-memory event bus in C#.",
+    "a": "```csharp\npublic class EventBus : IEventBus {\n    private readonly ConcurrentDictionary<Type, List<Func<object, Task>>> _handlers = new();\n    public void Subscribe<T>(Func<T, Task> handler) {\n        var list = _handlers.GetOrAdd(typeof(T), _ => new());\n        lock (list) list.Add(e => handler((T)e));\n    }\n    public async Task PublishAsync<T>(T evt) {\n        if (!_handlers.TryGetValue(typeof(T), out var list)) return;\n        Func<object, Task>[] snapshot; lock (list) snapshot = list.ToArray();\n        foreach (var h in snapshot) await h(evt!);\n    }\n}\n```\nPublishing over a snapshot avoids 'collection modified' errors if a handler subscribes during publish."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How would you use DI to resolve event handlers instead of manual subscription?",
+    "a": "Define IEventHandler<T> and register implementations: services.AddScoped<IEventHandler<OrderPlaced>, SendConfirmationEmail>(). The bus takes IServiceProvider, creates a scope, and calls scope.ServiceProvider.GetServices<IEventHandler<T>>() on publish, invoking each. This gives handlers scoped dependencies like DbContext and makes adding a handler just a new class plus registration. MediatR's INotification/INotificationHandler works this way."
+   },
+   {
+    "level": "Advanced",
+    "q": "How should the event bus handle a handler that throws an exception?",
+    "a": "Decide the policy explicitly. Options: catch per handler, log and continue so other handlers still run (best-effort); collect exceptions and throw an AggregateException after all run; or add retries around each handler. Running handlers in parallel with Task.WhenAll improves latency but needs the same error handling. If a handler must not be lost, persist the event (outbox) and process it asynchronously instead of relying on in-memory dispatch."
+   },
+   {
+    "level": "Advanced",
+    "q": "When should domain events be dispatched relative to saving to the database?",
+    "a": "Dispatching before commit risks side effects (emails sent) for a transaction that later rolls back. A common pattern: entities collect domain events in a list, and after SaveChanges succeeds (for example in a DbContext override or unit of work) the events are dispatched. For integration events leaving the process, write them to an outbox table in the same transaction and have a background publisher send them to the broker, which gives at-least-once delivery without dual writes."
+   }
+  ]
+ },
+ "24": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Explain at-most-once, at-least-once and exactly-once delivery.",
+    "a": "- At-most-once: a message is delivered zero or one time; ack before processing, so a crash loses it. Fine for metrics.\n- At-least-once: never lost but may be delivered more than once; ack after processing. The default for SQS, RabbitMQ and most systems.\n- Exactly-once: each message affects the system once; very hard end to end and usually achieved as at-least-once plus idempotent processing."
+   },
+   {
+    "level": "Basic",
+    "q": "What is a dead-letter queue?",
+    "a": "A DLQ is a separate queue where messages go after failing processing a configured number of times (maxReceiveCount in SQS). It stops poison messages, such as malformed payloads or bugs, from being retried forever and blocking other work. Teams alert on DLQ depth, inspect and fix the cause, then redrive the messages back to the main queue."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why does at-least-once delivery mean consumers must be idempotent, and how do you make them so?",
+    "a": "Duplicates happen when a consumer processes a message but crashes or times out before acking, so the broker redelivers it. Idempotency ensures processing twice has the same effect as once. Techniques:\n- Store processed message IDs (or a business idempotency key) in a table with a unique constraint, in the same transaction as the business change.\n- Use natural idempotent operations (set status = Paid rather than balance += 100).\n- Use conditional updates with versions."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the visibility timeout in SQS and how does it affect retries?",
+    "a": "When a consumer receives a message, SQS hides it from other consumers for the visibility timeout. If the consumer deletes it before the timeout, it is done; otherwise it reappears and is retried, incrementing the receive count until it moves to the DLQ. Set the timeout longer than normal processing time, and extend it (ChangeMessageVisibility) for long jobs, otherwise another consumer processes the same message in parallel."
+   },
+   {
+    "level": "Advanced",
+    "q": "Why is exactly-once delivery so hard, and how does Kafka claim exactly-once semantics?",
+    "a": "The consumer cannot atomically do a side effect (DB write, email) and acknowledge the message, so a crash between the two causes either loss or duplication (the two generals problem). Kafka offers exactly-once within Kafka: idempotent producers (sequence numbers dedupe retries) and transactions that atomically write outputs and commit consumer offsets, for read-process-write between topics. Once external systems are involved you are back to idempotent consumers or storing offsets in the same DB transaction."
+   },
+   {
+    "level": "Advanced",
+    "q": "Design a retry strategy for a failing consumer.",
+    "a": "- Classify errors: transient (timeouts, 503) are retried; permanent (validation, 400) go straight to the DLQ.\n- Exponential backoff with jitter, e.g. 1s, 2s, 4s with a max, using visibility timeout or delay queues rather than blocking the consumer.\n- Cap attempts (e.g. 5) then dead-letter with error details.\n- Circuit breaker when the downstream is down, to stop hammering it.\n- Idempotent handlers so retries are safe, and monitoring on retry rate and DLQ size."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Command pattern?",
+    "a": "Command encapsulates a request as an object containing everything needed to perform it: the action and its parameters. This decouples the invoker (queue, scheduler, button) from the receiver that does the work. Because a request becomes an object, it can be queued, logged, serialized, retried and undone."
+   },
+   {
+    "level": "Basic",
+    "q": "Why is the Command pattern a good fit for retryable background jobs?",
+    "a": "Each job is a self-contained object with an Execute method and its data, so a generic job runner can execute, catch failures and re-run it without knowing its details. Commands can be serialized to a queue or DB and executed later by another process. Retry metadata (attempt count, next retry time) and an idempotency key can live alongside the command. Libraries like Hangfire are built on this idea."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a retryable command and a job runner in C#.",
+    "a": "```csharp\npublic interface IJob { string Id { get; } Task ExecuteAsync(CancellationToken ct); }\npublic class SendEmailJob(string to, string body, IEmailClient client) : IJob {\n    public string Id { get; } = Guid.NewGuid().ToString(); public Task ExecuteAsync(CancellationToken ct) => client.SendAsync(to, body, ct);\n}\npublic class JobRunner {\n    public async Task RunAsync(IJob job, int maxAttempts, CancellationToken ct) {\n        for (int attempt = 1; ; attempt++) {\n            try { await job.ExecuteAsync(ct); return; }\n            catch (Exception) when (attempt < maxAttempts) {\n                await Task.Delay(TimeSpan.FromSeconds(Math.Pow(2, attempt)), ct); }\n    } }\n}\n```\nAfter the last attempt the exception propagates so the job can be dead-lettered."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does Command support undo, and when would you use it?",
+    "a": "Add an Undo method to the command interface; each command stores enough state to reverse its effect (for example the previous value). An invoker pushes executed commands onto a stack and pops them to undo, and a redo stack supports redo. Uses: text editors, drawing tools, bulk admin operations. In distributed workflows the same idea appears as compensating actions in the Saga pattern."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you persist commands so jobs survive a process restart?",
+    "a": "Separate data from behaviour: store a serializable job descriptor (type name, JSON payload, attempts, status, next run time, idempotency key) in a database table or broker. A worker loads pending rows, deserializes the payload, resolves the handler for the job type from DI (ICommandHandler<TCommand>) and executes it. Update status and attempts transactionally, use row locking or leases so two workers do not pick the same job, and move to a failed state after max attempts."
+   },
+   {
+    "level": "Advanced",
+    "q": "Command vs Strategy: how are they different?",
+    "a": "Strategy encapsulates how something is done: interchangeable algorithms for the same task, chosen and used by a context (e.g. pricing algorithms). Command encapsulates what is to be done: a specific request with its parameters, which can be queued, logged, retried or undone. A strategy is usually stateless and reused; a command usually carries data for one execution. Both use an interface with one main method, which is why they are confused."
+   }
+  ]
+ },
+ "25": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the requirements for a notification system?",
+    "a": "Functional: send email, SMS and push (and in-app) notifications, triggered by events or APIs; templates; respect user preferences and opt-outs; scheduled and bulk sends. Non-functional: high throughput for spikes (sales, OTPs), low latency for critical messages like OTPs, reliability (no lost notifications), no duplicates where possible, and tracking of delivery status."
+   },
+   {
+    "level": "Basic",
+    "q": "What are the high-level components of a notification system?",
+    "a": "- Notification API / event consumers that accept requests from other services.\n- Validation and preference service (opt-outs, quiet hours, channel choice) and template service.\n- A queue per channel (email, SMS, push).\n- Channel workers that call third-party providers (SES/SendGrid, Twilio, FCM/APNs).\n- A notification log DB for status and history, plus retry and DLQ handling and metrics."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why use a separate queue per channel?",
+    "a": "Channels have different throughput, latency and provider limits; SMS providers are slow and rate-limited while push is fast. Separate queues isolate failures so an SMS provider outage does not delay emails, and each worker pool scales independently. It also allows per-channel retry policies and prioritization, such as a high-priority queue for OTPs and a low-priority one for marketing."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you handle retries and third-party provider failures?",
+    "a": "Workers retry transient failures with exponential backoff and jitter, and move messages to a DLQ after a max attempt count. Use a circuit breaker per provider, and fail over to a secondary provider (Twilio to another SMS vendor) when the primary is down. Respect provider rate limits with a limiter in the worker. Record every attempt and status in the notification log so support can see what happened."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you avoid sending duplicate notifications?",
+    "a": "At-least-once queues cause redelivery, so every notification gets an idempotency key (for example eventId + userId + channel). Before sending, the worker checks and records the key in a store with a unique constraint or a Redis SET NX with TTL; if already present it skips. Providers may also accept an idempotency key. Duplicates cannot be fully eliminated if the process dies after the provider accepts but before recording, so you minimize the window rather than guarantee exactly-once."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you scale the system for a flash sale sending 10 million notifications, while keeping OTPs fast?",
+    "a": "Split traffic into priority tiers with separate queues and worker pools: transactional (OTP, order) always has reserved capacity; marketing goes to a bulk queue. Bulk campaigns are expanded into per-user messages by a fan-out job in batches, throttled to provider limits and spread over time. Autoscale workers on queue depth, cache preferences and templates, and batch provider calls where supported. Monitor send rate, failures and queue age per tier."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What are the core classes in a notification service LLD?",
+    "a": "Notification (id, userId, type, payload, priority), a Channel enum or INotificationChannel interface, concrete EmailChannel, SmsChannel and PushChannel, UserPreference (enabled channels, quiet hours), TemplateService to render messages, NotificationService to orchestrate, and NotificationLog/Status for tracking. Keep providers behind interfaces so they can be swapped."
+   },
+   {
+    "level": "Basic",
+    "q": "How does the Strategy pattern apply to notification channels?",
+    "a": "Each channel is a strategy implementing a common INotificationChannel { ChannelType Type { get; } Task SendAsync(Notification n); }. The NotificationService picks the channel strategies based on user preferences and calls them without knowing channel details. Adding WhatsApp means adding one new class and registering it, with no change to the service (Open/Closed)."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Write the NotificationService that sends via the user's preferred channels.",
+    "a": "```csharp\npublic class NotificationService(IEnumerable<INotificationChannel> channels,\n                                 IPreferenceStore prefs) {\n    private readonly Dictionary<ChannelType, INotificationChannel> _byType =\n        channels.ToDictionary(c => c.Type);\n    public async Task NotifyAsync(Notification n) {\n        var enabled = await prefs.GetEnabledChannelsAsync(n.UserId);\n        foreach (var type in enabled)\n            if (_byType.TryGetValue(type, out var ch))\n                await ch.SendAsync(n);\n    }\n}\n```\nAll channels are injected via DI as IEnumerable<INotificationChannel>."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Where does the Observer pattern fit in a notification service?",
+    "a": "Business events are the subject: when an order is placed or shipped, the order service raises an event, and observers such as the notification handler, analytics and audit log are subscribed to it. The notification observer converts the event into Notification objects and passes them to the service. This keeps the order domain unaware of notifications. Users subscribing to topics (price drop alerts) is also Observer at the business level."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you add retries, rate limiting and logging to channels without changing channel classes?",
+    "a": "Use decorators around INotificationChannel: RetryingChannel (backoff), RateLimitedChannel (provider limits), LoggingChannel (status to the notification log), and a FailoverChannel that tries a primary then secondary provider. Compose them in DI registration, for example Logging(Retrying(RateLimited(TwilioSmsChannel))). Each concern stays small and testable, and concrete channels only know how to call their provider."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you design templates and localization in the notification LLD?",
+    "a": "Introduce a Template entity (templateId, channel, locale, subject, body with placeholders) stored in a DB and cached. An ITemplateRenderer renders a template with a data dictionary (using Scriban, Razor or simple placeholder replacement) and falls back to a default locale if missing. Notification carries templateId and data instead of final text, so content can change without code deploys. Each channel may have its own formatter since SMS has length limits and email supports HTML."
+   }
+  ]
+ },
+ "26": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is serverless computing?",
+    "a": "Serverless (Function as a Service like AWS Lambda or Azure Functions) lets you deploy functions that run in response to events without managing servers. The provider handles provisioning, scaling and patching; you pay per invocation and execution time, and it scales to zero when idle. Serverless also covers managed services such as DynamoDB, S3 and SQS where there is no server to manage."
+   },
+   {
+    "level": "Basic",
+    "q": "What are the main advantages and disadvantages of serverless?",
+    "a": "Advantages: no infrastructure management, automatic scaling, pay only for usage, fast to build event-driven glue. Disadvantages: cold starts, execution time limits (15 minutes on Lambda), statelessness, vendor lock-in, harder local debugging and observability, and it can cost more than servers at steady high load."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is a cold start and how do you reduce it?",
+    "a": "A cold start is the extra latency when the platform must create a new execution environment: download the code, start the runtime and run initialization before handling the request. For .NET it can be hundreds of milliseconds to seconds. Mitigations: provisioned concurrency, smaller packages, Native AOT or ReadyToRun compilation, SnapStart where supported, lazy initialization of heavy dependencies, and avoiding VPC or large DI setups in the hot path."
+   },
+   {
+    "level": "Intermediate",
+    "q": "When is serverless a good fit and when is it not?",
+    "a": "Good fit: spiky or unpredictable traffic, event-driven work (S3 upload triggers, queue consumers, cron jobs, webhooks), low-traffic APIs and prototypes. Poor fit: steady high-throughput services where reserved servers are cheaper, long-running jobs beyond time limits, workloads needing persistent connections or in-memory state, and strict low-latency APIs sensitive to cold starts."
+   },
+   {
+    "level": "Advanced",
+    "q": "What are the common pitfalls when a Lambda talks to a relational database?",
+    "a": "Each concurrent Lambda instance opens its own connections, so a traffic spike can exhaust the database's connection limit. Mitigations: RDS Proxy to pool connections, reuse connections across invocations by creating them outside the handler, cap concurrency with reserved concurrency, or use a serverless-friendly database like DynamoDB or Aurora Serverless with the Data API. Also account for VPC networking and cold start costs."
+   },
+   {
+    "level": "Advanced",
+    "q": "Compare serverless functions, containers (ECS/Kubernetes) and VMs for a backend service.",
+    "a": "- VMs (EC2): full control, you manage OS and scaling; best for legacy or special needs.\n- Containers: portable, consistent environments, good for long-running services and steady load; orchestration adds operational work (Fargate reduces it).\n- Serverless functions: least operations, per-request billing and scale to zero; limits on duration, state and cold starts.\nMany systems mix them: containers for core APIs, functions for event processing and scheduled jobs."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Template Method pattern?",
+    "a": "Template Method defines the skeleton of an algorithm in a base class method and lets subclasses override specific steps without changing the overall structure. The template method is usually non-virtual so the order of steps is fixed, while steps are abstract (must override) or virtual hooks (optional override). It follows the Hollywood principle: the base class calls the subclass."
+   },
+   {
+    "level": "Basic",
+    "q": "Give real examples of Template Method in .NET.",
+    "a": "- BackgroundService: StartAsync/StopAsync are fixed, you override ExecuteAsync.\n- ASP.NET Core ControllerBase and filters with OnActionExecuting / OnActionExecuted hooks.\n- Stream: base methods like CopyTo call your overridden Read/Write.\n- DbContext: you override OnModelCreating and OnConfiguring inside EF Core's fixed setup.\n- Test frameworks with setup and teardown hooks."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a data import job using the Template Method pattern.",
+    "a": "```csharp\npublic abstract class ImportJob<T> {\n    public async Task RunAsync() {             // the template method\n        var raw = await ReadAsync();\n        var items = Parse(raw);\n        var valid = items.Where(Validate).ToList();\n        await SaveAsync(valid);\n        OnCompleted(valid.Count); }            // optional hook\n    protected abstract Task<string> ReadAsync();\n    protected abstract IEnumerable<T> Parse(string raw);\n    protected virtual bool Validate(T item) => true; protected abstract Task SaveAsync(IEnumerable<T> items);\n    protected virtual void OnCompleted(int count) { }\n}\n```\nCsvProductImport and JsonOrderImport override only the steps that differ."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the difference between abstract steps and hook methods?",
+    "a": "Abstract steps must be implemented by every subclass because the algorithm cannot work without them, like reading or parsing. Hooks are virtual methods with a default (often empty) implementation that subclasses may override to add optional behaviour, like OnCompleted or a Validate that defaults to true. Hooks give extension points without forcing every subclass to write boilerplate."
+   },
+   {
+    "level": "Advanced",
+    "q": "Template Method vs Strategy: which would you choose and why?",
+    "a": "Template Method uses inheritance: the variation is fixed at compile time per subclass, and it fits when many variants share a fixed algorithm skeleton with a few differing steps. Strategy uses composition: the varying behaviour is injected and can change at runtime or be combined, which is easier to unit test and avoids deep hierarchies. Modern C# favors Strategy with DI, but Template Method is clean when the skeleton really is fixed, as in BackgroundService."
+   },
+   {
+    "level": "Advanced",
+    "q": "What are the drawbacks of Template Method and how do you mitigate them?",
+    "a": "It creates tight coupling between base and subclasses (fragile base class problem): changes to the base template can break subclasses, and subclasses may depend on base internals. Deep hierarchies become hard to follow, and it can violate Liskov if subclasses change step semantics. Mitigate by keeping the template method non-virtual, exposing only protected steps, keeping hierarchies one level deep and preferring composition when steps vary independently."
+   }
+  ]
+ },
+ "27": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Why store uploaded images in object storage instead of the database?",
+    "a": "Object storage (S3, Azure Blob) is cheap, virtually unlimited, highly durable (eleven nines on S3) and built for large binary files, and it integrates with CDNs. Storing blobs in a relational DB bloats it, slows backups and replication, and wastes expensive DB I/O. The database stores only metadata: image ID, owner, object key, size, content type, status and thumbnail keys."
+   },
+   {
+    "level": "Basic",
+    "q": "Why generate thumbnails asynchronously instead of in the upload request?",
+    "a": "Resizing is CPU-heavy and slow, so doing it in the request increases latency and ties up API servers, and a spike of uploads could overload them. Asynchronously, the upload returns quickly, processing workers scale independently, and failures can be retried without the user re-uploading. The UI shows a placeholder or processing status until thumbnails are ready."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Walk through the end-to-end flow of the image upload and thumbnail pipeline.",
+    "a": "- Client asks the API for an upload URL; API creates a metadata row (status = Pending) and returns a pre-signed S3 URL.\n- Client uploads directly to S3.\n- S3 emits an event (to SQS, SNS or EventBridge) which triggers a worker or Lambda.\n- Worker downloads the original, validates it, generates thumbnails in several sizes and writes them to S3.\n- Worker updates metadata (status = Ready, thumbnail keys).\n- Images are served through CloudFront using the object keys."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What are pre-signed URLs and why use them for uploads?",
+    "a": "A pre-signed URL is a time-limited URL signed with the backend's credentials that allows a client to PUT (or GET) one specific object without having AWS credentials. It lets clients upload directly to S3, so large files do not flow through API servers, saving bandwidth and compute. The API controls the key, content type, size limits and expiry, and authorizes the user before issuing it."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you make the thumbnail processing reliable and idempotent?",
+    "a": "Put S3 events into an SQS queue rather than invoking processing directly, so there is buffering, retries and a DLQ. Use deterministic output keys (thumbnails/{imageId}/200x200.jpg) so reprocessing just overwrites the same objects, and conditional metadata updates (only move Pending -> Ready). Validate input (file type by magic bytes, max dimensions) and send corrupt files to a failed state instead of retrying forever. A periodic reconciler finds images stuck in Pending and re-queues them."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you scale and secure the pipeline for millions of uploads per day?",
+    "a": "Scale: autoscale workers on queue depth, use Lambda concurrency or container workers, process sizes in parallel, and serve all images through a CDN with long TTLs and versioned keys. Store originals in cheaper storage tiers via lifecycle rules. Security: validate content type and size in the pre-signed policy, scan for malware, strip EXIF metadata such as GPS, keep the bucket private with CDN access through Origin Access Control, and use signed URLs for private images."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Chain of Responsibility pattern?",
+    "a": "Chain of Responsibility passes a request along a chain of handlers; each handler either processes it, passes it to the next, or stops the chain. The sender does not know which handler will do the work, and handlers can be added, removed or reordered without changing the others. Common uses are processing pipelines, validation and approval workflows."
+   },
+   {
+    "level": "Basic",
+    "q": "Where do you see Chain of Responsibility in ASP.NET Core?",
+    "a": "The middleware pipeline is the classic example: each middleware receives HttpContext and a next delegate, does work before and after calling await next(context), or short-circuits by writing a response (for example authentication returning 401). HttpClient DelegatingHandlers form a chain for outgoing requests, and MediatR pipeline behaviors are another chain around handlers."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement an image processing chain in C#.",
+    "a": "```csharp\npublic abstract class ImageStep {\n    private ImageStep? _next;\n    public ImageStep SetNext(ImageStep next) { _next = next; return next; }\n    public virtual async Task HandleAsync(ImageContext ctx) { if (_next != null) await _next.HandleAsync(ctx); }\n}\npublic class ValidateStep : ImageStep {\n    public override Task HandleAsync(ImageContext ctx) {\n        if (ctx.SizeBytes > 10_000_000) { ctx.Failed = true; return Task.CompletedTask; }\n        return base.HandleAsync(ctx); } // pass along\n}\n// validate.SetNext(new StripExifStep()).SetNext(new ResizeStep()).SetNext(new UploadStep());\n```\nValidateStep stops the chain for oversized files."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Should a handler in the chain be able to stop processing? What are the two variants?",
+    "a": "Yes. In the classic variant exactly one handler handles the request and the rest are skipped, such as approval by the first manager with enough authority. In the pipeline variant every handler does its part and passes it on, but any handler can short-circuit on failure, like validation rejecting a file. Document which variant you use, and decide what happens if the request reaches the end unhandled."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you build the chain from DI configuration instead of hard-coding it?",
+    "a": "Define IImageStep { Task InvokeAsync(ImageContext ctx, Func<Task> next); } similar to middleware. Register steps in order (services.AddTransient<IImageStep, ValidateStep>() and so on) and have a pipeline builder take IEnumerable<IImageStep>, which DI returns in registration order, folding them into nested delegates from the last step to the first. Ordering can also come from config, allowing features like watermarking to be toggled without code changes."
+   },
+   {
+    "level": "Advanced",
+    "q": "Chain of Responsibility vs Decorator: what is the difference?",
+    "a": "Both link objects that forward calls. Decorators share the component interface, all of them always run and add behaviour, and the wrapped core component always executes at the end. In Chain of Responsibility handlers may stop the request, any handler may be the one that handles it, and there may be no final core object. The middleware pipeline blends both: each middleware wraps the next like a decorator but can short-circuit like a chain."
+   }
+  ]
+ },
+ "28": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: draw the basic 3-tier architecture and name each component's job.",
+    "a": "Client -> DNS -> CDN for static assets -> load balancer (distributes traffic, health checks, TLS) -> stateless app servers in an auto-scaling group -> cache (Redis) for hot reads -> primary database with read replicas. Sessions live in Redis or tokens, not server memory, so any instance can serve any request. Async work goes through a queue to background workers."
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: scaling concepts from Phase 1 in one line each.",
+    "a": "- Vertical scaling: bigger machine, simple but limited and a single point of failure.\n- Horizontal scaling: more machines behind a load balancer, needs stateless servers.\n- Replication: copies for read scaling and failover, with replica lag.\n- Sharding: split data by key for write scaling, watch hot spots.\n- Caching: reduce latency and DB load, at the cost of staleness.\n- Queues: decouple and absorb spikes, at the cost of eventual processing."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: SQL vs NoSQL, ACID and CAP in a few sentences.",
+    "a": "SQL gives schemas, joins and ACID transactions; pick it for relational data and strong consistency like orders and payments. NoSQL (key-value, document, wide-column) gives flexible schemas and easier horizontal scaling; pick it for huge scale and simple access patterns. ACID is per-transaction correctness in one database; CAP is about distributed systems choosing consistency or availability during a partition. Isolation levels trade anomalies (dirty, non-repeatable, phantom reads) for concurrency."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Re-draw the rate limiter and the queue-based async flow and name the key decisions.",
+    "a": "Rate limiter: gateway/middleware -> Redis counters via atomic Lua (token bucket or sliding window counter) -> allow or return 429 with Retry-After; decide key (user/IP), fail-open vs closed and local vs global limits. Async flow: API writes to DB and outbox -> publisher -> queue/topic -> idempotent consumers with retries, backoff and a DLQ; decide ordering per key, at-least-once delivery and fan-out via pub/sub."
+   },
+   {
+    "level": "Advanced",
+    "q": "Design question warm-up: an e-commerce product page gets 100x traffic during a sale. Which Phase 1 tools do you apply?",
+    "a": "- CDN for images and static assets, and short-TTL edge caching for public product JSON.\n- Redis cache-aside for product details with TTL jitter and stampede protection on hot keys.\n- Read replicas for listing queries; primary only for checkout writes.\n- Horizontal auto-scaling of stateless app servers behind the load balancer.\n- Rate limiting per user/IP at the gateway to stop bots.\n- Queue for order confirmation emails and inventory events, with idempotent consumers."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: common interview traps from Phase 1 and the correct answer.",
+    "a": "- Is POST idempotent? No, but you can make it idempotent with an idempotency key.\n- Does adding an index always help? No, it slows writes and a composite index needs the leftmost prefix.\n- Is replication a backup? No, it replicates mistakes too; you still need backups.\n- Is exactly-once delivery free? No, use at-least-once plus idempotency.\n- Cache update or delete on write? Delete, to avoid races.\n- Sticky sessions for scaling? Prefer stateless servers with an external session store."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: the four OOP pillars and SOLID in one line each.",
+    "a": "- Encapsulation: hide state behind methods; Abstraction: expose what, hide how; Inheritance: reuse via is-a; Polymorphism: one interface, many implementations.\n- S: one reason to change; O: extend without modifying; L: subtypes must be substitutable; I: small focused interfaces; D: depend on abstractions, not concretions."
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: creational patterns covered so far, one line each.",
+    "a": "- Singleton: exactly one instance with global access; in .NET prefer DI AddSingleton or Lazy<T>.\n- Factory: centralizes object creation so callers depend on an interface, not concrete classes.\n- Builder: builds complex objects step by step with a fluent API, avoiding telescoping constructors."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: structural patterns covered so far, one line each.",
+    "a": "- Repository: collection-like abstraction over data access, hides EF/SQL from business logic.\n- Decorator: wraps an object with the same interface to add behaviour (caching, logging), stackable.\n- Proxy: same interface, controls access (lazy loading, security, remote).\n- Coming next: Facade (simple front to a subsystem) and Adapter (convert one interface into another)."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: behavioral patterns covered so far, one line each.",
+    "a": "- Strategy: interchangeable algorithms behind an interface, chosen at runtime (load balancing, shard key, channels).\n- Observer: subject notifies subscribers on change (cache invalidation).\n- Command: a request as an object that can be queued, retried or undone.\n- Template Method: base class fixes algorithm skeleton, subclasses fill steps.\n- Chain of Responsibility: request passes along handlers that process or stop it (middleware)."
+   },
+   {
+    "level": "Advanced",
+    "q": "An interviewer asks you to design a caching, retrying HTTP client for a payment provider. Which patterns do you combine and why?",
+    "a": "Define IPaymentGateway and implement it with an Adapter around the vendor SDK so the rest of the code does not depend on it. Add Decorators for retry with backoff, circuit breaking and logging, composed in DI (in .NET, DelegatingHandlers or Polly on HttpClient form the same chain). Use Strategy to pick the provider per country or failover, and a Factory to create the right gateway. Make requests idempotent with an idempotency key so retries are safe."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: how do you choose between inheritance and composition, and which patterns reflect that choice?",
+    "a": "Favor composition by default: it allows runtime flexibility, easier testing with mocks and avoids fragile base classes; Strategy, Decorator, Observer and Chain of Responsibility are composition-based. Use inheritance only for a true is-a relationship with a stable, shared skeleton, as Template Method does, and keep hierarchies shallow. If a subclass must throw NotSupportedException for inherited methods, it violates Liskov and composition is the better fit."
+   }
+  ]
+ },
+ "29": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is an API gateway and what does it do?",
+    "a": "An API gateway is a single entry point in front of backend services. It handles cross-cutting concerns in one place: request routing to services, authentication and authorization, rate limiting and throttling, TLS termination, request/response transformation, caching, logging and metrics. Examples are AWS API Gateway, Kong, Azure API Management and YARP or Ocelot in .NET."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between an API gateway and a load balancer?",
+    "a": "A load balancer distributes traffic across instances of the same service using algorithms like round robin, and works at L4 or L7. An API gateway is an L7 component that routes by path, host or headers to different services and adds API concerns such as auth, rate limiting, API keys, versioning and transformations. They are often used together: gateway in front, load balancers behind it for each service."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the Backend for Frontend (BFF) pattern and when do you use it?",
+    "a": "BFF means one dedicated backend per client type, such as web, mobile and partner APIs, each shaping responses for its client. The mobile BFF can aggregate several service calls into one response and return smaller payloads to save bandwidth, while the web BFF may return richer data and handle cookie-based sessions. Use it when clients have very different needs; the cost is more services to maintain and possible duplicated logic, which should live in downstream services."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Should authentication happen at the gateway or in each service?",
+    "a": "Common practice is both, with different depth. The gateway validates the JWT or session (signature, expiry, audience) and rejects bad requests early, so services do not repeat token plumbing. Services still enforce authorization (can this user access this order?) because they own the business rules, and should not blindly trust traffic in a zero-trust network. The gateway can forward verified claims in headers, protected by mTLS or network policies."
+   },
+   {
+    "level": "Advanced",
+    "q": "What are the risks of an API gateway and how do you mitigate them?",
+    "a": "- Single point of failure: run multiple instances across AZs behind a load balancer.\n- Extra latency hop: keep gateway logic lightweight and avoid heavy transformations.\n- Bottleneck and scaling: autoscale and keep it stateless.\n- Becoming a distributed monolith with business logic in it: keep it to cross-cutting concerns only.\n- Team coupling on a shared config: use per-team routes, config as code, or BFFs."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does a gateway or BFF aggregate data from multiple services efficiently and resiliently?",
+    "a": "Call downstream services in parallel (Task.WhenAll) rather than sequentially, with per-call timeouts. Use circuit breakers and fallbacks so one failing service returns partial data (for example product page without reviews) instead of failing everything. Cache stable pieces, pass through correlation IDs for tracing, and consider GraphQL as an aggregation layer when clients need flexible queries."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Facade pattern?",
+    "a": "Facade provides a simple, unified interface to a complex subsystem of classes. Clients call one high-level method instead of coordinating many objects themselves, which reduces coupling and duplication. The subsystem classes still exist and can be used directly when needed; the facade just simplifies common workflows."
+   },
+   {
+    "level": "Basic",
+    "q": "Give a real-world example of a Facade in a backend application.",
+    "a": "An OrderFacade.PlaceOrderAsync(cart, user) that internally validates the cart, checks inventory, calculates price and tax, charges payment, creates the order and sends a confirmation. The controller calls one method instead of five services. In .NET, WebApplication.CreateBuilder and HttpClient are facades over lots of configuration and networking classes."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a checkout facade in C#.",
+    "a": "```csharp\npublic class CheckoutFacade(IInventoryService inventory, IPaymentService payment,\n                            IOrderRepository orders, INotificationService notify) {\n    public async Task<Order> PlaceOrderAsync(Cart cart, Guid userId) {\n        await inventory.ReserveAsync(cart.Items);\n        var charge = await payment.ChargeAsync(userId, cart.Total);\n        var order = new Order(userId, cart.Items, charge.Id);\n        await orders.AddAsync(order);\n        await notify.OrderPlacedAsync(order);\n        return order;\n    }\n}\n```\nThe controller only depends on CheckoutFacade, and compensation on failure can be added in one place."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How is a Facade related to an API gateway or BFF?",
+    "a": "An API gateway or BFF is the Facade idea at the architecture level: it gives clients a simple interface over many microservices, hiding how requests are routed and aggregated. In code, a Facade class hides a subsystem of objects; in architecture, a gateway hides a subsystem of services. Both reduce client coupling and both risk becoming too large if business logic accumulates in them."
+   },
+   {
+    "level": "Advanced",
+    "q": "Facade vs Adapter vs Mediator: how do you differentiate them?",
+    "a": "- Facade: defines a new, simpler interface over many classes; subsystem classes do not know the facade.\n- Adapter: makes one existing class fit an interface a client expects; it converts, it does not simplify.\n- Mediator: centralizes communication between peer objects that know the mediator and talk through it (MediatR, chat room).\nFacade is one-directional simplification; Mediator is two-way coordination."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is the risk of a god-object facade and how do you prevent it?",
+    "a": "A facade that keeps absorbing methods for every use case becomes a god class with many reasons to change, violating SRP and making testing hard. Keep facades per use case or bounded context (CheckoutFacade, ReturnsFacade), keep them thin by delegating to domain services, and avoid putting business rules inside them. Do not force every client through the facade; allow direct subsystem use when finer control is needed."
+   }
+  ]
+ },
+ "30": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is the difference between a monolith and microservices?",
+    "a": "A monolith is one deployable unit containing all features, usually with one database; it is simple to develop, test and deploy early on but grows harder to scale and change as teams grow. Microservices split the system into small, independently deployable services around business capabilities, each owning its data; they allow independent scaling and team autonomy but add network calls, distributed data and operational complexity."
+   },
+   {
+    "level": "Basic",
+    "q": "Why do many experts recommend starting with a monolith?",
+    "a": "Early on the domain is not well understood, and wrong service boundaries are very expensive to fix across network and data boundaries. A monolith is faster to build, easier to debug and cheaper to run for a small team. Build a modular monolith with clear module boundaries and extract services later when there is a real need: independent scaling, independent deploy cadence or team ownership."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you decide service boundaries?",
+    "a": "Split by business capability or DDD bounded context (Orders, Payments, Catalog, Shipping), not by technical layer (a UI service, a DB service). A good service has high cohesion, owns its data and can do most of its work without calling others synchronously. Signs of bad boundaries: services that always deploy together, chatty calls between them and shared tables. Conway's law suggests aligning services with team structure."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare synchronous (REST/gRPC) and asynchronous (messaging) communication between services.",
+    "a": "Sync calls are simple and give an immediate response, but couple availability and latency: if Payment is down, Order fails, and a chain of calls multiplies latency and failure probability. Async messaging decouples services in time; the caller publishes and continues, so downstream outages only delay processing, but you get eventual consistency and harder debugging. Use sync for queries needing an immediate answer and async for commands and events that can complete later. gRPC is faster than REST for internal calls due to HTTP/2 and Protobuf."
+   },
+   {
+    "level": "Advanced",
+    "q": "Why database per service, and how do you handle queries and transactions spanning services?",
+    "a": "Each service owns its data so it can change schema and scale independently without coupling through shared tables. Cross-service queries use API composition (call several services and join) or a read model built from events (CQRS). Cross-service transactions cannot use a single ACID transaction; use the Saga pattern with a sequence of local transactions and compensating actions (orchestrated or choreographed), plus the transactional outbox to publish events reliably."
+   },
+   {
+    "level": "Advanced",
+    "q": "What resilience patterns are needed when services call each other synchronously?",
+    "a": "- Timeouts on every call so threads are not blocked forever.\n- Retries with exponential backoff and jitter, only for idempotent operations.\n- Circuit breaker to stop calling a failing service and fail fast.\n- Bulkheads to isolate resources per dependency.\n- Fallbacks such as cached or default data.\nIn .NET, Polly or Microsoft.Extensions.Http.Resilience provides these, and distributed tracing (OpenTelemetry) helps find the failing hop."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Adapter pattern?",
+    "a": "Adapter converts the interface of an existing class into another interface that clients expect, letting classes with incompatible interfaces work together. The client depends on its own target interface, and the adapter translates calls and data to the adaptee. It is commonly used to integrate third-party SDKs and legacy code."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between object adapter and class adapter?",
+    "a": "An object adapter holds a reference to the adaptee and delegates to it (composition); it is the common form in C# and works with sealed classes and subclasses of the adaptee. A class adapter inherits from the adaptee and implements the target interface; C# supports only single class inheritance, so it is less flexible and exposes the adaptee's members. Prefer object adapters."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Write an adapter that wraps a third-party SMS SDK behind your own interface.",
+    "a": "```csharp\npublic interface ISmsSender { Task SendAsync(string phone, string message); }\npublic class TwilioSmsAdapter : ISmsSender {\n    private readonly TwilioClient _client; private readonly string _from;\n    public TwilioSmsAdapter(TwilioClient client, string from)\n        { _client = client; _from = from; }\n    public async Task SendAsync(string phone, string message) {\n        var result = await _client.CreateMessageAsync(to: phone, from: _from, body: message);\n        if (result.Status == \"failed\") throw new SmsSendException(result.ErrorMessage);\n    }\n}\n```\nThe app depends only on ISmsSender, so switching vendors means writing one new adapter."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why is wrapping third-party libraries with adapters considered good practice?",
+    "a": "It isolates vendor-specific types, exceptions and quirks in one class, so the rest of the code depends on your own abstraction (Dependency Inversion). Switching providers or upgrading SDK versions touches only the adapter. It makes unit testing easy because you mock your interface instead of the SDK. It also lets you translate vendor errors into your domain exceptions and add consistent logging."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does the Adapter pattern relate to microservices and the anti-corruption layer?",
+    "a": "In DDD, an anti-corruption layer is a set of adapters and translators that sit between your bounded context and another service or legacy system, converting their model into yours so their concepts do not leak in. When a microservice calls an external API or migrates from a monolith, the ACL maps DTOs, status codes and errors to your domain types. It is the Adapter pattern applied at the boundary of a service."
+   },
+   {
+    "level": "Advanced",
+    "q": "Adapter vs Facade vs Decorator: explain with one example each.",
+    "a": "- Adapter: TwilioSmsAdapter makes the Twilio SDK fit ISmsSender; changes the interface.\n- Facade: CheckoutFacade.PlaceOrderAsync hides inventory, payment and order services behind one simple method; simplifies many interfaces.\n- Decorator: RetryingSmsSender wraps an ISmsSender and adds retries; keeps the same interface and adds behaviour.\nThe key question is whether you are converting, simplifying or enriching."
+   }
+  ]
+ }
+}

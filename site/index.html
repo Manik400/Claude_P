@@ -330,6 +330,27 @@
   html.plan-on main { max-width: none; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; }
   @media (min-width: 900px) { #plan-frame { height: calc(100vh - 110px); height: calc(100dvh - 110px); } html.plan-on main { padding: 14px 18px; } }
   html.site-fs #plan-frame { height: calc(100vh - 20px); height: calc(100dvh - 20px); }
+
+  /* Side menu as a drawer: « in the menu closes it, the floating ☰ opens it again.
+     On phones the menu is the top strip, so closing it hides the tab row only. */
+  .side-close { display: none; margin-left: auto; }
+  #btn-side { position: fixed; top: calc(10px + env(safe-area-inset-top)); left: 12px; z-index: 25; opacity: .8; box-shadow: var(--shadow); display: none; }
+  #btn-side:hover { opacity: 1; }
+  @media (min-width: 900px) {
+    .side-close { display: grid; width: 30px; height: 30px; }
+    aside.side .brand .side-close { display: grid; }
+    html.side-closed aside.side { display: none; }
+    html.side-closed .content { margin-left: 0; }
+    html.side-closed #viewer { left: 0; }
+    html.side-closed .toast { left: 50%; }
+    html.side-closed .page-head { padding-left: 44px; }
+    html.side-closed #btn-side { display: grid; }
+  }
+  @media (max-width: 899px) {
+    .brand .side-close { display: grid; }
+    html.side-closed nav.tabs { display: none; }
+  }
+  html.site-fs #btn-side { display: none !important; }
   @media (min-width: 900px) { .brand { padding-right: 6px; } }
 </style>
 <!-- UI v2: the portfolio's look, one button away. The skin is scoped to
@@ -345,6 +366,7 @@
     <h1 id="h-title">Job Hunt</h1>
     <button class="pc" id="h-pc" title="When your PC last ran the queue">PC —</button>
     <button class="icon-btn" id="btn-theme-m" title="Switch light / dark"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 3a9 9 0 1 0 9 9c0-.5 0-1-.1-1.4A7 7 0 0 1 12 3z"/></svg></button>
+    <button class="icon-btn side-close" id="btn-side-close" title="Hide the menu" aria-label="Hide the menu"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 17l-5-5 5-5M18 17l-5-5 5-5"/></svg></button>
   </div>
   <nav class="tabs">
     <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/></svg>Home<span class="dot" id="dot-home" hidden></span></button>
@@ -541,6 +563,7 @@
   <div class="frame" id="j-box" hidden></div>
 </div>
 <div class="toast" id="toast"></div>
+<button class="icon-btn" id="btn-side" title="Show the menu" aria-label="Show the menu" aria-expanded="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
 <button class="icon-btn" id="btn-fs" title="Full screen (hide menu and headings)" aria-pressed="false">
   <svg class="ic-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 9V4h5M20 9V4h-5M4 15v5h5M20 15v5h-5"/></svg>
   <svg class="ic-exit" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 4v5H4M15 4v5h5M9 20v-5H4M15 20v-5h5"/></svg>
@@ -556,11 +579,27 @@
     btn.setAttribute("aria-pressed", on ? "true" : "false");
     btn.title = on ? "Exit full screen (show menu and headings)" : "Full screen (hide menu and headings)";
     try { on ? localStorage.setItem(KEY, "1") : localStorage.removeItem(KEY); } catch (e) { /* private window */ }
+    // the Plan tab collapses its own header too, so full screen is really just the content
+    var f = document.getElementById("plan-frame");
+    try { if (f && f.contentWindow) f.contentWindow.postMessage({ type: "site-fs", on: on }, location.origin); } catch (e) {}
   }
   var saved = false;
   try { saved = localStorage.getItem(KEY) === "1"; } catch (e) { /* private window */ }
   set(saved);
   btn.addEventListener("click", function () { set(!root.classList.contains("site-fs")); });
+
+  // Side menu drawer, remembered per browser like full screen.
+  var SIDE = "jobhunt.sideClosed", side = document.getElementById("btn-side");
+  function setSide(closed) {
+    root.classList.toggle("side-closed", closed);
+    side.setAttribute("aria-expanded", closed ? "false" : "true");
+    try { closed ? localStorage.setItem(SIDE, "1") : localStorage.removeItem(SIDE); } catch (e) { /* private window */ }
+  }
+  var sideSaved = false;
+  try { sideSaved = localStorage.getItem(SIDE) === "1"; } catch (e) { /* private window */ }
+  setSide(sideSaved);
+  side.addEventListener("click", function () { setSide(false); });
+  document.getElementById("btn-side-close").addEventListener("click", function () { setSide(!root.classList.contains("side-closed")); });
 })();
 </script>
 

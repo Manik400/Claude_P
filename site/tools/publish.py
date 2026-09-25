@@ -209,7 +209,7 @@ def publish_site(a):
     plan_src = os.path.join(os.path.dirname(SITE_DIR), "sde-75-day-plan")
     if os.path.exists(os.path.join(plan_src, "index.html")):
         os.makedirs(os.path.join(a.pages, "plan"), exist_ok=True)
-        for name in ("index.html", "plan.json"):
+        for name in ("index.html", "plan.json", "qna.json"):
             shutil.copyfile(os.path.join(plan_src, name), os.path.join(a.pages, "plan", name))
     with open(os.path.join(a.pages, ".nojekyll"), "w") as f:
         f.write("")

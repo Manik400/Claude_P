@@ -23,81 +23,13 @@ import zipfile
 from datetime import date, timedelta
 from pathlib import Path
 
+from content.problems import DESIGN, LEETCODE, SLUG, SQL_ORDER, SQL_SLUG
+
 HERE = Path(__file__).resolve().parent
 SRC_DIR = Path.home() / "Downloads"
 DETAILED = "75-Day-SDE-Plan.docx"
 SIMPLE_XLSX = "Manik_75Day_SDE_Simple_Daywise_v2.xlsx"
 DEFAULT_START = "2026-09-28"
-
-# ---------------------------------------------------------------- LeetCode difficulty (E / M / H)
-DIFF = {
-    "Two Sum": "E", "Contains Duplicate": "E", "Valid Anagram": "E", "Group Anagrams": "M", "Top K Frequent Elements": "M",
-    "Product of Array Except Self": "M", "Valid Sudoku": "M", "Longest Consecutive Sequence": "M", "Majority Element": "E",
-    "Valid Palindrome": "E", "Two Sum II - Input Array Is Sorted": "M", "3Sum": "M", "Container With Most Water": "M",
-    "Remove Duplicates from Sorted Array": "E", "Move Zeroes": "E", "Trapping Rain Water": "H", "Merge Sorted Array": "E",
-    "Reverse String": "E", "Best Time to Buy and Sell Stock": "E", "Longest Substring Without Repeating Characters": "M",
-    "Longest Repeating Character Replacement": "M", "Permutation in String": "M", "Minimum Window Substring": "H",
-    "Maximum Average Subarray I": "E", "Sliding Window Maximum": "H", "Minimum Size Subarray Sum": "M",
-    "Max Consecutive Ones III": "M", "Valid Parentheses": "E", "Min Stack": "M", "Evaluate Reverse Polish Notation": "M",
-    "Generate Parentheses": "M", "Daily Temperatures": "M", "Car Fleet": "M", "Next Greater Element I": "E",
-    "Implement Queue using Stacks": "E", "Simplify Path": "M", "Largest Rectangle in Histogram": "H", "Online Stock Span": "M",
-    "Decode String": "M", "Binary Search": "E", "Search Insert Position": "E", "Search a 2D Matrix": "M", "LRU Cache": "M",
-    "Reverse Linked List": "E", "Merge Two Sorted Lists": "E", "Linked List Cycle": "E", "Reorder List": "M",
-    "Remove Nth Node From End of List": "M", "Copy List with Random Pointer": "M", "Add Two Numbers": "M",
-    "Find the Duplicate Number": "M", "Koko Eating Bananas": "M", "Find Minimum in Rotated Sorted Array": "M",
-    "Search in Rotated Sorted Array": "M", "Time Based Key-Value Store": "M",
-    "Find First and Last Position of Element in Sorted Array": "M", "Sqrt(x)": "E", "Merge k Sorted Lists": "H",
-    "Intersection of Two Linked Lists": "E", "Palindrome Linked List": "E", "Middle of the Linked List": "E",
-    "Remove Linked List Elements": "E", "Reverse Linked List II": "M", "Subarray Sum Equals K": "M",
-    "Range Sum Query - Immutable": "E", "Find Pivot Index": "E", "Contiguous Array": "M",
-    "Subarray Sums Divisible by K": "M", "Find All Anagrams in a String": "M", "Find Peak Element": "M",
-    "Single Element in a Sorted Array": "M", "Capacity To Ship Packages Within D Days": "M", "Sort Colors": "M",
-    "Rotate Array": "M", "Rotate Image": "M", "Invert Binary Tree": "E", "Maximum Depth of Binary Tree": "E", "Same Tree": "E",
-    "Diameter of Binary Tree": "E", "Balanced Binary Tree": "E", "Subtree of Another Tree": "E", "Symmetric Tree": "E",
-    "Path Sum": "E", "Binary Tree Paths": "E", "Binary Tree Level Order Traversal": "M", "Binary Tree Right Side View": "M",
-    "Average of Levels in Binary Tree": "E", "Lowest Common Ancestor of a Binary Search Tree": "M",
-    "Validate Binary Search Tree": "M", "Kth Smallest Element in a BST": "M",
-    "Construct Binary Tree from Preorder and Inorder Traversal": "M", "Count Good Nodes in Binary Tree": "M",
-    "Lowest Common Ancestor of a Binary Tree": "M", "Serialize and Deserialize Binary Tree": "H", "Delete Node in a BST": "M",
-    "Convert Sorted Array to Binary Search Tree": "E", "Search in a Binary Search Tree": "E",
-    "Insert into a Binary Search Tree": "M", "Range Sum of BST": "E", "Binary Tree Maximum Path Sum": "H",
-    "Flatten Binary Tree to Linked List": "M", "Populating Next Right Pointers in Each Node": "M",
-    "Kth Largest Element in a Stream": "E", "Last Stone Weight": "E", "Kth Largest Element in an Array": "M",
-    "K Closest Points to Origin": "M", "Task Scheduler": "M", "Design Twitter": "M", "Find Median from Data Stream": "H",
-    "Reorganize String": "M", "Sort Characters By Frequency": "M", "Number of Islands": "M", "Clone Graph": "M",
-    "Max Area of Island": "M", "Rotting Oranges": "M", "Pacific Atlantic Water Flow": "M", "Surrounded Regions": "M",
-    "Course Schedule": "M", "Course Schedule II": "M", "Find the Town Judge": "E", "Redundant Connection": "M",
-    "Number of Provinces": "M", "Find if Path Exists in Graph": "E", "Word Ladder": "H", "Shortest Path in Binary Matrix": "M",
-    "Open the Lock": "M", "Implement Trie (Prefix Tree)": "M", "Design Add and Search Words Data Structure": "M",
-    "Longest Common Prefix": "E", "Word Search II": "H", "Word Search": "M", "Search Suggestions System": "M",
-    "Merge Intervals": "M", "Insert Interval": "M", "Non-overlapping Intervals": "M",
-    "Minimum Number of Arrows to Burst Balloons": "M", "Interval List Intersections": "M", "My Calendar I": "M",
-    "Single Number": "E", "Number of 1 Bits": "E", "Counting Bits": "E", "Network Delay Time": "M",
-    "Min Cost to Connect All Points": "M", "Cheapest Flights Within K Stops": "M", "Reverse Bits": "E", "Missing Number": "E",
-    "Sum of Two Integers": "M", "Climbing Stairs": "E", "Min Cost Climbing Stairs": "E", "House Robber": "M",
-    "House Robber II": "M", "Longest Palindromic Substring": "M", "Palindromic Substrings": "M", "Decode Ways": "M",
-    "Coin Change": "M", "Maximum Product Subarray": "M", "Word Break": "M", "Longest Increasing Subsequence": "M",
-    "Partition Equal Subset Sum": "M", "Fibonacci Number": "E", "N-th Tribonacci Number": "E", "Pascal's Triangle": "E",
-    "Unique Paths": "M", "Longest Common Subsequence": "M", "Best Time to Buy and Sell Stock with Cooldown": "M",
-    "Coin Change II": "M", "Target Sum": "M", "Interleaving String": "M", "Edit Distance": "M", "Minimum Path Sum": "M",
-    "Maximal Square": "M", "Subsets": "M", "Combination Sum": "M", "Permutations": "M", "Subsets II": "M",
-    "Combination Sum II": "M", "Palindrome Partitioning": "M", "Letter Combinations of a Phone Number": "M", "N-Queens": "H",
-    "Combinations": "M", "Assign Cookies": "E", "Lemonade Change": "E", "Best Time to Buy and Sell Stock II": "M",
-    "Jump Game": "M", "Jump Game II": "M", "Gas Station": "M", "Partition Labels": "M", "Hand of Straights": "M",
-    "Valid Parenthesis String": "M", "Isomorphic Strings": "E", "Word Pattern": "E", "Determine if Two Strings Are Close": "M",
-    "Is Graph Bipartite?": "M", "Evaluate Division": "M", "Find Eventual Safe States": "M",
-    "Insert Delete GetRandom O(1)": "M", "Design HashMap": "E", "Design HashSet": "E", "First Missing Positive": "H",
-    "Spiral Matrix": "M", "Set Matrix Zeroes": "M", "Palindrome Number": "E", "Roman to Integer": "E",
-    "Length of Last Word": "E", "Maximum Subarray": "M", "Maximum Sum Circular Subarray": "M",
-    "Longest Subarray of 1's After Deleting One Element": "M", "String to Integer (atoi)": "M", "Multiply Strings": "M",
-    "Integer to Roman": "M", "Contains Duplicate II": "E", "Summary Ranges": "E", "Unique Number of Occurrences": "E",
-    "Reorder Routes to Make All Paths Lead to the City Zero": "M", "Keys and Rooms": "M",
-    "Nearest Exit from Entrance in Maze": "M", "Merge Strings Alternately": "E", "Greatest Common Divisor of Strings": "E",
-    "Can Place Flowers": "E", "Kids With the Greatest Number of Candies": "E", "Reverse Vowels of a String": "E",
-    "Reverse Words in a String": "M", "String Compression": "M", "Max Number of K-Sum Pairs": "M",
-    "Increasing Triplet Subsequence": "M",
-}
-DIFF_NAME = {"E": "Easy", "M": "Medium", "H": "Hard"}
 
 # ---------------------------------------------------------------- the day's DSA pattern
 PATTERN_BY_DAY = {}
@@ -237,47 +169,49 @@ CHECKPOINTS = {
          "Project story recorded in 5 minutes", "Resume bullets written for AWS and Azure projects"],
 }
 
-EASY_DAY = ["3 LeetCode (the day's easiest, or Easy re-solves)", "Walk 1 km", "Water 2.5 L", "Clean food", "HLD read only"]
+EASY_DAY = ["LeetCode #1 and #2 (the two Mediums)", "SQL question", "HLD read", "Walk 1 km", "Water 2.5 L", "Clean food"]
 HABITS = [
     {"id": "walk", "label": "Walk 1 km / 30 min exercise"},
     {"id": "water", "label": "Water 2.5–3 L (1 L by lunch, 2 L by 7 pm)", "counter": {"max": 3, "step": 0.5, "goal": 2.5, "unit": "L"}},
     {"id": "food", "label": "Healthy food, no junk"},
     {"id": "chill", "label": "1 hour to chill, guilt-free"},
-    {"id": "sleep", "label": "Screens down by 11, sleep by 11:15"},
+    {"id": "sleep", "label": "Screens down by 11:15, sleep by 11:30"},
 ]
 SCHEDULE = {
     "weekday": [
         ["7:00", "Wake, 500 ml water", "Start the water count before the phone"],
         ["7:15", "Walk 1 km+ or 30 min workout", "Outdoors if you can"],
-        ["7:50", "LeetCode #1 and #2", "Fresh brain, hardest problem first; 30 min max each"],
+        ["7:50", "LeetCode #1 and #2 (Medium)", "30 min max each; if stuck read the solution and mark ↻"],
         ["9:00", "Breakfast, get ready", "Fill a 1 L bottle for the desk"],
         ["10:00", "Office", "First litre done by lunch"],
-        ["Lunch", "HLD read, 25–30 min", "The day's office topic; read or watch"],
+        ["Lunch", "HLD read 25 min + SQL question 15 min", "The day's office topic; the SQL runs in the browser"],
         ["7:00 pm", "Home, shower, dinner", "Second litre done by now"],
         ["8:00 pm", "Free time", "Guilt-free, at least 1 hour"],
-        ["9:00 pm", "LLD 30 min + cloud 30 min, then LeetCode #3", "Code the LLD in C#, then the cloud lab"],
-        ["10:15 pm", "Wind down", "Screens down by 11"],
-        ["11:15 pm", "Sleep", "Protect ~7.5 hours"],
+        ["9:00 pm", "LLD 30 min, then the design question 20 min", "Both in C#, same topic as the HLD read"],
+        ["9:50 pm", "Cloud lab 25 min", "Delete what you create"],
+        ["10:15 pm", "LeetCode #3 (Hard)", "45 min max; the approach matters more than finishing"],
+        ["11:15 pm", "Wind down, sleep by 11:30", "Protect ~7 hours"],
     ],
     "saturday": [
-        ["Morning", "Longer walk or workout + 3 LeetCode", "Hardest first"],
-        ["Midday", "2-hour build block", "Tie the week's HLD, LLD and cloud into one small project"],
-        ["Afternoon", "Clean up cloud resources", "Check the billing alarm"],
+        ["Morning", "Longer walk or workout + 3 LeetCode", "The Hard first"],
+        ["Midday", "2-hour build block + the design question", "Tie the week's HLD, LLD and cloud into one small project"],
+        ["Afternoon", "SQL question, clean up cloud resources", "Check the billing alarm"],
         ["Rest", "Free", ""],
     ],
     "sunday": [
         ["Morning", "Easy 1 km walk + 3 LeetCode", "Re-solve every ↻ revisit from the week first"],
-        ["Midday", "45 min: revise the week on one page", "Say each topic out loud in 2 sentences"],
+        ["Midday", "45 min: revise the week on one page + the week's Q&A", "Say each topic out loud in 2 sentences"],
+        ["Afternoon", "Re-solve 1 SQL and 1 design question from the week", "The ones you found hardest"],
         ["Evening", "Meal prep for the week", "Plan Monday's first problem"],
-        ["Rest", "Free", ""],
     ],
 }
 RULES = [
-    "3 LeetCode a day: 2 in the morning, 1 at night. 30 minutes max per problem; if stuck, read the solution, mark it ↻ revisit and re-solve it on Sunday.",
-    "Floor vs full: on a drained day switch to Easy day - 3 easy LeetCode + 1 km walk + water + clean food + the HLD read still counts.",
-    "One theme a day: the HLD read, the LLD code and the cloud lab explain the same idea from three angles.",
-    "One cloud at a time: AWS for days 1–50, Azure for 51–75, each mapped to the AWS service you already know.",
-    "Cloud labs: always delete resources afterwards and keep a billing alarm on.",
+    "3 LeetCode a day - 2 Medium in the morning, 1 Hard at night. 30 minutes max per Medium, 45 for the Hard; if stuck, read the solution, mark it ↻ revisit and re-solve it on Sunday.",
+    "1 SQL question at lunch and 1 design coding question at night, both Easy or Medium - speed and clean code, not tricks. The design question is on the day's HLD/LLD topic.",
+    "Read the day's HLD and LLD Q&A before you sleep: say each Basic answer out loud, and try the Advanced ones before opening them.",
+    "Floor vs full: on a drained day switch to Easy day - the 2 Mediums + SQL + the HLD read + 1 km walk + water + clean food still counts.",
+    "One theme a day: the HLD read, the LLD code, the design question and the cloud lab explain the same idea from four angles.",
+    "One cloud at a time: AWS for days 1–50, Azure for 51–75, each mapped to the AWS service you already know. Always delete lab resources.",
     "Never double up to catch up: missed tasks go to the catch-up list and get done on Saturday or Sunday.",
     "Checkpoints on days 25, 50 and 75 have pass criteria - if one fails, repeat its weak topic before moving on.",
 ]
@@ -312,6 +246,7 @@ def read_detailed(path: Path) -> list[list[list[str]]]:
 
 def build(start: date, src_dir: Path) -> dict:
     rows = read_detailed(src_dir / DETAILED)
+    sql_iter = iter(SQL_ORDER)
     assert len(rows) == 75, f"expected 75 day rows in {DETAILED}, found {len(rows)}"
     days = []
     for r in rows:
@@ -320,12 +255,22 @@ def build(start: date, src_dir: Path) -> dict:
         pattern = PATTERN_BY_DAY[n]
         phase = 1 if n <= 25 else 2 if n <= 50 else 3
         cloud = "AWS" if n <= 50 else "Azure"
-        lc = []
-        for p in r[5]:
-            name = re.sub(r"^\d+\.\s*", "", p)
-            d = DIFF[name]
-            lc.append({"name": name, "slug": slug(name), "url": f"https://leetcode.com/problems/{slug(name)}/",
-                       "difficulty": DIFF_NAME[d], "pattern": pattern})
+        lc = [{"name": name, "slug": SLUG.get(name) or slug(name), "url": f"https://leetcode.com/problems/{SLUG.get(name) or slug(name)}/",
+               "difficulty": diff, "pattern": pattern}
+              for name, diff in zip(LEETCODE[n], ("Medium", "Medium", "Hard"))]
+        if kind == "Review Sun":
+            sql = {"review": True, "name": "Re-solve the SQL you found hardest this week", "difficulty": "Review"}
+            design = {"review": True, "name": "Re-solve one design question from this week", "difficulty": "Review"}
+        else:
+            name, diff = next(sql_iter)
+            sslug = SQL_SLUG.get(name) or slug(name)
+            sql = {"name": name, "difficulty": diff, "url": f"https://leetcode.com/problems/{sslug}/"}
+            dsg = DESIGN[n]
+            if dsg[0] == "LeetCode":
+                design = {"name": dsg[1], "difficulty": dsg[2], "source": "LeetCode",
+                          "url": f"https://leetcode.com/problems/{SLUG.get(dsg[1]) or slug(dsg[1])}/"}
+            else:
+                design = {"name": dsg[1], "difficulty": dsg[2], "source": "Build in C#", "statement": dsg[3]}
         when = start + timedelta(days=n - 1)
         days.append({
             "day": n, "date": when.isoformat(), "weekday": when.strftime("%a"),
@@ -333,17 +278,19 @@ def build(start: date, src_dir: Path) -> dict:
             "theme": r[1][0],
             "dsa": {"pattern": pattern, "tip": PATTERN_TIPS[pattern]},
             "leetcode": lc,
-            "hld": {"topic": r[2][0], "points": HLD_POINTS[n], "when": "Lunch, 25–30 min (office topic)"},
-            "lld": {"topic": r[3][0], "when": "9:00 pm, 30 min",
+            "sql": sql,
+            "design": design,
+            "hld": {"topic": r[2][0], "points": HLD_POINTS[n], "when": "Lunch, 25 min (office topic) + SQL 15 min"},
+            "lld": {"topic": r[3][0], "when": "9:00 pm, 30 min + design question 20 min",
                     "deliverable": ("Explain it out loud in 5 minutes, then write the one-line summary" if kind == "Review Sun"
                                     else "Working C# code pushed to your practice repo, with one unit test")},
-            "cloud": {"provider": cloud, "topic": r[4][0], "when": "9:30 pm, 30 min",
+            "cloud": {"provider": cloud, "topic": r[4][0], "when": "9:50 pm, 25 min",
                       "note": "Delete what you created and check the billing alarm."},
             "checkpoint": CHECKPOINTS.get(n),
         })
     return {
-        "version": 1, "title": "75-Day SDE Plan",
-        "subtitle": "Modified 75 Hard for SDE interviews: DSA, HLD, LLD in C#, AWS then Azure, and daily habits",
+        "version": 2, "title": "75-Day SDE Plan",
+        "subtitle": "Modified 75 Hard for SDE interviews: 2 Medium + 1 Hard LeetCode, SQL, design coding, HLD, LLD in C#, AWS then Azure, daily habits",
         "start": start.isoformat(), "end": (start + timedelta(days=74)).isoformat(),
         "phases": PHASES, "rules": RULES, "schedule": SCHEDULE, "habits": HABITS, "easy_day": EASY_DAY,
         "patterns": PATTERN_TIPS, "days": days,
@@ -361,6 +308,13 @@ def main():
     plan = build(start, Path(a.src_dir))
     out = HERE / "plan.json"
     out.write_text(json.dumps(plan, indent=1, ensure_ascii=False), encoding="utf-8")
+    # HLD / LLD Q&A per day, written in parts under content/qna/, served as one file the app loads on demand
+    qna = {}
+    for part in sorted((HERE / "content" / "qna").glob("qna-*.json")):
+        qna.update(json.loads(part.read_text(encoding="utf-8")))
+    if qna:
+        (HERE / "qna.json").write_text(json.dumps(qna, ensure_ascii=False, separators=(",", ":")), encoding="utf-8")
+        print(f"qna.json: {len(qna)} days, {sum(len(v['hld']) + len(v['lld']) for v in qna.values())} Q&As")
     print(f"plan.json: {len(plan['days'])} days, {plan['start']} → {plan['end']}")
 
 

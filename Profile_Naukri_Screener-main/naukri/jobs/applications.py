@@ -231,6 +231,9 @@ TEMPLATE = r"""<!doctype html>
   th { color: var(--muted); font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: .05em; border-top: 0; }
   td.a { font-weight: 600; }
   td.fix { color: var(--muted); font-size: 13px; }
+  /* phones: the answers table scrolls inside its card instead of widening the page */
+  @media (max-width: 640px) { table { display: block; overflow-x: auto; -webkit-overflow-scrolling: touch; } }
+  .app { overflow-wrap: anywhere; }
   .blocked { margin-top: 8px; padding: 8px 10px; border-radius: 8px; background: var(--warn-soft); color: var(--warn); font-size: 14px; }
   .empty { color: var(--muted); padding: 30px 0; text-align: center; }
   footer { margin-top: 30px; color: var(--muted); font-size: 13px; }

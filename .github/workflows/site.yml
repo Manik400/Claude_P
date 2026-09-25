@@ -14,6 +14,7 @@ on:
       - "site/tools/publish.py"
       - "sde-75-day-plan/index.html"
       - "sde-75-day-plan/plan.json"
+      - "sde-75-day-plan/qna.json"
       - ".github/workflows/site.yml"
   workflow_dispatch:
 

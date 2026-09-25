@@ -1,0 +1,992 @@
+{
+  "31": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is service discovery and why do microservices need it?",
+        "a": "Service discovery lets a service find the current network location (IP and port) of another service instead of hard-coding it. In containerized systems instances are created, moved and killed constantly, so addresses change all the time. A discovery mechanism keeps an up-to-date list of healthy instances so callers always hit a live one."
+      },
+      {
+        "level": "Basic",
+        "q": "What is the difference between a liveness probe and a readiness probe?",
+        "a": "Liveness answers 'is this process stuck or dead?' - if it fails, the orchestrator restarts the container. Readiness answers 'can this instance take traffic right now?' - if it fails, the instance is removed from the load balancer but not restarted. For example, an app warming its cache or waiting on a DB connection should be not-ready but still alive."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Compare client-side and server-side service discovery.",
+        "a": "- Client-side: the client queries a registry (Eureka, Consul) and picks an instance itself, doing its own load balancing; fewer hops but every client needs discovery logic.\n- Server-side: the client calls a load balancer or DNS name (Kubernetes Service, AWS ALB) which looks up the registry and forwards; clients stay simple but there is an extra hop.\n- Kubernetes uses server-side discovery via DNS names plus kube-proxy."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How are containers different from virtual machines?",
+        "a": "A VM virtualizes hardware and runs a full guest OS on a hypervisor, so it is heavy (GBs, boots in minutes) but strongly isolated. A container shares the host kernel and isolates processes using namespaces and cgroups, so it is lightweight (MBs, starts in seconds) and packs densely. The trade-off is weaker isolation, since a kernel exploit can affect all containers on the host."
+      },
+      {
+        "level": "Advanced",
+        "q": "What should a health check endpoint actually check, and what are the pitfalls?",
+        "a": "Liveness should be cheap and check only the process itself (can it respond), never downstream dependencies, otherwise a DB outage makes the orchestrator restart every instance in a loop. Readiness can check critical dependencies but with timeouts and caching so the probe itself does not overload them. Also set sensible initial delays and failure thresholds so slow startups are not killed, and consider a separate startup probe for slow-booting apps."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you keep a service registry consistent when instances crash without deregistering?",
+        "a": "Registries use leases with heartbeats: each instance must renew its registration every few seconds, and entries whose lease expires are evicted. Clients should also cache the instance list and retry on a different instance if a call fails, because the registry is eventually consistent. Registries like Consul and etcd run as replicated clusters (Raft) so the registry itself is not a single point of failure."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What is dependency injection and why use it?",
+        "a": "Dependency injection means a class receives its dependencies (usually as interfaces) from outside instead of creating them with new. This follows the Dependency Inversion Principle, keeps classes loosely coupled and makes unit testing easy because you can pass mocks. In .NET the built-in container in Microsoft.Extensions.DependencyInjection wires everything at startup."
+      },
+      {
+        "level": "Basic",
+        "q": "What are the three service lifetimes in .NET DI?",
+        "a": "- Transient: a new instance every time it is resolved; good for lightweight stateless services.\n- Scoped: one instance per scope, which in ASP.NET Core means per HTTP request; typical for DbContext and unit-of-work.\n- Singleton: one instance for the whole app lifetime; must be thread-safe (caches, configuration, HttpClient factories)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "What is a captive dependency and how does .NET protect against it?",
+        "a": "A captive dependency is when a longer-lived service holds a shorter-lived one, for example a singleton that takes a scoped DbContext in its constructor. The scoped object then lives forever, gets shared across requests and causes thread-safety and stale-data bugs. In Development, ASP.NET Core enables ValidateScopes which throws when a scoped service is resolved from the root provider. The fix is to inject IServiceScopeFactory and create a scope when needed."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Constructor injection vs property injection vs method injection - which do you prefer?",
+        "a": "Constructor injection is the default: dependencies are explicit, required and the object is always valid after construction, and it is the only style the built-in container supports automatically. Method injection (passing a dependency as a parameter, like [FromServices] on an action) suits a dependency needed by just one call. Property injection is for optional dependencies but hides requirements, so it needs a third-party container like Autofac."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you register multiple implementations of one interface and pick one at runtime?",
+        "a": "Register all of them; resolving IEnumerable<T> gives every implementation, and resolving T gives the last one registered. From .NET 8 you can use keyed services to choose by key.\n```csharp\nservices.AddKeyedScoped<IPaymentGateway, RazorpayGateway>(\"razorpay\");\nservices.AddKeyedScoped<IPaymentGateway, StripeGateway>(\"stripe\");\n\npublic class CheckoutService(\n    [FromKeyedServices(\"razorpay\")] IPaymentGateway gateway) { }\n```\nBefore .NET 8 the common approach was a factory or a strategy resolver over IEnumerable<T>."
+      },
+      {
+        "level": "Advanced",
+        "q": "Why is the Service Locator pattern considered an anti-pattern compared to DI?",
+        "a": "With service locator a class calls something like provider.GetService<T>() internally, so its dependencies are hidden rather than visible in the constructor. That makes code harder to read, pushes errors from startup to runtime, and makes tests need a configured container. It is acceptable only at composition roots or infrastructure edges, such as middleware or background workers creating scopes via IServiceScopeFactory."
+      }
+    ]
+  },
+  "32": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is the difference between authentication and authorization?",
+        "a": "Authentication verifies who you are, for example by checking a password, OTP or token signature, and results in 401 Unauthorized when it fails. Authorization decides what an authenticated identity is allowed to do, such as roles, scopes or ownership checks, and results in 403 Forbidden when it fails. Authentication always happens first."
+      },
+      {
+        "level": "Basic",
+        "q": "What is a JWT and what are its three parts?",
+        "a": "A JSON Web Token is a compact, signed token made of header.payload.signature, each Base64Url encoded. The header holds the algorithm (HS256, RS256), the payload holds claims like sub, exp, iss, aud and roles, and the signature proves the token was issued by the server and not tampered with. The payload is only encoded, not encrypted, so never put secrets in it."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Why use short-lived access tokens with refresh tokens?",
+        "a": "JWTs are stateless, so the server cannot easily revoke one before it expires; keeping access tokens short (5-15 minutes) limits the damage if one leaks. A long-lived refresh token, stored securely (httpOnly cookie) and tracked server-side, is used to get new access tokens. Refresh tokens can be revoked and rotated on each use, and reuse of an old refresh token signals theft."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Explain the OAuth2 authorization code flow.",
+        "a": "- The client redirects the user to the authorization server with client_id, redirect_uri, scope and state.\n- The user logs in and consents; the server redirects back with a short-lived authorization code.\n- The client's backend exchanges the code plus its client secret for an access token (and refresh token) over a back channel.\n- The client calls the resource API with the access token.\nTokens never pass through the browser URL, which makes it safer than the old implicit flow."
+      },
+      {
+        "level": "Advanced",
+        "q": "What is PKCE and why is it needed?",
+        "a": "PKCE (Proof Key for Code Exchange) protects the authorization code flow for public clients like mobile apps and SPAs that cannot keep a client secret. The client creates a random code_verifier, sends its hash (code_challenge) in the authorize request, and must send the original verifier when exchanging the code. An attacker who intercepts the code cannot redeem it without the verifier. It is now recommended for all clients."
+      },
+      {
+        "level": "Advanced",
+        "q": "Session cookies vs JWT - how do you choose, and how do you handle JWT revocation?",
+        "a": "Server sessions are easy to revoke and keep tokens small but need a shared session store to scale horizontally. JWTs are stateless and good across many services, but revocation is hard. Common JWT revocation strategies: short expiry, a denylist of revoked jti values in Redis checked at the gateway, or a per-user token version stored in the DB. Many systems combine them: a session cookie at the BFF and JWTs between internal services."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "How would you define the core interfaces of an auth module?",
+        "a": "Separate responsibilities into small interfaces so each can be swapped or mocked:\n- IPasswordHasher: Hash and Verify.\n- ITokenService: IssueAccessToken, IssueRefreshToken, ValidateToken.\n- IUserRepository: FindByEmail, Save.\n- IAuthService: Login, Refresh, Logout, which orchestrates the others.\nThis follows SRP and ISP and lets you switch JWT to opaque tokens or BCrypt to Argon2 without touching callers."
+      },
+      {
+        "level": "Basic",
+        "q": "How should passwords be stored?",
+        "a": "Never store plain text or use a fast hash like SHA-256 or MD5. Use a slow, salted, adaptive algorithm such as BCrypt, PBKDF2 or Argon2, where each user gets a random salt and a work factor you can raise over time. In .NET, ASP.NET Core Identity's PasswordHasher<T> uses PBKDF2 and stores the version so hashes can be upgraded on next login."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you implement role- and policy-based authorization in ASP.NET Core?",
+        "a": "Roles are checked with [Authorize(Roles = \"Admin\")], but policies are more flexible: you register named policies built from requirements and handlers.\n```csharp\nbuilder.Services.AddAuthorization(o =>\n    o.AddPolicy(\"CanRefund\", p =>\n        p.RequireClaim(\"scope\", \"payments.refund\")));\n\n[Authorize(Policy = \"CanRefund\")]\npublic IActionResult Refund(int id) { ... }\n```\nFor resource-based rules like 'only the owner can edit', implement an AuthorizationHandler and call IAuthorizationService.AuthorizeAsync with the resource."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you design the auth module to support multiple login methods (password, OTP, Google)?",
+        "a": "Use the Strategy pattern: an IAuthenticator interface with Authenticate(credentials) returning an AuthResult, and one implementation per method (PasswordAuthenticator, OtpAuthenticator, GoogleOAuthAuthenticator). The AuthService picks the strategy by login type, often via a dictionary or keyed DI, then uses the shared ITokenService to issue tokens. Adding a new method means adding a class, not editing existing ones (Open/Closed Principle)."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you design refresh-token rotation with reuse detection?",
+        "a": "Store each refresh token hashed in a table with UserId, FamilyId, ExpiresAt, and ReplacedBy/RevokedAt. On refresh, validate the token, mark it used, and issue a new one in the same family. If a token that was already used is presented again, assume theft and revoke the whole family, forcing a re-login. Wrap the check-and-mark in a transaction or conditional update to avoid race conditions between two parallel refreshes."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you make the auth module testable, especially around token expiry?",
+        "a": "Avoid static dependencies such as DateTime.UtcNow and hard-coded keys. Inject TimeProvider (built into .NET 8) or an IClock, inject signing keys via IOptions<JwtOptions>, and depend on interfaces for repositories and hashers. Unit tests can then use FakeTimeProvider to advance time and assert that tokens expire, and integration tests can use WebApplicationFactory with a test authentication handler."
+      }
+    ]
+  },
+  "33": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the three pillars of observability?",
+        "a": "- Logs: timestamped records of discrete events, great for debugging a specific failure.\n- Metrics: numeric measurements aggregated over time (request rate, error rate, latency percentiles, CPU), cheap to store and ideal for dashboards and alerts.\n- Traces: the path of one request across services, made of spans with timings, used to find where latency or errors occur."
+      },
+      {
+        "level": "Basic",
+        "q": "What is a correlation ID and why is it important?",
+        "a": "A correlation ID is a unique identifier attached to a request at the edge and passed to every downstream call, usually in a header like traceparent or X-Correlation-ID. Every log line and span includes it, so you can pull every event for one user request across many services. Without it, debugging a distributed request means guessing from timestamps."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Why do we alert on symptoms rather than causes?",
+        "a": "Symptoms are what users feel: high latency, error rate, failed checkouts. Causes like high CPU or a full queue may not hurt users at all, and alerting on them creates noise and pager fatigue. Alert on SLO-based symptoms (for example p99 latency over 500 ms or error rate above 1%) and use cause metrics on dashboards for diagnosis. The golden signals are latency, traffic, errors and saturation."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Why use percentiles instead of averages for latency?",
+        "a": "Averages hide the tail: if 99 requests take 10 ms and one takes 5 seconds, the average looks fine while some users suffer badly. Percentiles like p50, p95 and p99 show what most users and the slowest users experience. Tail latency matters even more in microservices, because a request fanning out to many services is as slow as its slowest call."
+      },
+      {
+        "level": "Advanced",
+        "q": "How does distributed tracing work under the hood?",
+        "a": "The first service creates a trace ID and a root span; each unit of work creates a child span with its own span ID, parent ID, start time and duration. Context is propagated through HTTP headers (W3C traceparent) or message metadata. Spans are exported asynchronously to a collector (OpenTelemetry Collector) and stored in a backend like Jaeger, Tempo or X-Ray, which reassembles the tree. High-volume systems sample, either head-based (decide at start) or tail-based (keep slow or error traces)."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you control the cost and cardinality of observability data at scale?",
+        "a": "Metrics cost grows with label cardinality, so never use unbounded labels like userId or orderId on metrics; put them in logs or traces instead. Sample traces, keep debug logs off in production, and use log levels properly. Apply retention tiers: hot storage for a few days, cheaper cold storage for longer. Aggregating at the edge (for example histograms in the app) also cuts volume."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What is structured logging and why is it better than plain text logs?",
+        "a": "Structured logging writes logs as key-value data (usually JSON) instead of free text, for example {\"event\":\"OrderPlaced\",\"orderId\":42,\"amount\":999}. Log platforms can then filter and aggregate by fields (all errors for orderId 42) without fragile regex parsing. In .NET, ILogger with message templates and Serilog produce structured logs out of the box."
+      },
+      {
+        "level": "Basic",
+        "q": "Why should you use message templates instead of string interpolation in ILogger calls?",
+        "a": "With a template like logger.LogInformation(\"Order {OrderId} placed\", id), OrderId is captured as a separate property that can be queried. Interpolation ($\"Order {id} placed\") bakes the value into the text, losing the structure, and it allocates the string even when that log level is disabled. Analyzer CA2254 flags this."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you add a correlation ID to every log line in ASP.NET Core?",
+        "a": "Use logging scopes in a middleware so every log inside the request inherits the property.\n```csharp\napp.Use(async (ctx, next) => {\n    var id = ctx.Request.Headers[\"X-Correlation-ID\"].FirstOrDefault()\n             ?? Guid.NewGuid().ToString();\n    ctx.Response.Headers[\"X-Correlation-ID\"] = id;\n    var logger = ctx.RequestServices.GetRequiredService<ILogger<Program>>();\n    using (logger.BeginScope(new Dictionary<string, object> { [\"CorrelationId\"] = id }))\n        await next();\n});\n```\nWith OpenTelemetry, Activity.Current.TraceId is added automatically instead."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you choose the right log level?",
+        "a": "- Trace/Debug: detailed diagnostics, off in production.\n- Information: normal business events (order placed, user logged in).\n- Warning: unexpected but handled situations (retry succeeded, fallback used).\n- Error: an operation failed and needs attention, with the exception attached.\n- Critical: the app or a key dependency is down.\nLevels should be configurable per namespace through appsettings without redeploying."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you design a logging abstraction so business code does not depend on Serilog or any vendor?",
+        "a": "Business code depends only on ILogger<T> from Microsoft.Extensions.Logging, which is the abstraction; Serilog, NLog or OpenTelemetry are plugged in as providers at the composition root. Sinks (console, file, Elastic, Seq) are configured in one place, so switching vendors changes only startup code. For domain-heavy code you can add a small IAuditLogger for business audit events that must go to durable storage, kept separate from diagnostic logs."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you make high-volume logging fast and safe in .NET?",
+        "a": "Use the LoggerMessage source generator, which creates strongly typed, allocation-free log methods and skips work when the level is disabled.\n```csharp\npublic static partial class Log {\n    [LoggerMessage(EventId = 100, Level = LogLevel.Information,\n        Message = \"Order {OrderId} placed for {Amount}\")]\n    public static partial void OrderPlaced(ILogger logger, int orderId, decimal amount);\n}\n```\nAlso write to sinks asynchronously with bounded buffers, and redact PII such as emails, tokens and card numbers with destructuring policies or enrichers."
+      }
+    ]
+  },
+  "34": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the functional and non-functional requirements of a URL shortener?",
+        "a": "- Functional: create a short URL for a long URL, redirect short to long, optional custom alias, optional expiry, basic click analytics.\n- Non-functional: very low redirect latency, high availability, short codes that are not guessable in sequence, and heavy read skew (often 100:1 reads to writes).\nA typical estimate: 100M new URLs a month, 7-character codes, a few KB per record, so tens of TB over years."
+      },
+      {
+        "level": "Basic",
+        "q": "Why is base62 used and how long should the short code be?",
+        "a": "Base62 uses a-z, A-Z and 0-9, which are all URL-safe and case-sensitive, giving 62 options per character. Seven characters give 62^7, about 3.5 trillion combinations, which is enough for many years at billions of URLs. Six characters give about 56 billion, which may be enough for smaller systems."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Compare a counter-based ID with hashing the long URL for key generation.",
+        "a": "- Counter + base62: guaranteed unique, no collision checks, but sequential codes are guessable and a single counter is a bottleneck; fix with range allocation per server (each takes a block of 1000 IDs) or Snowflake IDs.\n- Hash (MD5/SHA of URL, take the first 7 chars): the same URL gives the same code, but truncation causes collisions that need a check-and-retry (append a salt and rehash).\n- A pre-generated key service that hands out unused random keys is another option."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Should redirects use 301 or 302?",
+        "a": "301 (Moved Permanently) lets browsers and CDNs cache the redirect, cutting load and latency, but later clicks never reach your servers, so you lose analytics and cannot change or expire the link reliably. 302 (Found) or 307 sends every click to you, enabling analytics, expiry and edits at the cost of more traffic. Most commercial shorteners use 302 for that reason."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you scale the redirect path to handle a very high read load?",
+        "a": "Put a cache (Redis) in front of the database with the short code as key; hot links follow a power-law, so an LRU cache with a high hit ratio absorbs most reads. Use a key-value store like DynamoDB or Cassandra, partitioned by short code, for the mapping. Add CDN or edge caching for the most popular links and run stateless redirect servers behind a load balancer. Send click analytics asynchronously through a queue so they never slow down the redirect."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you handle custom aliases, expiry and abuse in a URL shortener?",
+        "a": "Custom aliases go into the same key space with a conditional insert (insert-if-not-exists) so two users cannot claim the same alias. Expiry is stored per record; the redirect path checks it and returns 404/410, and a background job or DB TTL cleans up. For abuse, rate-limit creation per user and IP, check long URLs against malware and phishing lists, and block custom aliases that clash with reserved words or impersonate brands."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "How do you convert a number to base62 in C#?",
+        "a": "Repeatedly divide by 62 and map each remainder to a character, then reverse.\n```csharp\nconst string Alphabet =\n  \"0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ\";\npublic static string Encode(long n) {\n    if (n == 0) return \"0\";\n    var sb = new StringBuilder();\n    while (n > 0) { sb.Insert(0, Alphabet[(int)(n % 62)]); n /= 62; }\n    return sb.ToString();\n}\n```\nDecoding reverses it: result = result * 62 + index of each character."
+      },
+      {
+        "level": "Basic",
+        "q": "What classes would you define in a URL shortener LLD?",
+        "a": "- ShortUrl entity: Code, LongUrl, CreatedAt, ExpiresAt, OwnerId.\n- IIdGenerator: NextId(), with implementations like a counter or Snowflake.\n- ICodeEncoder: Encode(long) and Decode(string), such as Base62Encoder.\n- IUrlRepository: Save, FindByCode, Exists.\n- UrlShortenerService: Shorten(longUrl, alias?, expiry?) and Resolve(code).\nKeeping ID generation and encoding behind interfaces lets you swap strategies without touching the service."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you design a thread-safe ID generator for a single process?",
+        "a": "Use Interlocked.Increment on a long field, which is atomic and lock-free, instead of lock or a plain ++ that can produce duplicates under concurrency. To survive restarts, the generator should reserve ranges from durable storage (for example take IDs 1000-1999 from the DB) and hand them out in memory, fetching a new block when exhausted. Register it as a singleton in DI."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does a Snowflake-style ID generator work?",
+        "a": "It builds a 64-bit ID from a timestamp in milliseconds (about 41 bits), a machine or worker ID (about 10 bits) and a per-millisecond sequence (about 12 bits). IDs are unique across machines without coordination and roughly time-sorted. The implementation must lock or use atomic operations around the sequence, wait for the next millisecond if the sequence overflows, and handle clock moving backwards by refusing to generate or waiting."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you handle hash collisions if you generate codes by hashing the URL?",
+        "a": "Take the first 7 base62 characters of the hash, then try to insert with a unique constraint on Code. If the insert fails because the code exists for a different URL, append a counter or salt to the input and hash again, retrying a bounded number of times. Relying on the database unique constraint rather than a separate exists-then-insert check avoids race conditions between concurrent requests."
+      },
+      {
+        "level": "Advanced",
+        "q": "Which design patterns fit naturally in a URL shortener LLD?",
+        "a": "- Strategy: interchangeable code-generation strategies (counter+base62, hash, random key pool) behind one interface.\n- Decorator: a CachingUrlRepository wrapping the real repository to add Redis caching transparently.\n- Factory: build a ShortUrl with validation (valid URI, allowed scheme, alias rules).\n- Observer or domain events: publish a LinkClicked event for analytics without coupling the redirect logic to it."
+      }
+    ]
+  },
+  "35": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what does an API gateway do, and what is a BFF?",
+        "a": "An API gateway is the single entry point that handles routing, TLS termination, authentication, rate limiting and request aggregation for backend services. A Backend-for-Frontend is a dedicated gateway or backend per client type (web, mobile) that shapes responses to what that client needs. The gateway handles cross-cutting concerns; the BFF handles client-specific composition."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: authentication vs authorization, and what is inside a JWT?",
+        "a": "Authentication is who you are (401 on failure), authorization is what you may do (403 on failure). A JWT is header.payload.signature: the header names the algorithm, the payload carries claims like sub, exp, aud and roles, and the signature prevents tampering. It is signed, not encrypted, so it must not contain secrets."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: when should you split a monolith, and sync vs async calls?",
+        "a": "Start with a modular monolith and split along business capabilities when teams, scaling needs or deploy cadence clearly diverge; each service owns its own database. Sync calls (REST/gRPC) are simple but couple availability and latency, since if B is down A fails. Async messaging decouples services in time and absorbs spikes, at the cost of eventual consistency and harder debugging."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: liveness vs readiness, and what ties logs, metrics and traces together?",
+        "a": "Liveness failing means restart the container; readiness failing means stop sending traffic but keep it running. Logs are events, metrics are numbers over time, traces follow one request across services. A correlation or trace ID propagated through headers ties all three together, and alerts should fire on user-facing symptoms like latency and errors."
+      },
+      {
+        "level": "Advanced",
+        "q": "Explain the OAuth2 authorization code flow with PKCE out loud in under a minute.",
+        "a": "The app generates a code_verifier and sends its hash as code_challenge when redirecting the user to the authorization server. The user logs in and consents, and the server redirects back with a one-time authorization code. The app exchanges the code plus the code_verifier (and client secret if confidential) at the token endpoint for an access token and refresh token. It then calls APIs with the access token and uses the refresh token to renew it when it expires."
+      },
+      {
+        "level": "Advanced",
+        "q": "Walk through the URL shortener design end to end.",
+        "a": "Writes: the API validates the URL, gets a unique ID from a range-based or Snowflake generator, encodes it in base62 to 7 characters and stores code-to-URL in a key-value store partitioned by code. Reads: the redirect service checks Redis first, then the DB, and returns a 302 so analytics and expiry keep working. Click events are pushed to a queue for async analytics. Stateless services behind a load balancer, cache for hot links and CDN at the edge handle the heavy read skew."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what is the Facade pattern?",
+        "a": "Facade provides one simple interface over a complex subsystem, for example an OrderFacade.PlaceOrder() that coordinates inventory, payment and shipping services. Clients depend on the facade instead of many classes, which reduces coupling. It simplifies but does not add behaviour or hide access; the subsystem can still be used directly when needed."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what is the Adapter pattern?",
+        "a": "Adapter converts one interface into another that the client expects, letting incompatible classes work together. A typical example is wrapping a third-party SMS SDK in a class that implements your own ISmsSender. It is ideal for integrating legacy code or vendor libraries without changing your domain code."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Facade vs Adapter - what is the key difference?",
+        "a": "Adapter's goal is compatibility: it makes an existing interface match a required one, usually wrapping a single class. Facade's goal is simplicity: it defines a new, easier interface over many classes. Both wrap other objects, so interviewers look for the intent: Adapter translates, Facade simplifies."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: name the .NET DI lifetimes and the captive dependency problem.",
+        "a": "Transient is new every resolve, Scoped is one per request, and Singleton is one for the app lifetime. A captive dependency is a longer-lived service holding a shorter-lived one, such as a singleton with a scoped DbContext, which causes shared state and threading bugs. ValidateScopes catches it in Development, and IServiceScopeFactory is the fix."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do Adapter and DI work together when integrating a third-party payment provider?",
+        "a": "Define your own IPaymentGateway interface in the domain, write RazorpayAdapter and StripeAdapter that translate your calls into each SDK's API, and register the chosen adapter in DI. Business services depend only on IPaymentGateway, so switching providers is a one-line registration change, and tests use a fake gateway.\n```csharp\nservices.AddScoped<IPaymentGateway, RazorpayAdapter>();\n```"
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you combine Facade, Strategy and DI in the auth module you designed this week?",
+        "a": "An AuthFacade (IAuthService) exposes Login, Refresh and Logout and hides the password hasher, token service, user repository and authenticator selection. Login methods (password, OTP, Google) are Strategy implementations of IAuthenticator, resolved through keyed services or IEnumerable<IAuthenticator>. All collaborators are constructor-injected interfaces with correct lifetimes: token service and hasher as singletons, repositories as scoped."
+      }
+    ]
+  },
+  "36": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the core components of a job scheduler?",
+        "a": "- Job store: a durable table or queue holding job definition, payload, next run time, status and retry count.\n- Poller or dispatcher: periodically picks jobs whose run time is due.\n- Workers: execute jobs, report success or failure.\n- Retry and dead-letter handling: backoff on failure and park jobs that keep failing.\nExamples in .NET are Hangfire and Quartz.NET; in the cloud, EventBridge Scheduler or Azure Functions timers."
+      },
+      {
+        "level": "Basic",
+        "q": "What is a priority queue and where is it used in system design?",
+        "a": "A priority queue always returns the highest-priority item first instead of the oldest, usually backed by a binary heap with O(log n) insert and remove. In systems it is used for job schedulers (by run time or priority), task processing where paid users' jobs go first, and Dijkstra-style routing. At scale, priorities are often implemented as separate queues per priority level that workers drain in weighted order."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you ensure a scheduled job runs exactly once when you have multiple scheduler instances?",
+        "a": "Use a claim step that only one instance can win: for example UPDATE jobs SET status='Running', owner=@me WHERE id=@id AND status='Pending' and check that one row changed, or SELECT ... FOR UPDATE SKIP LOCKED to grab due jobs. Alternatively take a distributed lock (Redis SET NX with TTL) or elect a single leader to dispatch. Because a worker can still crash after doing the work, jobs should also be idempotent."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you store and efficiently find due jobs among millions?",
+        "a": "Index the job table on (status, next_run_at) so the poller runs a cheap range query for pending jobs with next_run_at <= now, fetched in small batches. For Redis-based schedulers, use a sorted set with the run timestamp as the score and ZRANGEBYSCORE to pop due items. For very large volumes, partition jobs by time bucket or hash so multiple dispatchers work on separate shards."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you design retries and failure handling in a distributed scheduler?",
+        "a": "Each job has max attempts and exponential backoff with jitter: on failure, increment attempts and set next_run_at = now + base * 2^attempt plus random jitter. A job that is 'Running' but whose heartbeat or lease expired is considered crashed and becomes eligible again. After max attempts, move it to a dead-letter state with the error for manual inspection. Execution history is kept for auditing, and jobs must be idempotent since at-least-once is the realistic guarantee."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you design a scheduler for cron-style recurring jobs at large scale?",
+        "a": "Store the cron expression and compute the next fire time after each run instead of scanning every job every minute. Partition jobs across scheduler nodes using consistent hashing or leases, so each node only triggers its own shard, and rebalance when nodes join or die. The scheduler only enqueues work onto a message queue; a separate pool of workers executes it, so slow jobs do not delay triggering. Handle missed fires after downtime with a misfire policy: run once, run all, or skip."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What clarifying questions and requirements would you list for a Parking Lot LLD?",
+        "a": "- How many floors and entry/exit gates?\n- Which vehicle types (bike, car, truck) and spot sizes (small, compact, large)?\n- Can a smaller vehicle use a larger spot?\n- How is pricing done: hourly, flat, by vehicle type?\n- Payment methods and whether we need a display board of free spots.\nThen fix core use cases: park vehicle and issue ticket, unpark and pay, show availability."
+      },
+      {
+        "level": "Basic",
+        "q": "What are the main entities in a Parking Lot design?",
+        "a": "ParkingLot (has floors and gates), ParkingFloor (has spots), ParkingSpot (id, type, isFree, current vehicle), Vehicle (plate, type), Ticket (id, vehicle, spot, entry time), EntryGate and ExitGate, Payment, and enums VehicleType and SpotType. Services like ParkingService coordinate the flow. Interviewers want clear ownership: the lot owns floors, floors own spots, and tickets link a vehicle to a spot for a time window."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Would you model vehicle types with inheritance or an enum?",
+        "a": "If vehicle types only differ in data (which spot size they need), an enum VehicleType plus a mapping to allowed spot types is simpler and avoids pointless subclasses. Use an abstract Vehicle with subclasses (Car, Bike, Truck) only if types have genuinely different behaviour. A common interview answer is an abstract Vehicle with a VehicleType property, which keeps it extensible without overdoing hierarchy. Favour composition over deep inheritance."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Should ParkingLot be a Singleton?",
+        "a": "Many interview solutions make it a singleton because there is one physical lot per system instance, but a better answer is to register it as a singleton in DI rather than use a static Instance property. That keeps it testable and allows multiple lots later (a chain of malls) without redesign. If you do write a classic singleton in C#, use Lazy<T> for thread-safe initialization."
+      },
+      {
+        "level": "Advanced",
+        "q": "Sketch the core class skeleton for spots and tickets.",
+        "a": "```csharp\npublic enum SpotType { Small, Compact, Large }\npublic class ParkingSpot {\n    public string Id { get; }\n    public SpotType Type { get; }\n    public Vehicle? Vehicle { get; private set; }\n    public bool IsFree => Vehicle is null;\n    public void Park(Vehicle v) { if (!IsFree) throw new InvalidOperationException(); Vehicle = v; }\n    public void Free() => Vehicle = null;\n}\npublic record Ticket(string Id, Vehicle Vehicle, ParkingSpot Spot, DateTime EntryTime);\n```\nState changes go through methods, not public setters, so invariants stay inside the entity."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you keep the Parking Lot design open for extension, such as new vehicle types or EV charging spots?",
+        "a": "Depend on abstractions: spot allocation via ISpotAllocationStrategy, pricing via IPricingStrategy, and payment via IPaymentProcessor. New vehicle or spot types are added as enum values plus a compatibility map, or as new classes, without editing the ParkingService. EV charging can be a spot capability or decorator (a spot with a Charger component) rather than a new inheritance branch. This keeps the design aligned with the Open/Closed Principle, which interviewers explicitly check."
+      }
+    ]
+  },
+  "37": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What problem does consistent hashing solve?",
+        "a": "With simple modulo hashing (hash(key) % N), changing the number of servers N remaps almost every key, which causes a massive cache miss storm or data movement. Consistent hashing places both servers and keys on a hash ring, and each key belongs to the next server clockwise. Adding or removing a server only moves about 1/N of the keys, those between it and its neighbour."
+      },
+      {
+        "level": "Basic",
+        "q": "How does a key lookup work on a consistent hash ring?",
+        "a": "Hash each server onto positions on a ring (for example 0 to 2^32-1), and store the positions in a sorted structure. To find a key's server, hash the key and find the first server position greater than or equal to it, wrapping around to the start if needed. With a sorted array this is a binary search, O(log n)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "What are virtual nodes and why are they needed?",
+        "a": "With only one point per server, servers land unevenly on the ring and some get much larger arcs, so load is skewed; removing a server also dumps all its load on one neighbour. Virtual nodes place each physical server at many points (for example 100-200) on the ring. This evens out the load statistically, spreads a failed node's keys across many servers, and lets stronger machines take more virtual nodes for weighted distribution."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Where is consistent hashing used in real systems?",
+        "a": "- Distributed caches: memcached clients (ketama) and Redis clients shard keys across nodes.\n- Databases: Cassandra and DynamoDB partition data on a token ring and replicate to the next nodes clockwise.\n- Load balancers: sticky routing of users or sessions to backends (Maglev, Envoy ring hash).\n- CDNs and object stores for mapping objects to servers."
+      },
+      {
+        "level": "Advanced",
+        "q": "How is replication done on a consistent hash ring?",
+        "a": "A key is stored on its owning node plus the next N-1 distinct physical nodes clockwise, forming its preference list (skipping virtual nodes of the same physical machine and ideally the same rack or AZ). Reads and writes use quorums such as W + R > N for consistency. When a node is down, a neighbour can temporarily accept writes (hinted handoff) and later hand them back."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are the limits of consistent hashing and what alternatives exist?",
+        "a": "It still cannot fix hot keys, since one very popular key always maps to one node; you need key splitting, replicas or caching for that. Rebalancing still moves data, which must be streamed and throttled. Alternatives include rendezvous (highest random weight) hashing, which is simpler and needs no ring, jump consistent hash, which is very fast but only supports numbered buckets, and range-based partitioning with a metadata service, which supports range scans."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What pattern would you use for parking pricing, and why?",
+        "a": "Strategy pattern: define IPricingStrategy with CalculateFee(Ticket, DateTime exitTime) and implement HourlyPricing, FlatRatePricing, WeekendPricing and so on. The ExitGate or PaymentService receives the strategy through DI and does not care which one is used. New pricing rules are new classes, so existing code is untouched (Open/Closed)."
+      },
+      {
+        "level": "Basic",
+        "q": "How would you allocate a spot to a vehicle?",
+        "a": "Filter spots that are free and compatible with the vehicle type, then choose based on a policy such as nearest to the entry gate or lowest floor first. Wrap the policy in an ISpotAllocationStrategy so it can change. For speed, keep a separate queue or set of free spots per SpotType per floor instead of scanning every spot on each entry."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Implement a simple hourly pricing strategy with per-vehicle rates.",
+        "a": "```csharp\npublic interface IPricingStrategy { decimal Calculate(Ticket t, DateTime exit); }\npublic class HourlyPricing : IPricingStrategy {\n    private readonly Dictionary<VehicleType, decimal> _rates = new() {\n        [VehicleType.Bike] = 10, [VehicleType.Car] = 30, [VehicleType.Truck] = 60 };\n    public decimal Calculate(Ticket t, DateTime exit) {\n        var hours = (int)Math.Ceiling((exit - t.EntryTime).TotalHours);\n        return Math.Max(1, hours) * _rates[t.Vehicle.Type];\n    }\n}\n```\nRounding up to the next hour and a minimum charge are common business rules to mention."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you support a smaller vehicle using a larger spot?",
+        "a": "Define a compatibility map from VehicleType to an ordered list of acceptable SpotTypes, for example Bike to [Small, Compact, Large] and Car to [Compact, Large]. The allocator tries each spot type in order and takes the first free one, so bikes only use large spots when smaller ones are full. Keeping this map as data or config avoids if-else chains scattered through the code."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you prevent two entry gates from assigning the same spot at the same time?",
+        "a": "Allocation is a check-then-act race. In a single process, make the claim atomic: keep free spots in a ConcurrentQueue per type and use TryDequeue, or lock per spot type. In a DB-backed system, claim with a conditional update such as UPDATE spots SET vehicle_id=@v WHERE id=@id AND vehicle_id IS NULL and retry with another spot if zero rows change. Optimistic concurrency (a row version) works too."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you combine multiple pricing rules, such as a first-hour flat rate, hourly after that, and a night cap?",
+        "a": "Use a composite or chain of pricing rules, where each rule prices its part of the stay or adjusts the total, rather than one giant if-else strategy. For example, a PricingPipeline applies BaseHourlyRule, then FirstHourFlatRule, then DailyCapRule in order, with each rule as its own class. This is Strategy plus Chain of Responsibility or Decorator, keeps every rule unit-testable, and lets product teams reorder or configure rules without code changes."
+      }
+    ]
+  },
+  "38": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is a graph data model?",
+        "a": "Data is modelled as nodes (entities like User, Product) and edges (relationships like FOLLOWS, PURCHASED), and both can hold properties. Relationships are first-class and stored directly rather than rebuilt through joins at query time. It suits data where the connections matter as much as the entities, such as social networks, recommendations and fraud rings."
+      },
+      {
+        "level": "Basic",
+        "q": "When would you choose a graph database over a relational database?",
+        "a": "Choose a graph DB (Neo4j, Amazon Neptune) when queries traverse many hops with variable depth, such as friends-of-friends, shortest path between users, or detecting circular money transfers. In SQL each hop is another self-join, which gets slow and complex as depth grows. In a graph DB traversal cost depends on the size of the neighbourhood visited, not the total table size (index-free adjacency)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you model 'follows' and 'friends' relationships in a relational DB?",
+        "a": "Use a junction table like Follows(follower_id, followee_id, created_at) with a composite primary key and an index on followee_id for 'who follows me' queries. Friendship is symmetric, so either store both directions or store one row with (min_id, max_id) and query both columns. This handles one-hop queries well at huge scale; that is how most large social networks store their core graph, often sharded by user_id."
+      },
+      {
+        "level": "Intermediate",
+        "q": "When is a relational database still the right choice for relationship data?",
+        "a": "When most queries are one or two hops (list my followers, check if A follows B), when you need strong transactions and mature tooling, or when the relationships are fixed and well-structured. SQL also has recursive CTEs for occasional hierarchy queries like org charts or category trees. Many teams keep SQL as the source of truth and add a graph DB only for specific traversal-heavy features."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you compute 'people you may know' at scale?",
+        "a": "Candidates are friends-of-friends ranked by the number of mutual friends plus other signals like same company or city. A naive 2-hop traversal explodes for users with thousands of friends, so it is computed offline in batch (Spark or graph processing) and the top-K suggestions per user are stored in a cache or KV store. Online, the service just reads the precomputed list and filters out people already connected or blocked."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are the challenges of sharding a graph database?",
+        "a": "Graph traversals follow edges that can cross any partition, so random sharding turns one query into many network hops. Graph partitioning to minimise cut edges is hard and changes as the graph evolves, and supernodes (celebrities with millions of edges) create hot spots. That is why large systems often shard adjacency lists by user ID in a KV store (like Facebook's TAO) and limit online queries to one or two hops, pushing deeper analysis offline."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What entities would you define for an elevator system?",
+        "a": "- ElevatorSystem or Building: owns elevators and floors.\n- ElevatorCar: id, current floor, direction, state, request queue.\n- Floor with hall buttons (up/down), and the elevator's internal buttons panel.\n- Request: source floor, target floor or direction, type (hall or cabin).\n- Dispatcher or Controller: assigns hall requests to cars.\n- Enums: Direction (Up, Down, Idle) and DoorState (Open, Closed)."
+      },
+      {
+        "level": "Basic",
+        "q": "What is the difference between a hall request and a cabin request?",
+        "a": "A hall (external) request is made from a floor by pressing Up or Down; it only has a floor and a direction, and the dispatcher decides which elevator serves it. A cabin (internal) request is made inside a specific car by pressing a floor number, so it is added directly to that car's stops. Modelling them separately keeps the dispatcher logic clean."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does an elevator decide the order of stops?",
+        "a": "The standard approach is the SCAN or LOOK algorithm: keep moving in the current direction, stopping at every requested floor on the way, then reverse when there are no more requests ahead. Implement it with two sorted sets: upStops (ascending) and downStops (descending). This avoids starvation and is how real elevators behave, unlike pure first-come-first-served which zig-zags."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you model the dispatcher that picks which elevator serves a hall call?",
+        "a": "Put the choice behind an IDispatchStrategy with SelectElevator(request, elevators). A common strategy picks the nearest elevator that is idle or already moving towards the request floor in the same direction, falling back to the least-loaded car. Other strategies can be zone-based or optimise energy. Strategy lets you swap algorithms and unit test each in isolation."
+      },
+      {
+        "level": "Advanced",
+        "q": "Sketch the ElevatorCar class with its stop queues.",
+        "a": "```csharp\npublic class ElevatorCar {\n    public int Id { get; }\n    public int CurrentFloor { get; private set; }\n    public Direction Direction { get; private set; } = Direction.Idle;\n    private readonly SortedSet<int> _up = new();\n    private readonly SortedSet<int> _down = new(Comparer<int>.Create((a, b) => b.CompareTo(a)));\n    public void AddStop(int floor) {\n        if (floor > CurrentFloor) _up.Add(floor);\n        else if (floor < CurrentFloor) _down.Add(floor);\n    }\n}\n```\nA Step() method moves one floor, opens doors at stops and flips direction when a set runs empty."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you handle concurrency when many buttons are pressed while elevators are moving?",
+        "a": "Treat button presses as events put onto a thread-safe queue (Channel<T> in .NET), and have each elevator run its own loop that processes its requests, so state is only mutated by one thread per car. The dispatcher reads a snapshot of each car's floor and direction to make assignments. This actor-like design avoids locks scattered across the code and makes behaviour deterministic enough to simulate in tests."
+      }
+    ]
+  },
+  "39": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is a heartbeat in distributed systems?",
+        "a": "A heartbeat is a small periodic message a node sends (or answers) to show it is alive. If a monitor or peer misses several heartbeats in a row, beyond a timeout, it marks the node as suspected dead and triggers failover. The interval and timeout trade detection speed against false positives from brief network hiccups or GC pauses."
+      },
+      {
+        "level": "Basic",
+        "q": "Why do some systems need a leader?",
+        "a": "A leader provides a single point of coordination so decisions are made once and in one order: for example, one database primary accepts writes, one scheduler node dispatches jobs, or one Kafka controller assigns partitions. This avoids conflicting decisions from multiple nodes. The cost is that the leader must be re-elected quickly when it fails."
+      },
+      {
+        "level": "Intermediate",
+        "q": "What is split brain and how do quorums prevent it?",
+        "a": "Split brain happens when a network partition makes two groups of nodes each believe they are in charge, so both accept writes and data diverges. A quorum requires a strict majority (more than N/2) of nodes to agree before electing a leader or committing a write. Only one side of a partition can have a majority, so at most one leader can act. This is why clusters use odd sizes like 3 or 5."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does Raft leader election work at a high level?",
+        "a": "Every node starts as a follower with a randomized election timeout. If a follower hears no heartbeat from a leader before its timeout, it becomes a candidate, increments the term number, votes for itself and asks others for votes. A node grants at most one vote per term, and only to candidates whose log is at least as up to date. A candidate with a majority becomes leader and starts sending heartbeats; randomized timeouts make split votes rare."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are fencing tokens and why are they needed even with leader election?",
+        "a": "An old leader can be paused (long GC, network stall) and wake up still believing it is the leader after a new one was elected. A fencing token is a monotonically increasing number, like the Raft term or lock version, given to each new leader. Storage and downstream services reject requests carrying a token lower than the highest they have seen, so the stale leader's writes are blocked."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you choose heartbeat intervals and failure detection timeouts, and what are smarter detectors?",
+        "a": "Too short a timeout causes false failovers during GC pauses or network jitter, which can cause flapping; too long delays recovery. A common rule is timeout of several heartbeat intervals, for example 1-second heartbeats and a 5-10 second timeout. Smarter options include the phi accrual failure detector (used by Cassandra and Akka), which outputs a suspicion level based on observed heartbeat arrival history, and gossip protocols that spread membership and liveness information without a central monitor."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What is the State pattern?",
+        "a": "The State pattern lets an object change its behaviour when its internal state changes, by delegating behaviour to a state object. Each state is its own class implementing a common interface, and the context swaps the current state object on transitions. It replaces large switch or if-else blocks on a status field."
+      },
+      {
+        "level": "Basic",
+        "q": "What states would an elevator have?",
+        "a": "Typical states are Idle, MovingUp, MovingDown, DoorsOpen and Maintenance (or OutOfService). Each state reacts differently to the same events: a floor request in Idle starts movement, in DoorsOpen it is queued, and in Maintenance it is rejected. Drawing a state transition diagram first is the best way to start this question in an interview."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Implement a minimal elevator state interface and one state.",
+        "a": "```csharp\npublic interface IElevatorState {\n    void OnRequest(ElevatorCar car, int floor);\n    void OnArrived(ElevatorCar car);\n}\npublic class IdleState : IElevatorState {\n    public void OnRequest(ElevatorCar car, int floor) {\n        car.AddStop(floor);\n        car.SetState(floor > car.CurrentFloor ? new MovingUpState() : new MovingDownState());\n    }\n    public void OnArrived(ElevatorCar car) { }\n}\n```\nThe car forwards events to _state, and each state decides the transition."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Who should decide transitions: the context or the state classes?",
+        "a": "Both are valid. If state classes decide (calling context.SetState), each state knows its successors, which keeps transition logic close to behaviour but couples states to each other. If the context or a transition table decides, states stay independent and the whole state machine is visible in one place, which is easier to audit. For interviews, state-driven transitions are standard; mention the table-driven option for complex machines."
+      },
+      {
+        "level": "Advanced",
+        "q": "State pattern vs Strategy pattern - what is the difference?",
+        "a": "They have the same structure (a context delegating to an interface), but different intent. In Strategy the client picks an algorithm and it usually does not change on its own, like a pricing strategy. In State the object moves between states itself in response to events, and states usually know about transitions. An elevator's dispatch algorithm is Strategy; its Idle/Moving/DoorsOpen behaviour is State."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you make elevator states safe with timers and concurrent events?",
+        "a": "Process all events for one car on a single thread or queue (Channel<T>), so state transitions never race. Timed behaviour like 'close doors after 5 seconds' is also posted as an event (DoorTimeout) into the same queue, rather than a timer callback mutating state directly. States can be stateless singletons to avoid allocations, with per-car data kept in the context. Injecting TimeProvider makes the timing deterministic in tests."
+      }
+    ]
+  },
+  "40": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is a Bloom filter?",
+        "a": "A Bloom filter is a space-efficient probabilistic data structure that tests set membership. It answers 'definitely not in the set' or 'possibly in the set': there are no false negatives, but there can be false positives. It uses a bit array and k hash functions and needs only a few bits per element regardless of item size."
+      },
+      {
+        "level": "Basic",
+        "q": "How do insert and lookup work in a Bloom filter?",
+        "a": "To insert, hash the item with k hash functions and set those k bit positions to 1. To look up, hash it the same way: if any of the k bits is 0, the item was definitely never added; if all are 1, it is probably present, because other items may have set those bits. Both operations are O(k), independent of how many items are stored."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do the number of bits and hash functions affect the false-positive rate?",
+        "a": "More bits per element (m/n) lowers the false-positive rate because the array fills up more slowly. The best number of hash functions is k = (m/n) * ln 2; too few hashes give weak discrimination, and too many fill the array quickly. Roughly 10 bits per element with 7 hash functions gives about a 1% false-positive rate, and each extra ~5 bits per element cuts it about tenfold."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Where are Bloom filters used in real systems?",
+        "a": "- Databases like Cassandra, HBase and RocksDB check a Bloom filter per SSTable to skip disk reads for keys that are not there.\n- Caches and CDNs avoid caching one-hit wonders or avoid querying the DB for keys that do not exist (cache penetration protection).\n- Username or coupon availability pre-checks.\n- Web crawlers skip URLs already visited, and browsers have used them for malicious URL lists."
+      },
+      {
+        "level": "Advanced",
+        "q": "Why can't you delete from a standard Bloom filter, and what are the alternatives?",
+        "a": "A bit may be shared by several items, so clearing it on delete could create false negatives for other items. A counting Bloom filter replaces each bit with a small counter that is incremented on insert and decremented on delete, at several times the memory. Cuckoo filters support deletion with similar or better space efficiency. Otherwise you periodically rebuild the filter from the source of truth."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you use a Bloom filter to check username availability for 1 billion users?",
+        "a": "Keep a Bloom filter of all taken usernames in memory (about 1.2 GB at 1% false positives, or shard it across nodes, or use Redis Bloom). If the filter says 'not present', the name is definitely free, so reply instantly without touching the DB. If it says 'maybe', confirm with an indexed DB lookup. The final signup still relies on a unique constraint in the DB, and new names are added to the filter on creation; the filter is rebuilt periodically to drop deleted names and control fill rate."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What states does a vending machine have?",
+        "a": "Common states are Idle (waiting for money or selection), HasMoney (coin inserted, waiting for selection), Dispensing (delivering the product and change), and OutOfStock or Maintenance. Each state handles events like InsertCoin, SelectProduct, Cancel and Dispense differently. Start the interview answer with this list and the transitions between them."
+      },
+      {
+        "level": "Basic",
+        "q": "Why use the State pattern for a vending machine instead of a status enum and switch?",
+        "a": "With an enum, every method (InsertCoin, Select, Cancel) needs a switch over all statuses, so adding a new state means editing every method, which breaks Open/Closed and is easy to get wrong. With the State pattern each state class holds only its own behaviour and valid transitions, and invalid actions are handled explicitly per state. The machine class stays small and just delegates."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Define the vending machine state interface.",
+        "a": "```csharp\npublic interface IVendingState {\n    void InsertMoney(VendingMachine m, decimal amount);\n    void SelectProduct(VendingMachine m, string code);\n    void Cancel(VendingMachine m);\n}\n```\nThe VendingMachine context holds the current state, balance and inventory, and forwards each public call to _state. States call m.SetState(...) to move on, for example IdleState.InsertMoney adds to the balance and moves to HasMoneyState."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How should the machine behave for invalid actions, like selecting a product with no money inserted?",
+        "a": "The current state handles it: IdleState.SelectProduct shows 'Insert money first' or throws a domain exception, without changing state. Each state class must implement every interface method, which forces you to think about every event in every state. An abstract base state with default 'invalid operation' implementations can reduce boilerplate so each state overrides only the events it supports."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you handle change-making and insufficient change?",
+        "a": "Keep a coin or note inventory, for example Dictionary<int, int> from denomination to count, and compute change greedily from the largest denomination while checking availability. If exact change is not possible, refuse the sale before dispensing, refund the inserted amount and return to Idle. Greedy works for standard denominations; for arbitrary ones a small DP is needed. Put this logic in a separate ChangeCalculator class to keep states thin."
+      },
+      {
+        "level": "Advanced",
+        "q": "Where do Singleton or Flyweight fit with state objects?",
+        "a": "States usually carry no per-machine data because the balance and inventory live in the context, so each state can be a single shared instance (for example static readonly fields or DI singletons). This avoids allocating new state objects on every transition and is effectively Flyweight. If a state needs its own data, like a timer start time, keep that data in the context or make that state a per-transition instance instead."
+      }
+    ]
+  },
+  "41": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the main components of a parking system HLD?",
+        "a": "- Entry/exit gate devices (ticket printer, ANPR camera, barrier) talking to a backend API.\n- Parking service for spot allocation and tickets.\n- Payment service integrating UPI/cards and generating receipts.\n- Availability service feeding display boards and the mobile app.\n- Database for lots, spots, tickets and payments, plus a cache for live availability.\nFor multiple lots, a central cloud backend with a local edge server per lot."
+      },
+      {
+        "level": "Basic",
+        "q": "What is the end-to-end flow when a car enters and exits?",
+        "a": "On entry, the gate reads the plate or the driver presses a button, the backend allocates a compatible free spot, creates a ticket with entry time and opens the barrier. On exit, the gate scans the ticket or plate, the backend computes the fee, the driver pays, the ticket is closed, the spot is freed and the barrier opens. Each step updates the live availability counts."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you show real-time availability per floor?",
+        "a": "Maintain counters per lot, floor and spot type in Redis, updated atomically (INCR/DECR) on every park and unpark event, with the DB as the source of truth. Display boards and apps read from the cache or subscribe via WebSocket or server-sent events for push updates. Periodically reconcile counters with the DB or spot sensors to fix drift from missed events."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you prevent double allocation of a spot across multiple gates?",
+        "a": "Make the allocation atomic in the source of truth: a conditional update (set occupied where id = X and is_free = true) or SELECT ... FOR UPDATE SKIP LOCKED to grab one free spot per request. Alternatively, keep free-spot pools per floor in Redis and pop from them atomically with SPOP or LPOP. Many real lots allocate by floor or zone rather than an exact spot, which reduces contention."
+      },
+      {
+        "level": "Advanced",
+        "q": "How does the system keep working if the lot loses internet connectivity?",
+        "a": "Run an edge server in each lot with a local database that handles entry, exit, allocation and cash or offline payments independently. Events are stored locally and synced to the cloud when connectivity returns, using idempotent event IDs to avoid duplicates. Gates must fail safe, for example allowing exit with deferred payment rather than trapping cars. This local-first design is a strong point to raise in interviews."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you scale this to a city-wide parking platform with pre-booking?",
+        "a": "Partition data by lot ID, since most operations are local to one lot. Pre-booking reserves capacity (a count per time slot and spot type) rather than an exact spot, with a hold that expires if the user does not arrive within a grace period. Payments go through an idempotent payment service with a pending state and webhooks. Availability search across lots uses a geo index (geohash or PostGIS) plus cached counts, and analytics like occupancy and revenue flow through a queue into a data warehouse."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What classes make up a full vending machine implementation?",
+        "a": "- VendingMachine (context): current state, balance, inventory, coin box.\n- IVendingState with IdleState, HasMoneyState, DispensingState, OutOfServiceState.\n- Product (code, name, price) and Inventory (code to product and quantity).\n- CoinBox or ChangeCalculator for change.\n- Optional IPaymentProcessor for card or UPI.\nThe public API is InsertMoney, SelectProduct, Cancel, plus admin methods Restock and CollectCash."
+      },
+      {
+        "level": "Basic",
+        "q": "How would you design the Inventory class?",
+        "a": "Keep a Dictionary<string, Slot> where Slot holds the product and its quantity, and expose IsAvailable(code), GetPrice(code), Deduct(code) and Restock(code, qty). Deduct should validate quantity and throw if the slot is empty so callers cannot drive stock negative. Keep the dictionary private and return read-only views to protect invariants."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Implement HasMoneyState.SelectProduct.",
+        "a": "```csharp\npublic void SelectProduct(VendingMachine m, string code) {\n    if (!m.Inventory.IsAvailable(code)) { m.Display(\"Sold out\"); return; }\n    var price = m.Inventory.GetPrice(code);\n    if (m.Balance < price) { m.Display($\"Insert {price - m.Balance} more\"); return; }\n    if (!m.CoinBox.CanMakeChange(m.Balance - price)) { m.Refund(); m.SetState(m.Idle); return; }\n    m.Inventory.Deduct(code);\n    m.ReturnChange(m.Balance - price);\n    m.SetState(m.Idle);\n}\n```\nValidation happens before any state change, so a failure never leaves the machine half-updated."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you add card or UPI payments without rewriting the machine?",
+        "a": "Introduce an IPaymentMethod abstraction (CashPayment, CardPayment, UpiPayment) using the Strategy pattern, where each can Authorize(amount) and Refund(). The states work with an amount and a payment result instead of coins directly. External payment SDKs are wrapped with the Adapter pattern. The machine gains a new state like AwaitingPaymentConfirmation for asynchronous UPI callbacks."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you unit test the vending machine?",
+        "a": "Inject dependencies (inventory, coin box, payment method, display) through constructors so tests can use fakes. Test each transition: insert money moves Idle to HasMoney, selecting with enough money dispenses and returns correct change, cancel refunds the full balance, and a sold-out item keeps the state. Parameterized tests with xUnit [Theory] cover price and denomination combinations, and assert on the state type plus side effects."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you make the vending machine thread-safe if it receives events from hardware and a remote admin API?",
+        "a": "Serialize all operations on the machine: either a single lock around each public method, since the operations are short, or a single consumer loop reading commands from a Channel<T>. Never let two events interleave between reading the balance and dispensing. Admin operations like restock go through the same path, and hardware callbacks just enqueue events. This keeps the state pattern simple because states assume single-threaded access."
+      }
+    ]
+  },
+  "42": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: how does a distributed job scheduler make sure a job runs only once?",
+        "a": "Workers claim jobs atomically, using a conditional update on status, SELECT FOR UPDATE SKIP LOCKED, or a distributed lock with a TTL, or a single elected leader dispatches. Leases with expiry reclaim jobs from crashed workers. Because crashes can still cause a rerun, jobs are made idempotent, so the effective guarantee is at-least-once execution with exactly-once effect."
+      },
+      {
+        "level": "Basic",
+        "q": "Explain consistent hashing out loud in under a minute.",
+        "a": "Servers and keys are hashed onto the same ring; each key goes to the first server clockwise from it. Adding or removing a server only moves the keys in its arc, about 1/N of them, unlike modulo hashing which reshuffles almost everything. Virtual nodes give each server many positions to balance load and spread a failed node's keys. It is used in DynamoDB, Cassandra, and distributed caches."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: when would you use a graph DB, and when is SQL enough?",
+        "a": "Use a graph DB for deep, variable-length traversals like friends-of-friends, shortest paths, recommendations or fraud rings. SQL is enough for one or two hops, like followers lists, with junction tables and indexes, and recursive CTEs for occasional hierarchies. Large social graphs often use sharded adjacency lists plus offline graph processing."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: how do heartbeats, leader election and quorums fit together?",
+        "a": "Heartbeats detect when the leader or a node stops responding. When followers time out, an election (Raft-style) chooses a new leader, which needs votes from a majority. Requiring a quorum means only one side of a partition can elect a leader, preventing split brain, and fencing tokens stop a stale leader from writing."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: what does a Bloom filter guarantee, and where would you use it?",
+        "a": "It guarantees no false negatives, so 'not present' is certain, but it can give false positives. Accuracy depends on bits per element and the number of hash functions; about 10 bits per element gives roughly 1%. Uses include skipping disk reads in LSM-tree databases, blocking cache penetration for non-existent keys, and fast username availability checks."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: design the parking system HLD in five points.",
+        "a": "- Gates with ANPR and ticketing call a parking service that allocates spots atomically.\n- Live availability counters per floor in Redis, pushed to boards and apps.\n- Pricing and payment service with idempotent payments.\n- Edge server per lot for offline operation, syncing to the cloud.\n- Data partitioned by lot ID, with a geo index for search and pre-booking by capacity per time slot."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: list the core Parking Lot entities.",
+        "a": "ParkingLot, ParkingFloor, ParkingSpot (with SpotType), Vehicle (with VehicleType), Ticket, EntryGate, ExitGate, Payment, plus a ParkingService that coordinates. Floors own spots, and tickets link a vehicle to a spot with an entry time."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: which patterns does the Parking Lot use?",
+        "a": "Strategy for pricing (IPricingStrategy) and for spot allocation (ISpotAllocationStrategy), Singleton or a DI singleton for the lot, Factory for creating vehicles or tickets, and optionally Observer for updating display boards when spots change. Mentioning Open/Closed as the reason for each is what interviewers look for."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: what does the State pattern solve?",
+        "a": "It removes large switch statements on a status field by moving each state's behaviour into its own class behind a common interface. The context delegates to the current state, and states trigger transitions. New states are added as new classes, and each state only handles the events that make sense for it."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Compare the elevator and vending machine state machines.",
+        "a": "The elevator has Idle, MovingUp, MovingDown, DoorsOpen and Maintenance, driven by requests, arrivals and door timers, and it also needs a scheduling algorithm (SCAN/LOOK) plus a dispatcher Strategy. The vending machine has Idle, HasMoney, Dispensing and OutOfService, driven by money, selection and cancel. Both keep data (floor, balance, inventory) in the context and behaviour in the states."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you avoid concurrency bugs in these LLD designs?",
+        "a": "Identify check-then-act races, such as two gates taking the same spot or two events changing an elevator's state, and make them atomic. Options are a lock per resource or spot type, lock-free structures like ConcurrentQueue for free spots, or serializing all events for one object through a single-consumer Channel<T>. For persistent data, use conditional updates or optimistic concurrency with a row version."
+      },
+      {
+        "level": "Advanced",
+        "q": "Write the minimal skeleton of a State pattern context in C#.",
+        "a": "```csharp\npublic class VendingMachine {\n    private IVendingState _state;\n    public decimal Balance { get; internal set; }\n    public VendingMachine() => _state = new IdleState();\n    internal void SetState(IVendingState s) => _state = s;\n    public void InsertMoney(decimal amt) => _state.InsertMoney(this, amt);\n    public void SelectProduct(string code) => _state.SelectProduct(this, code);\n    public void Cancel() => _state.Cancel(this);\n}\n```\nThe same shape applies to the elevator: public methods delegate, and states call SetState."
+      }
+    ]
+  },
+  "43": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the requirements of a typeahead or autocomplete system?",
+        "a": "- Functional: given a prefix, return the top 5-10 suggestions ranked by popularity (and optionally personalization, freshness, location).\n- Non-functional: very low latency (under about 100 ms end-to-end, since it fires on every keystroke), high availability, and huge read QPS.\n- Suggestions can be slightly stale, so ranking can be updated offline rather than in real time."
+      },
+      {
+        "level": "Basic",
+        "q": "How does a trie help with autocomplete?",
+        "a": "A trie stores strings character by character along a tree path, so all words with the same prefix share a subtree. Finding the node for a prefix takes O(length of prefix), and all completions live below that node. Without extra optimization you would still have to scan the whole subtree to find the most popular completions, which is too slow for popular prefixes."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you make top-K lookups fast in a trie?",
+        "a": "Precompute and cache the top-K suggestions at every trie node, so a query only walks down to the prefix node and returns its stored list in O(prefix length). This trades memory for latency: each node stores K references. The lists are recomputed offline when rankings change, rather than on every search."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How are suggestion rankings updated?",
+        "a": "Search queries are logged and streamed into a pipeline (Kafka, then Spark or Flink) that aggregates frequencies over a time window, often with time decay so recent trends count more. Periodically (hourly or daily) a new trie or index is built offline with fresh top-K lists and swapped into the serving nodes atomically. Trending terms can use a faster, smaller real-time pipeline merged at query time."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you scale the typeahead serving layer?",
+        "a": "Keep the trie fully in memory on serving nodes and replicate it for read throughput. If it does not fit, shard by prefix range (for example a-f, g-m) with care for skew, since some letters are far more common. Add caching at multiple layers: browser caching of prefix responses, CDN or edge caching, and Redis for hot prefixes. Clients debounce keystrokes (for example 100-200 ms) and can reuse results from a shorter prefix to cut requests."
+      },
+      {
+        "level": "Advanced",
+        "q": "Trie-based service vs a search engine like Elasticsearch for autocomplete - how do you choose?",
+        "a": "A custom in-memory trie with precomputed top-K gives the lowest latency and full control, and suits a single large popularity-ranked vocabulary like search queries. Elasticsearch offers completion suggesters, edge n-grams, fuzzy matching for typos, filters and multilingual analyzers out of the box, which suit product or location search with many attributes. Many companies start with Elasticsearch and only build a dedicated trie service at very high scale."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "How do you design a TrieNode class?",
+        "a": "Each node holds its children and an end-of-word marker, and optionally a frequency or top-K list.\n```csharp\npublic class TrieNode {\n    public Dictionary<char, TrieNode> Children { get; } = new();\n    public bool IsWord { get; set; }\n    public int Frequency { get; set; }\n}\n```\nA Dictionary handles any character set; for only lowercase a-z a fixed TrieNode[26] array is faster and smaller per lookup."
+      },
+      {
+        "level": "Basic",
+        "q": "What is the time and space complexity of trie insert and search?",
+        "a": "Insert and search are O(L), where L is the word length, regardless of how many words are stored. Space is O(total characters across all words) in the worst case, since shared prefixes are stored once. Tries use more memory than a hash set for random strings, due to per-node overhead, but support prefix queries that a hash set cannot."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Implement Insert and StartsWith for a trie.",
+        "a": "```csharp\npublic void Insert(string word) {\n    var node = _root;\n    foreach (var c in word) {\n        if (!node.Children.TryGetValue(c, out var next))\n            node.Children[c] = next = new TrieNode();\n        node = next;\n    }\n    node.IsWord = true;\n}\npublic bool StartsWith(string prefix) => FindNode(prefix) is not null;\n```\nFindNode walks the same loop but returns null as soon as a character is missing."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you return all words with a given prefix?",
+        "a": "Walk down to the prefix node, then run a DFS from it, appending characters to a StringBuilder and collecting a word whenever IsWord is true, backtracking after each child. Use a limit so you can stop early once you have enough results. For ranked results, collect (word, frequency) pairs and keep the top K with a min-heap (PriorityQueue in .NET) of size K."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you delete a word from a trie?",
+        "a": "Recursively walk to the last character, set IsWord to false, then on the way back remove any child node that is not the end of another word and has no children. This prunes branches that are no longer needed while keeping shared prefixes used by other words. If you store top-K lists or counts on nodes, update or invalidate them along the path as well."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you design the trie class for autocomplete with cached top-K and thread safety?",
+        "a": "Each node stores a small list of the top K (word, score) pairs, updated along the insertion path when a word's score changes. For concurrency, avoid locking per read: build a new trie in the background and publish it by swapping a reference (Volatile.Write or Interlocked.Exchange), so readers always see an immutable, consistent trie. Expose it through an IAutocompleteIndex interface with Suggest(prefix, k), so the trie can later be replaced with a search engine."
+      }
+    ]
+  },
+  "44": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is offset pagination and what are its problems?",
+        "a": "Offset pagination uses LIMIT 20 OFFSET 1000 (or page number and page size). It is simple and supports jumping to any page. But the database still has to scan and discard all skipped rows, so deep pages get slow, and if rows are inserted or deleted between requests, users see duplicates or miss items."
+      },
+      {
+        "level": "Basic",
+        "q": "What is cursor (keyset) pagination?",
+        "a": "Instead of an offset, the client sends the key of the last item it saw, and the query fetches the next rows after it: WHERE id > @lastId ORDER BY id LIMIT 20. With an index on the sort key, every page is a fast index seek no matter how deep. Results stay stable even when new rows are inserted."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you implement a cursor when sorting by a non-unique column like created_at?",
+        "a": "Use a composite sort key that includes a unique tiebreaker, such as (created_at, id). The query becomes WHERE (created_at, id) < (@lastCreatedAt, @lastId) ORDER BY created_at DESC, id DESC LIMIT 20, backed by a composite index on the same columns. Without the tiebreaker, rows with equal timestamps can be skipped or repeated across pages."
+      },
+      {
+        "level": "Intermediate",
+        "q": "What should a paginated API response look like?",
+        "a": "Return the items plus a next_cursor token (and has_more), for example { items: [...], next_cursor: \"eyJpZCI6MTAwfQ\", has_more: true }. The cursor should be opaque to clients, typically Base64-encoded JSON of the sort key values, so you can change the internals later. Limit page size to a server-enforced maximum, and include the filters in the cursor or require the same filters on each call."
+      },
+      {
+        "level": "Advanced",
+        "q": "When should you still use offset pagination?",
+        "a": "When users genuinely need to jump to page N or see total page counts, such as admin tables or search result pages, and the data set is small or deep pages are rarely visited. Many search engines cap results (for example, the first 1000) so offset stays cheap. For infinite scroll feeds, timelines, exports and syncing large tables, cursor pagination is the better choice."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you paginate across shards or merged data sources?",
+        "a": "Offset does not work well because each shard would need to return OFFSET + LIMIT rows to merge. With cursors, send the same cursor (last sort key) to every shard, fetch LIMIT rows from each, merge-sort them, and return the top LIMIT with a new cursor built from the last item returned. The cursor may need per-shard positions when sort keys are not globally unique. Total counts are expensive, so return approximate counts or omit them."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the core entities in a BookMyShow-style movie booking system?",
+        "a": "City, Cinema (Theatre), Screen (Audi), Seat (row, number, SeatType), Movie, Show (movie + screen + start time), ShowSeat (seat status for a specific show), Booking, Payment and User. Separating Seat from ShowSeat is the key insight: a physical seat exists once, but its availability and price are per show."
+      },
+      {
+        "level": "Basic",
+        "q": "Why do you need a ShowSeat entity separate from Seat?",
+        "a": "A Seat is a fixed physical attribute of a screen, while the same seat can be available for one show and booked for another. ShowSeat links a Show to a Seat and holds that show's status (Available, Locked, Booked), price, and lock details. Without it, you would have to store status on Seat, which breaks as soon as a screen has more than one show."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you model seat types and pricing?",
+        "a": "Use an enum SeatType such as Regular, Premium and Recliner on Seat, and keep pricing on the Show or a pricing rule, for example a dictionary from SeatType to price per show, since prices vary by show time, day and movie. An IPricingStrategy can add weekend or dynamic pricing. The chosen price is copied onto the Booking at booking time so later price changes do not alter confirmed bookings."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Sketch the Show and ShowSeat classes.",
+        "a": "```csharp\npublic enum SeatStatus { Available, Locked, Booked }\npublic class ShowSeat {\n    public Seat Seat { get; }\n    public decimal Price { get; }\n    public SeatStatus Status { get; private set; } = SeatStatus.Available;\n    public string? LockedBy { get; private set; }\n    public DateTime? LockExpiresAt { get; private set; }\n}\npublic class Show {\n    public Movie Movie { get; } public Screen Screen { get; } public DateTime StartsAt { get; }\n    public IReadOnlyList<ShowSeat> Seats { get; }\n}\n```"
+      },
+      {
+        "level": "Advanced",
+        "q": "What does the Booking entity contain and what states does it have?",
+        "a": "Booking holds Id, User, Show, the list of ShowSeats, total amount, payment reference, created time and status. Status goes Pending (seats locked, awaiting payment), then Confirmed on payment success, or Cancelled/Expired if payment fails or times out. Cancellation after confirmation can lead to a Refunded state. Modelling this as a state machine (State pattern or explicit transition methods) prevents invalid moves like confirming an expired booking."
+      },
+      {
+        "level": "Advanced",
+        "q": "Which services and interfaces would you define around these entities?",
+        "a": "- IShowService: search shows by city, movie and date.\n- ISeatLockService: LockSeats, UnlockSeats, ValidateLock.\n- IBookingService: CreateBooking, ConfirmBooking, CancelBooking.\n- IPaymentService: wraps payment gateways via Adapter.\n- INotificationService: sends tickets via email or SMS through Observer or domain events.\nEntities hold state and invariants; services orchestrate the workflow, and repositories handle persistence."
+      }
+    ]
+  },
+  "45": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is optimistic locking?",
+        "a": "Optimistic locking assumes conflicts are rare, so it does not lock when reading. Each row has a version number or timestamp, and the update includes it: UPDATE ... SET ..., version = version + 1 WHERE id = @id AND version = @v. If zero rows are updated, someone else changed the row first, so the operation retries or reports a conflict. It works well for low-contention, read-heavy data."
+      },
+      {
+        "level": "Basic",
+        "q": "What is pessimistic locking?",
+        "a": "Pessimistic locking takes a lock before modifying, for example SELECT ... FOR UPDATE in SQL or UPDLOCK in SQL Server, so other transactions wait until the lock is released. It guarantees no conflicting writes but reduces concurrency, and it can cause deadlocks and long waits. It suits high-contention, short critical sections, such as decrementing a limited stock count."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you choose between optimistic and pessimistic locking?",
+        "a": "Use optimistic when conflicts are rare and retries are cheap, like editing a user profile or a document, since it avoids holding locks. Use pessimistic when conflicts are frequent or a retry is expensive or unacceptable, such as flash-sale inventory, because under high contention optimistic locking causes many failed retries. Keep pessimistic transactions short and lock rows in a consistent order to avoid deadlocks."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you implement a distributed lock with Redis?",
+        "a": "Acquire it with SET lock:key <uniqueToken> NX PX 30000: NX sets only if it does not exist, and the expiry ensures the lock is released if the holder crashes. Release it only if you still own it, using a Lua script that checks the token equals yours before deleting, so you never delete someone else's lock. Pick a TTL longer than the expected work, or extend it with a watchdog while working."
+      },
+      {
+        "level": "Advanced",
+        "q": "What can go wrong with Redis distributed locks, and how do you guard against it?",
+        "a": "If a client pauses (GC, network) longer than the TTL, the lock expires, another client takes it, and both believe they hold it. Redis failover can also lose a lock that had not replicated. Redlock uses a majority of independent Redis nodes but is still debated for correctness. The robust approach is to use the lock for efficiency and add a fencing token or a version check in the database, so a stale holder's write is rejected. For strict correctness, use a consensus system like etcd or ZooKeeper."
+      },
+      {
+        "level": "Advanced",
+        "q": "How does optimistic concurrency work in Entity Framework Core?",
+        "a": "Mark a property as a concurrency token, typically a [Timestamp] byte[] RowVersion in SQL Server, which the database changes on every update. EF Core adds WHERE RowVersion = @original to UPDATE and DELETE statements, and if no rows are affected it throws DbUpdateConcurrencyException. You catch it, reload the current values, and either retry, merge, or return 409 Conflict to the client. In APIs, the version is often exposed as an ETag with If-Match headers."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "Why do we need temporary seat locking in BookMyShow?",
+        "a": "Between choosing seats and completing payment there can be several minutes, and without a hold two users could pay for the same seat. A temporary lock (for example 5-10 minutes) reserves the seats for one user while they pay. If payment does not complete in time, the lock expires and the seats become available again."
+      },
+      {
+        "level": "Basic",
+        "q": "What are the seat state transitions?",
+        "a": "Available to Locked when a user selects seats and the lock succeeds; Locked to Booked when payment succeeds; Locked back to Available when the user cancels, payment fails or the lock expires. Booked can go back to Available only through an explicit cancellation or refund flow. Every transition must be validated, for example you can only book seats that are locked by the same user and not expired."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you lock multiple seats atomically so a user gets all or none?",
+        "a": "In SQL, run one transaction with a conditional update: UPDATE ShowSeats SET Status='Locked', LockedBy=@user, LockExpiresAt=@exp WHERE ShowId=@show AND SeatId IN (...) AND (Status='Available' OR LockExpiresAt < now), then check the affected row count equals the number of seats requested; if not, roll back. In Redis, use a Lua script or MSETNX so all seat keys are set atomically or none are. Sorting seat IDs consistently also helps avoid deadlocks."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Implement an in-memory seat lock service in C#.",
+        "a": "```csharp\npublic class SeatLockService {\n    private readonly object _gate = new();\n    public bool TryLock(Show show, IReadOnlyList<ShowSeat> seats, string userId, TimeSpan ttl) {\n        lock (_gate) {\n            var now = DateTime.UtcNow;\n            if (seats.Any(s => !s.IsLockableAt(now))) return false;\n            foreach (var s in seats) s.Lock(userId, now + ttl);\n            return true;\n        }\n    }\n}\n```\nCheck all seats first, then lock all, inside one critical section; a per-show lock object reduces contention across shows."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you release expired seat locks?",
+        "a": "Lazy expiry: treat a Locked seat whose LockExpiresAt has passed as Available at check time, so no cleanup is needed for correctness. Add a background job (a hosted service in .NET) that periodically resets expired locks so seat maps display correctly. With Redis, just set a TTL on the lock key and let it expire automatically. Confirmation must re-check that the lock still belongs to the user and has not expired before marking seats Booked."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you handle a payment that succeeds after the seat lock has already expired?",
+        "a": "At confirmation, try to convert the seats from Locked-by-this-user to Booked with a conditional update. If that fails because another user has since locked or booked them, do not double-book: mark the booking failed and trigger an automatic refund, or try to offer the same seats if they are still free. To reduce this case, keep the lock slightly longer than the payment gateway timeout and make payment callbacks idempotent using the booking ID."
+      }
+    ]
+  }
+}

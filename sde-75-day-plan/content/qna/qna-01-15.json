@@ -1,0 +1,992 @@
+{
+ "1": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What happens, step by step, when you type a URL into the browser and press Enter?",
+    "a": "The browser parses the URL and resolves the domain to an IP via DNS (checking browser cache, OS cache, then the resolver). It opens a TCP connection with a three-way handshake, then a TLS handshake for HTTPS. It sends an HTTP request, the server (often behind a load balancer) processes it and returns a response. The browser parses the HTML, fetches CSS/JS/images (reusing connections), builds the DOM and renders the page."
+   },
+   {
+    "level": "Basic",
+    "q": "What is DNS and what are the common record types?",
+    "a": "DNS is the distributed directory that maps human-readable names to IP addresses.\n- A / AAAA: name to IPv4 / IPv6 address\n- CNAME: alias of another name\n- MX: mail server for the domain\n- NS: authoritative name servers for the zone\n- TXT: arbitrary text, used for verification and SPF\nEach record has a TTL that controls how long resolvers may cache it."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Explain the DNS resolution hierarchy when nothing is cached.",
+    "a": "The browser and OS caches miss, so the stub resolver asks a recursive resolver (ISP, 8.8.8.8, 1.1.1.1). The recursive resolver asks a root server, which points to the TLD servers (.com). The TLD server points to the domain's authoritative name servers, which return the actual record. The recursive resolver caches the answer for the TTL and returns it to the client, so later lookups are fast."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the TCP three-way handshake and why does TLS add latency?",
+    "a": "TCP sets up a connection with SYN, SYN-ACK, ACK, costing one round trip before any data flows. TLS then negotiates cipher suites, verifies the server certificate and agrees on session keys: TLS 1.2 costs two extra round trips, TLS 1.3 costs one (zero with 0-RTT resumption). On a high-latency mobile link each round trip can be 100ms+, which is why connection reuse (keep-alive), HTTP/2 multiplexing and CDNs near users matter."
+   },
+   {
+    "level": "Advanced",
+    "q": "A page is slow for users in another country. How do you break down where the latency is going?",
+    "a": "Split the request into phases using browser dev tools or synthetic monitoring: DNS lookup, TCP connect, TLS handshake, time to first byte (server time) and content download. High DNS/connect/TLS times point to distance, so fix with a CDN, edge TLS termination, longer DNS TTLs and keep-alive. High TTFB points to the server or database, so profile queries and add caching. Large download times point to payload size, so compress, minify, and cache static assets."
+   },
+   {
+    "level": "Advanced",
+    "q": "What are the differences between HTTP/1.1, HTTP/2 and HTTP/3?",
+    "a": "HTTP/1.1 is text-based and allows one outstanding request per connection, so browsers open ~6 connections per host and suffer head-of-line blocking. HTTP/2 is binary, multiplexes many streams over one TCP connection and compresses headers (HPACK), but a lost TCP packet still stalls every stream. HTTP/3 runs over QUIC on UDP, so streams are independent at the transport level, and it merges the transport and TLS 1.3 handshake for faster setup and connection migration across networks."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the difference between a class and an object in C#?",
+    "a": "A class is a blueprint that defines state (fields, properties) and behaviour (methods). An object is a concrete instance of that class created at runtime with new, living on the managed heap with its own copy of instance fields. Many objects can be created from one class, and a variable of a class type holds a reference to an object, not the object itself."
+   },
+   {
+    "level": "Basic",
+    "q": "What is encapsulation and how do you achieve it in C#?",
+    "a": "Encapsulation means hiding internal state and exposing only a controlled interface, so the object can protect its own invariants. In C# you use private fields, properties with restricted setters (private set, init), and methods that validate changes instead of public mutable fields.\n```csharp\npublic class BankAccount {\n    public decimal Balance { get; private set; }\n    public void Deposit(decimal amount) {\n        if (amount <= 0) throw new ArgumentException(\"Amount must be positive\");\n        Balance += amount;\n    }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Explain the access modifiers in C#.",
+    "a": "- public: accessible from anywhere\n- private: only inside the declaring type (default for class members)\n- protected: declaring type and derived types\n- internal: anywhere in the same assembly (default for top-level types)\n- protected internal: same assembly OR derived types\n- private protected: derived types within the same assembly only"
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the difference between a class and a struct in C#?",
+    "a": "A class is a reference type allocated on the heap; assignment copies the reference, and it supports inheritance. A struct is a value type, copied by value on assignment, usually stored inline (stack or inside the containing object), and cannot inherit from another struct or class (it can implement interfaces). Use structs for small, immutable, short-lived values like a Point or Money to avoid GC pressure; use classes for entities with identity and behaviour."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you design an immutable class in C# and why would you want one?",
+    "a": "Make all state read-only (get-only or init properties, readonly fields), set it only in the constructor, validate there, and return new instances instead of mutating. Also avoid exposing mutable collections (use IReadOnlyList or ImmutableArray). Immutable objects are thread-safe without locks, safe to use as dictionary keys and easier to reason about. C# records give you this concisely with value equality and with-expressions."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is the difference between properties and fields, and why prefer properties in public APIs?",
+    "a": "A field is a raw storage slot; a property is a pair of get/set accessor methods that may be backed by a field. Properties let you add validation, lazy loading, change notification or computed values later without breaking callers, since changing a public field to a property is a binary-breaking change. They also support different access levels per accessor (public get, private set), interfaces, and data binding/serialization conventions."
+   }
+  ]
+ },
+ "2": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is the difference between vertical and horizontal scaling?",
+    "a": "Vertical scaling (scale up) means giving one machine more CPU, RAM or faster disks. Horizontal scaling (scale out) means adding more machines and spreading load across them. Vertical is simpler because the code does not change, while horizontal needs a load balancer and stateless design but offers near-unlimited capacity and fault tolerance."
+   },
+   {
+    "level": "Basic",
+    "q": "What are the limitations of vertical scaling?",
+    "a": "- There is a hard ceiling: the largest available machine\n- Cost grows non-linearly at the high end\n- It is a single point of failure\n- Upgrades often need downtime or a restart\nIt is still a good first step, especially for databases, because it avoids distributed-systems complexity."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What does an application need to be horizontally scalable?",
+    "a": "App servers must be stateless: no in-memory sessions, local file uploads or in-process caches that other nodes need, so any node can serve any request. Shared state moves to external stores (Redis, database, S3). You need a load balancer with health checks, and ideally auto-scaling driven by metrics like CPU or request count. Background jobs and scheduled tasks also need coordination so they do not run twice on every node."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you scale the database tier as traffic grows?",
+    "a": "Start with vertical scaling and query/index tuning. Then scale reads: add a cache (Redis) for hot data and read replicas for read-heavy queries. Use connection pooling to protect the database from too many connections. Only when writes or data size exceed one primary, shard or partition the data, because sharding adds significant complexity to queries, transactions and operations."
+   },
+   {
+    "level": "Advanced",
+    "q": "Your service handles 1,000 RPS and must reach 20,000 RPS. How do you approach it?",
+    "a": "First measure: find the bottleneck with metrics and load tests (CPU, DB, network, a downstream dependency). Make app servers stateless and scale them horizontally behind a load balancer with auto-scaling. Offload reads with caching and CDNs, add read replicas, and move slow work to queues processed asynchronously. Revisit the data layer last, sharding only if the write path is the limit, and add rate limiting so spikes degrade gracefully instead of cascading."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is the difference between scalability and performance, and how does Amdahl's law or contention limit scale-out?",
+    "a": "Performance is how fast one request is served; scalability is how well throughput grows as you add resources. Adding machines only helps the parallel part of the work: shared components such as a single database, a global lock or a coordinator become serial bottlenecks, so throughput flattens. Coordination overhead (locks, cross-node calls) can even make throughput drop as nodes are added, which is why you remove shared contention points before scaling out."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is inheritance in C#?",
+    "a": "Inheritance lets a derived class reuse and extend a base class's members using the colon syntax (class Dog : Animal). It models an is-a relationship. C# supports single class inheritance but a class can implement many interfaces, and members marked virtual or abstract can be overridden in derived classes."
+   },
+   {
+    "level": "Basic",
+    "q": "What is composition and how does it differ from inheritance?",
+    "a": "Composition builds a class by holding references to other objects and delegating work to them, modelling a has-a relationship (a Car has an Engine). Inheritance is decided at compile time and couples the child to the parent's implementation. Composition is flexible: parts can be swapped at runtime or injected via interfaces, which makes testing and change easier."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why is 'favour composition over inheritance' a common guideline?",
+    "a": "Deep inheritance hierarchies create tight coupling: a change in the base class can break every subclass (the fragile base class problem). Subclasses often inherit behaviour they do not need, and combinations of features cause class explosion (FlyingSwimmingDuck). With composition you combine small behaviours through interfaces, change them at runtime and test each in isolation.\n```csharp\npublic class Duck {\n    private readonly IFlyBehavior _fly;\n    public Duck(IFlyBehavior fly) => _fly = fly;\n    public void Fly() => _fly.Fly();\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the difference between abstract classes and interfaces, and when do you use each?",
+    "a": "An abstract class can hold state, constructors and shared implementation, and a class can extend only one. An interface defines a contract a class can implement many of; since C# 8 it can have default method implementations but no instance state. Use an abstract class when related types share real code and an is-a relationship; use an interface for a capability that unrelated types can have (IComparable, IDisposable) and for dependency injection."
+   },
+   {
+    "level": "Advanced",
+    "q": "When is inheritance the right choice over composition?",
+    "a": "When there is a true, stable is-a relationship and substitutability holds (Liskov): every derived instance must work wherever the base is expected. Framework extension points are a good example (a custom Exception, an ASP.NET ControllerBase, a Stream subclass). Template Method scenarios, where the base defines an algorithm and subclasses fill steps, also fit. If you only want code reuse, prefer composition."
+   },
+   {
+    "level": "Advanced",
+    "q": "Explain method hiding (new) versus overriding (override) in C#.",
+    "a": "override replaces a virtual base method, and the derived version is called even through a base-typed reference (runtime polymorphism). new hides the base method: the call is resolved by the compile-time type, so a base reference calls the base version. Hiding is usually a smell and the compiler warns if you do it without the new keyword.\n```csharp\nBase b = new Derived();\nb.Virt(); // Derived.Virt (override)\nb.Hidden(); // Base.Hidden (new)\n```"
+   }
+  ]
+ },
+ "3": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is a load balancer and why do we need one?",
+    "a": "A load balancer sits in front of a pool of servers and distributes incoming requests across them. It enables horizontal scaling, removes unhealthy servers via health checks, and hides individual servers behind one endpoint. It often also terminates TLS, and helps with zero-downtime deploys by draining nodes."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between L4 and L7 load balancing?",
+    "a": "An L4 load balancer works at the transport layer: it routes TCP/UDP connections using IP and port without reading the payload, so it is very fast and protocol-agnostic (AWS NLB). An L7 load balancer understands HTTP, so it can route by path, host, header or cookie, terminate TLS, rewrite requests and do sticky sessions, at the cost of more CPU (AWS ALB, Nginx, Envoy)."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare round robin, weighted round robin, least connections and IP hash.",
+    "a": "- Round robin: next server in order; simple, good when servers and requests are uniform\n- Weighted round robin: bigger servers get proportionally more requests\n- Least connections: send to the server with fewest active connections; best when request durations vary (long-polling, websockets, uploads)\n- IP hash: hash the client IP to a server; gives affinity without cookies but can spread unevenly and reshuffles when servers change"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do health checks work and what makes a good one?",
+    "a": "The LB periodically calls an endpoint (for example /health) on each node and removes it after N consecutive failures, adding it back after M successes. Separate liveness (process is up) from readiness (can serve traffic, dependencies reachable). A good check is fast and cheap, but a deep check that fails when a shared DB is down can take every node out at once, so be careful what readiness depends on."
+   },
+   {
+    "level": "Advanced",
+    "q": "The load balancer itself is a single point of failure. How do you make it highly available?",
+    "a": "Run LBs in active-passive or active-active pairs sharing a virtual IP (keepalived/VRRP), so a standby takes over the IP on failure. Use DNS with multiple LB IPs or anycast for global distribution. Managed cloud LBs (ALB/NLB) are already spread across availability zones. At larger scale, a layered design is common: DNS or anycast to many L4 LBs, which fan out to L7 proxies."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you use consistent hashing in a load balancer, and why?",
+    "a": "Consistent hashing places servers and keys on a hash ring; a request goes to the next server clockwise from its key's hash. When a server is added or removed, only about 1/N of keys move, unlike modulo hashing where almost everything reshuffles. It is used when affinity matters, such as routing to cache nodes so each keeps a warm cache. Virtual nodes (many points per server) smooth out uneven distribution."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is polymorphism in C#?",
+    "a": "Polymorphism means one interface, many implementations: code written against a base type or interface works with any derived type. Compile-time polymorphism is method overloading; runtime polymorphism is virtual/override or interface implementation, where the actual method is chosen by the object's runtime type via virtual dispatch."
+   },
+   {
+    "level": "Basic",
+    "q": "What is an interface in C# and why is it useful?",
+    "a": "An interface is a contract of members that implementing types must provide, with no instance state. It decouples callers from concrete classes, enables dependency injection and mocking in tests, and lets unrelated types share a capability. A class can implement multiple interfaces, which is how C# gets the benefits of multiple inheritance safely."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Design an ILoadBalancingStrategy with round robin and random implementations.",
+    "a": "Define an interface with one method that picks a server, then implement each algorithm as its own class. The load balancer depends only on the interface, so strategies can be swapped via configuration or DI.\n```csharp\npublic interface ILoadBalancingStrategy {\n    Server Select(IReadOnlyList<Server> servers);\n}\npublic class RoundRobinStrategy : ILoadBalancingStrategy {\n    private int _index = -1;\n    public Server Select(IReadOnlyList<Server> servers) {\n        int i = Interlocked.Increment(ref _index);\n        return servers[(i & int.MaxValue) % servers.Count];\n    }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the difference between method overloading and method overriding?",
+    "a": "Overloading means several methods with the same name but different parameter lists in the same type; the compiler picks one at compile time based on argument types. Overriding means a derived class provides a new implementation of a virtual, abstract or interface method with the same signature, and the runtime picks it based on the actual object type. Return type alone cannot distinguish overloads."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you implement a thread-safe least-connections strategy?",
+    "a": "Track active connection counts per server with Interlocked operations or a ConcurrentDictionary, pick the server with the minimum count, and increment it; decrement when the request completes (typically in a finally block or via an IDisposable lease). The scan-then-increment is not atomic, so under heavy contention two requests may pick the same server; that is usually acceptable, or you can use power-of-two-choices (pick two random servers, choose the less loaded) which is cheap and nearly as good."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is explicit interface implementation and when would you use it?",
+    "a": "Explicit implementation (void IFoo.Run()) makes the member accessible only through the interface type, not through the class reference. Use it when a class implements two interfaces with conflicting member names, or to hide a member that should not be part of the class's public surface (for example IDisposable-like plumbing or legacy non-generic interfaces such as IEnumerable.GetEnumerator alongside the generic one)."
+   }
+  ]
+ },
+ "4": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is a stateless server?",
+    "a": "A stateless server keeps no client-specific data between requests in its own memory or disk; every request carries or references everything needed to handle it. State lives in shared stores like a database, Redis or the client token. Because any server can handle any request, you can add, remove or restart servers freely."
+   },
+   {
+    "level": "Basic",
+    "q": "What are sticky sessions and what problems do they cause?",
+    "a": "Sticky sessions (session affinity) make the load balancer send a client to the same server each time, usually via a cookie, so in-memory session data keeps working. Problems: load becomes uneven because heavy users pin to one node, sessions are lost when that node crashes or is redeployed, and scaling in/out is harder. They are a workaround, not a design goal."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you move session state out of the application servers?",
+    "a": "Store sessions in a shared, fast store such as Redis (ASP.NET Core's distributed cache/session providers support this) keyed by a session ID in a cookie, with a TTL for expiry. Alternatively use a database table, which is simpler but slower. Or make the client carry the state in a signed token like a JWT. Redis is the common choice because of low latency, built-in expiry and replication."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare server-side sessions in Redis with JWT tokens.",
+    "a": "Server-side sessions: the cookie holds only an opaque ID, the data lives in Redis, and logout or revocation is instant by deleting the key; the cost is a lookup per request and a dependency on Redis. JWT: the signed token carries the claims, so any server can validate it without a lookup, which scales well across services. The downsides are that revocation before expiry is hard (needs short expiry plus refresh tokens or a denylist) and tokens grow in size."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle JWT revocation and logout in a stateless architecture?",
+    "a": "Keep access tokens short-lived (5-15 minutes) and issue a longer-lived refresh token stored server-side, so revoking the refresh token cuts access within minutes. For immediate revocation keep a small denylist of token IDs (jti) in Redis until their expiry, or a per-user token version checked on each request. Rotate refresh tokens on use to detect theft. This keeps most requests lookup-free while still allowing forced logout."
+   },
+   {
+    "level": "Advanced",
+    "q": "Besides sessions, what other hidden state can break a horizontally scaled app?",
+    "a": "- In-memory caches that diverge between nodes (use a distributed cache or invalidation messages)\n- Files written to local disk, like uploads (use S3/blob storage)\n- Scheduled jobs running on every instance (use a distributed lock or a single scheduler)\n- WebSocket connections (need a pub/sub backplane like Redis for SignalR)\n- ASP.NET Data Protection keys, which must be shared so cookies and anti-forgery tokens validate on all nodes"
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What does the Single Responsibility Principle mean?",
+    "a": "A class should have one reason to change, meaning it serves one actor or concern. For example, an OrderService that validates, saves, emails and logs has four reasons to change. Splitting it into OrderValidator, OrderRepository and EmailNotifier makes each class smaller, easier to test and safer to modify."
+   },
+   {
+    "level": "Basic",
+    "q": "What does the Open/Closed Principle mean?",
+    "a": "Software entities should be open for extension but closed for modification: you add new behaviour by adding new code (a new class implementing an interface) rather than editing existing, tested code. It is usually achieved with abstractions, polymorphism and patterns like Strategy, so adding a new payment method does not require touching a growing switch statement."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Refactor this into an OCP-compliant design: a DiscountCalculator with a switch on customer type.",
+    "a": "Replace the switch with an interface where each customer type is its own class, and register them in DI or a dictionary. Adding a new type now means adding a class, not editing the calculator.\n```csharp\npublic interface IDiscountPolicy {\n    string CustomerType { get; }\n    decimal Apply(decimal amount);\n}\npublic class PremiumDiscount : IDiscountPolicy {\n    public string CustomerType => \"Premium\";\n    public decimal Apply(decimal amount) => amount * 0.9m;\n}\n```\nThe calculator receives IEnumerable<IDiscountPolicy> and picks by CustomerType."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you recognise an SRP violation in real code?",
+    "a": "- The class name has 'And' or is vague like Manager, Helper or Utils\n- It has many unrelated dependencies in the constructor\n- Unrelated changes (UI format, DB schema, business rule) all touch the same file\n- Tests need many mocks to set up\n- Methods group into clusters that use different fields"
+   },
+   {
+    "level": "Advanced",
+    "q": "Can applying SRP and OCP go too far? How do you balance them?",
+    "a": "Yes: splitting every method into its own class or adding interfaces for things that never vary creates indirection, more files and harder navigation without benefit. Apply OCP at points where change is actually likely or has happened more than once (rule of three), and keep SRP at the level of cohesive responsibilities, not single methods. YAGNI and readability should balance the principles."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does SRP relate to cohesion and coupling?",
+    "a": "SRP pushes for high cohesion: everything inside a class relates to one purpose and uses the same data. When responsibilities are split into cohesive classes connected through narrow interfaces, coupling between them drops. High cohesion with low coupling means changes stay local, which is the actual goal SRP serves."
+   }
+  ]
+ },
+ "5": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the key principles of REST API design?",
+    "a": "Model resources as nouns in URLs (/orders/42), use HTTP methods as verbs (GET, POST, PUT, PATCH, DELETE), keep requests stateless, and return proper status codes. Use consistent JSON representations, plural resource names, nested routes for clear ownership (/users/5/orders) and query parameters for filtering, sorting and pagination."
+   },
+   {
+    "level": "Basic",
+    "q": "Explain the most common HTTP status codes you use in an API.",
+    "a": "- 200 OK, 201 Created (with Location header), 204 No Content\n- 400 Bad Request (validation), 401 Unauthorized (not authenticated), 403 Forbidden (not allowed)\n- 404 Not Found, 409 Conflict (duplicate or version clash), 422 Unprocessable Entity\n- 429 Too Many Requests (rate limited, with Retry-After)\n- 500 Internal Server Error, 502 Bad Gateway, 503 Service Unavailable, 504 Gateway Timeout"
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is idempotency and which HTTP methods are idempotent?",
+    "a": "An operation is idempotent if doing it multiple times has the same effect on the server as doing it once. GET, HEAD, PUT and DELETE are idempotent (and GET is also safe, meaning no side effects). POST is not, since repeating it may create duplicates, and PATCH is not guaranteed to be. Idempotency matters because clients and proxies retry on timeouts."
+   },
+   {
+    "level": "Intermediate",
+    "q": "PUT vs PATCH vs POST: when do you use each?",
+    "a": "POST creates a subordinate resource where the server assigns the ID, or triggers an action. PUT replaces the full resource at a known URI (create-or-replace), so sending it twice gives the same result. PATCH applies a partial update to some fields, for example with JSON Merge Patch or JSON Patch. Using PUT with a partial body is a common mistake because missing fields should be treated as cleared."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you make a payment POST endpoint safe to retry?",
+    "a": "Require the client to send an Idempotency-Key header (a UUID per logical operation). On first receipt, store the key with a processing status in a table or Redis with a unique constraint, execute the payment, then save the response against the key. A retry with the same key returns the stored response instead of charging again; a concurrent duplicate hits the unique constraint and gets 409 or waits. Keys expire after a window such as 24 hours."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle API versioning, pagination and error responses at scale?",
+    "a": "Versioning: URL (/v1/orders) is most explicit; header or media-type versioning keeps URLs clean. Only bump the version for breaking changes and keep additive changes backward compatible. Pagination: offset/limit is simple but slow and inconsistent on deep pages; cursor (keyset) pagination using a stable sort key is efficient and stable under inserts. Errors: use one consistent body such as RFC 7807 Problem Details (type, title, status, detail, traceId) so clients can handle them generically."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Liskov Substitution Principle?",
+    "a": "Objects of a derived class must be usable wherever the base class is expected without breaking correctness. A subclass should not strengthen preconditions, weaken postconditions, throw unexpected exceptions or leave methods unimplemented. The classic violation is Square inheriting Rectangle, where setting width also changes height and breaks callers' assumptions."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the Interface Segregation Principle?",
+    "a": "Clients should not be forced to depend on methods they do not use. Instead of one fat IWorker with Work, Eat and Sleep, split it into small role interfaces like IWorkable and IFeedable. A class implementing a fat interface often throws NotImplementedException, which is a clear sign of an ISP (and LSP) violation."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the Dependency Inversion Principle and how does ASP.NET Core support it?",
+    "a": "High-level modules should not depend on low-level modules; both should depend on abstractions, and abstractions should not depend on details. In practice an OrderService depends on IOrderRepository, not SqlOrderRepository. ASP.NET Core's built-in DI container wires the concrete implementation at startup, so business logic stays testable and swappable.\n```csharp\nbuilder.Services.AddScoped<IOrderRepository, SqlOrderRepository>();\npublic class OrderService(IOrderRepository repo) { }\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Give a real LSP violation you might see in .NET code.",
+    "a": "A ReadOnlyCollection implements IList<T>, yet Add throws NotSupportedException, so code written against IList<T> that adds items breaks. Another common one: a CachedRepository subclass that silently ignores Save or a subclass of a payment processor that throws for refunds. The fix is to model capabilities with smaller interfaces (IReadOnlyList, IRefundable) so types only promise what they can do."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is the difference between Dependency Inversion, Dependency Injection and Inversion of Control?",
+    "a": "Dependency Inversion is the design principle: depend on abstractions. Inversion of Control is the broader idea that a framework or container controls object creation and flow rather than your code. Dependency Injection is one technique to achieve both: dependencies are supplied from outside (constructor, method or property injection) instead of being created with new inside the class."
+   },
+   {
+    "level": "Advanced",
+    "q": "Explain DI service lifetimes in ASP.NET Core and the captive dependency problem.",
+    "a": "Transient creates a new instance each time it is resolved, Scoped creates one per HTTP request, and Singleton creates one for the app's lifetime. A captive dependency happens when a longer-lived service holds a shorter-lived one, for example a singleton injecting a scoped DbContext; the DbContext then lives forever, is shared across threads and requests, and causes concurrency bugs and stale data. Fix by injecting IServiceScopeFactory and creating a scope, or by aligning lifetimes; scope validation in Development catches this."
+   }
+  ]
+ },
+ "6": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the three tiers in a 3-tier architecture?",
+    "a": "Presentation tier (the client or web front end, reached through a load balancer), the application tier (stateless app servers running business logic), and the data tier (the database and storage). Each tier can be scaled, secured and deployed independently, and tiers talk only to their neighbours."
+   },
+   {
+    "level": "Basic",
+    "q": "Why should app servers and the database live in separate tiers and subnets?",
+    "a": "Separation lets you scale app servers horizontally without touching the database and gives each tier a different security boundary. In a cloud setup the LB sits in a public subnet, while app servers and the DB sit in private subnets, and security groups allow only LB-to-app and app-to-DB traffic. This limits the blast radius if one layer is compromised."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does each tier fail and how does it recover?",
+    "a": "- LB: managed LBs span multiple AZs; self-hosted ones use active-passive pairs with a floating IP\n- App servers: health checks remove bad nodes and an auto-scaling group replaces them; statelessness means no data is lost\n- Database: a Multi-AZ standby or replica is promoted on failure, with backups and point-in-time recovery for data loss\nApp servers also need timeouts, retries with backoff and connection pooling so a slow DB does not exhaust their threads."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Where would you add caching in a 3-tier app?",
+    "a": "Put a CDN in front for static assets and cacheable GET responses, add a distributed cache like Redis between the app tier and the database for hot reads (cache-aside), and use HTTP caching headers so browsers cache too. In-process memory caching works for small, rarely changing reference data. Each layer reduces load on the tier behind it, with the database being the most expensive to scale."
+   },
+   {
+    "level": "Advanced",
+    "q": "What changes when your 3-tier app gets 10x traffic?",
+    "a": "The app tier scales out easily through auto-scaling, so the database becomes the bottleneck. Steps: add Redis caching and read replicas, add connection pooling or a proxy (PgBouncer/RDS Proxy), move slow or non-critical work (emails, reports) to a message queue with workers, serve static content from a CDN, and add rate limiting. If writes still saturate the primary, partition the data or split services by domain."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you deploy a new version of a 3-tier app with zero downtime?",
+    "a": "Use rolling or blue-green deployments behind the LB: bring new instances up, let them pass readiness checks, then drain connections from old ones before terminating. Database schema changes must be backward compatible using expand-and-contract: add new columns/tables first, deploy code that works with both, backfill, then remove the old schema in a later release. Keep a quick rollback path such as swapping the LB target group back."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What problems does a naive NotificationService that sends email, SMS and push in one class have?",
+    "a": "It violates SRP because one class knows every channel's details, and OCP because adding WhatsApp means editing it and adding another if/switch branch. It is hard to test since it directly news up SMTP or SMS clients, and a failure in one channel's code can affect the others. It also tends to mix formatting, templating and sending logic."
+   },
+   {
+    "level": "Basic",
+    "q": "How do you apply SRP to a notification sender?",
+    "a": "Split responsibilities into separate classes: a template or message builder formats content, a channel sender delivers through one channel, a preferences service decides which channels a user wants, and a dispatcher orchestrates. Each class then has a single reason to change: a new template format, a new SMS provider or a new rule."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Refactor the notification sender to be open for new channels without modification.",
+    "a": "Introduce an INotificationChannel interface; each channel is a class, and the dispatcher loops over injected channels. Adding a channel means adding a class and a DI registration.\n```csharp\npublic interface INotificationChannel {\n    string Name { get; }\n    Task SendAsync(Notification n, CancellationToken ct);\n}\npublic class NotificationDispatcher(IEnumerable<INotificationChannel> channels) {\n    public Task SendAsync(Notification n, CancellationToken ct) =>\n        Task.WhenAll(channels.Where(c => n.Channels.Contains(c.Name))\n                             .Select(c => c.SendAsync(n, ct)));\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does Dependency Inversion help test the notification sender?",
+    "a": "The dispatcher depends on INotificationChannel and, for example, ISmsGateway instead of a concrete Twilio client. In unit tests you inject fakes or mocks (Moq/NSubstitute) and assert they were called with the right message, without network calls. Swapping the real provider later only changes the DI registration."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you handle one channel failing without affecting the others, and support retries?",
+    "a": "Send each channel independently and catch failures per channel rather than letting one exception fail the whole batch. Wrap each sender with a retry policy (Polly with exponential backoff and jitter) and a circuit breaker for a down provider. For reliability, enqueue each channel message to a queue, have workers process them, and move repeated failures to a dead-letter queue. Use a decorator such as RetryingChannel so retry logic stays out of each channel class."
+   },
+   {
+    "level": "Advanced",
+    "q": "Which design patterns fit naturally in a notification system and why?",
+    "a": "- Strategy: each channel is an interchangeable sending strategy\n- Factory: create the right channel or provider by name/config\n- Decorator: add retry, logging or rate limiting around a channel without changing it\n- Observer / pub-sub: domain events like OrderPlaced trigger notifications without the order code knowing about them\n- Template Method or Builder: build messages from templates consistently"
+   }
+  ]
+ },
+ "7": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: summarise what happens when you hit a URL in two sentences.",
+    "a": "DNS resolves the domain to an IP via caches and then root, TLD and authoritative servers; the browser opens a TCP connection plus a TLS handshake for HTTPS. It sends an HTTP request, the LB routes it to an app server that returns a response, and the browser renders the page and fetches its sub-resources."
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: vertical vs horizontal scaling, and which do you do first?",
+    "a": "Vertical is a bigger box: simple but capped and a single point of failure. Horizontal is more boxes: needs an LB and stateless servers but scales further and survives failures. Usually scale the stateless app tier horizontally early, scale the database vertically first, then add caches and read replicas before sharding."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: L4 vs L7 load balancer, and which algorithm for long-lived connections?",
+    "a": "L4 routes TCP/UDP connections by IP and port without reading content and is very fast; L7 reads HTTP so it can route by path, host, header or cookie and terminate TLS. For long-lived or uneven connections like websockets use least connections, since round robin assumes requests are equal."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: why stateless servers, and what replaces in-memory sessions?",
+    "a": "Stateless servers let any node serve any request, so you can scale, deploy and lose nodes freely. Sessions move to Redis or a DB with a TTL, or into a signed JWT on the client; sticky sessions are only a workaround because they cause uneven load and lost sessions."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: which HTTP methods are idempotent and how do you make POST safe to retry?",
+    "a": "GET, PUT, DELETE and HEAD are idempotent; POST and PATCH are not by default. Make POST safe with a client-generated Idempotency-Key stored with a unique constraint and the saved response, so retries return the original result instead of repeating the side effect."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: walk through a 3-tier app and name its main bottleneck at 10x traffic.",
+    "a": "Client to load balancer, to stateless app servers in an auto-scaling group, to a database with a standby. At 10x the database is the bottleneck, so add Redis caching, read replicas, connection pooling, a CDN for static content and a queue for async work, and shard only if writes still do not fit."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: name the four OOP pillars in one line each.",
+    "a": "- Encapsulation: hide state behind a controlled interface\n- Abstraction: expose what an object does, not how\n- Inheritance: reuse and specialise a base type (is-a)\n- Polymorphism: one interface, many implementations chosen at runtime"
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: abstraction vs encapsulation.",
+    "a": "Abstraction is about design: exposing only the essential behaviour through interfaces or abstract classes so callers ignore details. Encapsulation is about implementation: bundling data with methods and restricting access (private fields, validated setters) to protect invariants. Abstraction hides complexity; encapsulation hides data."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: when to use composition vs inheritance?",
+    "a": "Use inheritance only for a true, stable is-a relationship where the subclass is substitutable for the base. Use composition (has-a, delegating to injected interfaces) for code reuse and behaviour that varies, since it is looser coupled, testable and changeable at runtime."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: SRP and OCP in one sentence each.",
+    "a": "SRP: a class should have exactly one reason to change, meaning one responsibility or actor. OCP: add new behaviour by writing new classes behind an abstraction instead of editing existing tested code."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: LSP, ISP and DIP in one sentence each.",
+    "a": "LSP: a subclass must work anywhere its base type is expected without surprising the caller. ISP: prefer many small role interfaces over one fat interface so clients depend only on what they use. DIP: high-level policy and low-level details both depend on abstractions, wired together by dependency injection."
+   },
+   {
+    "level": "Advanced",
+    "q": "Which SOLID principle does each of these smells violate: a switch on type that grows, NotImplementedException in an interface method, and new SqlConnection inside a service?",
+    "a": "- A growing switch on type violates Open/Closed (use polymorphism or a strategy map)\n- NotImplementedException in an interface member violates Interface Segregation and often Liskov\n- new SqlConnection inside a business service violates Dependency Inversion (inject an abstraction such as a repository)"
+   }
+  ]
+ },
+ "8": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the main differences between SQL and NoSQL databases?",
+    "a": "SQL databases use a fixed schema of tables, support joins and multi-row ACID transactions, and usually scale vertically or with read replicas. NoSQL databases have flexible or schema-less models (key-value, document, wide-column, graph), are designed to scale horizontally across nodes, and often trade strict consistency or joins for availability and throughput."
+   },
+   {
+    "level": "Basic",
+    "q": "Name the four main types of NoSQL databases with an example each.",
+    "a": "- Key-value: Redis, DynamoDB (lookup by key, caching, sessions)\n- Document: MongoDB, Cosmos DB (JSON documents, flexible product catalogs)\n- Wide-column: Cassandra, HBase (huge write-heavy time series, event logs)\n- Graph: Neo4j (relationships such as social networks and recommendations)"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you decide between SQL and NoSQL for a new service?",
+    "a": "Start from access patterns and consistency needs. Choose SQL when data is relational, you need joins, ad hoc queries, strong consistency and multi-entity transactions (orders, payments, inventory). Choose NoSQL when access is mostly by key with known patterns, the schema changes often, or you need very high write throughput and horizontal scale (activity feeds, IoT, sessions). Many systems use both (polyglot persistence)."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why do NoSQL databases usually not support joins, and how do you model data without them?",
+    "a": "Joins across partitions spread over many machines would require expensive distributed coordination, so NoSQL stores keep each query on one partition. You model data around queries: denormalise and embed related data in one document or item, duplicate data where needed, and precompute views. The trade-off is more storage and more complex writes to keep duplicated data consistent."
+   },
+   {
+    "level": "Advanced",
+    "q": "You need an e-commerce platform. Which parts go in SQL and which in NoSQL?",
+    "a": "Orders, payments and inventory go in SQL (PostgreSQL/SQL Server) because they need ACID transactions and strong consistency to avoid overselling or double charging. The product catalog with varied attributes fits a document store; shopping carts and sessions fit a key-value store like Redis or DynamoDB; search uses Elasticsearch; recommendations can use a graph store. Changes are propagated between stores with events (CDC or an outbox)."
+   },
+   {
+    "level": "Advanced",
+    "q": "Is it true that SQL databases cannot scale horizontally?",
+    "a": "No. SQL databases scale reads with replicas and can be sharded at the application level or via tools like Citus or Vitess. NewSQL systems (CockroachDB, Google Spanner, YugabyteDB) provide distributed SQL with ACID transactions across nodes using consensus. The real cost is complexity and latency of distributed transactions, which is why NoSQL stores relax those guarantees by default."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Singleton pattern?",
+    "a": "Singleton ensures a class has only one instance and provides a global access point to it. It uses a private constructor and a static property that returns the single instance. Typical uses are configuration, logging or a shared cache, but it must be implemented thread-safely."
+   },
+   {
+    "level": "Basic",
+    "q": "Why is a naive Singleton not thread-safe?",
+    "a": "A naive version checks if (_instance == null) then creates it. Two threads can both see null at the same time and both create instances, breaking the single-instance guarantee and possibly leaving one thread with a different object. Fixes are locking, double-checked locking, static initialisation or Lazy<T>."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Show the recommended thread-safe Singleton in C#.",
+    "a": "Lazy<T> is the simplest correct approach: it is thread-safe by default and creates the instance only on first access.\n```csharp\npublic sealed class AppConfig {\n    private static readonly Lazy<AppConfig> _instance =\n        new(() => new AppConfig());\n    public static AppConfig Instance => _instance.Value;\n    private AppConfig() { /* load settings */ }\n}\n```\nsealed prevents subclasses from creating extra instances."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Should you use a Singleton to hold a single database connection? What is better?",
+    "a": "No. A single shared DbConnection is not thread-safe, becomes a bottleneck, and breaks when the connection drops. ADO.NET already pools connections, so the right approach is to open a connection per unit of work and dispose it quickly, letting the pool reuse physical connections. In EF Core, register DbContext as scoped per request and use AddDbContextPool if needed; what is safe as a singleton is something like a connection factory or configuration."
+   },
+   {
+    "level": "Advanced",
+    "q": "Why is Singleton often called an anti-pattern, and how does DI address it?",
+    "a": "Classic Singletons are global state: hidden dependencies, hard to mock in tests, tight coupling to the concrete class and possible issues with test isolation. With DI you register the class with AddSingleton, so the container guarantees one instance while consumers still receive an interface through the constructor, keeping them testable and explicit about dependencies."
+   },
+   {
+    "level": "Advanced",
+    "q": "Explain double-checked locking and why volatile or Lazy<T> matters.",
+    "a": "Double-checked locking checks the instance before locking (fast path), then locks and checks again before creating it. Without a memory barrier, another thread could see a non-null reference to a partially constructed object due to reordering; marking the field volatile (or relying on the lock's barriers correctly) prevents this. In .NET, Lazy<T> or a static readonly field initialised by the CLR's type initialiser are simpler and already correct."
+   }
+  ]
+ },
+ "9": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is a database index?",
+    "a": "An index is a separate data structure, usually a B-tree, that keeps column values sorted with pointers to rows, so the database can find matches in O(log n) instead of scanning the whole table. It speeds up reads, filters, joins and ORDER BY, but costs storage and slows inserts, updates and deletes because the index must be updated too."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between a clustered and a non-clustered index?",
+    "a": "A clustered index defines the physical order of rows: the table data itself is stored in the B-tree leaf pages, so there is only one per table (by default the primary key in SQL Server). A non-clustered index is a separate structure whose leaves hold the key and a pointer (row locator or clustered key) back to the row, and a table can have many of them."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why do B-trees suit databases better than binary trees or hash tables?",
+    "a": "B-trees have a high fan-out: each node is a disk page with hundreds of keys, so the tree is only 3-4 levels deep even for millions of rows, meaning few disk reads per lookup. Leaves are linked and sorted, so they handle range queries, ORDER BY and prefix matches. Hash indexes are great for exact equality but cannot do ranges or sorting."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does column order matter in a composite index?",
+    "a": "A composite index on (A, B, C) is sorted by A, then B, then C, so it can serve queries filtering on A, A+B or A+B+C (leftmost prefix rule), but not B or C alone. Put equality-filtered columns first and range or sort columns after, since a range on a column stops the index from being used for seeking on later columns. For example, (customer_id, created_at) serves 'orders of customer X in the last month sorted by date'."
+   },
+   {
+    "level": "Advanced",
+    "q": "A query that used to be fast is now slow. How do you investigate?",
+    "a": "Get the actual execution plan (EXPLAIN ANALYZE in Postgres, actual plan in SQL Server) and look for full table or index scans, key lookups, bad row estimates and sorts spilling to disk. Common causes: missing or unused index, a function or implicit type conversion on the column (non-sargable predicate), stale statistics, parameter sniffing, or data growth. Fix with the right index (possibly covering with INCLUDE), rewriting the predicate, updating statistics, and check locking/blocking too."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is a covering index and when is an index not used even though it exists?",
+    "a": "A covering index contains all columns a query needs (key plus INCLUDE columns), so the database answers from the index alone without looking up the base table. An existing index may be ignored when: the predicate wraps the column in a function (WHERE YEAR(date)=2024), there is an implicit type conversion, LIKE starts with a wildcard, the query is not on the leftmost prefix, or the filter matches so many rows that the optimizer decides a full scan is cheaper (low selectivity)."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Factory pattern?",
+    "a": "A Factory encapsulates object creation so callers ask for an object by type or parameter without using new on concrete classes. It centralises creation logic, returns an interface, and lets you add new implementations without changing the calling code."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between Simple Factory, Factory Method and Abstract Factory?",
+    "a": "- Simple Factory: one class with a method that returns different concrete types based on input (not a GoF pattern)\n- Factory Method: a base class declares an abstract creation method and subclasses decide which concrete product to create\n- Abstract Factory: an interface that creates families of related objects (for example UI widgets for Windows vs Mac) that must be used together"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a payment processor factory in C# without a big switch statement.",
+    "a": "Register every processor in DI and let the factory pick by key, so new processors only need a new class and registration.\n```csharp\npublic interface IPaymentProcessor {\n    string Method { get; }\n    Task PayAsync(decimal amount);\n}\npublic class PaymentProcessorFactory(IEnumerable<IPaymentProcessor> processors) {\n    private readonly Dictionary<string, IPaymentProcessor> _map =\n        processors.ToDictionary(p => p.Method, StringComparer.OrdinalIgnoreCase);\n    public IPaymentProcessor Get(string method) =>\n        _map.TryGetValue(method, out var p) ? p\n            : throw new NotSupportedException(method);\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "When would you use a factory instead of just injecting a dependency?",
+    "a": "Use a factory when the concrete type is only known at runtime (based on user input, tenant or config per request), when creation needs runtime parameters that DI cannot supply, or when you need to create many short-lived instances. If the dependency is fixed for the application, plain constructor injection is simpler."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does .NET use factories internally? Give examples.",
+    "a": "- IHttpClientFactory creates configured HttpClient instances and manages handler lifetimes to avoid socket exhaustion and stale DNS\n- ILoggerFactory creates ILogger instances per category\n- DbProviderFactory creates provider-specific connections and commands\n- DI factory registrations like services.AddScoped<IFoo>(sp => new Foo(...)) are factory delegates"
+   },
+   {
+    "level": "Advanced",
+    "q": "How does the Factory pattern support the Open/Closed and Dependency Inversion principles?",
+    "a": "Callers depend only on the product interface and the factory, never on concrete classes, which is dependency inversion. With a registration-based factory (dictionary or DI enumeration) adding a new product type needs a new class and registration but no change to existing callers or the factory logic, satisfying OCP. A switch-based factory still violates OCP, though it at least localises the change to one place."
+   }
+  ]
+ },
+ "10": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is primary-replica replication?",
+    "a": "One primary node accepts all writes and streams its changes (via a write-ahead or binary log) to one or more replicas. Replicas apply the changes and serve read queries. This scales reads, improves availability because a replica can be promoted if the primary fails, and lets you run backups or analytics on a replica."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between synchronous and asynchronous replication?",
+    "a": "In synchronous replication the primary waits for a replica to confirm before acknowledging the write, so no committed data is lost on failover, but writes are slower and stall if the replica is down. In asynchronous replication the primary acknowledges immediately and replicas catch up later, which is fast but can lose recent writes on failover and causes replication lag. Semi-synchronous waits for at least one replica as a middle ground."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is replication lag and what problems does it cause?",
+    "a": "Replication lag is the delay between a write on the primary and its appearance on a replica, from milliseconds to seconds under load. Users may not see their own update right after saving (read-your-own-writes violation), see data go back in time when successive reads hit different replicas (monotonic reads violation), or see a reply before the comment it answers. It must be monitored and considered when routing reads."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you guarantee read-your-own-writes with read replicas?",
+    "a": "- Read from the primary for a short time after a user writes (for example 5-10 seconds, tracked in the session)\n- Always read a user's own profile or data from the primary, others from replicas\n- Track the write's log position (LSN) and only read from a replica that has caught up to it\n- Pin a user's session to one replica for monotonic reads"
+   },
+   {
+    "level": "Advanced",
+    "q": "How does failover work, and what is split brain?",
+    "a": "When the primary fails, a monitor or consensus system detects it (missed heartbeats), picks the most up-to-date replica, promotes it and redirects clients via DNS, a virtual IP or a proxy. Split brain happens when the old primary was only unreachable, not dead, and keeps accepting writes, so two primaries diverge and data conflicts. Prevent it with quorum-based election, fencing (STONITH, revoking the old primary's access) and epoch or term numbers so stale leaders are rejected."
+   },
+   {
+    "level": "Advanced",
+    "q": "Compare single-leader, multi-leader and leaderless replication.",
+    "a": "Single-leader: all writes go to one primary; simple and consistent, but write throughput and failover are limits. Multi-leader: several nodes accept writes (often one per region), good for multi-region latency and offline clients, but needs conflict resolution (last-write-wins, merging, CRDTs). Leaderless (Dynamo, Cassandra): clients write to and read from several replicas using quorums (W + R > N), with read repair and hinted handoff, giving high availability with tunable consistency."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Builder pattern?",
+    "a": "Builder separates the construction of a complex object from its representation, letting you build it step by step through readable method calls and a final Build(). It avoids telescoping constructors with many optional parameters and can validate the object before returning it."
+   },
+   {
+    "level": "Basic",
+    "q": "What problem does a telescoping constructor create and how does Builder fix it?",
+    "a": "When a class has many optional parameters you end up with many overloaded constructors or one with ten parameters, where it is easy to swap two arguments of the same type and hard to read. A Builder names each step (WithTimeout, WithRetries), so calls are self-documenting, optional values have defaults and invalid combinations are checked in one place."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement a fluent builder for an HttpRequest-like object.",
+    "a": "Each method sets a value and returns the builder so calls can be chained; Build validates and creates the immutable object.\n```csharp\npublic class RequestBuilder {\n    private string _url = \"\"; private string _method = \"GET\";\n    private readonly Dictionary<string, string> _headers = new();\n    public RequestBuilder Url(string url) { _url = url; return this; }\n    public RequestBuilder Method(string m) { _method = m; return this; }\n    public RequestBuilder Header(string k, string v) { _headers[k] = v; return this; }\n    public Request Build() => string.IsNullOrEmpty(_url)\n        ? throw new InvalidOperationException(\"Url required\")\n        : new Request(_url, _method, _headers);\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Where do you see the Builder pattern in .NET?",
+    "a": "- StringBuilder builds a string efficiently in steps\n- WebApplication.CreateBuilder and IHostBuilder configure services and the app before Build()\n- EF Core's ModelBuilder and fluent entity configuration\n- ConfigurationBuilder, UriBuilder and DbConnectionStringBuilder"
+   },
+   {
+    "level": "Advanced",
+    "q": "How does Builder compare with object initializers and C# records with required/init properties?",
+    "a": "Object initializers with init and required properties cover many simple cases: named, readable and immutable after construction with compiler-enforced required members. A Builder is still better when construction involves validation across fields, conditional or multi-step logic, building nested objects or collections, or when you want to reuse a partially configured builder for several objects (for example test data builders)."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is a Test Data Builder and why is it useful in unit tests?",
+    "a": "A Test Data Builder creates domain objects with sensible valid defaults, and each test overrides only the fields it cares about (new OrderBuilder().WithStatus(Cancelled).Build()). It keeps tests short and focused on what matters, and when the constructor or required fields change you update the builder once instead of hundreds of tests."
+   }
+  ]
+ },
+ "11": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is sharding and why is it needed?",
+    "a": "Sharding (horizontal partitioning) splits a table's rows across multiple database nodes, each holding a subset based on a shard key. It is needed when writes or data volume exceed what a single primary can handle, even after vertical scaling, caching and read replicas. Each shard handles only its share of reads, writes and storage."
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between partitioning and sharding?",
+    "a": "Partitioning splits a table into pieces; it can be within a single database server (table partitioning by date range, for example) to make queries and maintenance faster. Sharding is partitioning across multiple servers so load and storage are distributed. Vertical partitioning, splitting columns or tables by feature, is a different technique from horizontal row-based sharding."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare range-based, hash-based and directory-based sharding.",
+    "a": "- Range: rows split by key ranges (A-M, N-Z or by date); range queries are efficient but hot spots are likely if data is skewed or time-ordered\n- Hash: hash(key) mod N or consistent hashing; spreads load evenly but range queries hit every shard\n- Directory: a lookup service maps keys to shards; flexible for rebalancing and moving tenants, but the directory must be fast and highly available"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you choose a good shard key?",
+    "a": "Choose a key with high cardinality that spreads data and traffic evenly and that most queries include, so they hit one shard. For example user_id or tenant_id for a SaaS app keeps a user's data together. Avoid low-cardinality keys (country, status), monotonically increasing keys (timestamps, auto-increment IDs) that send all new writes to one shard, and keys that force frequent cross-shard transactions."
+   },
+   {
+    "level": "Advanced",
+    "q": "What causes hot spots and how do you fix them?",
+    "a": "Hot spots come from celebrity keys (one user or product with huge traffic), time-ordered keys where all current writes go to the latest range, or skewed data distribution. Fixes: hash the key instead of range-partitioning, add a random suffix or salt to hot keys to spread them (reads then fan out), split hot shards, cache hot reads, and use write buffering or counters aggregated in memory for extremely hot items."
+   },
+   {
+    "level": "Advanced",
+    "q": "What are the real costs of sharding and how do you handle cross-shard queries and rebalancing?",
+    "a": "Cross-shard queries need scatter-gather, which is slower and complicates pagination, sorting and aggregations; you mitigate with denormalised or secondary indexes, a separate search/analytics store, or choosing keys to keep queries local. Cross-shard transactions need sagas or two-phase commit. Rebalancing is costly with hash mod N, so use consistent hashing or many fixed logical partitions mapped to fewer physical nodes, moving partitions in the background. Unique IDs need a global scheme like Snowflake IDs or UUIDs."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Strategy pattern?",
+    "a": "Strategy defines a family of algorithms, puts each in its own class behind a common interface, and makes them interchangeable at runtime. The context class holds a reference to the strategy interface and delegates to it, so it does not need if/else branches for each algorithm."
+   },
+   {
+    "level": "Basic",
+    "q": "When should you use the Strategy pattern?",
+    "a": "Use it when you have several ways to perform the same task and want to choose between them at runtime or by configuration: pricing and discount rules, payment methods, sorting, compression, retry policies or shard-key routing. It is a strong signal when a method has a growing switch on a type or mode."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Design an IShardKeyStrategy with hash and range implementations.",
+    "a": "The interface maps a key to a shard index; the router uses whichever strategy is configured.\n```csharp\npublic interface IShardKeyStrategy {\n    int GetShard(string key, int shardCount);\n}\npublic class HashShardStrategy : IShardKeyStrategy {\n    public int GetShard(string key, int shardCount) {\n        uint h = 2166136261;\n        foreach (char c in key) h = (h ^ c) * 16777619;\n        return (int)(h % (uint)shardCount);\n    }\n}\n```\nA RangeShardStrategy would look up the key in a sorted list of range boundaries. Note string.GetHashCode is randomised per process, so use a stable hash."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How is Strategy different from the State pattern?",
+    "a": "Both delegate behaviour to an interchangeable object, but the intent differs. In Strategy, the client chooses the algorithm and strategies are independent of each other. In State, the object's behaviour changes as its internal state changes, and states usually know about and trigger transitions to other states (Order: Pending to Paid to Shipped)."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you select a strategy at runtime in ASP.NET Core?",
+    "a": "- Register all implementations and inject IEnumerable<IStrategy>, then pick by a key property\n- Use keyed services (.NET 8+): AddKeyedScoped<IStrategy, HashStrategy>(\"hash\") and resolve with [FromKeyedServices] or GetRequiredKeyedService\n- Bind the chosen key from configuration (IOptions) so switching strategy needs no code change\n- Use a small factory that maps keys to strategies"
+   },
+   {
+    "level": "Advanced",
+    "q": "Can you implement Strategy with delegates instead of interfaces? What are the trade-offs?",
+    "a": "Yes: pass a Func<T, TResult> (for example Func<decimal, decimal> for a discount), which is concise for single-method, stateless algorithms. Interfaces are better when the strategy has multiple methods, its own dependencies injected by DI, configuration, or needs a name for selection and logging. Delegates are harder to discover, register and mock with meaningful names."
+   }
+  ]
+ },
+ "12": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What does ACID stand for?",
+    "a": "- Atomicity: all operations in a transaction succeed or none do (rollback on failure)\n- Consistency: a transaction moves the database from one valid state to another, respecting constraints\n- Isolation: concurrent transactions do not see each other's partial work, as defined by the isolation level\n- Durability: once committed, data survives crashes, usually via a write-ahead log flushed to disk"
+   },
+   {
+    "level": "Basic",
+    "q": "What are dirty reads, non-repeatable reads and phantom reads?",
+    "a": "A dirty read is reading another transaction's uncommitted change, which may be rolled back. A non-repeatable read is reading the same row twice in a transaction and getting different values because another transaction updated and committed it in between. A phantom read is running the same range query twice and getting new or missing rows because another transaction inserted or deleted matching rows."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Explain the four standard isolation levels and which anomalies each prevents.",
+    "a": "- Read Uncommitted: allows dirty reads, non-repeatable reads and phantoms\n- Read Committed (default in SQL Server and Postgres): prevents dirty reads\n- Repeatable Read: also prevents non-repeatable reads; phantoms possible in the standard (Postgres and MySQL InnoDB largely prevent them too)\n- Serializable: prevents all three, behaving as if transactions ran one after another\nHigher levels reduce anomalies at the cost of more locking or aborts."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is a lost update, and how do you prevent it?",
+    "a": "A lost update happens when two transactions read the same value, both modify it and write it back, so one change overwrites the other (two users decrementing stock from 10 to 9 instead of 8). Prevent it with an atomic update (UPDATE ... SET stock = stock - 1 WHERE stock > 0), pessimistic locking (SELECT ... FOR UPDATE or UPDLOCK), or optimistic concurrency with a version column (rowversion in SQL Server, EF Core concurrency tokens) that fails the second write so it can retry."
+   },
+   {
+    "level": "Advanced",
+    "q": "When would you use SERIALIZABLE and what does it cost?",
+    "a": "Use it when correctness depends on a condition across multiple rows that other transactions could change, such as write skew (two doctors both going off call because each saw the other on call) or enforcing 'no overlapping bookings'. It costs throughput: lock-based implementations take range locks and cause blocking and deadlocks, while snapshot-based ones (Postgres SSI) abort conflicting transactions, so the application must retry. Often a narrower fix like a unique constraint or SELECT FOR UPDATE is cheaper."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is snapshot isolation / MVCC and how does it differ from lock-based isolation?",
+    "a": "With MVCC the database keeps multiple versions of rows, and each transaction reads a consistent snapshot as of its start, so readers never block writers and writers never block readers. Lock-based isolation makes readers take shared locks that conflict with writers' exclusive locks, causing blocking. Snapshot isolation prevents dirty and non-repeatable reads but still allows write skew, which is why true serializability needs SSI or locking. SQL Server offers it through READ_COMMITTED_SNAPSHOT and SNAPSHOT isolation; Postgres uses MVCC by default."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Repository pattern?",
+    "a": "A repository mediates between the domain and the data mapping layer, exposing a collection-like interface (GetById, Add, Remove, Find) for aggregates. Business code depends on the repository interface, not on SQL or EF Core directly, which keeps persistence details out of the domain and makes the logic easy to unit test."
+   },
+   {
+    "level": "Basic",
+    "q": "Show a basic repository interface and EF Core implementation.",
+    "a": "The interface lives with the domain; the implementation lives in the infrastructure layer.\n```csharp\npublic interface IOrderRepository {\n    Task<Order?> GetByIdAsync(int id, CancellationToken ct);\n    Task AddAsync(Order order, CancellationToken ct);\n}\npublic class EfOrderRepository(AppDbContext db) : IOrderRepository {\n    public Task<Order?> GetByIdAsync(int id, CancellationToken ct) =>\n        db.Orders.Include(o => o.Items).FirstOrDefaultAsync(o => o.Id == id, ct);\n    public async Task AddAsync(Order order, CancellationToken ct) =>\n        await db.Orders.AddAsync(order, ct);\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the Unit of Work pattern and how does it relate to repositories?",
+    "a": "Unit of Work tracks all changes made during a business operation and commits them together in one transaction. Repositories add or modify entities; the unit of work's SaveChanges persists them atomically. In EF Core, DbContext already is a unit of work and each DbSet acts like a repository, so a custom IUnitOfWork usually just wraps SaveChangesAsync."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Generic repository vs specific repository: which is better?",
+    "a": "A generic IRepository<T> with GetAll, Add and Update reduces boilerplate but leaks a one-size-fits-all API, often exposes IQueryable (leaking EF concerns), and offers operations that may not make sense for every aggregate. Specific repositories (IOrderRepository.GetPendingOrdersForCustomer) express intent, return only what the domain needs and are easier to optimise. A common compromise is a small generic base used internally by specific repositories."
+   },
+   {
+    "level": "Advanced",
+    "q": "Is the Repository pattern redundant on top of EF Core?",
+    "a": "It can be: DbContext is already a repository and unit of work, and wrapping it with thin pass-through repositories adds code without value, while hiding useful features like Include, projections and AsNoTracking. It is worth it when you follow DDD with aggregates, want the domain free of EF dependencies, need to swap or mix data sources (Dapper for hot queries), or want to centralise complex queries. Many teams use repositories for writes/aggregates and query DbContext or Dapper directly for read models (CQRS-lite)."
+   },
+   {
+    "level": "Advanced",
+    "q": "Should a repository return IQueryable? Explain the trade-offs.",
+    "a": "Returning IQueryable lets callers compose filters and projections that EF translates to SQL, which is flexible and efficient. But it leaks persistence concerns: query logic spreads into services, callers can trigger N+1 or untranslatable queries, and the query executes after the repository's control (possibly after the context is disposed). Returning materialised results (IReadOnlyList) or using the Specification pattern keeps queries encapsulated and testable."
+   }
+  ]
+ },
+ "13": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What core tables would you design for a library system?",
+    "a": "- Book: book_id, isbn (unique), title, author, publisher, year\n- Copy (BookItem): copy_id, book_id FK, barcode, status, shelf location\n- Member: member_id, name, email, membership_type, status\n- Loan: loan_id, copy_id FK, member_id FK, issued_at, due_at, returned_at\n- Reservation: reservation_id, book_id FK, member_id FK, created_at, status\nOptionally Author and BookAuthor for many-to-many authors, and Fine."
+   },
+   {
+    "level": "Basic",
+    "q": "Why separate Book from Copy?",
+    "a": "A Book is the title-level information (ISBN, title, author) shared by all physical items, while a Copy is one physical item with its own barcode, condition, location and availability. One Book has many Copies, and a Loan must reference a specific Copy. Keeping them separate avoids duplicating book details and lets you count available copies per title."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which indexes would you add and what queries do they serve?",
+    "a": "- Unique index on Book.isbn for lookup by ISBN\n- Index or full-text index on title/author for catalog search\n- Index on Copy(book_id, status) to find an available copy of a title\n- Index on Loan(member_id, returned_at) for a member's active loans\n- Index on Loan(due_at) filtered to returned_at IS NULL for overdue reports\n- Index on Reservation(book_id, status, created_at) to find the next person in the queue"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you prevent the same copy from being loaned to two members at once?",
+    "a": "Enforce it in the database, not only in code: a filtered unique index on Loan(copy_id) WHERE returned_at IS NULL guarantees at most one open loan per copy. In the issue transaction, update the copy's status with a conditional update (UPDATE Copy SET status='Loaned' WHERE copy_id=@id AND status='Available') and check rows affected, or use optimistic concurrency with a version column. A concurrent second request then fails cleanly instead of double-issuing."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you model reservations and the hold queue when a copy is returned?",
+    "a": "Reservations are made at the Book level (any copy) with a status (Waiting, ReadyForPickup, Fulfilled, Cancelled, Expired) and a created_at for FIFO order. On return, in the same transaction, find the oldest waiting reservation for that book; if found, mark the copy OnHold for that member with a pickup deadline and notify them, otherwise mark it Available. A background job expires holds past the deadline and moves to the next reservation."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would the design change if the library became a multi-branch city network with millions of loans?",
+    "a": "Add a Branch table and branch_id on Copy (and on Loan for where it was issued/returned), so availability queries become per branch. Keep Loan history in a partitioned table (by issued date) and archive old loans, while active loans stay small and indexed. Catalog search moves to a search engine like Elasticsearch fed by change events, and read-heavy catalog pages are cached. Sharding by branch is possible but inter-branch transfers and member-wide queries make a single well-indexed primary with replicas the better first step."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What are the main classes in a Library Management System LLD?",
+    "a": "- Book (ISBN, title, authors) and BookItem (barcode, status, rack) for physical copies\n- Member and Librarian, often derived from Account/Person\n- Loan (BookItem, Member, issue date, due date, return date)\n- Reservation, Fine and a Catalog for searching\n- Services such as LoanService and NotificationService that coordinate operations"
+   },
+   {
+    "level": "Basic",
+    "q": "What relationships exist between these classes?",
+    "a": "Book to BookItem is one-to-many composition (a copy belongs to one book). Member to Loan is one-to-many association, and a Loan links exactly one BookItem to one Member. Catalog aggregates Books and indexes them by title, author and subject. Member and Librarian inherit from a common Account or Person, while Librarian gets extra admin capabilities."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How would you implement the checkout operation with rules like max 5 books and no pending fines?",
+    "a": "Put the orchestration in a LoanService and keep rules in the domain objects or pluggable rule classes, so new rules do not change the service.\n```csharp\npublic Loan Checkout(Member member, BookItem item) {\n    if (member.ActiveLoans.Count >= MaxBooks)\n        throw new DomainException(\"Loan limit reached\");\n    if (member.HasPendingFines) throw new DomainException(\"Pay fines first\");\n    item.MarkLoaned(); // throws if not Available\n    var loan = new Loan(item, member, _clock.Today, _clock.Today.AddDays(14));\n    member.AddLoan(loan);\n    _loans.Add(loan);\n    return loan;\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How would you model BookItem status, and why not just use booleans?",
+    "a": "Use an enum (Available, Loaned, Reserved/OnHold, Lost, UnderRepair) owned by BookItem, with methods like MarkLoaned and MarkReturned that validate allowed transitions. Several booleans (isLoaned, isReserved) allow impossible combinations and scatter checks across the code. If transitions have rich behaviour, the State pattern can model each status as a class."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you design fine calculation so rules can change per membership type?",
+    "a": "Define an IFineCalculationStrategy (for example CalculateFine(Loan loan, DateOnly returnDate)) with implementations such as StandardFinePolicy and StudentFinePolicy, or a policy chosen by membership type via a factory. Inject a clock abstraction (TimeProvider in .NET 8) instead of DateTime.Now so tests can control dates. This keeps Loan free of pricing rules and follows OCP when a new membership type arrives."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you notify members when a reserved book becomes available or a loan is due?",
+    "a": "Use the Observer pattern or domain events: when BookItem is returned, raise a BookReturned event; a handler checks the reservation queue and publishes a ReservationReady notification. A scheduled job raises LoanDueSoon events for loans due in two days. Notification handlers use an INotificationChannel abstraction (email, SMS), so the core loan logic knows nothing about how members are notified."
+   }
+  ]
+ },
+ "14": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What does the CAP theorem state?",
+    "a": "In a distributed data system, when a network partition happens you must choose between Consistency (every read sees the latest write or gets an error) and Availability (every request gets a non-error response, possibly stale). Partition tolerance is not optional in real networks, so the practical choice is CP or AP during a partition; when there is no partition you can have both."
+   },
+   {
+    "level": "Basic",
+    "q": "Give examples of CP and AP systems and use cases.",
+    "a": "CP: a bank ledger or inventory count where showing wrong data is worse than an error; systems like ZooKeeper, etcd, HBase and a single-primary SQL database refuse or block requests on the minority side. AP: a shopping cart, likes counter or social feed where staying up matters more and conflicts can be merged later; Cassandra, DynamoDB (default eventual reads) and CouchDB keep serving and reconcile afterwards."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: SQL vs NoSQL and B-tree indexes in two sentences each.",
+    "a": "SQL offers schemas, joins and ACID and fits relational, transactional data; NoSQL offers flexible schemas and horizontal scale and fits known key-based access patterns at high volume. A B-tree index keeps keys sorted in shallow, wide pages for O(log n) lookups and range scans, and composite indexes follow the leftmost prefix rule at the cost of slower writes."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid fire: replication vs sharding, and what problem each solves.",
+    "a": "Replication copies the same data to several nodes to scale reads and survive failures, but async replicas lag, causing read-your-own-writes issues. Sharding splits different data across nodes to scale writes and storage, but needs a good shard key to avoid hot spots and makes cross-shard queries and rebalancing expensive. Real systems usually do both: each shard is replicated."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is PACELC and why is it more useful than CAP alone?",
+    "a": "PACELC says: if there is a Partition, choose Availability or Consistency; Else, in normal operation, choose Latency or Consistency. CAP only describes rare partition behaviour, but the everyday trade-off is that stronger consistency needs coordination and adds latency. For example DynamoDB and Cassandra are PA/EL (fast, eventually consistent by default), while Spanner is PC/EC (consistent, paying latency)."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid fire: isolation levels and what SERIALIZABLE costs.",
+    "a": "Read Uncommitted allows dirty reads, Read Committed prevents them, Repeatable Read also prevents non-repeatable reads, and Serializable prevents phantoms and write skew too. Serializable costs throughput through range locks, blocking and deadlocks or through transaction aborts that must be retried, so use it only where cross-row invariants demand it."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Rapid fire: what problem does each pattern solve - Singleton, Factory, Builder, Strategy, Repository?",
+    "a": "- Singleton: exactly one shared instance with a global access point\n- Factory: create objects without the caller knowing the concrete class\n- Builder: construct complex objects step by step with readable optional parts\n- Strategy: swap interchangeable algorithms behind one interface at runtime\n- Repository: hide data access behind a collection-like domain interface"
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid fire: which patterns are creational, structural or behavioural?",
+    "a": "Singleton, Factory Method, Abstract Factory, Builder and Prototype are creational. Adapter, Decorator, Facade, Proxy and Composite are structural. Strategy, Observer, State, Command and Template Method are behavioural. Repository is not a GoF pattern; it is an enterprise/DDD data-access pattern."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Factory vs Builder: how do you choose?",
+    "a": "Use a Factory when the question is which concrete type to create, usually in one call based on input. Use a Builder when the question is how to assemble one complex object with many optional parts or steps. They can combine: a factory can return a pre-configured builder, or a builder can use factories for its parts."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Factory vs Strategy: they both use interfaces and a lookup. What is the difference?",
+    "a": "Factory is creational: its job is to produce an object and it is done once the object is returned. Strategy is behavioural: its job is to encapsulate an algorithm the context calls to perform work. In practice a factory is often used to select and create the right strategy, for example a PaymentStrategyFactory returning an IPaymentStrategy."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does DI in ASP.NET Core replace or change the classic Singleton and Factory patterns?",
+    "a": "AddSingleton gives a single instance managed by the container, so you no longer need a static Instance property, and consumers get it through constructor injection, which keeps them testable. Factories become DI registrations with delegates, IEnumerable<T> resolution, keyed services or built-in factories like IHttpClientFactory. You still write explicit factories when the choice depends on runtime data."
+   },
+   {
+    "level": "Advanced",
+    "q": "Walk through how these patterns fit together in a typical .NET order service.",
+    "a": "A controller receives the request and calls an OrderService injected by DI. The service uses an OrderBuilder (or domain factory) to create a valid Order, a PricingStrategy chosen by customer type to calculate totals, and a PaymentProcessorFactory to pick the payment gateway. It saves through IOrderRepository and a unit of work, and shared infrastructure like configuration or a cache is registered as a singleton."
+   }
+  ]
+ },
+ "15": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is caching and what should you cache?",
+    "a": "Caching stores copies of data in a faster layer (usually memory) closer to the consumer to reduce latency and load on the source. Cache data that is read often, expensive to compute or fetch, and changes rarely or can tolerate slight staleness: product details, user profiles, configuration, rendered pages and computed aggregates. Avoid caching highly volatile or strictly consistent data like account balances unless carefully invalidated."
+   },
+   {
+    "level": "Basic",
+    "q": "What are cache hit, miss and hit ratio?",
+    "a": "A hit means the requested data was found in the cache; a miss means it was not, so the system fetches it from the source and usually populates the cache. Hit ratio is hits divided by total requests. A high hit ratio (often above 90%) means most requests avoid the slow path; a low one means you are paying cache overhead without much benefit, often due to poor key design, short TTLs or a cache that is too small."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Name the caching layers in a typical web system.",
+    "a": "- Browser cache controlled by Cache-Control and ETag headers\n- CDN edge cache for static assets and cacheable API responses\n- Reverse proxy or API gateway cache\n- In-process application memory (IMemoryCache)\n- Distributed cache such as Redis or Memcached shared by all app servers\n- Database buffer pool and query plan cache\nThe closer to the user, the faster, but the harder to invalidate."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Compare in-memory (IMemoryCache) and distributed (Redis) caching.",
+    "a": "In-process memory is the fastest (no network hop, no serialization) but each server has its own copy, so data can be inconsistent across nodes, memory is limited and it is lost on restart. A distributed cache like Redis is shared by all servers, survives app restarts and scales independently, at the cost of a network round trip and serialization. Many systems combine them as a two-level cache (L1 memory, L2 Redis), as in .NET 9's HybridCache."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is staleness in caching and how do you control it?",
+    "a": "Staleness is when the cache returns data that no longer matches the source. Control it with TTLs sized to how stale the data may be, explicit invalidation (delete the key on write), write-through updates, or event-driven invalidation via pub/sub or CDC. For HTTP, use Cache-Control max-age plus ETag revalidation. The trade-off is always freshness versus hit ratio and load on the source."
+   },
+   {
+    "level": "Advanced",
+    "q": "What is a cache stampede and how do you prevent it?",
+    "a": "A cache stampede (thundering herd) happens when a hot key expires and many concurrent requests miss at once, all hitting the database to rebuild it, which can overload it. Prevent it with request coalescing or a per-key lock so only one caller rebuilds while others wait or get the stale value, adding random jitter to TTLs so keys do not expire together, and refreshing hot keys early (probabilistic early expiration or background refresh). HybridCache and similar libraries coalesce concurrent misses automatically."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is an LRU cache?",
+    "a": "An LRU (Least Recently Used) cache holds a fixed number of items; when it is full and a new item is added, it evicts the item that was accessed least recently. It exploits temporal locality, the idea that recently used data is likely to be used again. Both get and put should run in O(1)."
+   },
+   {
+    "level": "Basic",
+    "q": "Why use a hash map plus a doubly linked list to implement LRU?",
+    "a": "The hash map gives O(1) lookup from key to node. The doubly linked list keeps items in recency order: move a node to the head on access and evict from the tail when full. Double links allow O(1) removal of a node from the middle because it knows its previous and next neighbours; neither structure alone provides O(1) for both lookup and ordering."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement the core of an LRU cache in C#.",
+    "a": "Store LinkedListNode references in the dictionary so moving and removing are O(1).\n```csharp\npublic class LruCache<K, V>(int capacity) where K : notnull {\n    private readonly Dictionary<K, LinkedListNode<(K Key, V Val)>> _map = new();\n    private readonly LinkedList<(K Key, V Val)> _list = new();\n    public bool TryGet(K key, out V val) {\n        if (!_map.TryGetValue(key, out var n)) { val = default!; return false; }\n        _list.Remove(n); _list.AddFirst(n); val = n.Value.Val; return true;\n    }\n    public void Put(K key, V val) {\n        if (_map.TryGetValue(key, out var n)) _list.Remove(n);\n        else if (_map.Count == capacity) { _map.Remove(_list.Last!.Value.Key); _list.RemoveLast(); }\n        _map[key] = _list.AddFirst((key, val)); }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the difference between LRU, LFU and FIFO eviction?",
+    "a": "- FIFO evicts the oldest inserted item regardless of use; simple but ignores access patterns\n- LRU evicts the item not accessed for the longest time; good default for recency-driven workloads\n- LFU evicts the least frequently accessed item; better when some items stay popular long-term, but needs frequency tracking and aging so old hot items do not stay forever\nRedis supports allkeys-lru, allkeys-lfu and volatile variants."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you make the LRU cache thread-safe, and what are the trade-offs?",
+    "a": "The simplest correct approach is a single lock around Get and Put, because even a read mutates the list order, so a ReaderWriterLock does not help much. Under high contention, shard the cache into N segments by key hash, each with its own lock and capacity, so threads rarely collide. Production caches like Caffeine or MemoryCache use approximate LRU with buffered access recording to avoid locking on every read, trading exact ordering for throughput."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you extend the LRU design to support per-item TTL expiry?",
+    "a": "Store an expiry timestamp in each node and check it on Get: if expired, remove it and treat it as a miss (lazy expiration). To reclaim memory from items never read again, run a periodic cleanup or keep a min-heap/priority queue by expiry time to evict expired items first before evicting by LRU order. Inject a clock (TimeProvider) so expiry logic is testable."
+   }
+  ]
+ }
+}

@@ -31,7 +31,7 @@ def test_three_unique_leetcode_a_day_with_links():
     for d in DAYS:
         for q in d["leetcode"]:
             assert re.fullmatch(r"https://leetcode\.com/problems/[a-z0-9-]+/", q["url"]), q
-            assert q["difficulty"] in ("Easy", "Medium", "Hard")
+        assert [q["difficulty"] for q in d["leetcode"]] == ["Medium", "Medium", "Hard"], d["day"]
 
 
 def test_every_day_is_complete():
@@ -44,3 +44,27 @@ def test_every_day_is_complete():
 
 def test_checkpoints_on_25_50_75():
     assert [d["day"] for d in DAYS if d.get("checkpoint")] == [25, 50, 75]
+
+
+def test_sql_and_design_every_day_easy_or_medium():
+    for key in ("sql", "design"):
+        names = []
+        for d in DAYS:
+            x = d[key]
+            if d["type"] == "Review Sunday":
+                assert x.get("review"), (key, d["day"])
+                continue
+            assert x["difficulty"] in ("Easy", "Medium"), (key, d["day"])
+            assert x.get("url") or x.get("statement"), (key, d["day"])
+            names.append(x["name"])
+        assert len(names) == len(set(names)) == 65, key
+
+
+def test_qna_six_hld_six_lld_per_day_by_level():
+    qna = json.loads((Path(__file__).resolve().parent.parent / "qna.json").read_text(encoding="utf-8"))
+    assert sorted(map(int, qna)) == list(range(1, 76))
+    for day, v in qna.items():
+        for kind in ("hld", "lld"):
+            levels = [x["level"] for x in v[kind]]
+            assert levels == ["Basic", "Basic", "Intermediate", "Intermediate", "Advanced", "Advanced"], (day, kind)
+            assert all(x["q"].strip() and x["a"].strip() for x in v[kind])

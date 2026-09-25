@@ -1,0 +1,992 @@
+{
+ "61": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is back-of-the-envelope estimation and why do interviewers ask for it?",
+    "a": "It is a quick order-of-magnitude calculation of QPS, storage, bandwidth and memory used to size a system before designing it. Interviewers do not want exact numbers; they want to see you state assumptions, round aggressively (1 day is about 10^5 seconds) and use the result to make decisions, such as whether one database is enough or you need sharding and caching."
+   },
+   {
+    "level": "Basic",
+    "q": "How do you convert daily active users into requests per second?",
+    "a": "QPS = DAU x requests per user per day / 86,400 (round to 10^5). For example 10M DAU x 10 requests = 10^8 / 10^5 = about 1,000 QPS on average. Peak is usually 2-3x the average (up to 10x for spiky events), and you then split it into reads and writes using the read:write ratio."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Estimate the storage for a Twitter-like service with 100M daily tweets.",
+    "a": "Text plus metadata is roughly 300 bytes per tweet, so 100M x 300 B = 30 GB/day, about 11 TB/year, and roughly 33 TB/year with 3x replication. If 10% of tweets carry a 500 KB image, that is 10M x 500 KB = 5 TB/day, so media dominates and must live in blob storage behind a CDN while the metadata stays in a database. Always finish with a multi-year total and say which store each part goes to."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which latency and throughput numbers should you know by heart?",
+    "a": "Memory reference ~100 ns\n- SSD random read ~100 microseconds\n- Round trip inside a data centre ~0.5 ms\n- HDD seek ~10 ms\n- Cross-continent round trip ~150 ms\n- 1 Gbps network ~125 MB/s\n- A single Redis node ~100k simple ops/s; a single Postgres node a few thousand to ~10k simple queries/s; a typical app server ~1k-5k requests/s depending on work per request"
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you estimate the number of servers and the cache size?",
+    "a": "Servers = peak QPS / QPS per server, then add 30-50% headroom plus N+1 redundancy; for example 20k peak / 1k per server = 20, so plan about 30. For cache, apply the 80/20 rule: cache the hot 20% of daily read data. If 1B reads/day touch 100M unique items of 1 KB each, 20% is about 20 GB, which fits on one or two Redis nodes with replicas."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you sanity-check your estimates against known systems?",
+    "a": "Compare with public figures: WhatsApp handles on the order of 100B messages/day (about 1M/s), Twitter about 500M tweets/day (about 6k/s average), Google search around 100k queries/s. If a college app comes out at 1M QPS, an assumption is off. Also check per-unit sizes (bytes per row, KB per image), make sure the ratios are plausible, and see whether the final number fits on one machine, because that is the decision estimation is meant to drive."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What problem does the Composite pattern solve and who are its participants?",
+    "a": "Composite lets clients treat single objects and groups of objects the same way through one interface, which suits tree structures such as menus, org charts, bundles and UI trees. Participants: Component (common interface), Leaf (no children) and Composite (holds children and delegates to them). The client calls one operation on the root and recursion does the rest."
+   },
+   {
+    "level": "Basic",
+    "q": "Where do you see Composite in the .NET ecosystem?",
+    "a": "WinForms and WPF control trees (Control.Controls and the visual tree)\n- IConfigurationSection.GetChildren() in ASP.NET Core configuration\n- XmlNode and XElement in XML DOM and LINQ to XML\n- System.Linq.Expressions expression trees, where an expression contains child expressions"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Transparent vs safe Composite: where should Add and Remove go?",
+    "a": "In the transparent version Add and Remove are on the Component interface, so the client treats everything uniformly but a leaf has to throw NotSupportedException. In the safe version they exist only on the Composite, which is type-safe, but the client must know when it holds a composite. In C# the safe version is usually preferred because it fails at compile time rather than at runtime."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Use Composite to price a shopping cart that contains products and discounted bundles.",
+    "a": "Both Product and Bundle implement IItem. A Bundle sums its children, which can be bundles themselves, and then applies its own discount.\n```csharp\ninterface IItem { decimal Price(); }\nclass Product(decimal cost) : IItem { public decimal Price() => cost; }\nclass Bundle(decimal discount) : IItem {\n    private readonly List<IItem> _items = new();\n    public void Add(IItem item) => _items.Add(item);\n    public decimal Price() => _items.Sum(i => i.Price()) * (1 - discount);\n}\n```"
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle parent references, cycles and very deep trees in a Composite?",
+    "a": "Set a Parent reference inside Add so nodes can walk upward, for example to build paths or bubble size changes. Before adding a child, walk the ancestor chain and reject the add if the child is already an ancestor, otherwise you create a cycle and infinite recursion. For very deep trees, replace recursion with an explicit Stack<T> to avoid StackOverflowException, and cache aggregates such as total size and invalidate them up the parent chain on change."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does Composite work together with Iterator and Visitor?",
+    "a": "Iterator exposes traversal (DFS or BFS) through IEnumerable<T> with yield return, so clients can loop over the tree without knowing its shape. Visitor adds new operations such as export, search or size reports without changing node classes, using double dispatch through Accept(visitor). The trade-off is that Visitor makes adding a new node type expensive, because every visitor must change."
+   }
+  ]
+ },
+ "62": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Walk me through your traffic platform project. How should you structure the 5-minute answer?",
+    "a": "Context and problem (who uses it and why)\n- Scale numbers (events/sec, users, data volume)\n- Data flow from ingestion through queue and processors to storage and APIs, drawn left to right\n- Your specific part and the decisions you owned\n- Impact with numbers, plus one challenge and what you learned"
+   },
+   {
+    "level": "Basic",
+    "q": "Why did you put a message queue between ingestion and processing?",
+    "a": "The queue decouples producers from consumers, so ingestion keeps accepting data even when processors are slow or down. It absorbs traffic bursts, lets each side scale independently, and gives you retries and dead-letter queues. The trade-off is at-least-once delivery, so consumers must be idempotent."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What throughput did the platform handle and where was the bottleneck?",
+    "a": "Give concrete numbers: average and peak events/sec, end-to-end latency and data per day. The usual bottleneck is database writes, so explain the fixes: batching or bulk inserts, time-based partitioning, indexing only what reads need, scaling consumers per partition, and caching the read APIs. Show that you measured the bottleneck (metrics, profiling) before fixing it."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How did you make sure no data was lost or processed twice?",
+    "a": "Messages were acknowledged only after processing succeeded, and failures were retried with exponential backoff before moving to a DLQ for inspection. Consumers were idempotent: upserts keyed by event ID, or a processed-IDs table with a unique constraint. Where a DB write and a publish had to happen together, an outbox table avoided the dual-write problem, and consumer lag was monitored and alerted on."
+   },
+   {
+    "level": "Advanced",
+    "q": "What would you change if traffic grew 10x?",
+    "a": "Increase partitions and key them by region or device so consumers scale horizontally\n- Autoscale consumers on queue lag (for example KEDA on Container Apps or AKS)\n- Move hot append-only writes to a time-series or partitioned store and keep aggregates precomputed\n- Add read replicas and a cache for dashboards\n- Apply backpressure and rate limits at ingestion\n- Load-test to find the next bottleneck before it finds you"
+   },
+   {
+    "level": "Advanced",
+    "q": "Tell me about a production issue on this platform and how you debugged it.",
+    "a": "Use STAR with a real incident, for example consumer lag spiking because a poison message kept failing or a slow query blocked writes. Explain how you found it: alerts, dashboards, logs with correlation IDs in Application Insights, then isolating the root cause. Finish with the fix (DLQ, index, batching) and the prevention step (a lag alert, a load test, a runbook), with numbers such as time to detect and resolve."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Parking lot mock: which requirements do you clarify in the first 5 minutes?",
+    "a": "Number of floors and entry/exit gates\n- Vehicle types (bike, car, truck) and spot types (small, compact, large, EV)\n- Ticket issued at entry, fee paid at exit, and the pricing model (hourly, flat, per spot type)\n- Payment methods and display boards showing free spots\n- Whether several gates work concurrently, and what is out of scope (reservations, valet)"
+   },
+   {
+    "level": "Basic",
+    "q": "Which core classes would you define for the parking lot?",
+    "a": "ParkingLot (root), ParkingFloor, ParkingSpot (with SpotType), Vehicle (with VehicleType), Ticket (entry time, spot, vehicle), EntryGate and ExitGate, IPricingStrategy, ISpotAllocationStrategy, Payment and DisplayBoard. Keep enums for types unless behaviour really differs, and keep the ParkingLot as a coordinator that delegates to strategies rather than a god class."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you allocate a spot, and which pattern fits?",
+    "a": "Use Strategy: ISpotAllocationStrategy with implementations such as NearestToGate or FirstAvailableFloor, so the policy can change without touching ParkingLot. For speed, keep free spots per SpotType in a queue or sorted set, so finding a spot is O(1) or O(log n) instead of scanning every floor. Map vehicle type to compatible spot types (a bike can use a small spot, or a larger one if small spots are full)."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you make fee calculation flexible and testable?",
+    "a": "Put pricing behind IPricingStrategy (hourly slabs, flat rate, weekend rate) and pick the strategy per spot type or lot. Surcharges such as EV charging or peak hours can be decorators around the base strategy. Inject a clock (TimeProvider in .NET 8) instead of calling DateTime.Now, so tests can control entry and exit times."
+   },
+   {
+    "level": "Advanced",
+    "q": "Two entry gates try to assign the same spot at the same time. How do you prevent it?",
+    "a": "In memory, keep free spots per type in a ConcurrentQueue<ParkingSpot>: TryDequeue is atomic, so each spot goes to exactly one gate. Alternatively lock per spot type or per floor, which is a finer lock than locking the whole lot. If spots are stored in a database, use a conditional update (UPDATE spot SET status = Occupied WHERE id = @id AND status = Free) or a rowversion column and check the affected row count."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you extend the design for EV charging spots and reservations?",
+    "a": "Add an EV spot type and capability flags, and let the allocation strategy match vehicle needs to spot capabilities, so existing classes stay closed for modification. For reservations add a Reservation entity with a time window and give spots a small state machine (Free, Reserved, Occupied). DisplayBoards observe spot state changes (Observer), so new states update counts automatically."
+   }
+  ]
+ },
+ "63": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What single template do you use for every HLD case study?",
+    "a": "Requirements, functional and non-functional (about 5 min)\n- Estimates: QPS, storage, bandwidth (about 5 min)\n- API design (about 5 min)\n- Data model and choice of store (about 5 min)\n- High-level diagram (about 10 min)\n- Deep dives, scaling and bottlenecks, then a wrap-up with trade-offs (about 15 min)"
+   },
+   {
+    "level": "Basic",
+    "q": "Rapid-fire: how does a distributed rate limiter on Redis work?",
+    "a": "For a fixed window, INCR a key such as rl:user:minute and set EXPIRE on the first hit, rejecting requests once the count exceeds the limit. For a sliding window log, use a sorted set: ZREMRANGEBYSCORE to drop old timestamps, ZCARD to count and ZADD to add the current request. Wrap the steps in a Lua script so they run atomically, and decide whether to fail open or fail closed when Redis is down."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid-fire: how does a job scheduler avoid running the same job twice?",
+    "a": "A worker claims a job with an atomic conditional update (set owner and lease_until where status is pending or the lease has expired) and renews the lease with heartbeats while it runs. If the worker dies the lease expires and another worker picks the job up. Because a job can still run twice around a lease expiry, jobs must be idempotent: exactly-once in practice means at-least-once plus idempotency."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Rapid-fire: saga vs outbox in the event-driven order system?",
+    "a": "A saga splits a multi-service transaction into local transactions with compensating actions (for example refund payment if inventory fails), coordinated by events (choreography) or by a central orchestrator. The outbox pattern writes the event into an outbox table in the same DB transaction as the state change, and a relay publishes it, which solves the dual-write problem. They are used together: each saga step publishes its events through an outbox."
+   },
+   {
+    "level": "Advanced",
+    "q": "Rapid-fire: how do chunking, dedupe and sync work in Dropbox?",
+    "a": "Files are split into roughly 4 MB chunks, each identified by its SHA-256 hash, and the client uploads only the chunks the block store does not already have. The metadata DB maps each file version to an ordered list of chunk hashes. Other devices are notified of changes (long polling or WebSocket), download only the changed chunks, and if two devices edit the same base version the later one is saved as a conflicted copy."
+   },
+   {
+    "level": "Advanced",
+    "q": "What weak spots do candidates commonly show across these case studies, and how do you fix them?",
+    "a": "No numbers, so no justification for sharding or caching\n- Ignoring failure modes: what happens if Redis, a worker or the broker dies\n- Forgetting idempotency on retries and at-least-once consumers\n- Single points of failure and unexplained consistency choices\n- Vague partition keys. Fix: finish every design with an explicit failure pass and a 10x scaling pass"
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Command pattern in one line: what is it and who are the participants?",
+    "a": "Command wraps a request in an object, so it can be queued, logged, scheduled, retried or undone. Participants: the Command interface (Execute), ConcreteCommand, the Receiver that does the real work, the Invoker that triggers commands, and the Client that wires them together."
+   },
+   {
+    "level": "Basic",
+    "q": "State pattern in one line: how is it better than a big switch statement?",
+    "a": "State lets an object change its behaviour when its internal state changes by delegating to a state object, where each state class handles its own events and transitions. This removes large switch or if-else blocks spread across methods, keeps each state's rules in one place, and lets you add new states without editing the existing ones."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you implement undo and redo with Command?",
+    "a": "Keep two stacks. Execute pushes onto undo and clears redo; Undo pops, calls Unexecute and pushes onto redo; Redo does the reverse.\n```csharp\ninterface ICommand { void Execute(); void Undo(); }\nclass History {\n    private readonly Stack<ICommand> _undo = new(), _redo = new();\n    public void Run(ICommand c) { c.Execute(); _undo.Push(c); _redo.Clear(); }\n    public void Undo() { if (_undo.TryPop(out var c)) { c.Undo(); _redo.Push(c); } }\n    public void Redo() { if (_redo.TryPop(out var c)) { c.Execute(); _undo.Push(c); } }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "State vs Strategy: they look the same in a class diagram, so what is the difference?",
+    "a": "Both delegate to an interface. With Strategy the client picks an algorithm, and strategies are independent and usually fixed for the operation. With State the context moves between states over its lifetime, and states often know about each other and trigger the transitions themselves. Rule of thumb: if the behaviour changes because of what happened to the object, use State; if it is a configurable choice, use Strategy."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you persist an object that uses the State pattern with EF Core?",
+    "a": "Store the state as an enum or string column, not as the state object. When loading, rebuild the state object through a small factory or a switch on the enum; stateless state objects can be shared singletons. Protect transitions with optimistic concurrency (a rowversion or conditional update WHERE status = @expected) so two requests cannot both move the entity from the same state."
+   },
+   {
+    "level": "Advanced",
+    "q": "Give an example design that combines Composite, Command and State.",
+    "a": "A task scheduler: every job is a Command (Execute, Undo or Compensate) placed in a priority queue. A workflow is a Composite (macro) command whose Execute runs its child commands in order. Each job has a State lifecycle (Pending, Running, Succeeded, Failed, Retrying) that decides which actions are allowed, such as retrying only from Failed."
+   }
+  ]
+ },
+ "64": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Why use Redis sorted sets for a leaderboard instead of a SQL ORDER BY?",
+    "a": "A sorted set (ZSET) keeps members ordered by score using a skip list plus a hash table. Updates (ZADD, ZINCRBY) cost O(log N), top-N reads (ZREVRANGE) cost O(log N + M), and rank lookups (ZREVRANK) cost O(log N). Running ORDER BY score with a rank calculation over millions of rows on every request is far too slow and puts load on the primary database."
+   },
+   {
+    "level": "Basic",
+    "q": "Which commands give you the top 10 and a given user's rank?",
+    "a": "ZREVRANGE lb 0 9 WITHSCORES returns the top 10 with scores. ZREVRANK lb user42 returns the 0-based rank (add 1 for display), and ZSCORE returns the score. For an around-me view, get the rank r and then ZREVRANGE lb r-5 r+5."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you handle ties and daily or weekly leaderboards?",
+    "a": "For ties, encode a tie-breaker in the score, for example score x 10^10 + (MAX_TS - achievedAt), so whoever reached the score first ranks higher; keep the total under 2^53 because scores are doubles. For periods, use separate keys such as lb:daily:2026-09-25 with a TTL. A weekly board can be built with ZUNIONSTORE over the daily keys, or updated alongside them."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is the source of truth for a leaderboard, and what happens if Redis loses data?",
+    "a": "Treat Redis as a derived, fast view. Score events or totals are written durably to a database or an event log such as Kafka, and Redis is updated from them either synchronously after the DB write or by a consumer. If Redis loses data it is rebuilt from the durable store; Redis replicas plus AOF persistence reduce how often that happens."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you shard a leaderboard with hundreds of millions of users?",
+    "a": "Sharding by user hash makes top-N easy (take the top N from each shard and merge), but an exact global rank then needs a count from every shard. Sharding by score range makes rank simple: users in all higher-score shards plus the rank within the user's own shard, but score ranges must be rebalanced as scores drift. For non-top users, many products show an approximate rank or percentile computed from a score histogram."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle millions of score updates per second?",
+    "a": "Do not write each event straight into one ZSET. Stream events through Kafka or Event Hubs, aggregate per user over short windows, and apply the updates to Redis in pipelined batches. Partition by game or region so each ZSET stays within one node's throughput, and accept a few seconds of eventual consistency. Where exactness is not needed, heavy-hitter algorithms such as Count-Min Sketch plus a top-K heap give an approximate top-K."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Which C# collections would you use for an in-memory leaderboard?",
+    "a": "A Dictionary<string, int> from user ID to score for O(1) lookups, plus a SortedSet<(int Score, string Id)> with a custom comparer for ordering (a red-black tree with O(log n) insert and remove). If you only need a one-off top K from a stream, a PriorityQueue<TElement, TPriority> used as a min-heap is enough."
+   },
+   {
+    "level": "Basic",
+    "q": "Why not just keep a List and sort it on every query?",
+    "a": "Sorting costs O(n log n) on every read, which does not work for a live leaderboard. SortedList<TKey, TValue> costs O(n) per insert because it shifts an array. A balanced tree such as SortedSet keeps updates at O(log n), and top K costs O(k) by enumerating from the start."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement AddScore and Top(k).",
+    "a": "The ordering key changes when the score changes, so remove the old tuple before adding the new one.\n```csharp\nclass Leaderboard {\n    private readonly Dictionary<string, int> _scores = new();\n    private readonly SortedSet<(int Score, string Id)> _set = new(Comparer<(int Score, string Id)>.Create(\n        (a, b) => a.Score != b.Score ? b.Score.CompareTo(a.Score) : string.CompareOrdinal(a.Id, b.Id)));\n    public void AddScore(string id, int delta) {\n        if (_scores.TryGetValue(id, out var old)) _set.Remove((old, id));\n        _scores[id] = old + delta;\n        _set.Add((old + delta, id));\n    }\n    public IEnumerable<(int Score, string Id)> Top(int k) => _set.Take(k);\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you get the top K from a stream of scores with PriorityQueue?",
+    "a": "Keep a min-heap of size K: enqueue each item with its score as priority, and when Count exceeds K, dequeue the smallest. At the end the heap holds the K largest, in O(n log k) time and O(k) memory. This works for batch or stream top-K but not for a live board where the same user's score keeps changing, because PriorityQueue cannot update or remove arbitrary elements."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you get a user's rank in O(log n)?",
+    "a": "SortedSet does not expose element indexes, and GetViewBetween(...).Count is O(n), so you need something else. Use an order-statistic tree (a balanced tree where each node stores its subtree size) so rank is O(log n). If scores are bounded integers, a Fenwick tree (Binary Indexed Tree) of counts per score gives rank = number of users with a higher score as a prefix sum in O(log maxScore)."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you make the leaderboard thread-safe and support different ranking rules?",
+    "a": "The Dictionary and SortedSet must change together, so use one lock around both (or ReaderWriterLockSlim for read-heavy use). A ConcurrentDictionary alone does not make the two-structure update atomic. Inject the comparer as a strategy (score then time, score then name) behind an ILeaderboard interface, and raise events or use Observer when a user's rank changes."
+   }
+  ]
+ },
+ "65": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the main components of a basic Instagram design?",
+    "a": "An upload service, blob storage (S3 or Azure Blob) behind a CDN for media, a metadata database for users, posts and follows, a feed service with a feed cache (for example Redis lists of post IDs), and a notification service. The system is heavily read-dominated, around 100:1, so caching and the CDN matter most."
+   },
+   {
+    "level": "Basic",
+    "q": "How does the photo upload pipeline work?",
+    "a": "The client asks the API for a pre-signed upload URL (a SAS token in Azure) and uploads the file straight to blob storage, which keeps large payloads off the app servers. A storage event triggers processing workers that resize, compress and create thumbnails. The post metadata (post ID, user ID, media URLs, caption, time) is saved, and a post-created event starts the feed fan-out; media is served through the CDN."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Fan-out on write vs fan-out on read: what are the trade-offs?",
+    "a": "Fan-out on write (push) inserts the new post ID into every follower's precomputed feed, so reads are fast but writes are expensive for users with many followers. Fan-out on read (pull) merges posts from everyone the user follows at read time, so writes are cheap but reads are slower and heavier. Most real systems use a hybrid."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What data model and storage would you choose?",
+    "a": "Users and Posts (post_id, user_id, media_url, caption, created_at) sharded by user_id\n- Follows stored in both directions (follower to followee and followee to follower) for fast lookups\n- A per-user feed in Redis as a capped list of about 500 post IDs\n- Time-sortable post IDs (Snowflake-style) for cursor-based pagination\n- Like and comment counts as separate counters updated asynchronously"
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you solve the celebrity problem?",
+    "a": "Do not fan out posts from accounts above a follower threshold (for example 10k+), because one post would mean millions of cache writes. Normal users get pushed posts; at read time the feed service pulls recent posts from the celebrities the user follows and merges them in. You can also skip pushing to inactive users and build their feed on demand when they return."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do feed ranking and pagination work at scale?",
+    "a": "Candidate generation takes recent post IDs from the feed cache and celebrity pulls, a ranking service scores them on features such as affinity, recency and engagement (increasingly with ML models), and the top results are hydrated with post data and media URLs. Pagination uses a cursor (last post ID or score) rather than OFFSET, which stays stable as new posts arrive. Feeds for active users can be precomputed ahead of time."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Which classes would you design for posts, followers and feeds?",
+    "a": "User, Post, Comment, Like, a FollowGraph or FollowService, a PostService, a FeedService with an IFeedGenerator strategy, and a NotificationService. Keep IDs rather than object references between aggregates (a Post holds AuthorId, not a User object), which keeps the model decoupled and easy to persist."
+   },
+   {
+    "level": "Basic",
+    "q": "How do you model the follow relationship?",
+    "a": "Use a FollowGraph with Dictionary<int, HashSet<int>> for following and another for followers, so Follow, Unfollow and IsFollowing are O(1). Follow must update both directions and reject self-follows and duplicates (HashSet.Add returns false). Exposing IReadOnlySet<int> stops callers from changing the sets directly."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement GetNewsFeed(userId) returning the 10 most recent posts from the user and the people they follow.",
+    "a": "Each user's posts are already in time order, so merge K sorted lists with a max-heap (the LeetCode Design Twitter problem).\n```csharp\npublic IList<Post> GetNewsFeed(int userId, int limit = 10) {\n    var pq = new PriorityQueue<(List<Post> list, int idx), long>();\n    foreach (var uid in _follows.Following(userId).Append(userId))\n        if (_posts.TryGetValue(uid, out var l) && l.Count > 0)\n            pq.Enqueue((l, l.Count - 1), -l[^1].Timestamp);\n    var feed = new List<Post>();\n    while (feed.Count < limit && pq.TryDequeue(out var cur, out _)) {\n        feed.Add(cur.list[cur.idx]);\n        if (cur.idx > 0) pq.Enqueue((cur.list, cur.idx - 1), -cur.list[cur.idx - 1].Timestamp);\n    }\n    return feed;\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Where does the Observer pattern fit in this design?",
+    "a": "When a post is created, PostService raises a PostCreated event and FeedService (fan-out), NotificationService and analytics subscribe to it. PostService does not need to know about any of them, and new subscribers can be added without changing it. In .NET this can be C# events, MediatR notifications, or a message bus once the system is distributed."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you use Strategy for feed generation and fan-out?",
+    "a": "Define IFeedGenerator with ChronologicalFeed and RankedFeed implementations, and IFanoutStrategy with Push, Pull and Hybrid implementations. The hybrid strategy picks push or pull per author based on follower count. Register them through DI so the policy can be changed by configuration or A/B test without touching the services."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle concurrency and immutability in these classes?",
+    "a": "Make Post an immutable record except for its counters. Update like counts with Interlocked.Increment, and enforce one like per user with a ConcurrentDictionary or HashSet under a lock keyed by post. Return IReadOnlyList or IReadOnlyCollection instead of mutable lists, and keep feed updates thread-safe with per-user locks or concurrent collections so a busy author does not block everyone."
+   }
+  ]
+ },
+ "66": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "How do WhatsApp clients send and receive messages in real time?",
+    "a": "Each online client keeps a persistent connection (a WebSocket or a custom protocol over TCP) to a chat gateway server, with heartbeats to detect dead connections. The server pushes messages down that connection instead of the client polling. A connection registry (for example Redis mapping userId to gateway server) lets any server find where a recipient is connected."
+   },
+   {
+    "level": "Basic",
+    "q": "Describe the flow of a 1:1 message and the three ticks.",
+    "a": "The sender's server stores the message durably and acks the sender, which shows a single tick (sent). It looks up the recipient's gateway and pushes the message; when the recipient's device acks, a delivered receipt goes back to the sender (double tick). When the recipient opens the chat, a read receipt is sent (blue ticks). Receipts are just small messages that travel the same path."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does offline delivery work?",
+    "a": "If the recipient is not connected, the message goes into a per-user inbox (for example a wide-column store such as Cassandra, keyed by user ID and ordered by message ID) and a push notification is sent via APNs or FCM. When the device reconnects it fetches everything after its last acknowledged message ID. Messages are removed from the server once they are delivered, because the server is a relay rather than long-term storage."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you guarantee ordering and avoid duplicate messages?",
+    "a": "The client generates a unique message ID, so retries after a timeout are idempotent and the server dedupes by that ID. Each conversation gets a monotonically increasing sequence number (or a time-sortable ID) assigned by the server, and clients order messages by it. Delivery is at-least-once with acks at every hop, and dedupe plus sequencing make it look exactly-once to users."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you scale to about 500M concurrent connections?",
+    "a": "One tuned gateway server can hold roughly 100k-1M idle connections (WhatsApp famously used Erlang), so you need on the order of 1,000+ gateway servers behind L4 load balancers. Gateways stay stateless apart from their live sockets, and routing uses the connection registry. Message storage is partitioned by user or conversation, and group messages are fanned out per member by a group service."
+   },
+   {
+    "level": "Advanced",
+    "q": "Explain end-to-end encryption at an idea level.",
+    "a": "WhatsApp uses the Signal protocol: every device has an identity key pair and uploads public prekeys to the server. The sender fetches the recipient's prekeys and sets up a shared session key (X3DH key agreement), then the Double Ratchet derives a new key for every message, which gives forward secrecy. The server only routes ciphertext and cannot read it, so server-side search or moderation of content is not possible and multi-device support needs a session per device."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Which states and transitions does a chat message go through?",
+    "a": "Pending (created on the device), then Sent (server acked), then Delivered (recipient device acked), then Read. Failed is reachable from Pending when sending times out and can go back to Pending on retry. Transitions only move forward; a message can never go from Read back to Delivered."
+   },
+   {
+    "level": "Basic",
+    "q": "Why use the State pattern here rather than an enum with if checks?",
+    "a": "Each state class defines which events it accepts, so invalid transitions are rejected in one place instead of in if-checks scattered across the codebase, and new states such as Deleted or Edited can be added without editing big switch statements. For a very small fixed state set, an enum plus a transition table is also acceptable; mention that trade-off in the interview."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement the message states with the State pattern.",
+    "a": "Every state returns the next state; events that are not allowed throw by default.\n```csharp\nabstract class MessageState {\n    public virtual MessageState OnServerAck() => throw new InvalidOperationException();\n    public virtual MessageState OnDelivered() => throw new InvalidOperationException();\n    public virtual MessageState OnRead() => throw new InvalidOperationException();\n}\nclass Pending : MessageState { public override MessageState OnServerAck() => new Sent(); }\nclass Sent : MessageState {\n    public override MessageState OnDelivered() => new Delivered();\n    public override MessageState OnRead() => new Read();\n}\nclass Delivered : MessageState { public override MessageState OnRead() => new Read(); }\nclass Read : MessageState { }\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "A read receipt arrives before the delivered receipt, or a receipt arrives twice. How do you handle it?",
+    "a": "Networks reorder and duplicate acks, so transitions should be monotonic and idempotent rather than throwing. Give each state an ordinal (Pending 0, Sent 1, Delivered 2, Read 3), apply an event only if it moves the ordinal forward, and ignore it otherwise. That allows skipping from Sent straight to Read, and a duplicate Delivered after Read becomes a no-op."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you model delivery state for group messages?",
+    "a": "The Message keeps a per-recipient state, for example Dictionary<userId, MessageState>. The sender's aggregate tick is the minimum across recipients: double tick only when every member has the message, blue only when everyone has read it. When a recipient's state changes, recompute the aggregate and notify the sender's UI through an Observer only if the aggregate actually changed."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you keep state transitions thread-safe and persist them?",
+    "a": "Acks can arrive on different threads, so update the state reference with Interlocked.CompareExchange in a retry loop, or lock per message. State classes carry no data, so they can be shared singletons (flyweights) instead of being allocated on every transition. In the database store the state as a status column and use a conditional update (SET status = @new WHERE id = @id AND status < @new) so the stored state can only move forward."
+   }
+  ]
+ },
+ "67": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Describe YouTube's high-level flow from upload to playback.",
+    "a": "The client uploads in resumable chunks straight to blob storage using a pre-signed URL. An upload-complete event puts a job on a queue, and transcoding workers produce multiple resolutions and codecs split into segments. The segments and manifests are stored and served through a CDN, and the metadata DB (title, owner, status, renditions) is updated so the video becomes watchable."
+   },
+   {
+    "level": "Basic",
+    "q": "Why transcode a video into many resolutions and formats?",
+    "a": "Devices support different codecs and containers (H.264, VP9, AV1) and screen sizes, and users have very different bandwidth. Several renditions (240p to 4K) make adaptive streaming possible, and re-encoding also compresses the raw upload, which saves storage and CDN cost. The same pipeline produces thumbnails and previews."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does adaptive bitrate streaming work?",
+    "a": "Each rendition is cut into short segments of 2-10 seconds, and a manifest (an HLS .m3u8 or a DASH .mpd file) lists the renditions and their segment URLs. The player measures throughput and buffer level and picks the rendition for each next segment, dropping quality when the network slows and raising it when bandwidth recovers. Everything is plain HTTP, so CDNs cache the segments like any other file."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you make transcoding fast for a long video?",
+    "a": "Split the source into chunks aligned to GOP (keyframe) boundaries and model the work as a DAG: split, then encode each chunk for each resolution in parallel, then merge and package. Workers pull tasks from a queue, and each task is idempotent (output path keyed by video, chunk and rendition), so retries are safe. Job and task status live in a DB, and the worker pool autoscales on queue depth."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you count views at YouTube scale?",
+    "a": "Do not run UPDATE views = views + 1 per view, because it creates hot rows. Send view events to a stream (Kafka or Event Hubs), filter bots and duplicates, aggregate per video over short windows in a stream processor, and apply batched increments to a counter store or sharded counters in Redis. Displayed counts are eventually consistent, which is acceptable."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you keep CDN and storage costs under control?",
+    "a": "Push popular videos to CDN edges and serve the long tail from origin or regional caches\n- Move old, rarely watched videos to cool or archive storage tiers\n- Transcode lazily: create extra renditions or better codecs only for videos that become popular\n- Place caches inside ISP networks (like Netflix Open Connect)\n- Recommendations, at idea level: candidate generation from watch history, then a ranking model"
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "What is the Chain of Responsibility pattern?",
+    "a": "A request is passed along a chain of handlers; each handler either processes it, passes it on, or stops the chain. The sender does not know which handlers exist or in which order. Familiar examples are ASP.NET Core middleware, approval workflows and logging-level handlers."
+   },
+   {
+    "level": "Basic",
+    "q": "Why does Chain of Responsibility suit a video transcoding pipeline?",
+    "a": "The pipeline is a sequence of independent steps: Validate, then ExtractMetadata, Transcode, GenerateThumbnails, Package and Publish. Each step is its own class that can be unit-tested, reordered or reused, and a new step such as Watermark or ContentModeration is added by inserting a handler without changing the others. A step can also stop the chain, for example validation rejecting a corrupt file."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement the base handler and one concrete step.",
+    "a": "SetNext returns the next handler so a chain can be built fluently: validate.SetNext(meta).SetNext(transcode).\n```csharp\nabstract class VideoHandler {\n    private VideoHandler? _next;\n    public VideoHandler SetNext(VideoHandler next) { _next = next; return next; }\n    public virtual Task HandleAsync(VideoJob job) => _next?.HandleAsync(job) ?? Task.CompletedTask;\n}\nclass ValidateHandler : VideoHandler {\n    public override Task HandleAsync(VideoJob job) {\n        if (job.SizeBytes > 10L * 1024 * 1024 * 1024) throw new InvalidOperationException(\"File too large\");\n        return base.HandleAsync(job);\n    }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Chain of Responsibility vs Decorator vs ASP.NET Core middleware: how do they differ?",
+    "a": "A Decorator always delegates to the wrapped object and adds behaviour around it; it is not meant to stop the call. A Chain of Responsibility handler may handle the request and stop, or pass it on. ASP.NET Core middleware is a hybrid: every component can run code before and after calling next(), and it can short-circuit by not calling next()."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle a failure in the middle of the chain?",
+    "a": "Make each step idempotent, keyed by jobId plus step name, and save a checkpoint after each step so a retry resumes from the last completed step instead of re-transcoding everything. Retry transient failures with exponential backoff (for example with Polly) and send permanent failures to a dead-letter queue with the failed step recorded. Clean up partial outputs as a compensating action."
+   },
+   {
+    "level": "Advanced",
+    "q": "The pipeline needs to encode five resolutions in parallel. How do you extend the design?",
+    "a": "A plain chain is linear, so add a composite handler, a FanOutHandler, that runs several sub-handlers or sub-chains with Task.WhenAll and continues the main chain when they all finish. Build the chain from configuration with a builder registered in DI. If the flow keeps growing into a real DAG with waits and retries, move to an orchestrator such as Durable Functions (fan-out/fan-in)."
+   }
+  ]
+ },
+ "68": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the steps of your HLD answer template and the time budget for a 45-minute round?",
+    "a": "Clarify requirements and scope: about 5 min\n- Estimates: 3-5 min\n- API: about 5 min\n- Data model and store choice: about 5 min\n- High-level diagram and request flow: about 10 min\n- Deep dives on 1-2 components, bottlenecks and trade-offs: 10-15 min\n- Wrap-up: about 2 min"
+   },
+   {
+    "level": "Basic",
+    "q": "What is the difference between functional and non-functional requirements? Give examples.",
+    "a": "Functional requirements are what the system does: post a photo, send a message, shorten a URL. Non-functional requirements are how well it does it: scale (DAU, QPS), latency targets (p99 under 200 ms), availability (99.9% or 99.99%), consistency, durability and security. Ask about both out loud, write them down, and confirm what is out of scope before designing."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which bottlenecks should your checklist always cover?",
+    "a": "Single points of failure (one DB primary, one load balancer)\n- Hot keys and hot partitions\n- Cache stampede and thundering herd after a cache expires\n- Expensive fan-out\n- Slow third-party calls without timeouts or circuit breakers\n- Queue backlogs and consumer lag\n- Consistency gaps between services\n- Missing monitoring and alerts"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you decide between SQL and NoSQL in your template?",
+    "a": "Start from the access patterns. Relational data with transactions, joins and ad-hoc queries (payments, bookings, orders) points to SQL such as Postgres. Very high write volume with simple key-based access, known queries and flexible schema (chat messages, event logs, feeds) points to NoSQL such as Cassandra, DynamoDB or Cosmos DB. Say why, name the partition key, and note that many designs use both."
+   },
+   {
+    "level": "Advanced",
+    "q": "You are asked to design a system you have never studied. How do you apply the template?",
+    "a": "Clarify requirements to find the core entities and the read/write ratio, then map the problem onto building blocks you know: is it a feed, a chat, a key-value lookup, a queue of jobs, or a search problem? Reuse that pattern's standard design (cache, fan-out, queue plus workers, partitioning) and adapt it. Think aloud, state assumptions, and let the interviewer steer you toward the deep dive they care about."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you close an HLD answer strongly?",
+    "a": "Summarise the design in two sentences, then state the key trade-offs you made and why (for example eventual consistency for feed availability). Go through failure modes, how you would monitor it (SLIs such as latency, error rate and queue lag, with alerts), what breaks first at 10x, and cost and security considerations. This end-to-end ownership is what separates a strong candidate from an average one."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Creational patterns in one line each.",
+    "a": "Singleton: exactly one instance with a global access point\n- Factory Method: subclasses or a method decide which concrete class to create\n- Abstract Factory: creates families of related objects without naming concrete classes\n- Builder: builds a complex object step by step, often fluently\n- Prototype: creates new objects by cloning an existing one"
+   },
+   {
+    "level": "Basic",
+    "q": "Structural patterns in one line each.",
+    "a": "Adapter: converts one interface into the one a client expects\n- Decorator: wraps an object to add behaviour without changing it\n- Facade: gives a simple interface to a complex subsystem\n- Proxy: a stand-in that controls access (lazy loading, remote, caching, auth)\n- Composite: treats trees of objects uniformly\n- Bridge: separates an abstraction from its implementation so both can vary\n- Flyweight: shares immutable state across many small objects"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Behavioural patterns in one line each.",
+    "a": "Strategy: interchangeable algorithms behind one interface\n- Observer: subscribers are notified of events\n- Command: a request as an object (queue, undo)\n- State: behaviour changes with internal state\n- Template Method: base class fixes the skeleton and subclasses fill in steps\n- Chain of Responsibility: pass a request along handlers\n- Iterator: traverse without exposing internals\n- Mediator: objects talk through a central coordinator\n- Visitor: add operations to a class hierarchy without changing it"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which pattern fits which common LLD interview problem?",
+    "a": "Parking lot: Strategy (allocation, pricing) and Factory (vehicles, spots)\n- Elevator: State (car state) and Strategy (dispatching)\n- Vending machine and ATM: State\n- Splitwise: Strategy (split types)\n- Notification service: Observer plus Strategy or Factory per channel\n- Text editor undo: Command and Memento\n- Cache: Strategy for eviction\n- Logger: Chain of Responsibility or Singleton"
+   },
+   {
+    "level": "Advanced",
+    "q": "Decorator, Proxy and Adapter all wrap an object. How do you tell them apart?",
+    "a": "The difference is intent. A Decorator keeps the same interface and adds behaviour, and decorators can be stacked (logging around caching around a repository). A Proxy keeps the same interface but controls access to the real object (lazy loading, remote calls, authorisation, caching). An Adapter changes the interface so an incompatible class, such as a third-party SDK, can be used where your interface is expected."
+   },
+   {
+    "level": "Advanced",
+    "q": "When should you not use design patterns, and what is wrong with a classic Singleton in .NET?",
+    "a": "Do not add patterns to code that has no real variation point; that is over-engineering and violates YAGNI, so let patterns come from the axes of change you can actually see. A static Singleton hides global state, couples callers to a concrete class, and makes unit testing and parallel tests hard. In .NET, register the class with services.AddSingleton<IFoo, Foo>() instead; if you really need a static one, use Lazy<T> for thread-safe lazy initialisation."
+   }
+  ]
+ },
+ "69": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Uber mock: which requirements do you clarify first?",
+    "a": "Functional: a rider requests a ride, sees nearby drivers and an ETA, gets matched, a driver accepts, both track each other live, the trip ends with a fare and payment, and both leave ratings. Non-functional: matching in a few seconds, location updates every few seconds, high availability, and strong consistency only where it matters (a driver must not be assigned to two trips). Scope out pooling and scheduled rides unless asked."
+   },
+   {
+    "level": "Basic",
+    "q": "How are driver locations sent and stored?",
+    "a": "Each active driver sends its location about every 4 seconds; with 1M active drivers that is about 250k writes/s. Only the latest location is needed for matching, so it lives in an in-memory geo index (Redis GEO, or custom services keyed by geo cell) instead of a relational table. Location history goes to Kafka and then to cheap storage for trip replay and analytics."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you find nearby available drivers quickly?",
+    "a": "Divide the map into cells with geohash, Google S2 or Uber's H3, and keep an index from cell to the drivers in it, updated as they move. For a request, look up the rider's cell plus neighbouring cells (or run Redis GEOSEARCH within a radius), filter to available drivers with the right vehicle type, and rank by ETA from a routing service rather than straight-line distance. A quadtree is an alternative for uneven density."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does matching avoid assigning one driver to two riders?",
+    "a": "The matching service picks the best candidates and sends an offer to one driver at a time, with a timeout of about 10-15 seconds before moving on. The driver is reserved with an atomic state change such as Available to Offered (Redis SET NX with a TTL, or a conditional DB update), so a second matcher cannot claim the same driver. On accept the trip is created; on timeout or decline the reservation is released."
+   },
+   {
+    "level": "Advanced",
+    "q": "Walk through the trip state machine and how other services find out about it.",
+    "a": "Requested, then DriverAssigned, DriverArrived, InProgress, Completed; Cancelled is reachable from the early states. The trip lives in a transactional DB, and each transition is a conditional, idempotent update, so retried or duplicate driver-app requests are safe. Every transition publishes an event (through an outbox) to billing, notifications, ETA and analytics, and payment is charged after Completed through the payment service."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle hot spots such as an airport or a surge in demand?",
+    "a": "Shard by city or region, since trips rarely cross regions, and subdivide dense cells dynamically so no single index partition becomes hot. Surge pricing is computed per cell from the supply/demand ratio by a stream processor over recent requests and available drivers. For resilience, run regions active-active or with failover, and treat location data as soft state that is rebuilt within seconds because drivers resend every 4 seconds."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Elevator mock: which requirements and classes do you start with?",
+    "a": "Clarify the number of floors and elevators, capacity, and whether there are hall buttons (up or down) and car buttons (destination floor). Classes: Building, ElevatorController (dispatcher), ElevatorCar, Request (floor, direction, internal or external), a Direction enum, a car state, Door, Display and button panels. The controller assigns hall requests; each car serves its own stop list."
+   },
+   {
+    "level": "Basic",
+    "q": "Which states can an elevator car be in, and how do you model them?",
+    "a": "Idle, MovingUp, MovingDown, DoorsOpen and Maintenance (or OutOfService). An enum with guarded transitions is often enough; use the State pattern if each state has substantially different behaviour, for example ignoring requests while in Maintenance or keeping doors open while DoorsOpen. Transitions are triggered by new requests, reaching a floor and door timers."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement the LOOK scheduling logic for a single car.",
+    "a": "Keep stops above and below the current floor in two sorted sets; serve everything in the current direction, then reverse.\n```csharp\nclass Elevator {\n    public int Floor { get; private set; }\n    public Direction Dir { get; private set; } = Direction.Idle;\n    private readonly SortedSet<int> _up = new(), _down = new();\n    public void AddStop(int f) { if (f >= Floor) _up.Add(f); else _down.Add(f); }\n    public int? NextStop() => Dir != Direction.Down\n        ? (_up.Count > 0 ? _up.Min : _down.Count > 0 ? _down.Max : (int?)null)\n        : (_down.Count > 0 ? _down.Max : _up.Count > 0 ? _up.Min : (int?)null);\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How does the controller decide which elevator serves a hall request?",
+    "a": "Use a Strategy, IDispatchStrategy, so the algorithm can change. A common cost function scores each car: a car already moving toward the floor in the same direction is cheapest, then idle cars by distance, and cars moving away are the most expensive, with penalties for the number of pending stops and load. Different strategies can be used for morning peak (favour the lobby) versus normal hours."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle concurrent button presses from many floors?",
+    "a": "Give each car its own processing loop (a background Task) that reads requests from a Channel<Request>, so a car's state is changed by only one thread. The controller only decides which car gets a request and writes it to that car's channel; any shared read of car positions uses a lock or immutable snapshots. This actor-style design avoids locking the whole building."
+   },
+   {
+    "level": "Advanced",
+    "q": "How would you add fire mode, capacity limits and maintenance?",
+    "a": "Fire mode: a FireAlarm subject notifies the controller (Observer), which moves every car into an Emergency state that goes to the ground floor, opens the doors and ignores new requests. Capacity: a weight sensor blocks door close and skips hall stops when the car is full. Maintenance: a car in that state is excluded from dispatch. All three are added through new states, strategies or observers without rewriting existing classes."
+   }
+  ]
+ },
+ "70": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Rapid-fire: what is the core storage choice for each system from this week?",
+    "a": "Leaderboard: Redis sorted set, with a DB or event log as the source of truth\n- Instagram: blob storage plus CDN for media, a sharded DB for metadata, Redis lists for feeds\n- WhatsApp: a per-user inbox in a wide-column store, plus a connection registry in Redis\n- YouTube: blob storage for segments behind a CDN, plus a metadata DB\n- Uber: an in-memory geo index for live locations, plus a transactional DB for trips"
+   },
+   {
+    "level": "Basic",
+    "q": "Which of this week's systems are read-heavy and which are write-heavy, and why does it matter?",
+    "a": "Instagram and YouTube are strongly read-heavy, so caching, CDNs and precomputed feeds are the main tools. Uber location updates and leaderboard score updates are write-heavy, so they go to in-memory stores with batching instead of a DB write per event. WhatsApp writes every message and reads it about once, so it needs append-optimised storage. The read/write ratio decides whether you optimise with caches or with write paths."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Push vs pull comes up in several of this week's designs. How do you choose?",
+    "a": "Instagram uses hybrid fan-out (push for normal users, pull for celebrities). WhatsApp pushes over persistent connections and falls back to pull on reconnect. Uber drivers push locations and riders receive pushed updates over a WebSocket. Choose push when freshness matters and the fan-out cost is bounded; choose pull when fan-out is huge or data is rarely read."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you redo a full mock question in 20 minutes?",
+    "a": "Compress the template: requirements in 3 minutes, estimates in 2, API and data model in 3, diagram and request flow in 7, and one deep dive in 5. Pick the deep dive on the section you scored lowest in the mock. Time yourself and say it out loud, because the goal is fluent structure rather than new content."
+   },
+   {
+    "level": "Advanced",
+    "q": "A common weak area is hot spots. Summarise how to handle them across this week's systems.",
+    "a": "Celebrity posts: hybrid fan-out\n- Viral videos: CDN edges and cache replication\n- Hot leaderboard: batch updates and partition by game or region\n- Dense Uber cell: subdivide the cell and shard by region\n- Large chat groups: dedicated group fan-out service\n- General tools: replicate reads, split hot keys (key#1..N), batch writes, cache aggressively and rate-limit at the edge"
+   },
+   {
+    "level": "Advanced",
+    "q": "Another weak area is failure handling. What happens when a key component dies in each system?",
+    "a": "Redis leaderboard lost: rebuild from the durable DB or event log. Chat gateway dies: clients reconnect to another gateway and pull pending messages from their inbox. Transcoding worker dies: the queue redelivers the task and idempotent steps make the retry safe. Uber location node dies: drivers resend within 4 seconds, so the soft state rebuilds itself. The principle is to keep the source of truth durable and make everything else recoverable soft state."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "How do you use the first 5 minutes of any LLD mock?",
+    "a": "Clarify requirements and list the main use cases, and confirm what is out of scope. Pull out nouns as candidate classes and verbs as methods, and sketch the relationships (has-a, is-a). Then name the interfaces where behaviour will vary, before writing any code."
+   },
+   {
+    "level": "Basic",
+    "q": "What are the most common mistakes in LLD mocks?",
+    "a": "A god class that does everything\n- No interfaces, so nothing can be extended or mocked\n- Public mutable fields and exposed collections\n- Ignoring concurrency where shared resources exist\n- Forcing patterns where there is no variation\n- Skipping validation and edge cases\n- Never getting to working code for the core flow"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you justify composition over inheritance during an LLD interview?",
+    "a": "Composition (has-a) lets you swap behaviour at runtime, for example injecting a pricing strategy or a dispatch strategy, and avoids fragile base classes and deep hierarchies. Use inheritance only for a true is-a relationship with shared invariants that passes the Liskov substitution check. A good line: vehicles differ by data, so a VehicleType enum is enough; pricing differs by behaviour, so it becomes a strategy."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Give a quick SOLID checklist to run over your mock design.",
+    "a": "S: each class has one reason to change (Ticket does not calculate fees)\n- O: new behaviour arrives as a new strategy or state class, not by editing a switch\n- L: every subtype works wherever its base type is expected\n- I: small, focused interfaces instead of one fat interface\n- D: high-level classes depend on abstractions injected through the constructor"
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you make an LLD design unit-testable in C#?",
+    "a": "Inject everything non-deterministic: time, randomness, IO and external services. In .NET 8, TimeProvider replaces DateTime.Now, and FakeTimeProvider controls it in tests.\n```csharp\npublic class FeeCalculator(TimeProvider clock, IPricingStrategy pricing) {\n    public decimal Checkout(Ticket t) {\n        var duration = clock.GetUtcNow() - t.EntryTime;\n        return pricing.Calculate(t.SpotType, duration);\n    }\n}\n```"
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you discuss thread safety in an LLD answer without overdoing it?",
+    "a": "Name the shared mutable state explicitly: parking spots, seat inventory, elevator stop lists, leaderboard structures. Pick the smallest correct tool: a ConcurrentDictionary or ConcurrentQueue for single operations, a lock when several structures must change together, a Channel for producer/consumer, or immutable objects. Mention lock granularity (per show or per floor rather than global), and say how it maps to DB-level conditional updates once the system is distributed."
+   }
+  ]
+ },
+ "71": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What is an idempotency key and why is it essential in payments?",
+    "a": "It is a unique key the client generates for each payment attempt and sends with the request (for example an Idempotency-Key header). The server stores key to result with a unique constraint; a retry with the same key returns the stored result instead of charging again. Keys are kept for a period such as 24 hours, and a request with the same key but a different body is rejected."
+   },
+   {
+    "level": "Basic",
+    "q": "What are the states of a payment?",
+    "a": "Created, then Authorised (funds held on the card), then Captured (money actually moved), then optionally Refunded or PartiallyRefunded. Side paths: Failed (authorisation declined), Voided (authorisation released before capture) and Expired (authorisation not captured in time). Transitions are enforced by a state machine, and every change is recorded."
+   },
+   {
+    "level": "Intermediate",
+    "q": "The call to the payment provider times out. Did the charge happen, and what do you do?",
+    "a": "The outcome is unknown, so never retry with a new key, because that risks a double charge. Mark the payment Pending or Unknown, retry with the same idempotency key (providers such as Stripe and Razorpay dedupe on it) or query the provider's status API, and also listen for the provider's webhook. Retries use exponential backoff with jitter, and anything still unresolved is settled by reconciliation."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What is reconciliation and why is it needed?",
+    "a": "Reconciliation is a scheduled job that compares your internal ledger and payment records with the provider's reports and bank settlement files. It flags mismatches: payments you think succeeded that the provider does not have, amount differences, duplicates, and missing refunds. Mismatches are fixed automatically when safe or sent to a manual review queue. It is the safety net that catches every async failure the online flow missed."
+   },
+   {
+    "level": "Advanced",
+    "q": "How does a double-entry ledger help ensure money is never lost?",
+    "a": "Every money movement is recorded as immutable entries that debit one account and credit another for the same amount, so the entries of every transaction sum to zero. Entries are append-only: corrections are new reversing entries, never updates. Balances are derived from entries, which gives a complete audit trail. The ledger lives in an ACID database such as Postgres with strong consistency, and any imbalance is immediately detectable."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do the order service and payment service stay consistent without a distributed transaction?",
+    "a": "Use a saga: the order service publishes PaymentRequested through an outbox, and the payment service processes it idempotently (keyed by order ID) and publishes PaymentSucceeded or PaymentFailed. On failure later in the flow, the compensation is a void or refund. Delivery is at-least-once and idempotency gives exactly-once effects. Verify webhook signatures, tokenise cards so you never store card numbers (PCI DSS), and keep secrets in Key Vault."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Why use the Strategy pattern for payment methods?",
+    "a": "Card, UPI, wallet and net banking all do the same job (pay an amount) with different logic, so each is a class implementing IPaymentStrategy. Checkout depends only on the interface, and adding a method such as BNPL means adding one class without touching checkout code, which follows the open/closed principle. Each strategy can also be unit-tested on its own."
+   },
+   {
+    "level": "Basic",
+    "q": "How is the right payment strategy chosen at runtime?",
+    "a": "The request carries a PaymentMethod enum and a resolver maps it to a strategy. Options are a simple factory with a dictionary, or DI: register every implementation and build a lookup from IEnumerable<IPaymentProcessor>. Avoid a switch in the checkout service, because it has to be edited every time a new method is added."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Show DI-based selection of payment processors.",
+    "a": "Every processor declares which method it handles, and the service builds a lookup once.\n```csharp\npublic interface IPaymentProcessor {\n    PaymentMethod Method { get; }\n    Task<PaymentResult> PayAsync(PaymentRequest req, CancellationToken ct);\n}\npublic class PaymentService(IEnumerable<IPaymentProcessor> processors) {\n    private readonly Dictionary<PaymentMethod, IPaymentProcessor> _map = processors.ToDictionary(p => p.Method);\n    public Task<PaymentResult> PayAsync(PaymentRequest r, CancellationToken ct) =>\n        _map.TryGetValue(r.Method, out var p) ? p.PayAsync(r, ct)\n            : throw new NotSupportedException($\"Unsupported method {r.Method}\");\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you integrate several third-party gateways with different SDKs?",
+    "a": "Define your own IPaymentGateway interface (Authorize, Capture, Refund, GetStatus) and write an Adapter per provider, such as RazorpayGatewayAdapter and StripeGatewayAdapter, that converts your models to the SDK's. Strategies (card, UPI) then use whichever gateway is configured, so the payment method and the provider can change independently, which is close to the Bridge idea. Switching or failing over providers does not touch business code."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you add idempotency, retries and logging without cluttering every strategy?",
+    "a": "Use Decorators that implement the same IPaymentProcessor and wrap the real one: an IdempotentProcessor checks and stores the idempotency key, a RetryingProcessor applies a Polly policy for transient errors only, and a LoggingProcessor adds structured logs and metrics. Register them with Scrutor's Decorate or manual composition. Alternatively, a Template Method base class can fix the flow (validate, process, record) while subclasses implement only the process step."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you model money and payment state in C# code?",
+    "a": "Always use decimal, never double, and wrap it in an immutable Money value object (a record holding Amount and Currency) that refuses to add different currencies. The Payment entity exposes methods such as Authorize(), Capture() and Refund(amount) that check the current state, so there is no public status setter. It raises domain events on each change and uses optimistic concurrency (rowversion) so two captures cannot both succeed."
+   }
+  ]
+ },
+ "72": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "What are the core entities and APIs of a ticket booking system?",
+    "a": "Entities: Event or Show, Venue, Seat, ShowSeat (seat status and price for one show), Booking and Payment. APIs: GET /shows?city=&date=, GET /shows/{id}/seats for the seat map, POST /holds to hold chosen seats, POST /bookings/{holdId}/confirm with payment, and DELETE /holds/{id} to release. Seat-map reads are frequent and can be cached briefly, while holds and bookings must be strongly consistent."
+   },
+   {
+    "level": "Basic",
+    "q": "Why do you need temporary seat holds?",
+    "a": "Payment takes minutes, and without a hold two users could pay for the same seat. A hold reserves the seats for one user for a fixed time (for example 10 minutes); others see them as unavailable. If payment does not finish in time, the hold expires and the seats automatically return to the pool."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you lock seats with an expiry?",
+    "a": "In the database: UPDATE show_seat SET status = 'HELD', held_by = @user, hold_expires_at = now() + 10 min WHERE show_id = @s AND seat_id IN (...) AND (status = 'AVAILABLE' OR (status = 'HELD' AND hold_expires_at < now())), inside a transaction, and commit only if the row count equals the number of seats requested. Alternatively use Redis SET seat:{show}:{seat} {user} NX EX 600 per seat, with a Lua script for all-or-nothing. Either way the DB stays the source of truth at confirmation."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Pessimistic vs optimistic locking for seats: which do you choose?",
+    "a": "Pessimistic locking (SELECT ... FOR UPDATE) is simple and correct but blocks other transactions and suffers under heavy contention. Optimistic locking (a version column, retry on conflict) is cheap when conflicts are rare. For seats, a single conditional UPDATE acts as an atomic compare-and-set and is usually the best choice. Avoid distributed locks when one database row can enforce the rule."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle a flash sale with 1M users competing for 50k seats?",
+    "a": "Put a virtual waiting room in front: users get queue tokens and are admitted at a rate the booking service can handle\n- Rate-limit per user and per IP, and block bots\n- Serve static content and seat maps from the CDN or cache\n- Keep available counts in Redis with atomic decrements, and fail fast when sold out\n- Pre-scale before the sale opens\n- Keep the DB write path lean: conditional updates only, with confirmation emails sent asynchronously"
+   },
+   {
+    "level": "Advanced",
+    "q": "Payment succeeds after the hold has expired and the seat was sold to someone else. How do you prevent double booking?",
+    "a": "Confirmation is a conditional update that succeeds only if the seats are still held by this booking. If it fails, the booking is marked failed and an automatic refund is triggered. Confirmation is idempotent (keyed by booking ID), so provider webhooks and retries are safe. As a last line of defence, a unique constraint on (show_id, seat_id) in the booked-seats table makes a double booking impossible, and reconciliation catches paid-but-unbooked cases."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "BookMyShow mock: which classes do you define?",
+    "a": "City, Cinema (Theatre), Screen, Seat (row, number, SeatType), Movie, Show (movie, screen, start time), ShowSeat (seat, show, status, price), Booking, User and Payment. Services: ShowService (search), BookingService (hold and confirm), PaymentService and ISeatLockProvider. Keep booking logic out of the entity classes."
+   },
+   {
+    "level": "Basic",
+    "q": "Why separate Seat from ShowSeat?",
+    "a": "A Seat is the physical, fixed layout of a screen (row, number, type). A ShowSeat is that seat's availability and price for one specific show. The same seat appears in many shows a day with different statuses, so merging them would mean copying the layout or overwriting availability between shows."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Design a seat lock provider with expiry.",
+    "a": "Holds are all-or-nothing. An in-memory implementation uses a dictionary from (showId, seatId) to (userId, expiresAt) under a lock, and a Redis implementation uses SET NX EX for distributed deployments.\n```csharp\npublic interface ISeatLockProvider {\n    bool TryLock(Guid showId, IReadOnlyList<int> seatIds, string userId, TimeSpan ttl);\n    void Unlock(Guid showId, IReadOnlyList<int> seatIds, string userId);\n    bool IsLockedBy(Guid showId, int seatId, string userId);\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Walk through the booking flow and the booking states.",
+    "a": "The user picks seats, then TryLock holds them, and a Booking is created as Pending with an expiry time. The user pays, and on success BookingService checks that the locks are still owned by the user, marks the ShowSeats Booked and moves the booking to Confirmed. On payment failure or timeout the booking moves to Cancelled or Expired and the locks are released. States: Pending, then Confirmed, Cancelled or Expired."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you design pricing for seat types, weekends and coupons?",
+    "a": "Use IPricingStrategy for the base price, varying by seat type (recliner, premium, regular), show time and weekday or weekend. Layer Decorators on top for convenience fee, GST and coupon discounts, so each rule is its own class and the order of application is explicit. Keep amounts as decimal in a Money value object."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you make the in-memory lock provider correct for multi-seat, concurrent requests?",
+    "a": "Take one lock per show (a ConcurrentDictionary<Guid, object> of lock objects), then inside it check that every requested seat is free or its hold has expired, and only then assign all of them, so a request gets all its seats or none. If you use per-seat locks instead, acquire them in sorted seat-ID order to avoid deadlocks. Expiry can be checked lazily on access by comparing timestamps, so no timers are needed; a background sweep only frees memory."
+   }
+  ]
+ },
+ "73": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "URL shortener mock: which requirements and estimates do you state?",
+    "a": "Functional: shorten a URL, redirect, optional custom alias and expiry, and basic click analytics. Estimates: 100M new URLs a month is about 40 writes/s; at 100:1 reads that is about 4k redirects/s on average and maybe 20k at peak. Five years is about 6B URLs x ~500 bytes = ~3 TB, which fits a sharded store easily; the real challenge is redirect latency."
+   },
+   {
+    "level": "Basic",
+    "q": "What are the APIs, and should the redirect be a 301 or a 302?",
+    "a": "POST /api/urls {longUrl, customAlias?, expiresAt?} returns the short URL, and GET /{code} redirects. A 301 (permanent) is cached by browsers, which cuts server load but means you stop seeing repeat clicks for analytics. A 302 (or 307) sends every click through your servers, which keeps analytics accurate and lets you change or expire links. Most shorteners with analytics use 302."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you generate short codes?",
+    "a": "Base62-encode a unique numeric ID: 7 characters give 62^7, about 3.5 trillion codes. IDs come from a DB sequence, a Snowflake-style generator, or a ticket server that hands each app server a range (for example 1M IDs at a time), so there is no coordination per request. Hashing (MD5 or SHA-256 truncated) needs collision checks and retries. Sequential codes can be guessed, so shuffle or encrypt the ID if that matters."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What data model and database would you pick?",
+    "a": "One main table: code (primary key), long_url, user_id, created_at and expires_at, plus an optional table for custom aliases. The access pattern is a pure key lookup, so a key-value or NoSQL store (DynamoDB, Cassandra, Cosmos DB) partitioned by code fits well, and Postgres sharded by code also works. Put Redis in front with LRU eviction, because a small share of links gets most of the traffic."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you scale redirects and collect analytics?",
+    "a": "Serve redirects from Redis with read replicas, and cache very popular codes at CDN or edge functions, keeping the TTL short if links can expire. Never write to the DB synchronously on a click: publish click events (code, timestamp, referrer, country) to Kafka or Event Hubs and aggregate them in a stream job into per-day counts. Stateless redirect servers scale horizontally behind the load balancer."
+   },
+   {
+    "level": "Advanced",
+    "q": "Which follow-ups should you expect, and what does a 5/5 answer per section look like?",
+    "a": "Custom alias already taken: a unique constraint and a clear error\n- The same long URL shortened twice: optional dedupe index on the URL hash, per user\n- Expired links: check lazily on read, plus a batch cleanup job\n- Malicious URLs: rate limits, a Safe Browsing check, abuse reporting\n- A hot key: cache replicas. A 5/5 answer uses numbers to drive decisions, states trade-offs out loud, and covers failures"
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Splitwise mock: which classes do you design?",
+    "a": "User, Group (members, expenses), Expense (id, description, amount, paidBy, splits, createdAt), Split (userId, amount), an ISplitStrategy with EqualSplit, ExactSplit and PercentSplit, a BalanceSheet, and ExpenseService and SettlementService. Keep money as decimal and pass IDs between aggregates."
+   },
+   {
+    "level": "Basic",
+    "q": "What split types exist and how do you validate each one?",
+    "a": "Equal: total divided by the number of people, with the rounding remainder assigned deterministically\n- Exact: the given amounts must sum exactly to the total\n- Percent: the percentages must sum to 100, and the resulting amounts are rounded with the remainder handled\n- Shares (optional): split in proportion to share counts\n- Each strategy validates its own input and throws a clear domain exception"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Implement an equal split strategy that handles rounding.",
+    "a": "Round down to paise and give the leftover to one participant, so the splits always add up exactly to the total.\n```csharp\npublic interface ISplitStrategy {\n    Dictionary<string, decimal> Split(decimal total, IReadOnlyList<string> users, IReadOnlyList<decimal>? values);\n}\npublic class EqualSplit : ISplitStrategy {\n    public Dictionary<string, decimal> Split(decimal total, IReadOnlyList<string> users, IReadOnlyList<decimal>? values) {\n        var share = Math.Round(total / users.Count, 2, MidpointRounding.ToZero);\n        var result = users.ToDictionary(u => u, u => share);\n        result[users[0]] += total - share * users.Count;\n        return result;\n    }\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you track who owes whom?",
+    "a": "For each expense, every participant except the payer owes the payer their share. Store either pairwise balances in a Dictionary<(string From, string To), decimal>, netting A-owes-B against B-owes-A, or a single net balance per user (positive means they are owed, negative means they owe). Net balances are simpler to update and are what the simplify-debts step needs."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you simplify debts to minimise the number of transactions?",
+    "a": "Compute each user's net balance, then put creditors in a max-heap and debtors in a max-heap by absolute amount. Repeatedly match the largest creditor with the largest debtor, settle the smaller of the two amounts, and push back whoever still has a balance. This takes O(n log n) and needs at most n-1 payments. Finding the true minimum is NP-hard, so say that the greedy approach is the practical choice."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle expense edits and deletes, new split types and concurrent updates?",
+    "a": "Treat expenses as immutable: an edit reverses the old expense's effect on balances and applies the new one, and history is kept for audit (an event log). New split types are new ISplitStrategy classes registered in a factory or DI. Concurrent adds to the same group are serialised with a per-group lock in memory, or with DB transactions and optimistic concurrency on the group's balance rows once persisted."
+   }
+  ]
+ },
+ "74": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "How do you structure a 5-minute project story?",
+    "a": "Problem (about 1 min): who had what pain, and at what scale\n- Design (about 2 min): components and data flow, and why this design\n- Your part (about 1 min): what you owned and decided, using 'I', not 'we'\n- Impact (about 1 min): numbers, plus one lesson you learned\n- Record yourself and cut anything that does not support these four points"
+   },
+   {
+    "level": "Basic",
+    "q": "How do you present impact numbers credibly?",
+    "a": "Use before-and-after metrics: p95 latency from 800 ms to 150 ms, throughput from 2k to 10k events/s, cloud cost down 30%, incidents per month from 6 to 1. If you do not know the exact figure, give an approximate one and explain how it was measured (dashboards, load tests). Link each number to a business outcome such as faster reports, fewer SLA breaches or lower cost."
+   },
+   {
+    "level": "Intermediate",
+    "q": "What was the hardest technical challenge in this project?",
+    "a": "Answer with STAR and a real technical problem, such as DB lock contention under load, duplicate events after retries, or a memory leak. Explain how you diagnosed it, the options you considered and why you chose one (the trade-off), and the measurable result. Finish with what you would do differently, because interviewers look for reflection and not only success."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Why did you choose technology X over Y?",
+    "a": "Show that you knew the alternatives and the constraints: for example Azure Service Bus over Kafka because you needed per-message retries, DLQs and sessions at moderate throughput, and the team was already on Azure with no Kafka operations experience. Mention cost, team skills, managed versus self-hosted, ordering and throughput needs. End with what would make you choose differently, such as needing to replay millions of events per second, which points to Kafka."
+   },
+   {
+    "level": "Advanced",
+    "q": "What are the limitations or technical debt in your design, and how would you prioritise fixing them?",
+    "a": "Be honest: name 2-3 real weaknesses, such as a single database becoming a bottleneck, missing idempotency in one consumer, or weak test coverage in a critical module. Prioritise by risk and impact: data loss and correctness issues first, then reliability, then performance and cost. Explain how you would fix each step by step and what metrics would tell you it is time to act."
+   },
+   {
+    "level": "Advanced",
+    "q": "How did you make the system reliable and observable?",
+    "a": "Structured logging with correlation IDs across services, metrics and distributed tracing (Application Insights or OpenTelemetry), dashboards, and alerts on SLIs such as error rate, p95 latency and queue lag. For resilience: retries with backoff, circuit breakers and timeouts (Polly), health checks and graceful degradation. Back it up with an example: an alert that caught a problem within minutes, and what you changed afterwards."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "How is your codebase structured, and why?",
+    "a": "A typical answer is layered or Clean Architecture: an API layer (controllers or minimal APIs), an Application layer (use cases and services), a Domain layer (entities and rules), and Infrastructure (EF Core, messaging, external clients), with dependencies pointing inward. Explain the benefit (domain logic testable without the DB or HTTP) and the cost (more projects and mapping). Mention vertical slices as an alternative if features are mostly independent."
+   },
+   {
+    "level": "Basic",
+    "q": "How do you use dependency injection and service lifetimes in your project?",
+    "a": "Transient: a new instance each time, for lightweight stateless services\n- Scoped: one per request, for example DbContext and unit-of-work services\n- Singleton: one per app, for caches, configuration and HttpClient handlers (via IHttpClientFactory)\n- Avoid captive dependencies: a singleton must never hold a scoped service such as DbContext; ASP.NET Core scope validation catches this in Development"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Do you use the repository pattern with EF Core? Why or why not?",
+    "a": "DbContext is already a unit of work and each DbSet is already a repository, so a generic IRepository<T> over it usually adds little and often leaks IQueryable. It is justified for aggregate-focused repositories that hide complex queries, enforce loading of the whole aggregate, or keep the domain layer free of EF Core. Give the reason your project took the approach it did, including testing, where the EF Core in-memory provider or Testcontainers is used."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Which design patterns does your codebase use, and where?",
+    "a": "Give concrete examples you can point to: Strategy for notification or pricing providers, Decorator for a caching repository or Polly policies, Mediator through MediatR for commands and queries, the Options pattern for typed configuration, Factory through IHttpClientFactory, and Chain of Responsibility through ASP.NET Core middleware and pipeline behaviours. Explain the problem each one solved; naming a pattern without a reason is a red flag."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you handle errors and validation across layers?",
+    "a": "Validate input at the edge (FluentValidation or data annotations) and return 400 with ProblemDetails. Protect domain invariants inside entities, so invalid states cannot be created. Use exceptions for truly exceptional cases and a Result type for expected business failures, and have global exception-handling middleware (IExceptionHandler in .NET 8) log with a correlation ID and return safe messages without stack traces."
+   },
+   {
+    "level": "Advanced",
+    "q": "What would you refactor in your codebase, and how would you do it safely?",
+    "a": "Name real smells: a god service with thousands of lines, business logic duplicated across controllers, an anaemic domain model, or static helpers that make testing impossible. Make it safe: add characterisation tests first, refactor in small steps behind the same interface (strangler-style), use feature flags for risky changes, and ship frequently. Measure the result, for example fewer bugs in that area or faster changes."
+   }
+  ]
+ },
+ "75": {
+  "hld": [
+   {
+    "level": "Basic",
+    "q": "Notification system mock: which requirements do you clarify?",
+    "a": "Channels (push, SMS, email, in-app), templates with personalisation, user preferences and opt-outs, scheduled sends, and priorities (an OTP is urgent, marketing is not). Also delivery status tracking and rate limits. Non-functional: at-least-once delivery, seconds of latency for transactional messages, high throughput for bulk campaigns, and no spamming users."
+   },
+   {
+    "level": "Basic",
+    "q": "Draw the high-level architecture of the notification system.",
+    "a": "Producer services call a Notification API (or publish events). The API validates the request, checks user preferences and opt-outs, renders the template and writes to per-channel queues. Channel workers (push, SMS, email) call third-party providers such as FCM or APNs, an SMS gateway, or SendGrid or SES. A status store records each notification's lifecycle, and retries and DLQs handle failures."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you handle priorities and rate limits?",
+    "a": "Use separate queues or topics per priority, with dedicated worker pools, so a marketing blast never delays OTPs. Throttle per user (for example at most N promotional messages a day, and no marketing during quiet hours in the user's timezone). Respect each provider's limits with a token-bucket limiter on the workers, and back off when the provider returns 429."
+   },
+   {
+    "level": "Intermediate",
+    "q": "How do you avoid sending the same notification twice?",
+    "a": "Give each notification an idempotency key, for example eventId + userId + channel, and claim it before sending with Redis SET NX with a TTL or a unique DB constraint; if the claim fails, skip the send. Queues are at-least-once, so this dedupe is required. A crash between sending and recording can still cause a rare duplicate; that is acceptable for push or email, while OTPs get short expiry and uniqueness checks."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you send a campaign to 50M users without hurting transactional traffic?",
+    "a": "A campaign scheduler splits the target segment into batches (for example 10k users each) and enqueues them gradually at a controlled rate that stays within provider limits. Workers expand the batches, apply preferences and send, and progress is checkpointed so a crash resumes instead of restarting. Campaign traffic runs on separate queues, workers and even provider accounts, fully isolated from OTPs and alerts."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do you make delivery reliable and trackable when a provider fails?",
+    "a": "Configure at least two providers per channel with circuit breakers and automatic failover (for example switch SMS gateways when the error rate crosses a threshold). Retry transient errors with exponential backoff and jitter, and move poison messages to a DLQ. Provider delivery receipts arrive via webhooks and update statuses (Queued, Sent, Delivered, Failed, Opened). Dashboards and alerts track delivery rate and latency per channel and provider."
+   }
+  ],
+  "lld": [
+   {
+    "level": "Basic",
+    "q": "Final Parking Lot mock: walk me through the class relationships in 2 minutes.",
+    "a": "ParkingLot has many Floors, and each Floor has many ParkingSpots (composition, since spots do not exist without a floor). A Ticket references a Vehicle and a ParkingSpot (association) and records entry and exit times. ParkingLot delegates to ISpotAllocationStrategy and IPricingStrategy, and gates call ParkingLot.Park and Unpark. DisplayBoards subscribe to spot changes."
+   },
+   {
+    "level": "Basic",
+    "q": "Which things are enums and which are classes, and why?",
+    "a": "VehicleType, SpotType and TicketStatus are enums because they are fixed categories with no distinct behaviour. Pricing and allocation are interfaces because their behaviour varies. Create a Vehicle subclass (Car, Bike, Truck) only if types really behave differently; otherwise a single Vehicle class with a Type property avoids pointless inheritance, and interviewers reward that restraint."
+   },
+   {
+    "level": "Intermediate",
+    "q": "Write the Park and Unpark flow.",
+    "a": "ParkingLot coordinates; allocation, pricing and time are injected.\n```csharp\npublic Ticket Park(Vehicle v) {\n    var spot = _allocator.FindSpot(_floors, v.Type) ?? throw new InvalidOperationException(\"Lot full\");\n    spot.Assign(v);\n    var ticket = new Ticket(Guid.NewGuid(), v, spot, _clock.GetUtcNow());\n    _active[ticket.Id] = ticket;\n    return ticket;\n}\npublic decimal Unpark(Guid ticketId) {\n    if (!_active.Remove(ticketId, out var t)) throw new KeyNotFoundException();\n    t.Spot.Release();\n    return _pricing.Calculate(t.Spot.Type, t.EntryTime, _clock.GetUtcNow());\n}\n```"
+   },
+   {
+    "level": "Intermediate",
+    "q": "Should ParkingLot be a Singleton?",
+    "a": "There is only one lot per application instance, so a single instance makes sense. But a static Instance property adds global state and makes tests hard (you cannot build a fresh lot per test). Register it with services.AddSingleton<IParkingLot, ParkingLot>() instead, which gives one instance at runtime and still allows injection and mocking. If multiple lots are supported later, a ParkingLotRegistry keyed by lot ID replaces it."
+   },
+   {
+    "level": "Advanced",
+    "q": "How do display boards show accurate free-spot counts in real time?",
+    "a": "Use Observer: ParkingSpot or ParkingFloor raises SpotOccupied and SpotReleased events, and each DisplayBoard subscribes and keeps counters per SpotType. Update the counters with Interlocked.Increment and Interlocked.Decrement because events can come from several gates at once. Boards never scan all spots, so updates are O(1), and new consumers such as a mobile app subscribe the same way."
+   },
+   {
+    "level": "Advanced",
+    "q": "Follow-ups: lost ticket, overstay, and payment failure at exit. How does your design handle them?",
+    "a": "Give the ticket a lifecycle: Active, then PaymentPending, Paid and Exited, and the exit gate opens only when the ticket is Paid. Lost ticket: look up the active ticket by licence plate, or charge the maximum daily fee through a LostTicket pricing rule. Overstay: pricing slabs handle long durations, with an optional per-day cap. Payment failure: the ticket stays PaymentPending, the user can retry or switch method (the payment strategy), and the spot stays occupied until the ticket reaches Exited."
+   }
+  ]
+ }
+}

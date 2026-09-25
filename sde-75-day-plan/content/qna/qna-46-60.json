@@ -1,0 +1,992 @@
+{
+  "46": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is the difference between short polling, long polling, WebSockets and Server-Sent Events?",
+        "a": "- Short polling: the client asks every N seconds; simple but wastes requests and adds latency up to N.\n- Long polling: the server holds the request open until data arrives or a timeout, then the client re-requests; near real-time over plain HTTP.\n- WebSockets: one upgraded TCP connection, full-duplex, low overhead per message.\n- SSE: a one-way server-to-client stream over HTTP (text/event-stream) with built-in reconnect and event IDs."
+      },
+      {
+        "level": "Basic",
+        "q": "When would you choose SSE over WebSockets?",
+        "a": "Choose SSE when data flows only from server to client, such as live scores, notifications or stock tickers. It works over normal HTTP, passes through proxies more easily, auto-reconnects and resumes with Last-Event-ID. WebSockets are better when the client also sends frequent messages, like chat or multiplayer games. In .NET, SignalR abstracts all of these and falls back automatically."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you scale WebSocket servers horizontally when a user on server A messages a user on server B?",
+        "a": "Use stateless-ish connection (gateway) servers that only hold sockets, plus a pub/sub backbone such as Redis Pub/Sub, Kafka or Azure SignalR Service. Keep a session registry (userId -> connection server) in Redis. When a message arrives, publish it to the channel of the server holding the recipient, or to a per-user topic that the right server subscribes to. The load balancer only needs to route the initial handshake; sticky sessions matter only for fallback transports like long polling."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you implement user presence (online/offline/last seen)?",
+        "a": "Clients send a heartbeat every 20-30 seconds over the socket; the server writes presence:userId with a TTL slightly longer than the interval in Redis. If the TTL expires, the user is offline and last-seen is the last heartbeat time. Presence changes are published to friends or room members, but debounced so flapping connections do not cause event storms. For large groups, fetch presence lazily when a chat is opened instead of pushing to everyone."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you handle reconnects without losing or duplicating messages?",
+        "a": "Give every message a monotonically increasing sequence number per conversation (or a server offset). On reconnect, the client sends the last sequence it acknowledged and the server replays everything after it from the durable store, not from memory. Clients use exponential backoff with jitter to avoid a thundering herd after a server restart. Messages carry a client-generated ID so the server and client can dedupe retries, giving effectively-once delivery."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are the capacity limits of a WebSocket server and how do you plan for a million concurrent connections?",
+        "a": "Each connection costs a file descriptor, kernel socket buffers and some application memory (tens of KB), so one tuned server can hold roughly 50k-200k idle connections. For 1M connections plan 10-20 gateway nodes plus headroom, raise OS limits (ulimit, ephemeral ports) and use async I/O (Kestrel is fine). Load balancers must support long-lived connections and idle timeouts above the heartbeat interval. Deploys must drain connections gradually, since restarting a node forces all its clients to reconnect at once."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the core classes in a chat application LLD?",
+        "a": "- User: Id, Name, Status.\n- ChatRoom (or Conversation): Id, Type (Direct/Group), members, messages.\n- Message: Id, SenderId, RoomId, Content, SentAt, Status.\n- ChatService: sendMessage, createRoom, addMember - the orchestrator.\n- MessageRepository and a notifier/observer to push messages to online users."
+      },
+      {
+        "level": "Basic",
+        "q": "How would you model 1:1 chats and group chats - separate classes or one?",
+        "a": "Model both as one Conversation abstraction with a list of participants; a direct chat is just a conversation with exactly two members and no admin. This keeps sending, storing and fetching messages identical. Use an abstract base or a Type enum; group-only behaviour like admins, names and member limits goes into a GroupChat subclass. For 1:1 chats, derive a deterministic ID (for example sorted user IDs) so the same pair never creates two conversations."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you deliver new messages to room members using the Observer pattern?",
+        "a": "The ChatRoom is the subject and each connected member session is an observer. When a message is posted, the room notifies all observers except the sender; offline users are skipped and fetch later.\n```csharp\npublic interface IMessageObserver { void OnMessage(Message m); }\npublic class ChatRoom {\n    private readonly List<IMessageObserver> _observers = new();\n    public void Join(IMessageObserver o) => _observers.Add(o);\n    public void Leave(IMessageObserver o) => _observers.Remove(o);\n    public void Post(Message m) {\n        foreach (var o in _observers) o.OnMessage(m);\n    }\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you model message status (sent, delivered, read) in a group chat?",
+        "a": "A single Status field on Message does not work for groups because each recipient has their own state. Keep a separate MessageReceipt(MessageId, UserId, DeliveredAt, ReadAt) per recipient. The aggregate status shown to the sender is derived: delivered when all receipts have DeliveredAt, read when all have ReadAt. Status transitions only move forward (Sent -> Delivered -> Read), which you enforce in a method rather than a public setter."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you support different message types (text, image, file) extensibly?",
+        "a": "Make Message an abstract base with shared fields (Id, Sender, SentAt) and subclasses like TextMessage, ImageMessage (Url, Width, Height) and FileMessage (Url, Size, Name). Rendering or validation logic lives in polymorphic methods or a visitor, so adding VideoMessage does not touch existing code (Open/Closed). A MessageFactory creates the right type from an incoming DTO. Persist with a discriminator column or store content as JSON with a Type field."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you make ChatRoom thread-safe when many users post and join concurrently?",
+        "a": "Guard the member list and the message list with a lock, or use ConcurrentDictionary for members and assign sequence numbers with Interlocked.Increment so ordering is consistent. Never call observers while holding the lock: copy the observer list inside the lock, then notify outside it to avoid deadlocks and slow consumers blocking the room. For heavy load, push messages into a Channel<T> per room and have one consumer dispatch them, which serializes ordering without locks."
+      }
+    ]
+  },
+  "47": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is back-of-envelope estimation and why do interviewers ask for it?",
+        "a": "It is a quick approximate calculation of load, storage, bandwidth and servers using round numbers. It shows you can size a system before designing it, and it drives decisions such as whether one database is enough, whether you need caching, or whether data must be sharded. Interviewers care about clear assumptions and order of magnitude, not exact arithmetic."
+      },
+      {
+        "level": "Basic",
+        "q": "What numbers and shortcuts should you memorise for estimation?",
+        "a": "- 1 day is about 86,400 seconds, round to 100k.\n- 1 million requests/day is about 12 QPS; 100M/day is about 1,000-1,200 QPS.\n- Powers of two: 1 KB = 10^3, 1 MB = 10^6, 1 GB = 10^9, 1 TB = 10^12 bytes.\n- Latency: memory ~100 ns, SSD read ~100 us, same-datacenter round trip ~0.5 ms, cross-continent ~150 ms.\n- Peak traffic is usually 2-3x average."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Walk through estimating QPS for a service with 50 million daily active users.",
+        "a": "Assume each DAU makes 20 requests a day: 50M x 20 = 1 billion requests/day. Divide by 100k seconds: about 10,000 QPS average. Apply a 3x peak factor: about 30,000 QPS peak. If reads to writes are 10:1, that is roughly 27k read QPS and 3k write QPS, which tells you reads need caching and replicas while writes may fit a single well-tuned primary or a few shards."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you estimate storage for five years?",
+        "a": "Storage = writes per day x size per record x retention, then multiply by replication factor. Example: 10M new posts/day x 1 KB = 10 GB/day; x 365 x 5 is about 18 TB; x 3 replicas is about 55 TB, plus index overhead of roughly 20-30%. Separate media (images, videos) from metadata because media lives in object storage and dominates size. State whether the result fits a single node (a few TB) or requires sharding."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you go from QPS to the number of servers needed?",
+        "a": "Estimate per-server throughput from latency and concurrency: if a request takes 50 ms of work and a server runs about 200 concurrent requests, it handles about 4,000 QPS; in practice benchmark or assume 1k-5k QPS for a typical API node. Servers = peak QPS / per-server QPS, then add 30-50% headroom and N+1 for failures. Example: 30k peak / 2k per node = 15, round to 20 across multiple zones. Also check the database and cache tiers separately because they are usually the real bottleneck."
+      },
+      {
+        "level": "Advanced",
+        "q": "What common mistakes do candidates make in estimation, and how do you sanity-check your numbers?",
+        "a": "- Confusing bits and bytes in bandwidth, or MB and GB.\n- Forgetting peak versus average, replication, or indexes.\n- Spending five minutes on arithmetic instead of rounding.\n- Not stating assumptions (DAU, requests per user, object size).\nSanity-check by comparing with known systems (a single Postgres primary handles a few thousand writes/sec; one Redis node ~100k ops/sec) and by checking whether the result changes the design; if not, move on."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the main entities in a Splitwise LLD?",
+        "a": "- User: Id, Name, Email.\n- Group: Id, Name, members, expenses.\n- Expense: Id, PaidBy, Amount, Description, list of Splits, SplitType.\n- Split: User and Amount (plus Percent or Shares depending on type).\n- BalanceSheet or Ledger: who owes whom.\n- ExpenseService: addExpense, getBalances, settleUp."
+      },
+      {
+        "level": "Basic",
+        "q": "What split types does Splitwise support and how would you model them?",
+        "a": "Equal, Exact (fixed amounts) and Percentage, and sometimes Shares. Model Split as an abstract class with EqualSplit, ExactSplit and PercentSplit subclasses, or keep one Split class and let a split strategy compute amounts. Each type needs its own validation: exact splits must sum to the total, percentages must sum to 100. The choice of split type should not change how balances are updated afterwards."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you apply the Strategy pattern to expense splitting?",
+        "a": "Define an ISplitStrategy that validates input and returns the amount per user; ExpenseService picks a strategy by SplitType, so new types are added without changing the service.\n```csharp\npublic interface ISplitStrategy {\n    Dictionary<string, decimal> Split(decimal total, IReadOnlyList<SplitInput> inputs);\n}\npublic class PercentSplit : ISplitStrategy {\n    public Dictionary<string, decimal> Split(decimal total, IReadOnlyList<SplitInput> inputs) {\n        if (inputs.Sum(i => i.Value) != 100m) throw new ArgumentException(\"Must total 100%\");\n        return inputs.ToDictionary(i => i.UserId, i => Math.Round(total * i.Value / 100m, 2));\n    }\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you represent balances between users?",
+        "a": "Store a nested map balances[userA][userB] = amount, where a positive value means B owes A, and keep it antisymmetric (balances[B][A] = -amount). When A pays 300 split equally among A, B and C, add 100 to balances[A][B] and balances[A][C] and subtract the mirror entries. Alternatively store only a net balance per user per group, which is enough for simplification. Always use decimal, never double, for money."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you handle rounding when 100 is split equally among 3 people?",
+        "a": "Compute the base share with rounding down to 2 decimals (33.33), then assign the leftover cents (0.01) deterministically, for example to the payer or the first participant. This guarantees the splits always sum exactly to the total, which you should assert in validation. Use decimal and MidpointRounding explicitly, and keep amounts in the smallest unit (paise) if the system is sensitive to accuracy."
+      },
+      {
+        "level": "Advanced",
+        "q": "Should Expense be mutable, and how would you design edits and deletes?",
+        "a": "Treat expenses as immutable ledger entries: editing an expense is modelled as reversing the old one and applying a new one, and deleting is a reversal. This keeps balances auditable and makes it easy to recompute balances from history if the cached balance sheet is wrong. Expose only constructors and methods on Expense, not public setters, and keep an ExpenseHistory or version number for concurrent edits by different group members."
+      }
+    ]
+  },
+  "48": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the functional and non-functional requirements for a basic chat app like WhatsApp?",
+        "a": "Functional: 1:1 chat, group chat (up to a few hundred members), sent/delivered/read receipts, online status and message history. Non-functional: low latency (under ~200 ms delivery), high availability, messages never lost, per-conversation ordering and support for offline users. Clarify scale early, for example 100M DAU and 50 messages per user per day, which is about 60k messages/sec at peak."
+      },
+      {
+        "level": "Basic",
+        "q": "What does the high-level architecture of a chat system look like?",
+        "a": "- Clients connect via WebSockets to chat (gateway) servers behind a load balancer.\n- A session service in Redis maps userId to gateway server.\n- A message service assigns IDs, persists to a message store and routes to recipients through a queue or pub/sub.\n- Offline recipients get a push notification via APNs/FCM.\n- Separate services for groups, presence and media (object storage + CDN)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Which database would you use for the message store and how would you key it?",
+        "a": "A wide-column store like Cassandra or ScyllaDB (or HBase) suits the heavy write rate and time-ordered reads. Partition by conversation_id and cluster by message_id descending, so fetching the latest 50 messages of a chat is one partition read. Use time-sortable IDs such as Snowflake so ordering does not rely on clocks of different clients. Very large or old conversations can be bucketed by conversation_id plus month to avoid huge partitions."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do delivery and read receipts work end to end?",
+        "a": "The sender gets a 'sent' tick once the server durably stores the message and acks the client. When the recipient's device receives it, the device sends a delivered ack; the server updates the status and forwards the receipt to the sender. Opening the chat sends a read ack carrying the latest read message ID, so one ack marks everything before it as read. For groups, store per-member receipts and show read only when all members have read."
+      },
+      {
+        "level": "Advanced",
+        "q": "Fan-out on write vs fan-out on read for group messages - which do you choose?",
+        "a": "For small and medium groups, fan-out on write: when a message arrives, look up members and push it to each member's gateway or inbox queue, which keeps reads cheap and delivery fast. For very large groups or channels (thousands of members), fan-out on read is cheaper: store the message once and members pull on open, with pushes only to online members. Many systems use a hybrid with a member-count threshold. The message body is stored once either way; only references or deliveries are fanned out."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you guarantee message ordering and no message loss?",
+        "a": "Assign a per-conversation sequence number at the server (for example via the partition leader or a counter in Redis) and have clients order by it rather than by device timestamps. The client keeps an unacked outbox and retries with the same client message ID, and the server dedupes on it, so retries do not create duplicates. Persist before acking the sender and before fan-out. On reconnect, clients sync from their last known sequence number to fill any gaps."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "How do you settle up in Splitwise and update balances?",
+        "a": "A settle-up is recorded as a special payment (or an Expense with type Payment) from the debtor to the creditor. It updates balances with the opposite sign to an expense: if B pays A 100, balances[A][B] decreases by 100. Validate that the payment does not exceed what is owed unless partial or over-payment is allowed. Keeping it as a ledger entry keeps history consistent."
+      },
+      {
+        "level": "Basic",
+        "q": "How would you structure the full Splitwise implementation into classes and services?",
+        "a": "- Models: User, Group, Expense, Split, Payment.\n- Strategies: ISplitStrategy implementations per split type, chosen via a factory.\n- BalanceSheet: owns the balance map and applies expenses and payments.\n- ExpenseService: validates input, builds splits, persists, updates the balance sheet.\n- Repositories behind interfaces so storage can be swapped and unit tested.\nControllers only call services; no business logic in models' setters."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does the debt simplification (minimise transactions) algorithm work?",
+        "a": "Compute each user's net balance (total paid minus total owed). Put creditors in a max-heap and debtors in a max-heap by absolute amount. Repeatedly match the largest debtor with the largest creditor, settle the minimum of the two amounts, and push back whoever still has a remainder. This greedy approach produces at most n-1 transactions; finding the true minimum is NP-hard, so greedy is the accepted interview answer."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show how you would compute net balances per user in C#.",
+        "a": "Net balance is what a user paid minus their share of every expense; positive means they should receive money.\n```csharp\npublic Dictionary<string, decimal> NetBalances(IEnumerable<Expense> expenses) {\n    var net = new Dictionary<string, decimal>();\n    foreach (var e in expenses) {\n        net[e.PaidBy] = net.GetValueOrDefault(e.PaidBy) + e.Amount;\n        foreach (var s in e.Splits)\n            net[s.UserId] = net.GetValueOrDefault(s.UserId) - s.Amount;\n    }\n    return net;\n}\n```"
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you make addExpense safe when two members add expenses to the same group at once?",
+        "a": "The race is on the balance sheet, not on inserting expenses. Options: lock per group (a SemaphoreSlim per group ID in memory, or a database row lock on the group), use optimistic concurrency with a version column on the group balance row and retry on conflict, or avoid a mutable balance entirely and compute balances from the append-only expense ledger. In a DB-backed design, insert the expense and update balances in one transaction."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you unit test the Splitwise implementation?",
+        "a": "Test each split strategy in isolation for valid splits, invalid totals and rounding (100 across 3 users must sum to exactly 100). Test BalanceSheet by applying known expenses and payments and asserting the resulting map and antisymmetry. Test simplification with cases where the number of transactions is known and assert all net balances reach zero. Mock repositories with interfaces so ExpenseService tests do not hit a database, and keep money assertions exact with decimal."
+      }
+    ]
+  },
+  "49": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: how does typeahead return top suggestions quickly?",
+        "a": "Store queries in a trie and cache the top-K suggestions at each prefix node, so a lookup is O(prefix length) with no subtree traversal. Rankings are rebuilt offline from query logs (for example hourly) and the trie is served from memory, sharded by prefix. Clients debounce keystrokes and cache results, and a CDN or browser cache handles popular prefixes."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: offset vs cursor pagination - when do you use each?",
+        "a": "Offset (LIMIT 20 OFFSET 10000) is simple and supports jumping to page N, but the database still scans skipped rows and results shift when rows are inserted. Cursor (keyset) pagination uses WHERE id < lastSeenId ORDER BY id DESC LIMIT 20, which uses the index, is stable and fast at any depth. Use offset for small admin tables and cursor for feeds, infinite scroll and large APIs, returning an opaque next-cursor token."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: optimistic vs pessimistic locking - how do you choose?",
+        "a": "Optimistic locking reads a version, then updates WHERE version = @v; if zero rows are affected, someone else won and you retry or fail. It suits low contention (profile edits, most CRUD); in EF Core use a rowversion concurrency token. Pessimistic locking (SELECT ... FOR UPDATE or UPDLOCK) locks first and suits high contention on hot rows like inventory or seats, at the cost of blocking and deadlock risk."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: how does a Redis distributed lock work and what are its pitfalls?",
+        "a": "Acquire with SET lock:key uniqueToken NX PX 30000; release with a Lua script that deletes only if the value still matches your token. Pitfalls: a GC pause or slow process can outlive the TTL so two holders exist, and Redis failover can lose the lock. Mitigate with fencing tokens (a monotonically increasing number checked by the resource) and keep critical sections short or renew the lease."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: long polling vs WebSockets vs SSE for a live system - summarise the trade-offs.",
+        "a": "- Long polling: works everywhere over HTTP, but one request per message and extra latency.\n- SSE: simple server push over HTTP with auto-reconnect, one-way only.\n- WebSockets: full duplex and lowest overhead, but stateful connections need a pub/sub backbone, heartbeats and careful deploys.\nChat and games use WebSockets; notifications and feeds often use SSE."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: in BookMyShow-style seat booking, how do the concurrency and real-time pieces fit together?",
+        "a": "When a user selects seats, hold them with a short TTL lock (a Redis key per seat or a HELD status with expiry in the DB) so others cannot select them. Payment happens within the hold window; on success the booking is confirmed with an optimistic or conditional update (status HELD -> BOOKED where holder = user). Expired holds are released by TTL or a sweeper. Seat maps update live for other users via WebSocket or SSE pushes, but the database constraint remains the final guard against double booking."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what does a TrieNode contain and what is the complexity of insert and search?",
+        "a": "A TrieNode holds a map of children (Dictionary<char, TrieNode> or a fixed array of 26), an IsEndOfWord flag and optionally a frequency or top-K list. Insert and search are O(L) where L is the word length, independent of how many words are stored. Prefix search is O(L) to reach the node plus the cost of collecting results from its subtree."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what are the key entities in BookMyShow?",
+        "a": "City, Theatre, Screen, Seat (row, number, type), Movie, Show (movie + screen + start time), ShowSeat (seat status per show: Available, Held, Booked), Booking, Payment and User. The key insight is that seat availability belongs to ShowSeat, not Seat, because the same physical seat is booked separately for every show."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: how does the chat LLD use the Observer pattern and what is Message status modelled as?",
+        "a": "ChatRoom is the subject and connected user sessions are observers notified when a message is posted. Message status is per recipient in groups (a receipt entity with delivered and read timestamps), and transitions only move forward. Different content types are subclasses or a type field handled polymorphically."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: which design patterns appear in Splitwise and why?",
+        "a": "Strategy for split types (equal, exact, percent) so new types do not change ExpenseService; Factory to pick the strategy from SplitType; Repository to abstract persistence; and optionally Observer to notify users when an expense is added. Balances live in a BalanceSheet class, and the simplification uses a greedy heap-based algorithm."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: how do you implement seat locking in C# for the BookMyShow LLD?",
+        "a": "Hold seats atomically so either all requested seats are held or none are, with an expiry time.\n```csharp\nprivate readonly object _gate = new();\npublic bool TryHold(Show show, IList<string> seatIds, string userId) {\n    lock (_gate) {\n        var seats = seatIds.Select(id => show.Seats[id]).ToList();\n        if (seats.Any(s => !s.IsAvailable(DateTime.UtcNow))) return false;\n        foreach (var s in seats) s.Hold(userId, DateTime.UtcNow.AddMinutes(10));\n        return true;\n    }\n}\n```\nIn production, lock per show rather than globally, or push this to the DB or Redis."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: what weak spots should you check when revising this week's LLDs?",
+        "a": "- Can you code a Trie with autocomplete (DFS collect with limit) in 10 minutes?\n- Can you explain why ShowSeat exists and handle hold expiry?\n- Do chat observers get notified outside the lock?\n- Does Splitwise use decimal and handle rounding remainders?\n- Can you write debt simplification with two heaps?\nPractise each out loud and time yourself."
+      }
+    ]
+  },
+  "50": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the main components of a notification system?",
+        "a": "- Notification API: services submit events (userId, type, data, priority).\n- Preference service: which channels and topics each user allows, plus quiet hours.\n- Template service: renders content per channel and locale.\n- Queues per channel (email, SMS, push, in-app) with channel workers calling providers such as SendGrid, Twilio, FCM/APNs.\n- Notification log for status, dedupe and analytics."
+      },
+      {
+        "level": "Basic",
+        "q": "Why put a message queue between the notification API and the channel senders?",
+        "a": "Queues decouple producers from slow or flaky third-party providers, absorb traffic spikes (for example a campaign to millions of users) and let each channel scale workers independently. If SMS providers are down, SMS messages wait in their queue without blocking email or push. Queues also give you retries and dead-letter queues out of the box (Azure Service Bus, SQS, RabbitMQ)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you design retries for failed notifications without spamming users?",
+        "a": "Classify errors: transient ones (timeouts, 5xx, 429) are retried with exponential backoff and jitter; permanent ones (invalid token, unsubscribed number) are not retried and may mark the device or address invalid. Cap attempts and move exhausted messages to a dead-letter queue for inspection. Use an idempotency key per notification so a retry after an ambiguous timeout does not deliver twice; optionally fall back to another provider or channel."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you implement user preferences and quiet hours?",
+        "a": "Store preferences per user as channel x category flags (for example marketing via email off, transactional via SMS on), cached in Redis because every notification reads them. Before enqueuing, the router filters channels by preference; critical notifications such as OTPs or security alerts bypass opt-outs. For quiet hours, convert the user's local window to UTC; low-priority notifications are deferred to a delayed queue until the window ends, while high-priority ones go through."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you rate limit notifications per user and protect downstream providers?",
+        "a": "Apply per-user limits per channel (for example max 3 marketing pushes a day) using Redis counters or a sliding window keyed by user and category; excess notifications are dropped or merged into a digest. Also apply global rate limits matching each provider's quota using a token bucket in the channel workers. Priority queues ensure OTPs and transactional messages are never starved by bulk campaigns."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you guarantee a notification is sent at most once even with retries and multiple workers?",
+        "a": "Generate a deterministic notification ID (for example hash of eventId + userId + channel) and record it in a dedupe store (Redis SETNX with TTL or a unique DB key) before sending. Workers take messages with a peek-lock/visibility timeout, and on ambiguous provider timeouts check the provider's own idempotency key support. True exactly-once is impossible end to end, so aim for at-least-once processing with idempotent sends, and accept that a rare duplicate is safer than losing an OTP."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the core components of a logger framework LLD?",
+        "a": "- Logger: public API (Debug, Info, Warn, Error) with a minimum level.\n- LogLevel enum ordered by severity.\n- LogMessage: level, text, timestamp, logger name, exception.\n- IFormatter: turns a LogMessage into text (plain, JSON).\n- IAppender (sink): writes to console, file, database.\n- LoggerFactory or configuration to wire loggers, formatters and appenders."
+      },
+      {
+        "level": "Basic",
+        "q": "How does log level filtering work?",
+        "a": "Levels are ordered (Trace < Debug < Info < Warn < Error < Fatal). A logger has a minimum level, and a message is written only if its level is greater than or equal to that minimum, which is a simple integer comparison on the enum. Appenders can also have their own thresholds, so errors go to a file and everything goes to the console. Check the level before building expensive messages to avoid wasted string formatting."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Which design patterns fit a logger framework?",
+        "a": "- Singleton or a factory-managed instance so the app shares configuration.\n- Strategy for formatters and appenders, which are interchangeable.\n- Chain of Responsibility for level handlers, where each handler processes its level and passes on.\n- Observer, since multiple appenders subscribe to log events.\n- Builder for fluent configuration.\nMention that in real .NET you would use ILogger<T> from Microsoft.Extensions.Logging with DI rather than a hand-rolled singleton."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show a minimal logger with pluggable appenders in C#.",
+        "a": "The logger filters by level and fans out to every registered appender.\n```csharp\npublic enum LogLevel { Debug, Info, Warn, Error }\npublic interface IAppender { void Append(LogLevel level, string msg); }\npublic class Logger {\n    private readonly List<IAppender> _appenders = new();\n    public LogLevel MinLevel { get; set; } = LogLevel.Info;\n    public void AddAppender(IAppender a) => _appenders.Add(a);\n    public void Log(LogLevel level, string msg) {\n        if (level < MinLevel) return;\n        foreach (var a in _appenders) a.Append(level, $\"{DateTime.UtcNow:O} [{level}] {msg}\");\n    }\n}\n```"
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you make logging thread-safe and avoid slowing down request threads?",
+        "a": "Use an asynchronous pipeline: Log only enqueues the message into a bounded Channel<LogMessage> or BlockingCollection, and one background consumer writes to appenders. This serializes file writes without locks on the hot path and keeps request latency low. Decide what happens when the buffer is full (block, drop Debug messages, or drop oldest), and flush the queue on shutdown via IDisposable or an application-stopping hook so logs are not lost."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you implement a rolling file appender and structured logging?",
+        "a": "The file appender tracks the current file size or date and, when a threshold is crossed, closes the stream, renames the file (app-2026-09-25.1.log) and opens a new one, keeping only N old files. Structured logging stores properties separately from the message template (\"Order {OrderId} failed\") and a JSON formatter emits them as fields, so tools like Seq, ELK or Application Insights can query by OrderId. Include correlation IDs from the request scope so logs across services can be joined."
+      }
+    ]
+  },
+  "51": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What is the step-by-step framework for estimating a real system like WhatsApp?",
+        "a": "- State assumptions: DAU, actions per user, object sizes, read/write ratio.\n- Traffic: requests/day to average QPS to peak QPS.\n- Storage: daily data x retention x replication.\n- Bandwidth: QPS x payload size, ingress and egress.\n- Servers and connections: peak load divided by per-node capacity, plus headroom.\nSay each assumption out loud and round aggressively."
+      },
+      {
+        "level": "Basic",
+        "q": "Why should you state assumptions out loud during estimation?",
+        "a": "The interviewer is grading your reasoning, and stated assumptions let them correct you early (for example 'assume 500M DAU, not 2B'). It makes your arithmetic traceable, so a wrong input does not look like a wrong method. It also shows product sense, such as recognising that messages are small but media dominates storage."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Estimate message QPS and storage for WhatsApp with 1 billion DAU.",
+        "a": "Assume 40 messages sent per user per day: 40 billion messages/day, divided by 100k seconds, is about 400k messages/sec average and about 1M/sec at peak. With about 100 bytes per text message plus metadata, 40B x 100 B = 4 TB/day, about 1.5 PB/year before replication. Media is assumed at 5% of messages x 200 KB = 400 TB/day, which is why media goes to object storage with expiry after delivery and metadata goes to a wide-column store."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you estimate bandwidth for such a system?",
+        "a": "Bandwidth = QPS x average payload. Text: 400k/sec x 100 B = 40 MB/sec, which is small. Media: 40B x 5% = 2B media per day / 100k s = 20k per second x 200 KB = 4 GB/sec ingress, and egress is higher because each media is downloaded by one or more recipients (x group fan-out). This shows media egress is the cost driver and justifies CDN caching and compression."
+      },
+      {
+        "level": "Advanced",
+        "q": "How many connection servers would WhatsApp need?",
+        "a": "Assume 30% of 1B DAU are online at peak: 300M concurrent WebSocket connections. If a tuned gateway node holds about 500k connections (WhatsApp famously got ~1-2M per Erlang box), you need about 600 nodes, round to 800-1,000 for headroom and zone failures. Then check the message rate per node: 1M msgs/sec / 800 nodes is about 1,250/sec each, which is comfortable, so connections, not throughput, drive the node count."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you use estimation results to drive design decisions in the interview?",
+        "a": "Tie each number to a decision: 1M writes/sec rules out a single relational primary, so use a partitioned store like Cassandra keyed by conversation. 1.5 PB/year of text means tiered storage or deleting delivered messages from servers. 300M connections means a dedicated gateway tier plus a pub/sub or routing layer. 4 GB/sec media means object storage plus CDN. Interviewers value this link from numbers to architecture more than precise arithmetic."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the main classes in a Snake and Ladder LLD?",
+        "a": "- Board: size (100) and a map of jumps from start cell to end cell.\n- Snake and Ladder: both are a Jump(start, end); snake has end < start, ladder has end > start.\n- Player: Id, Name, Position.\n- Dice: Roll() returning 1..6 (or N dice).\n- Game: players queue, board, dice, current turn, winner and a Play loop."
+      },
+      {
+        "level": "Basic",
+        "q": "Should Snake and Ladder be separate classes?",
+        "a": "They behave identically (land on start, move to end), so a single Jump class with start and end is simpler and avoids duplicate code; the type can be derived from the direction. Separate classes are justified only if they gain different behaviour, for example a snake that costs a turn. Validate on board setup: no jump starts at cell 100, no cycles, and at most one jump per start cell."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you manage turns and win conditions?",
+        "a": "Keep players in a Queue<Player>: dequeue the current player, roll, move and, if not won, enqueue them at the back. Rules to confirm: if the roll takes the player past 100 they stay put; after moving apply any snake or ladder; the first player to exactly 100 wins. Optional rules like three sixes or extra turns on a six are easy extensions within this loop."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show the core move logic in C#.",
+        "a": "Apply the roll, reject overshoot, then follow jumps.\n```csharp\npublic void TakeTurn(Player p) {\n    int roll = _dice.Roll();\n    int next = p.Position + roll;\n    if (next > _board.Size) return;          // overshoot: stay\n    if (_board.Jumps.TryGetValue(next, out int end)) next = end;\n    p.Position = next;\n    if (next == _board.Size) Winner = p;\n}\n```"
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you make the dice and game testable?",
+        "a": "Put the dice behind an IDice interface and inject it into Game; tests use a FixedDice that returns a scripted sequence, so you can assert that landing on a known ladder moves the player correctly. Pass the board configuration in instead of hard-coding it. Avoid Random inside Game, or inject a seeded Random, so games are deterministic in tests."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you extend the design for multiple dice, custom rules, or several simultaneous games?",
+        "a": "Use a strategy for dice (IDice with SingleDice and MultiDice, sum of rolls) and an IRule or rule-chain for movement rules like overshoot or bonus turns, following the Open/Closed principle. A GameFactory builds a board from configuration. For many concurrent games (online), each Game instance holds its own state with no statics, a GameManager keyed by game ID stores them, and moves are serialized per game with a lock or single-threaded actor."
+      }
+    ]
+  },
+  "52": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the requirements and scale assumptions for Pastebin?",
+        "a": "Users paste text and get a short URL; anyone with the link can read it. Optional features: expiry, custom alias, private pastes, syntax highlighting. It is read-heavy (about 10:1 reads to writes). Example: 1M new pastes/day (about 12 writes/sec), 10M reads/day (about 120 reads/sec, 400 peak), average paste 10 KB, maximum 10 MB, so 10 GB/day or about 18 TB over five years."
+      },
+      {
+        "level": "Basic",
+        "q": "Why store paste content in object storage and metadata in a database?",
+        "a": "Content blobs can be up to megabytes, are immutable and are read whole, which is exactly what object storage (S3, Azure Blob) is built for: cheap, durable, and scalable without DB bloat. Metadata (key, owner, created, expiry, visibility, size, content pointer) is small and queried by key or owner, so it fits a relational or key-value DB. Small pastes can be inlined in the DB as an optimisation."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you generate short unique keys for pastes?",
+        "a": "Options: base62-encode a unique ID from a distributed ID generator (Snowflake or DB sequence ranges handed to each app server), or generate random 7-8 character base62 strings and retry on collision using a unique constraint. A pre-generated Key Generation Service that hands out unused keys avoids collisions at write time. Random keys are preferable for private pastes because sequential IDs are guessable."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you handle paste expiry?",
+        "a": "Store expires_at in metadata and check it on every read, returning 404 if expired, so correctness does not depend on cleanup timing. A background job deletes expired metadata in batches, and object storage lifecycle rules delete old blobs. Cache TTLs should not exceed the paste's remaining lifetime. Burn-after-reading pastes are deleted atomically on the first read with a conditional update."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you cache and serve reads at scale?",
+        "a": "Reads are immutable, so caching is very effective: put a CDN in front for public pastes (cache key = paste key, long TTL bounded by expiry) and a Redis cache-aside layer for metadata and small content. Popular pastes follow a power-law, so an LRU cache of about 20% of daily reads handles most traffic. Private pastes bypass the CDN or use signed URLs. Since content never changes, there is no invalidation problem except on delete or expiry."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you implement access control and abuse prevention?",
+        "a": "Visibility levels: public, unlisted (only via link with an unguessable key) and private (owner or allowed users only, checked with authentication on read). Serve private blobs through the API or with short-lived signed URLs rather than public buckets. Prevent abuse with rate limits per IP and user, size limits, malware and spam scanning asynchronously, and a report/takedown flow. Unlisted keys must be long and random enough to resist enumeration."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What classes would you define for Tic-Tac-Toe?",
+        "a": "- Symbol enum (X, O, Empty).\n- Board: N x N grid, PlaceMove, IsFull, cell access.\n- Player: Name, Symbol (possibly a HumanPlayer/BotPlayer hierarchy).\n- Move: Row, Col, Player.\n- Game: board, players, current turn, status (InProgress, Won, Draw) and MakeMove.\n- WinningStrategy for checking a winner."
+      },
+      {
+        "level": "Basic",
+        "q": "How do you validate a move?",
+        "a": "A move is valid if the game is still in progress, it is that player's turn, the row and column are within bounds and the cell is empty. Return a result or throw a domain exception for each failure rather than silently ignoring it. After a valid move, check win and draw, then switch turn."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you check for a winner in O(1) per move?",
+        "a": "Keep counters per row, column and both diagonals: add +1 for X and -1 for O. After a move at (r, c), update rows[r], cols[c], diag if r == c and antiDiag if r + c == n - 1; if any absolute value reaches n, that player wins.\n```csharp\npublic bool Apply(int r, int c, int v) { // v = +1 or -1\n    _rows[r] += v; _cols[c] += v;\n    if (r == c) _diag += v;\n    if (r + c == _n - 1) _anti += v;\n    return Math.Abs(_rows[r]) == _n || Math.Abs(_cols[c]) == _n\n        || Math.Abs(_diag) == _n || Math.Abs(_anti) == _n;\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you support an N x N board with K-in-a-row to win?",
+        "a": "Keep the board size and win length as configuration instead of hard-coding 3. For K < N, the counter trick no longer works, so after each move scan the four directions (horizontal, vertical, two diagonals) from the placed cell and count consecutive matching symbols in both directions; this is O(K) per move. Put this behind an IWinningStrategy so the 3x3 counter version and the K-in-a-row version are interchangeable."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you add undo and a bot player?",
+        "a": "For undo, keep a Stack<Move> of history; undo pops the last move, clears the cell, reverses the win counters and switches turn back, which is the Command pattern (each Move knows how to execute and undo). For a bot, make Player abstract with a GetNextMove(Board) method; HumanPlayer reads input and BotPlayer uses a strategy (random, rule-based or minimax). Game only calls player.GetNextMove, so it does not care who is playing."
+      },
+      {
+        "level": "Advanced",
+        "q": "How does minimax work for a Tic-Tac-Toe bot, and how would you speed it up?",
+        "a": "Minimax recursively tries every empty cell, scoring terminal states +10 for a bot win, -10 for a loss and 0 for a draw; the bot maximises and the opponent minimises, so the bot picks the move with the best guaranteed outcome. For 3x3 the full tree is small (under 10! states). Speed it up with alpha-beta pruning, memoising board states in a dictionary, and subtracting depth from the score so the bot prefers faster wins."
+      }
+    ]
+  },
+  "53": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What API and requirements does a basic distributed key-value store have?",
+        "a": "API: put(key, value, ttl?), get(key) and delete(key). Requirements: horizontal scalability to terabytes, high availability, low-latency reads and writes, tunable consistency and automatic failure handling. Values are opaque bytes with a size limit (for example 1 MB). Examples in the real world are DynamoDB, Cassandra and Riak."
+      },
+      {
+        "level": "Basic",
+        "q": "How is data partitioned across nodes in a KV store?",
+        "a": "Use consistent hashing: nodes and keys are hashed onto a ring, and each key belongs to the first node clockwise. Virtual nodes (many tokens per physical node) spread load evenly and allow heterogeneous hardware. Adding or removing a node moves only the keys in the neighbouring ranges, unlike hash mod N, which reshuffles almost everything."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does replication work and what do N, R and W mean?",
+        "a": "Each key is stored on N nodes, typically the next N distinct physical nodes on the ring (its preference list). A write succeeds after W replicas acknowledge, and a read queries R replicas. If R + W > N, the read and write sets overlap so a read sees the latest acknowledged write. Common setting: N=3, W=2, R=2; W=1, R=1 favours latency and availability over consistency."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you resolve conflicting versions when replicas diverge?",
+        "a": "Simple approach: last-write-wins using timestamps, which is easy but can silently drop concurrent writes due to clock skew. Better: vector clocks, which detect whether one version supersedes another or they are concurrent; concurrent versions are returned to the client (or merged, as with CRDTs such as a counter or set) to resolve. Cassandra uses LWW per cell; Dynamo used vector clocks."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are hinted handoff and read repair?",
+        "a": "Hinted handoff: if a replica is down during a write, another healthy node accepts the write with a hint naming the intended owner, and forwards it when the owner recovers; this keeps writes available (sloppy quorum). Read repair: during a read, the coordinator compares versions from R replicas and writes the newest value back to stale replicas. Both handle short-term inconsistency; long-term divergence is fixed by anti-entropy using Merkle trees."
+      },
+      {
+        "level": "Advanced",
+        "q": "How does a single node store data efficiently for write-heavy workloads?",
+        "a": "Most KV stores use an LSM tree: writes go to an append-only commit log (for durability) and an in-memory memtable; when full, the memtable is flushed as an immutable sorted SSTable. Reads check the memtable, then SSTables from newest to oldest, using Bloom filters to skip files that cannot contain the key. Background compaction merges SSTables and drops overwritten and deleted (tombstoned) or TTL-expired keys. This gives sequential writes at the cost of read and space amplification."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What is the interface of an in-memory KV store with TTL?",
+        "a": "Get(key) returns the value or null/false if missing or expired; Put(key, value, ttl) stores a value with an optional expiry; Delete(key) removes it. Internally store an Entry(Value, ExpiresAt) in a dictionary. Make it generic (KVStore<TKey, TValue>) and put it behind an interface so it can be mocked or swapped for Redis."
+      },
+      {
+        "level": "Basic",
+        "q": "Show a basic generic KV store with lazy expiry in C#.",
+        "a": "Lazy expiry checks the timestamp on read and deletes stale entries.\n```csharp\npublic class KvStore<TKey, TValue> where TKey : notnull {\n    private record Entry(TValue Value, DateTime? ExpiresAt);\n    private readonly ConcurrentDictionary<TKey, Entry> _map = new();\n    public void Put(TKey k, TValue v, TimeSpan? ttl = null) =>\n        _map[k] = new Entry(v, ttl is null ? null : DateTime.UtcNow + ttl);\n    public bool TryGet(TKey k, out TValue? v) {\n        v = default;\n        if (!_map.TryGetValue(k, out var e)) return false;\n        if (e.ExpiresAt <= DateTime.UtcNow) { _map.TryRemove(k, out _); return false; }\n        v = e.Value; return true;\n    }\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "Lazy vs active expiry - what is the difference and why use both?",
+        "a": "Lazy expiry removes a key only when it is accessed and found expired; it costs nothing for untouched keys but expired keys that are never read leak memory. Active expiry uses a background timer that periodically samples or scans keys and removes expired ones. Redis combines both: lazy checks on access plus a periodic job that samples random keys with TTLs. Use both to keep reads correct and memory bounded."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you make active expiry efficient instead of scanning every key?",
+        "a": "Keep a min-heap (PriorityQueue<TKey, DateTime> in .NET 6+) ordered by expiry time; the cleaner pops entries while the top is expired. Because a key may be overwritten with a new TTL, verify the heap entry's expiry still matches the current entry before deleting (or store a version). Alternatives are a timing wheel of buckets per second, or Redis-style random sampling, which avoids extra memory."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you ensure thread safety for Put, Get and the background cleaner?",
+        "a": "ConcurrentDictionary makes single operations atomic, but compound actions like check-expiry-then-remove can race with a concurrent Put. Use the TryRemove(KeyValuePair) overload so you only remove the exact stale entry you saw, or use a ReaderWriterLockSlim around compound operations. The cleaner runs on a PeriodicTimer or Timer and must not hold locks for long; process in small batches. Inject a clock (TimeProvider or IClock) so expiry is testable."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you add capacity limits, eviction and persistence to this store?",
+        "a": "Add a max size and an eviction policy behind an IEvictionPolicy (LRU using a dictionary plus a linked list, LFU using frequency buckets), notified on every access and insert. For persistence, either take periodic snapshots (serialize the map, like Redis RDB) or append every write to a log (like AOF) and replay it on startup, possibly compacted. Also consider transactions (compare-and-set via a version) and eviction callbacks for observers."
+      }
+    ]
+  },
+  "54": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: explain cache-aside, read-through, write-through and write-behind.",
+        "a": "- Cache-aside: app checks cache, on miss reads DB and fills the cache; most common, app owns the logic.\n- Read-through: the cache itself loads from the DB on a miss.\n- Write-through: writes go to cache and DB synchronously; consistent but slower writes.\n- Write-behind: write to cache and flush to DB asynchronously; fast but risks data loss.\n- Write-around: write only to DB and let reads populate the cache."
+      },
+      {
+        "level": "Basic",
+        "q": "What is a CDN and what content should go through it?",
+        "a": "A CDN is a network of edge servers that cache content close to users, cutting latency and origin load. Static assets (JS, CSS, images, video) and cacheable public API responses belong there, controlled by Cache-Control headers and TTLs. Personalised or private data should not be cached at the edge unless the cache key includes the user or you use signed URLs. Azure Front Door and Azure CDN map to AWS CloudFront."
+      },
+      {
+        "level": "Intermediate",
+        "q": "In cache-aside, should you update or delete the cache on writes, and why?",
+        "a": "Delete (invalidate) after writing to the DB. Updating the cache can leave a stale value if two writers race and their cache updates land out of order, and it wastes work for keys that are never read again. With delete, the next read reloads the fresh value. A small race remains (a reader loads an old value just before the delete finishes), so add TTLs as a safety net or use delayed double delete."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you invalidate CDN content when it changes?",
+        "a": "Prefer versioned (fingerprinted) URLs such as app.3f9a1c.js with a long max-age and immutable, so a deploy changes the URL and no purge is needed. For content with stable URLs, use shorter TTLs, stale-while-revalidate, or explicit purge APIs (Front Door purge, CloudFront invalidation), which are slower and sometimes billed. Tag-based purge (surrogate keys) lets you invalidate groups of objects together."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are cache stampede, penetration and avalanche, and how do you prevent each?",
+        "a": "- Stampede (thundering herd): a hot key expires and many requests hit the DB at once; fix with a per-key lock or single-flight, early probabilistic refresh, or serving stale while one request refreshes.\n- Penetration: repeated requests for keys that do not exist; cache null results with short TTLs or use a Bloom filter.\n- Avalanche: many keys expire together or the cache node dies; add random jitter to TTLs and use replicated caches with circuit breakers."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you design caching for a read-heavy product catalogue in .NET on Azure?",
+        "a": "Layer it: Front Door or CDN for images and anonymous cacheable GET responses; Azure Cache for Redis as a distributed cache-aside layer for product details (keys like product:{id}:v{version}); and a small in-process IMemoryCache for ultra-hot data with short TTLs (or HybridCache in .NET 9 that combines both with stampede protection). When a product changes, publish an event that deletes the Redis key and, if needed, purges the CDN path. Monitor hit ratio, evictions and latency."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what data structures does an LRU cache use and why?",
+        "a": "A Dictionary<TKey, LinkedListNode<Entry>> for O(1) lookup, plus a doubly linked list ordered by recency (most recent at the head). On get, move the node to the head; on put, insert at the head and, if over capacity, remove the tail node and its dictionary entry. Both operations are O(1)."
+      },
+      {
+        "level": "Basic",
+        "q": "Why must the linked list store the key as well as the value?",
+        "a": "When evicting the tail node, you need its key to remove the corresponding entry from the dictionary. Without the key in the node you would have to search the dictionary, which is O(n). This is a very common bug in interviews."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Write the core of an LRU cache in C# using LinkedList.",
+        "a": "Dictionary for lookup, LinkedList for recency order.\n```csharp\npublic class LruCache<K, V> where K : notnull {\n    private readonly int _cap;\n    private readonly Dictionary<K, LinkedListNode<(K Key, V Val)>> _map = new();\n    private readonly LinkedList<(K Key, V Val)> _list = new();\n    public LruCache(int cap) => _cap = cap;\n    public bool TryGet(K k, out V v) {\n        v = default!; if (!_map.TryGetValue(k, out var n)) return false;\n        _list.Remove(n); _list.AddFirst(n); v = n.Value.Val; return true;\n    }\n    // Put: if exists remove old node; AddFirst; if Count > _cap remove _list.Last and its key.\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you handle Put when the key already exists?",
+        "a": "Update the value and move the node to the head; the size does not change, so no eviction is needed. With value tuples in LinkedListNode you can assign node.Value = (k, newValue) since the node's Value property is settable, then move it. Forgetting to move it to the head (so an updated key gets evicted early) is a common mistake."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you make the LRU cache thread-safe, and why does ConcurrentDictionary alone not solve it?",
+        "a": "Every get mutates the linked list (moving a node), so reads are writes, and the dictionary and list must be updated together atomically. ConcurrentDictionary protects only the map, not the list or the combined invariant. The simple correct solution is a single lock around get and put. For high concurrency, shard the cache into N independent LRU segments by key hash, each with its own lock, or use approximate LRU with access buffers (as Caffeine does)."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you add TTL to the LRU cache, and how does LRU compare to LFU?",
+        "a": "Store ExpiresAt in each node and check it on get (lazy expiry), treating an expired entry as a miss and removing it; optionally a background sweep removes expired tail items. LRU evicts the least recently used and adapts quickly to changing patterns but is hurt by one-off scans that flush hot items. LFU evicts the least frequently used and keeps long-term popular items but reacts slowly and needs ageing. Hybrids like W-TinyLFU combine both."
+      }
+    ]
+  },
+  "55": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the core components of a web crawler?",
+        "a": "- Seed URLs and a URL frontier (queue of URLs to crawl, with priority and politeness).\n- DNS resolver cache.\n- Fetchers (HTTP download workers).\n- Parser/extractor: pulls links and content.\n- Dedupe: seen-URL set and content fingerprinting.\n- Content storage (object store) and metadata DB.\nNew links are normalised, filtered and fed back into the frontier."
+      },
+      {
+        "level": "Basic",
+        "q": "Why is BFS usually preferred over DFS for crawling?",
+        "a": "BFS discovers pages close to the seeds first, which tend to be more important and gives broad coverage early. DFS can go very deep into one site (and into infinite calendars or spider traps) before seeing the rest of the web. In practice the frontier is a prioritised BFS, where priority reflects PageRank-like importance and freshness."
+      },
+      {
+        "level": "Intermediate",
+        "q": "What does politeness mean and how does the URL frontier enforce it?",
+        "a": "Politeness means not overwhelming any single host: obey robots.txt rules and Crawl-delay, keep one connection or a few per host, and wait between requests. The frontier has front queues by priority and back queues by host; each back queue maps to one host and a worker only takes from a host after its next-allowed time (a min-heap of host ready times). robots.txt is fetched and cached per domain before crawling."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you detect duplicate URLs and duplicate content?",
+        "a": "Normalise URLs first (lowercase host, remove fragments, sort query parameters, resolve relative paths) and check a seen-URL set; at billions of URLs, use a Bloom filter or a distributed KV set of URL hashes. For content, compute a hash (for example SHA-256) of the page to catch exact copies, and SimHash or MinHash to catch near-duplicates like pages that differ only in ads or timestamps."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you scale the crawler to billions of pages?",
+        "a": "Partition the frontier and seen-set by hostname hash so each crawler node owns a set of hosts, which keeps politeness local and avoids cross-node coordination. Fetchers are async and I/O-bound (thousands of concurrent requests per node), with a local DNS cache. Store raw pages in object storage and push them to parsers via a queue. Estimate: 1B pages/month is about 400 pages/sec, x 100 KB = 40 MB/sec, about 100 TB/month."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you handle spider traps, failures and recrawling for freshness?",
+        "a": "Spider traps (infinite calendars, session IDs in URLs) are limited by max URL length, max depth per site, max pages per host and pattern blacklists. Failed fetches are retried with backoff and hosts with repeated errors are deprioritised. For freshness, schedule recrawls based on each page's observed change rate and importance, and use conditional requests (If-Modified-Since, ETag) to avoid downloading unchanged pages."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What does a cache with pluggable eviction look like at a class level?",
+        "a": "A Cache<K, V> class owns the storage (a dictionary) and capacity, and delegates the decision of which key to evict to an IEvictionPolicy<K>. The cache calls policy.KeyAccessed(key) on get and put, and policy.Evict() when full to get the victim key. LruPolicy and LfuPolicy implement the interface, and the policy is injected through the constructor."
+      },
+      {
+        "level": "Basic",
+        "q": "Which design pattern is this and what principle does it follow?",
+        "a": "It is the Strategy pattern: the eviction algorithm is a family of interchangeable behaviours selected at runtime. It follows the Open/Closed principle (add FifoPolicy without modifying Cache), Single Responsibility (storage vs eviction decision) and Dependency Inversion (Cache depends on an abstraction). It also makes each policy independently unit-testable."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show the eviction policy interface and how the cache uses it.",
+        "a": "The cache never knows which policy it is using.\n```csharp\npublic interface IEvictionPolicy<K> {\n    void KeyAccessed(K key);\n    void KeyRemoved(K key);\n    K Evict();\n}\npublic void Put(K key, V value) {\n    if (!_store.ContainsKey(key) && _store.Count >= _capacity)\n        _store.Remove(_policy.Evict());\n    _store[key] = value;\n    _policy.KeyAccessed(key);\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you implement LFU in O(1)?",
+        "a": "Keep three maps: key to (value, freq), freq to an ordered set of keys (a LinkedList per frequency, most recent last, for LRU tie-breaking), and track minFreq. On access, move the key from list[freq] to list[freq + 1], and if list[minFreq] becomes empty and freq == minFreq, increment minFreq. On insert, freq = 1 and minFreq = 1. Evict the first key of list[minFreq]. Each step is O(1)."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you let a user choose the policy via configuration in ASP.NET Core?",
+        "a": "Register a factory that reads options and returns the matching policy, then inject the cache.\n- Bind CacheOptions { Capacity, Policy = \"LRU\" } from appsettings.\n- services.AddSingleton<IEvictionPolicy<string>>(sp => factory.Create(options.Policy)).\n- Register Cache<string, V> as a singleton that takes the policy.\nAlternatively use keyed services in .NET 8 (AddKeyedSingleton) and resolve by name. A dictionary of name to Func<IEvictionPolicy> avoids a growing switch statement."
+      },
+      {
+        "level": "Advanced",
+        "q": "What are the edge cases and trade-offs of separating storage and eviction policy?",
+        "a": "The two structures must stay in sync: updating an existing key must not trigger eviction, deletes must call policy.KeyRemoved, and expired entries must be removed from both. Thread safety must cover both together, usually with one lock in Cache since the policy is not thread-safe itself. The extra indirection and duplicate key storage cost some memory and speed compared with a fused LRU. Consider an eviction listener (Observer) so callers can react to evicted items."
+      }
+    ]
+  },
+  "56": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what are the key components of a notification system v2?",
+        "a": "Notification API, preference and quiet-hours service, template service, priority queues per channel, channel workers calling providers, retry with backoff plus DLQ, per-user and per-provider rate limits and a notification log for dedupe and tracking. OTPs and transactional messages take a high-priority path that bypasses marketing limits."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what are the numbers you should always carry into an estimation?",
+        "a": "1 day is about 100k seconds; 1M/day is about 12 QPS; peak is 2-3x average; storage = daily writes x size x retention x replication; bandwidth = QPS x payload. One app node handles roughly 1k-5k QPS, one Redis node about 100k ops/sec, one relational primary a few thousand writes/sec. Always state assumptions first."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: summarise the Pastebin design.",
+        "a": "Write once, read many: metadata (key, owner, expiry, visibility, blob pointer) in a DB and content in object storage. Keys are random base62 or from a key generation service. Reads go through CDN and Redis since content is immutable. Expiry is checked on read and cleaned up by background jobs and blob lifecycle rules; private pastes use auth and signed URLs."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: redraw the key-value store design in words.",
+        "a": "Client -> coordinator node -> consistent-hash ring with virtual nodes -> N replicas per key. Quorum reads and writes with R + W > N for strong consistency. Conflicts resolved by LWW or vector clocks. Failures handled with sloppy quorum and hinted handoff, read repair and Merkle-tree anti-entropy; membership via gossip. Each node stores data in an LSM tree with commit log, memtable, SSTables, Bloom filters and compaction."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: redraw the web crawler design in words.",
+        "a": "Seed URLs -> URL frontier (priority front queues, per-host back queues for politeness) -> async fetchers with DNS cache and robots.txt cache -> content stored in object storage -> parser extracts links -> URL normaliser and seen-set (Bloom filter) -> back into the frontier. Content dedupe by hash or SimHash. Scale by partitioning hosts across nodes; guard against spider traps with depth and per-host limits."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: which weak spots are common in Phase 3 HLD topics, and how do you fix them?",
+        "a": "- Forgetting to justify the storage choice from estimates: always tie numbers to decisions.\n- Hand-waving consistency: be ready to explain R + W > N and what happens when a replica is down.\n- Missing failure paths: retries, DLQs, idempotency keys.\n- Ignoring caching stampede and invalidation.\nFix by whiteboarding each design in 25 minutes and explaining it out loud end to end."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what does an in-memory KV store with TTL need?",
+        "a": "A dictionary of key to Entry(Value, ExpiresAt), Get/Put/Delete, lazy expiry on read, active expiry via a background timer with a min-heap or sampling, thread safety (ConcurrentDictionary plus care on compound operations) and an injectable clock for tests."
+      },
+      {
+        "level": "Basic",
+        "q": "Rapid fire: what is the difference between LRU, LFU and FIFO eviction?",
+        "a": "- FIFO evicts the oldest inserted key regardless of use; simple but ignores popularity.\n- LRU evicts the least recently accessed key; good for recency-driven workloads.\n- LFU evicts the least frequently accessed key; keeps long-term hot items but needs ageing to avoid stale favourites.\nAll can be implemented in O(1)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: how does the Strategy pattern help cache eviction?",
+        "a": "The cache delegates victim selection to IEvictionPolicy, so policies are swappable at runtime or via configuration without modifying the cache class. Each policy is unit-testable on its own, and new policies (FIFO, random, TinyLFU) are added by writing a new class, satisfying Open/Closed."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Rapid fire: how do you remove the expired entry safely without racing with a concurrent Put?",
+        "a": "Remove only if the value is still the exact entry you observed as expired, using ConcurrentDictionary's conditional removal.\n```csharp\nif (_map.TryGetValue(key, out var e) && e.ExpiresAt <= _clock.UtcNow)\n{\n    // removes only if the entry was not replaced meanwhile\n    ((ICollection<KeyValuePair<K, Entry>>)_map).Remove(new(key, e));\n}\n```\nIn .NET 5+ you can call _map.TryRemove(new KeyValuePair<K, Entry>(key, e))."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: what are common bugs in LRU and LFU implementations?",
+        "a": "- Not storing the key in the list node, so eviction cannot clean the map.\n- Updating an existing key without moving it to the head, or evicting on update.\n- In LFU, forgetting to update minFreq when a frequency bucket empties, or resetting it wrongly on insert (it should be 1).\n- Capacity 0 not handled.\n- Not locking the map and list together."
+      },
+      {
+        "level": "Advanced",
+        "q": "Rapid fire: how would you combine TTL, eviction and thread safety in one cache design?",
+        "a": "Cache<K, V> holds a dictionary of entries with ExpiresAt, an injected IEvictionPolicy and an IClock, all guarded by a single lock (or striped locks by key hash). Get checks expiry first (expired = remove from both map and policy, return miss), then notifies the policy. Put evicts via the policy only when inserting a new key at capacity. A background PeriodicTimer sweeps expired entries in small batches, and an eviction callback reports removals."
+      }
+    ]
+  },
+  "57": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "Why do you need a distributed rate limiter instead of an in-memory one per server?",
+        "a": "With N app instances behind a load balancer, an in-memory limiter lets a client make N times the allowed requests, and limits reset when instances restart or scale. A shared store like Redis gives one global counter per client, so limits are accurate regardless of which instance serves the request. Redis is fast (sub-millisecond) and supports atomic operations and TTLs."
+      },
+      {
+        "level": "Basic",
+        "q": "How does a fixed-window rate limiter work with Redis INCR?",
+        "a": "Key = rate:{clientId}:{windowStart}, for example per minute. For each request, INCR the key; if the result is 1, set EXPIRE for the window length; if the count exceeds the limit, reject with 429 and a Retry-After header. It is simple and cheap, but allows up to 2x the limit in bursts across a window boundary (end of one minute plus the start of the next)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do sliding window log and sliding window counter differ in Redis?",
+        "a": "- Sliding log: store each request timestamp in a sorted set (ZADD), remove entries older than the window (ZREMRANGEBYSCORE), and count with ZCARD; exact but memory grows with requests per client.\n- Sliding window counter: keep counters for the current and previous fixed windows and estimate count = current + previous x (overlap fraction); O(1) memory and accurate enough in practice (Cloudflare uses this)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Why do you need Lua scripts (or MULTI) for rate limiting in Redis?",
+        "a": "A rate check is read-check-write: get the count, compare with the limit, then increment. If done in separate commands, two concurrent requests can both read 99 and both pass a limit of 100. A Lua script runs atomically on the Redis server, so the whole check-and-update happens as one operation and also saves network round trips. INCR alone is atomic, but anything with a conditional or multiple keys (sliding log, token bucket) needs Lua."
+      },
+      {
+        "level": "Advanced",
+        "q": "What does fail open vs fail closed mean and which would you choose?",
+        "a": "If Redis is unavailable, fail open allows all requests (availability first, no protection), and fail closed rejects them (protection first, but an outage of the limiter becomes an outage of the API). For most user-facing APIs, fail open with a short timeout and a local in-memory fallback limiter per instance, plus alerts. For security-critical endpoints like login or OTP attempts, or to protect a fragile downstream, fail closed. Wrap Redis calls with a circuit breaker (Polly) so a slow Redis does not add latency."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you implement a token bucket in Redis and scale it for very high traffic?",
+        "a": "Store tokens and lastRefill in a hash per client; a Lua script computes refill = elapsed x rate, caps at capacity, and decrements if at least one token is available, all atomically, with a TTL to clean idle keys. Use Redis server time (TIME) rather than app clocks to avoid skew. To scale, shard keys across a Redis Cluster (hash tags keep one client's keys on one shard), and for extreme QPS combine a local per-instance bucket with periodic sync to Redis, accepting slight inaccuracy. Return X-RateLimit-Remaining headers."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What is the sliding window log algorithm and how does it differ from fixed window?",
+        "a": "Sliding window log keeps the timestamps of requests in the last window and allows a request only if the count in the window [now - window, now] is below the limit. Unlike fixed windows, the window moves with each request, so there is no boundary burst. The cost is storing one timestamp per request per client."
+      },
+      {
+        "level": "Basic",
+        "q": "How do you design the rate limiter so new algorithms can be added?",
+        "a": "Define an IRateLimiter interface with bool TryAcquire(string clientId) (or a result with retry-after), and implement FixedWindowLimiter, SlidingWindowLogLimiter, SlidingWindowCounterLimiter and TokenBucketLimiter. A factory or DI picks the implementation from configuration. Middleware depends only on the interface, following Strategy and Open/Closed. Note .NET 7+ has System.Threading.RateLimiting with SlidingWindowRateLimiter built in."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Implement a sliding window log limiter for one client in C#.",
+        "a": "A queue of timestamps is trimmed on each call; the lock keeps trim-check-add atomic.\n```csharp\npublic class SlidingWindowLog {\n    private readonly Queue<DateTime> _hits = new();\n    private readonly int _limit; private readonly TimeSpan _window;\n    public SlidingWindowLog(int limit, TimeSpan window) { _limit = limit; _window = window; }\n    public bool TryAcquire(DateTime now) {\n        lock (_hits) {\n            while (_hits.Count > 0 && now - _hits.Peek() >= _window) _hits.Dequeue();\n            if (_hits.Count >= _limit) return false;\n            _hits.Enqueue(now); return true;\n        }\n    }\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you implement the sliding window counter approximation?",
+        "a": "Keep counts for the current fixed window and the previous one. On each request compute weight = 1 - (elapsed in current window / window length) and estimated = current + previous x weight; allow if estimated < limit, then increment current. When a new window starts, previous = current (or 0 if more than one window passed) and current = 0. It uses O(1) memory per client instead of a timestamp per request."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you manage per-client limiter instances and prevent memory leaks?",
+        "a": "Store limiters in a ConcurrentDictionary<string, SlidingWindowLog> using GetOrAdd(clientId, _ => new SlidingWindowLog(...)). Idle clients would accumulate forever, so track last access time and remove idle entries with a periodic cleanup, or use MemoryCache with sliding expiration. Limits can differ per tier (free vs premium), so a policy lookup supplies limit and window per client. Inject a clock so tests can move time deterministically."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you unit test a sliding window limiter, including edge cases?",
+        "a": "Inject a fake clock (TimeProvider in .NET 8, or an IClock) so time is controlled. Test: requests up to the limit pass and the next one fails; after the window moves past the oldest request exactly one more request is allowed; requests exactly at the window boundary are handled consistently (>= vs >); different clients do not affect each other. Add a concurrency test with Parallel.For asserting exactly limit successes out of many simultaneous calls."
+      }
+    ]
+  },
+  "58": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the main components of a distributed job scheduler?",
+        "a": "- API to create, update, cancel and query jobs (one-off, delayed or cron).\n- Job store: job definitions and execution records (DB).\n- Scheduler/dispatcher: finds due jobs and puts them on a queue.\n- Workers: pull from the queue, execute and report status.\n- Retry, dead-letter handling and monitoring.\nExamples: Quartz.NET, Hangfire, Azure Functions timer triggers, AWS EventBridge Scheduler."
+      },
+      {
+        "level": "Basic",
+        "q": "How does the dispatcher efficiently find jobs that are due?",
+        "a": "Index jobs by next_run_time and status, and have the dispatcher poll every few seconds: SELECT due jobs WHERE next_run_time <= now AND status = 'Scheduled' LIMIT batch. For cron jobs, compute the next run time after each execution and update it. At larger scale, partition jobs by hash across dispatcher instances, or keep near-term jobs in a Redis sorted set scored by run time and pop due entries."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How do you prevent two dispatchers or workers from running the same job?",
+        "a": "Claim jobs atomically: UPDATE jobs SET status='Running', owner=@me, lease_until=now+5m WHERE id=@id AND status='Scheduled', and only proceed if one row was updated; in SQL Server or Postgres use SELECT ... FOR UPDATE SKIP LOCKED to grab batches without blocking. The lease means if a worker dies, the job becomes claimable again after lease_until. Workers renew the lease for long jobs (heartbeat)."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Why are jobs executed 'exactly-once-ish' and how do idempotent jobs help?",
+        "a": "A worker can finish the job but crash before marking it complete, so the lease expires and another worker reruns it; true exactly-once is impossible, so the system delivers at-least-once. Make jobs idempotent: use an execution ID as an idempotency key, check whether the side effect already happened (for example 'invoice for period X exists'), or use upserts. Combined with leases this gives effectively-once outcomes."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you design retries, backoff and dead letters for failed jobs?",
+        "a": "Each job has maxAttempts and a retry policy; on failure, increment attempts and set next_run_time = now + base x 2^attempt plus jitter, so a failing dependency is not hammered. Distinguish transient errors (retry) from permanent ones (fail immediately). After maxAttempts, move the job to a dead-letter state or queue with the error and stack trace, alert, and allow manual replay from an admin UI. Record every attempt in an execution history table."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you scale the scheduler to millions of jobs per hour with high availability?",
+        "a": "Separate scheduling from execution: dispatchers only move due jobs to a durable queue (Service Bus, Kafka, SQS), and a large autoscaled worker pool consumes it. Partition the job table by hash of job ID and assign partitions to dispatchers via leader election or a lease per partition, so there is no single point of failure and no duplicate scanning. Use separate queues for priorities and job types so long jobs do not starve short ones. Avoid the 'midnight spike' by adding jitter to cron schedules."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the core classes in a task scheduler LLD?",
+        "a": "- ITask/ICommand: Execute() for the work.\n- ScheduledTask: wraps the command with Id, RunAt, Priority, recurrence interval and retry count.\n- TaskScheduler: Schedule(task), Cancel(id), and a run loop.\n- A priority queue ordered by RunAt then Priority.\n- Worker threads or a Task-based executor pool."
+      },
+      {
+        "level": "Basic",
+        "q": "Why is the Command pattern a good fit for a task scheduler?",
+        "a": "The Command pattern wraps a request as an object, so the scheduler can store, queue, delay, retry, log and cancel work without knowing what the work does. Adding a new kind of task is a new ICommand class, not a change to the scheduler. Commands can also carry an Undo method or metadata like a name for logging."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show the Command and the priority queue usage in C#.",
+        "a": "PriorityQueue in .NET 6+ is a min-heap keyed by priority, here the run time.\n```csharp\npublic interface ICommand { Task ExecuteAsync(CancellationToken ct); }\npublic record ScheduledTask(Guid Id, ICommand Command, DateTime RunAt, int Priority);\n\nprivate readonly PriorityQueue<ScheduledTask, (DateTime, int)> _queue = new();\npublic void Schedule(ScheduledTask t) {\n    lock (_queue) _queue.Enqueue(t, (t.RunAt, t.Priority));\n    _signal.Release(); // wake the run loop\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does the scheduler loop wait for the next task without busy-waiting?",
+        "a": "Peek the earliest task; if the queue is empty, wait on a signal (SemaphoreSlim or Channel) until a task is scheduled. If the next task is in the future, wait for the smaller of (RunAt - now) or a new-task signal, because a newly scheduled task may be earlier than the current head. When due, dequeue it and hand it to a worker pool (limited by SemaphoreSlim for concurrency) so a slow task does not block the loop. Avoid Thread.Sleep polling."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you support recurring tasks, cancellation and retries?",
+        "a": "- Recurring: after executing, compute the next RunAt (fixed interval or cron) and re-enqueue a new ScheduledTask.\n- Cancellation: PriorityQueue has no efficient remove, so keep a HashSet of cancelled IDs and skip them when dequeued (lazy deletion), and pass a CancellationToken to running commands.\n- Retries: catch exceptions, increment attempts and re-enqueue with RunAt = now + backoff; after max attempts send to a failed list."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you make the scheduler thread-safe and shut it down gracefully?",
+        "a": "All queue access happens under one lock (or only the single run loop touches the queue while producers write to a Channel). Workers run on a bounded pool, and shared state like cancelled IDs uses concurrent collections. For shutdown, cancel a root CancellationTokenSource, stop accepting new tasks, let the loop exit and await in-flight tasks with a timeout. In ASP.NET Core, host it as a BackgroundService so StopAsync is called by the host."
+      }
+    ]
+  },
+  "59": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What does an event-driven order system look like at a high level?",
+        "a": "The Order service stores the order and publishes OrderCreated to a broker (Kafka, Service Bus). Payment, Inventory and Shipping services subscribe, do their part and publish their own events (PaymentCompleted, StockReserved, ShipmentCreated), and the order status updates as events arrive. Services are decoupled, scale independently and continue working when one is temporarily down, at the cost of eventual consistency."
+      },
+      {
+        "level": "Basic",
+        "q": "What is the difference between events and commands?",
+        "a": "An event is a fact that already happened (OrderPlaced), named in the past tense, published to any number of subscribers that the publisher does not know. A command is a request to do something (ReserveStock), sent to one specific handler that can accept or reject it. Using events reduces coupling; commands are useful when a coordinator needs a specific service to act."
+      },
+      {
+        "level": "Intermediate",
+        "q": "What is the Saga pattern and why is it needed?",
+        "a": "A distributed transaction across Order, Payment and Inventory databases cannot use a single ACID transaction (2PC is slow and fragile). A saga breaks it into local transactions, each publishing an event that triggers the next step. If a step fails, previously completed steps are undone by compensating transactions, such as refunding the payment and releasing stock when shipping fails. The result is eventual consistency with explicit failure handling."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Choreography vs orchestration sagas - what are the trade-offs?",
+        "a": "- Choreography: each service listens to events and reacts; no central coordinator, loose coupling, good for 2-4 steps, but the flow is hard to see and debug and cyclic dependencies can appear.\n- Orchestration: a saga orchestrator (for example Durable Functions, MassTransit state machine, Temporal) sends commands and tracks state; the flow is explicit and easier to monitor and change, but the orchestrator is another component to build and scale."
+      },
+      {
+        "level": "Advanced",
+        "q": "What is the outbox pattern and what problem does it solve?",
+        "a": "The dual-write problem: saving the order to the DB and publishing to the broker are two systems, so a crash between them loses the event or publishes an event for a rolled-back order. With an outbox, the service writes the order and an outbox row in the same local DB transaction; a relay process (polling or CDC like Debezium) reads unpublished outbox rows, publishes them and marks them sent. This gives at-least-once publishing, so consumers must be idempotent."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you make consumers idempotent and handle ordering in this system?",
+        "a": "Consumers store processed message IDs (an inbox table) in the same transaction as their side effects and skip duplicates; alternatively make the operation naturally idempotent with upserts or conditional updates like 'set status Paid where status = Pending'. For ordering, partition by orderId (Kafka key or Service Bus sessions) so all events of one order are processed in order by one consumer. Out-of-order or late events are handled by checking the current state or a version before applying, and poison messages go to a DLQ."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What are the states of an order and valid transitions?",
+        "a": "Typical states: Created, Paid, Shipped, Delivered, Cancelled, and possibly Returned or Refunded. Valid transitions: Created -> Paid or Cancelled; Paid -> Shipped or Cancelled (with refund); Shipped -> Delivered; Delivered -> Returned. Anything else, such as shipping a cancelled order, must be rejected. Draw the state diagram first in an interview."
+      },
+      {
+        "level": "Basic",
+        "q": "Why use the State pattern instead of a status enum with switch statements?",
+        "a": "With an enum, every operation (Pay, Ship, Cancel) needs a switch over all states, so adding a state means editing many methods, and rules are scattered. The State pattern puts each state's behaviour in its own class, so each class only defines what is legal in that state and new states are added by new classes (Open/Closed). For very simple flows an enum with a transition table is acceptable; mention the trade-off."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show the State pattern for an order in C#.",
+        "a": "The Order delegates to its current state; each state decides the transition.\n```csharp\npublic abstract class OrderState {\n    public virtual void Pay(Order o) => throw new InvalidOperationException($\"Cannot pay in {GetType().Name}\");\n    public virtual void Ship(Order o) => throw new InvalidOperationException($\"Cannot ship in {GetType().Name}\");\n    public virtual void Cancel(Order o) => throw new InvalidOperationException($\"Cannot cancel in {GetType().Name}\");\n}\npublic class CreatedState : OrderState {\n    public override void Pay(Order o) => o.SetState(new PaidState());\n    public override void Cancel(Order o) => o.SetState(new CancelledState());\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "Who should own the transition - the state classes or the context?",
+        "a": "Either works. If states set the next state (as above), transitions are local and easy to add, but states know about each other. If the context (Order) or a transition table decides, states stay independent and all transitions are visible in one place, which is easier to audit. In interviews, letting states decide is the classic GoF form; keep SetState internal so outside code cannot jump states."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you persist an order whose state is an object?",
+        "a": "Persist a Status enum or string column, not the state object; map it back to the state class on load with a factory (Status -> OrderState instance). State classes are usually stateless, so they can be singletons (static instances) to avoid allocations. Store a state history table (from, to, timestamp, reason) for auditing, and use optimistic concurrency (a version column) so two concurrent transitions such as Ship and Cancel cannot both succeed."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you add side effects like notifications and refunds on state changes cleanly?",
+        "a": "Do not put email or payment calls directly in state classes. Raise domain events from the context (Order.SetState records an OrderStateChanged event with from/to), and handlers subscribed to those events send notifications, trigger refunds when Paid -> Cancelled, or write to the outbox. This keeps states focused on rules, makes side effects testable, and fits Observer or MediatR notifications in .NET."
+      }
+    ]
+  },
+  "60": {
+    "hld": [
+      {
+        "level": "Basic",
+        "q": "What are the core requirements and components of a basic Dropbox?",
+        "a": "Requirements: upload and download files, sync across devices, share files, keep version history, handle large files and offline edits. Components: desktop/mobile client with a local watcher and chunker, a block service storing file chunks in object storage, a metadata service and DB (files, versions, chunk lists, users, devices), a notification service to tell other devices about changes, and a CDN for downloads."
+      },
+      {
+        "level": "Basic",
+        "q": "Why split files into chunks?",
+        "a": "Chunking (for example 4 MB blocks) enables resumable uploads, since only failed chunks are retried, parallel upload and download, and delta sync, where editing part of a file uploads only changed chunks. It also enables deduplication, because identical chunks across files or users are stored once. A file becomes an ordered list of chunk hashes in metadata."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Why keep metadata and block storage separate?",
+        "a": "They have different access patterns: metadata is small, relational and transactional (folders, versions, permissions, which chunks form a file) and needs strong consistency, so it fits SQL (sharded by user or namespace). Blocks are large, immutable and content-addressed by hash, which suits cheap, durable object storage (S3, Azure Blob). Separating them lets each scale independently, and clients can upload blocks directly with pre-signed URLs."
+      },
+      {
+        "level": "Intermediate",
+        "q": "How does the sync flow work when a file changes on one device?",
+        "a": "The client watcher detects the change, chunks the file and hashes chunks; it asks the server which hashes are missing, uploads only those, then commits a new file version with the chunk list to the metadata service. The metadata service increments the version and notifies the user's other devices via long polling or WebSockets. Those devices fetch the new metadata, download missing chunks and reassemble the file locally."
+      },
+      {
+        "level": "Advanced",
+        "q": "How does deduplication work and what are its risks?",
+        "a": "Each chunk is identified by a strong hash (SHA-256); before uploading, the client asks whether the hash already exists, and if so only a reference is added. Block storage keeps a reference count so chunks are deleted only when no version uses them. Cross-user dedupe saves storage but leaks information (a user can test whether someone else has a file) and needs proof of ownership, so many systems dedupe only within a user's account. Encryption with per-user keys also limits cross-user dedupe."
+      },
+      {
+        "level": "Advanced",
+        "q": "How do you resolve conflicts when the same file is edited on two devices offline?",
+        "a": "Each commit includes the base version the client started from. The metadata service accepts a commit only if the base version matches the current version (optimistic concurrency); the first commit wins. The losing client gets a conflict and saves its version as a separate 'conflicted copy' file, so no data is lost and the user merges manually. Automatic merging is only safe for specific formats; for general files Dropbox-style conflicted copies are the standard answer. Vector clocks per device can detect concurrency more precisely."
+      }
+    ],
+    "lld": [
+      {
+        "level": "Basic",
+        "q": "What is the Composite pattern?",
+        "a": "Composite lets you treat individual objects and groups of objects uniformly through a common interface, forming a tree. Leaves (File) and composites (Directory) both implement the same component (FileSystemNode), and a directory contains child nodes that may themselves be directories. Clients call GetSize() or Print() without checking the type."
+      },
+      {
+        "level": "Basic",
+        "q": "Why is a file system a natural fit for Composite?",
+        "a": "A file system is a tree where directories contain files and other directories, and many operations are recursive: total size, search, delete, list and permissions. With Composite, Directory.GetSize() simply sums its children's GetSize(), and the recursion handles any depth. Adding a new node type, such as a Symlink, means adding a new class rather than changing all the recursive code."
+      },
+      {
+        "level": "Intermediate",
+        "q": "Show the Composite classes for a file system in C#.",
+        "a": "Both files and directories are nodes; the directory delegates to children.\n```csharp\npublic abstract class FsNode(string name) {\n    public string Name { get; } = name;\n    public abstract long GetSize();\n}\npublic class FileNode(string name, long size) : FsNode(name) {\n    public override long GetSize() => size;\n}\npublic class DirectoryNode(string name) : FsNode(name) {\n    private readonly Dictionary<string, FsNode> _children = new();\n    public void Add(FsNode n) => _children.Add(n.Name, n);\n    public override long GetSize() => _children.Values.Sum(c => c.GetSize());\n}\n```"
+      },
+      {
+        "level": "Intermediate",
+        "q": "How would you implement path resolution like /home/user/docs and mkdir -p?",
+        "a": "Split the path by '/', start from the root and walk children by name using the directory's Dictionary<string, FsNode> for O(1) lookup per segment. If a segment is missing or is a file where a directory is expected, throw or return null. For mkdir -p, create missing directories as you walk. Keep a Parent reference on each node to support '..', relative paths and computing a node's full path."
+      },
+      {
+        "level": "Advanced",
+        "q": "Where should child-management methods like Add and Remove live - in the base component or only in Directory?",
+        "a": "This is the classic Composite trade-off. Putting Add/Remove on the base gives full transparency (clients treat all nodes the same) but File must throw NotSupportedException, which violates Liskov. Putting them only on Directory is safer and type-checked but clients sometimes need to type-check. Most interviewers prefer the safe version: common operations (Name, GetSize, Delete) on the base, child management only on Directory."
+      },
+      {
+        "level": "Advanced",
+        "q": "How would you add search, permissions and other operations without bloating the node classes?",
+        "a": "Use the Visitor pattern: FsNode has Accept(IFsVisitor v), and FileNode/DirectoryNode call v.Visit(this), so operations like SizeVisitor, SearchByExtensionVisitor or PrintTreeVisitor live in their own classes. Alternatively expose an iterator (IEnumerable<FsNode> Traverse() using yield) and run LINQ over it for search. Permissions can be a property on FsNode with inheritance checked while walking up the Parent chain. For concurrency, use a ReaderWriterLockSlim at the file-system level."
+      }
+    ]
+  }
+}

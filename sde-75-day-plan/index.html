@@ -57,6 +57,17 @@
   .sync { display: inline-flex; align-items: center; gap: 5px; cursor: pointer; border: 0; background: none; padding: 0; font-size: 12.5px; color: var(--muted); }
   .sync::before { content: ""; width: 8px; height: 8px; border-radius: 50%; background: var(--muted); }
   .sync.ok::before { background: var(--ok); } .sync.busy::before { background: var(--warn); } .sync.err::before { background: var(--bad); }
+  /* collapsible header: ⌃ folds it to one line (title, month, arrows); site full screen folds it too */
+  #hdr-tog svg { transition: transform .15s; }
+  .top.min { padding-top: 8px; padding-bottom: 8px; row-gap: 6px; }
+  .top.min .sub, .top.min .kpis, .top.min ~ main .mkpis { display: none !important; }
+  .top.min h1 { font-size: 16px; }
+  .top.min #hdr-tog svg { transform: rotate(180deg); }
+  html.fs .legend { display: none; }
+  html.fs .top { padding-right: 60px; }   /* room for the site's exit-full-screen button */
+  html.fs .wrap { padding-top: 10px; }
+  /* phones: the toggle sits at the end of the title row, the month row stays below it */
+  @media (max-width: 899px) { .top > div:first-child { flex: 1; min-width: 0; } #hdr-tog { order: 1; } .monthnav { order: 2; } }
   .views { display: flex; background: var(--bg); border: 1px solid var(--line); border-radius: 10px; padding: 3px; }
   .views button { border: 0; background: none; padding: 6px 12px; border-radius: 8px; font-size: 13px; color: var(--muted); }
   .views button.on { background: var(--card); color: var(--fg); font-weight: 600; box-shadow: var(--shadow); }
@@ -174,6 +185,52 @@
   .pfoot .btn { flex: 1; text-align: center; }
   .closeday { display: none; }
 
+  /* Q&A column: a third column on wide screens, a drawer on tablets, a sheet on phones */
+  .wrap.qa3 { grid-template-columns: minmax(0, 1fr) 420px 400px; }
+  .foot .st { min-width: 0; overflow: hidden; text-overflow: ellipsis; }
+  .wrap.qa3 .cell .cnt { display: none; }
+  .wrap.qa3 .cell .foot { justify-content: flex-end; }
+  .qa { background: var(--card); border: 1px solid var(--line); border-radius: 16px; box-shadow: 0 8px 30px rgba(0,0,0,.08); overflow: hidden;
+    position: sticky; top: 16px; max-height: calc(100vh - 32px); display: flex; flex-direction: column; }
+  .qa .qh { padding: 12px 14px 10px; border-bottom: 1px solid var(--line2); }
+  .qa .qh .row1 { display: flex; align-items: flex-start; gap: 8px; }
+  .qa .qh .t { flex: 1; min-width: 0; }
+  .qa .qh .t small { display: block; font-size: 11.5px; color: var(--muted); font-weight: 600; text-transform: uppercase; letter-spacing: .03em; }
+  .qa .qh .t b { font-size: 15px; line-height: 1.3; display: block; }
+  .qa .qtools { display: flex; gap: 6px; align-items: center; margin-top: 10px; flex-wrap: wrap; }
+  .qa .qtools .mode { margin: 0; flex: 1; min-width: 150px; }
+  .qa .qtools .btn { padding: 5px 9px; font-size: 12px; }
+  .qa .qbody { overflow-y: auto; overscroll-behavior: contain; padding: 4px 0 14px; }
+  .lvl { border-bottom: 1px solid var(--line2); }
+  .lvl > summary { list-style: none; cursor: pointer; display: flex; align-items: center; gap: 8px; padding: 10px 14px; font-weight: 700; font-size: 13px; }
+  .lvl > summary::-webkit-details-marker { display: none; }
+  .lvl > summary::after { content: "▾"; margin-left: auto; color: var(--muted); transition: transform .15s; }
+  .lvl[open] > summary::after { transform: rotate(180deg); }
+  .lvl .lb { font-size: 10.5px; border-radius: 6px; padding: 2px 7px; }
+  .lvl .lb.Basic { background: var(--ok-bg); color: var(--ok); } .lvl .lb.Intermediate { background: var(--warn-bg); color: var(--warn); }
+  .lvl .lb.Advanced { background: var(--bad-bg); color: var(--bad); }
+  .qi { margin: 0 12px 8px; border: 1px solid var(--line); border-radius: 10px; background: var(--card2); }
+  .qi > summary { list-style: none; cursor: pointer; padding: 9px 11px; font-size: 13.5px; font-weight: 600; display: flex; gap: 8px; align-items: flex-start; }
+  .qi > summary::-webkit-details-marker { display: none; }
+  .qi > summary::before { content: "+"; color: var(--muted); font-weight: 700; width: 12px; flex: none; }
+  .qi[open] > summary::before { content: "−"; }
+  .qi > summary span { flex: 1; }
+  .qi .ans { padding: 0 11px 10px 31px; font-size: 13px; line-height: 1.55; color: var(--fg); }
+  .qi .ans ul { margin: 4px 0; padding-left: 18px; } .qi .ans li { margin: 2px 0; }
+  .qi .ans pre { background: var(--bg); border: 1px solid var(--line); border-radius: 8px; padding: 8px 10px; overflow-x: auto; font-size: 12px; margin: 6px 0; }
+  .qi .know { margin-top: 6px; }
+  .qi.known > summary span { color: var(--muted); }
+  .qabtn { display: inline-flex; align-items: center; gap: 6px; margin: 2px 0 8px; border: 1px solid var(--info-bg); background: var(--info-bg); color: var(--info);
+    border-radius: 8px; padding: 5px 10px; font-size: 12.5px; font-weight: 600; }
+  .qabtn.lld { border-color: var(--rest-bg); background: var(--rest-bg); color: var(--rest); }
+  .stmt { font-size: 12.5px; color: var(--muted); margin: 4px 0 2px; line-height: 1.5; }
+  .qa-backdrop { display: none; }
+  @media (max-width: 1359px) and (min-width: 900px) {
+    .wrap.qa3 { grid-template-columns: minmax(0, 1fr) 440px; }
+    .qa { position: fixed; top: 12px; right: 12px; bottom: 12px; width: min(440px, 92vw); max-height: none; z-index: 45; }
+    .qa-backdrop { display: block; position: fixed; inset: 0; background: rgba(0,0,0,.25); z-index: 44; }
+  }
+
   /* progress view */
   .grid2 { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 14px; padding: 16px 20px 22px; }
   .card { background: var(--card); border: 1px solid var(--line); border-radius: 14px; padding: 14px; box-shadow: var(--shadow); }
@@ -232,6 +289,9 @@
     .panel.closed { transform: translateX(100%); pointer-events: none; }
     .panel.swl { transform: translateX(-12%); opacity: .4; } .panel.swr { transform: translateX(12%); opacity: .4; }
     .closeday { display: grid; }
+    .qa { position: fixed; top: 0; left: 0; right: 0; bottom: calc(62px + env(safe-area-inset-bottom)); z-index: 35; border-radius: 0; border: 0; max-height: none; }
+    .qa .qh { padding-top: calc(12px + env(safe-area-inset-top)); }
+    .wrap.qa3 { grid-template-columns: 1fr; }
     .sb { padding-left: 16px; }
     .grid2 { padding: 10px 12px 16px; grid-template-columns: 1fr; }
     .tabbar { display: flex; position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; background: var(--card); border-top: 1px solid var(--line);
@@ -240,6 +300,12 @@
     .tabbar button.on { color: var(--accent); background: var(--accent-bg); font-weight: 600; }
     .tabbar svg { width: 20px; height: 20px; }
     .hbar { grid-template-columns: 120px 1fr 44px; }
+  }
+  @media (max-width: 380px) {
+    .kpirow, .mkpis { grid-template-columns: repeat(2, 1fr) !important; }
+    .sb { padding-right: 12px; } .ph, .sec > summary { padding-left: 12px; padding-right: 12px; }
+    .phases .ring { width: 54px; height: 54px; } .phases .ring i { width: 44px; height: 44px; }
+    .monthnav .btn { padding: 7px 9px; }
   }
   .mkpis { display: none; grid-template-columns: repeat(3, 1fr); gap: 8px; }
   .mkpis .kpi { flex-direction: column; align-items: flex-start; gap: 2px; padding: 8px 10px; }
@@ -256,6 +322,8 @@
   <div class="spacer"></div>
   <div class="kpis" id="kpis"></div>
   <div class="views" id="views"><button data-view="cal" class="on">Calendar</button><button data-view="stats">Progress</button></div>
+  <button class="ib" id="hdr-tog" title="Collapse the header" aria-label="Collapse the header" aria-expanded="true">
+    <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 15l6-6 6 6"/></svg></button>
 </header>
 
 <main id="v-cal">
@@ -274,6 +342,7 @@
       <div class="cal" id="cal"></div>
     </div>
     <aside class="panel closed" id="panel" aria-label="Day tasks"></aside>
+    <aside class="qa" id="qa" hidden aria-label="Questions and answers"></aside>
   </div>
 </main>
 <main id="v-stats" hidden><div class="grid2" id="stats"></div></main>
@@ -283,6 +352,7 @@
   <button data-go="today"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Today</button>
   <button data-go="stats"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/></svg>Progress</button>
 </nav>
+<div class="qa-backdrop" id="qa-back" hidden></div>
 <div class="toast" id="toast"></div>
 
 <script>
@@ -313,7 +383,8 @@
   // ------------------------------------------------------------ state
   var PLAN = null, TODAY = todayISO();
   var P = loadLocal();          // { v:1, items: { key: {v, at} } }
-  var UI = { month: null, sel: null, view: "cal", show: store.get("plan.f.show", "all"), phase: store.get("plan.f.phase", "all") };
+  var UI = { month: null, sel: null, view: "cal", show: store.get("plan.f.show", "all"), phase: store.get("plan.f.phase", "all"), qa: null };
+  var QNA = null, qnaLoading = null;
 
   function loadLocal() { try { return JSON.parse(store.get("plan.progress", "")) || { v: 1, items: {} }; } catch (e) { return { v: 1, items: {} }; } }
   function saveLocal() { store.set("plan.progress", JSON.stringify(P)); }
@@ -325,9 +396,9 @@
 
   // ------------------------------------------------------------ tasks and status
   var HAB = [["walk", "Walk 1 km / 30 min exercise"], ["water", "Water 2.5–3 L"], ["food", "Healthy food, no junk"], ["chill", "1 hour to chill, guilt-free"], ["sleep", "Screens down by 11, sleep by 11:15"]];
-  var EASY_KEYS = { lc0: 1, lc1: 1, lc2: 1, hld: 1, walk: 1, water: 1, food: 1 };
+  var EASY_KEYS = { lc0: 1, lc1: 1, sql: 1, hld: 1, walk: 1, water: 1, food: 1 };
   function taskKeys(n) {
-    var easy = !!get(n + ".easy", 0), keys = ["lc0", "lc1", "lc2", "hld", "lld", "cloud", "walk", "water", "food", "chill", "sleep"];
+    var easy = !!get(n + ".easy", 0), keys = ["lc0", "lc1", "lc2", "sql", "dsg", "hld", "lld", "cloud", "walk", "water", "food", "chill", "sleep"];
     return easy ? keys.filter(function (k) { return EASY_KEYS[k]; }) : keys;
   }
   function isDone(n, k) { return k === "water" ? (+get(n + ".water", 0) >= 2.5) : !!get(n + "." + k, 0); }
@@ -439,7 +510,7 @@
   function nowSlot(d) {
     if (dateOf(d.day) !== TODAY) return -1;
     var h = new Date().getHours() + new Date().getMinutes() / 60;
-    return h < 7.7 ? 0 : h < 9 ? 1 : h < 13 ? 2 : h < 21 ? 3 : 4;
+    return h < 7.7 ? 0 : h < 9 ? 1 : h < 15 ? 2 : h < 21.8 ? 3 : h < 22.2 ? 4 : 5;
   }
   function renderPanel() {
     var el = $("panel");
@@ -447,11 +518,11 @@
     el.hidden = false; $("wrap").classList.remove("nopanel"); el.classList.remove("closed");
     var d = PLAN.days[UI.sel - 1], n = d.day, p = progressOf(n), date = dateOf(n), easy = !!get(n + ".easy", 0);
     var ph = PLAN.phases[d.phase - 1], slot = nowSlot(d);
-    var tl = [["7:15", "Walk 1 km"], ["7:50", "LC #1 #2"], ["Lunch", "HLD 25 min"], ["9:00 pm", "LLD + Cloud"], ["10:00 pm", "LC #3"]];
-    if (d.type === "Build Saturday") tl = [["Morning", "Workout + 3 LC"], ["Midday", "2-hour build"], ["After", "Clean up cloud"]];
-    if (d.type === "Review Sunday") tl = [["Morning", "1 km + 3 LC"], ["Midday", "45 min review"], ["Evening", "Meal prep"]];
+    var tl = [["7:15", "Walk 1 km"], ["7:50", "LC #1 #2 · Medium"], ["Lunch", "HLD + SQL"], ["9:00 pm", "LLD + Design"], ["9:50 pm", "Cloud lab"], ["10:15 pm", "LC #3 · Hard"]];
+    if (d.type === "Build Saturday") tl = [["Morning", "Workout + 3 LC"], ["Midday", "2-hour build + Design"], ["After", "SQL + clean up cloud"]];
+    if (d.type === "Review Sunday") tl = [["Morning", "1 km + 3 LC"], ["Midday", "Review + Q&A"], ["After", "Re-solve SQL + design"], ["Evening", "Meal prep"]];
     var IC = { lc: ["&lt;/&gt;", "var(--accent-bg)", "var(--accent)"], hld: ["◎", "var(--info-bg)", "var(--info)"], lld: ["{ }", "var(--rest-bg)", "var(--rest)"],
-      cloud: ["☁", "var(--warn-bg)", "var(--warn)"], hab: ["♥", "var(--bad-bg)", "var(--bad)"], note: ["✎", "var(--chip)", "var(--muted)"], cp: ["★", "var(--warn-bg)", "var(--warn)"] };
+      cloud: ["☁", "var(--warn-bg)", "var(--warn)"], sql: ["DB", "var(--ok-bg)", "var(--ok)"], dsg: ["⚙", "var(--info-bg)", "var(--info)"], hab: ["♥", "var(--bad-bg)", "var(--bad)"], note: ["✎", "var(--chip)", "var(--muted)"], cp: ["★", "var(--warn-bg)", "var(--warn)"] };
 
     var lc = d.leetcode.map(function (q, i) {
       var rv = !!get(n + ".rv" + i, 0);
@@ -481,11 +552,13 @@
         d.checkpoint.map(function (c, i) { return task(n, "cp" + i, '<span class="lbl">' + esc(c) + "</span>"); }).join(""), true) : "") +
       sec("lc", IC.lc, "LeetCode", d.dsa.pattern + " · 30 min max each", count(n, ["lc0", "lc1", "lc2"]),
         '<div class="tip">' + esc(d.dsa.tip) + "</div>" + lc + revisits, true) +
+      sec("sql", IC.sql, "SQL", d.sql.review ? "review Sunday" : "lunch, 15 min", count(n, ["sql"]), probTask(n, "sql", d.sql), false) +
       sec("hld", IC.hld, "HLD read", d.hld.when, count(n, ["hld"]),
-        '<ul class="kp">' + d.hld.points.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
+        qaButton(n, "hld") + '<ul class="kp">' + d.hld.points.map(function (x) { return "<li>" + esc(x) + "</li>"; }).join("") + "</ul>" +
         task(n, "hld", '<span class="lbl">' + esc(d.hld.topic) + "</span>", '<span class="pt">read + one-page summary</span>'), true) +
       sec("lld", IC.lld, "LLD build · C#", d.lld.when, count(n, ["lld"]),
-        task(n, "lld", '<span class="lbl">' + esc(d.lld.topic) + "</span>", '<span class="pt">' + esc(d.lld.deliverable) + "</span>"), false) +
+        qaButton(n, "lld") + task(n, "lld", '<span class="lbl">' + esc(d.lld.topic) + "</span>", '<span class="pt">' + esc(d.lld.deliverable) + "</span>"), false) +
+      sec("dsg", IC.dsg, "Design coding", d.design.review ? "review Sunday" : "same topic · 20 min", count(n, ["dsg"]), probTask(n, "dsg", d.design), false) +
       sec("cloud", IC.cloud, "Cloud lab · " + d.cloud.provider, d.cloud.when, count(n, ["cloud"]),
         task(n, "cloud", '<span class="lbl">' + esc(d.cloud.topic) + "</span>") + '<div class="warnbox">' + esc(d.cloud.note) + "</div>", false) +
       sec("hab", IC.hab, "Habits", "the daily non-negotiables", count(n, ["walk", "water", "food", "chill", "sleep"]), habits, true) +
@@ -497,6 +570,66 @@
     var keep = $("pscroll") ? $("pscroll").scrollTop : 0, same = el.dataset.day === String(n);
     el.innerHTML = h; el.dataset.day = n;
     if (same) $("pscroll").scrollTop = keep;
+    if (!QNA) loadQna().then(function () { if (UI.sel) { renderPanel(); renderQa(); } });
+  }
+  function probTask(n, key, x) {
+    var name = x.url ? '<a href="' + esc(x.url) + '" target="_blank" rel="noopener">' + esc(x.name) + "</a>" : '<span class="lbl">' + esc(x.name) + "</span>";
+    var meta = x.review ? '<span class="pt">pick from this week</span>'
+      : '<span class="df ' + x.difficulty + '">' + x.difficulty + "</span>" + (x.source ? '<span class="pt">' + esc(x.source) + "</span>" : "");
+    return task(n, key, name, meta) + (x.statement ? '<div class="stmt">' + esc(x.statement) + "</div>" : "");
+  }
+  function qaCounts(n, kind) {
+    var list = QNA && QNA[n] && QNA[n][kind]; if (!list) return null;
+    var known = list.filter(function (_, i) { return get(n + ".qa." + kind + i, 0); }).length;
+    return known + "/" + list.length;
+  }
+  function qaButton(n, kind) {
+    var c = qaCounts(n, kind);
+    return '<button class="qabtn ' + kind + '" data-qa="' + kind + '">Q&amp;A · ' + (kind === "hld" ? "HLD" : "LLD") + (c ? " · " + c + " known" : "") + " ›</button>";
+  }
+  function fmtAnswer(a) {
+    var parts = String(a).split(/```(?:csharp|cs|c#)?\n?/), out = "";
+    parts.forEach(function (chunk, i) {
+      if (i % 2) { out += "<pre><code>" + esc(chunk.replace(/\n$/, "")) + "</code></pre>"; return; }
+      // an answer may open with a bullet ("- Atomicity ...") - treat it like the rest
+      var lines = (/^\s*- /.test(chunk) ? "\n" + chunk.replace(/^\s*/, "") : chunk).split("\n- ");
+      if (lines.length > 1) {
+        out += (lines[0].trim() ? "<p>" + esc(lines[0].trim()) + "</p>" : "") + "<ul>" +
+          lines.slice(1).map(function (l) { return "<li>" + esc(l.trim()) + "</li>"; }).join("") + "</ul>";
+      } else if (chunk.trim()) out += "<p>" + esc(chunk.trim()).replace(/\n/g, "<br>") + "</p>";
+    });
+    return out.replace(/<p>/g, '<p style="margin:4px 0">');
+  }
+  function loadQna() {
+    if (QNA) return Promise.resolve(QNA);
+    if (!qnaLoading) qnaLoading = fetch("qna.json", { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : {}; })
+      .then(function (j) { QNA = j || {}; return QNA; }).catch(function () { QNA = {}; return QNA; });
+    return qnaLoading;
+  }
+  function renderQa() {
+    var el = $("qa"), back = $("qa-back");
+    if (!UI.qa || !UI.sel || UI.view !== "cal") { el.hidden = true; back.hidden = true; $("wrap").classList.remove("qa3"); return; }
+    el.hidden = false; back.hidden = false; $("wrap").classList.add("qa3");
+    var n = UI.sel, d = PLAN.days[n - 1], kind = UI.qa, list = QNA && QNA[n] && QNA[n][kind];
+    var topic = kind === "hld" ? d.hld.topic : d.lld.topic;
+    var h = '<div class="qh"><div class="row1"><div class="t"><small>Q&amp;A · Day ' + n + " · " + (kind === "hld" ? "HLD" : "LLD") + "</small><b>" + esc(topic) + "</b></div>" +
+      '<button class="ib" id="qa-close" aria-label="Close Q&amp;A">✕</button></div>' +
+      '<div class="qtools"><div class="mode"><button data-qak="hld"' + (kind === "hld" ? ' class="on"' : "") + ">HLD</button><button data-qak=\"lld\"" + (kind === "lld" ? ' class="on"' : "") + ">LLD</button></div>" +
+      '<button class="btn" id="qa-open">Expand all</button><button class="btn" id="qa-shut">Collapse all</button></div></div><div class="qbody" id="qbody">';
+    if (!QNA) h += '<div class="stmt" style="padding:14px">Loading…</div>';
+    else if (!list) h += '<div class="stmt" style="padding:14px">No Q&amp;A for this day yet.</div>';
+    else ["Basic", "Intermediate", "Advanced"].forEach(function (lv) {
+      var items = list.map(function (q, i) { return [q, i]; }).filter(function (x) { return x[0].level === lv; });
+      if (!items.length) return;
+      var known = items.filter(function (x) { return get(n + ".qa." + kind + x[1], 0); }).length;
+      h += '<details class="lvl" open><summary><span class="lb ' + lv + '">' + lv + "</span>" + known + "/" + items.length + " known</summary>" +
+        items.map(function (x) {
+          var k = get(n + ".qa." + kind + x[1], 0);
+          return '<details class="qi' + (k ? " known" : "") + '"><summary><span>' + esc(x[0].q) + "</span></summary>" +
+            '<div class="ans">' + fmtAnswer(x[0].a) + '<button class="rv know' + (k ? " on" : "") + '" data-know="' + x[1] + '">' + (k ? "✓ I know this" : "Mark as known") + "</button></div></details>";
+        }).join("") + "</details>";
+    });
+    el.innerHTML = h + "</div>";
   }
   function revisitList(n) {
     var from = Math.max(1, n - 6), rows = [];
@@ -515,7 +648,9 @@
 
   // ------------------------------------------------------------ progress view
   function renderStats() {
-    var t = totals();
+    var t = totals(), sqlDone = 0, dsgDone = 0, qaKnown = 0;
+    PLAN.days.forEach(function (d) { if (get(d.day + ".sql", 0)) sqlDone++; if (get(d.day + ".dsg", 0)) dsgDone++; });
+    Object.keys(P.items).forEach(function (k) { if (/\.qa\./.test(k) && P.items[k].v) qaKnown++; });
     var ring = function (p) { return '<div class="ring" style="--p:' + p + '"><i>' + p + "%</i></div>"; };
     var phases = PLAN.phases.map(function (ph) {
       var done = 0, tot = 0;
@@ -535,7 +670,8 @@
       if (dateOf(d.day) >= TODAY) return;
       taskKeys(d.day).forEach(function (k) {
         if (isDone(d.day, k) || ["walk", "water", "food", "chill", "sleep"].indexOf(k) >= 0) return;
-        var label = k.indexOf("lc") === 0 ? "LC: " + d.leetcode[+k[2]].name : k === "hld" ? "HLD: " + d.hld.topic : k === "lld" ? "LLD: " + d.lld.topic : "Cloud: " + d.cloud.topic;
+        var label = k.indexOf("lc") === 0 ? "LC: " + d.leetcode[+k[2]].name : k === "hld" ? "HLD: " + d.hld.topic : k === "lld" ? "LLD: " + d.lld.topic
+          : k === "sql" ? "SQL: " + d.sql.name : k === "dsg" ? "Design: " + d.design.name : "Cloud: " + d.cloud.topic;
         catchRows.push('<button class="catch" data-day="' + d.day + '"><span class="st ' + (progressOf(d.day).done ? "part" : "miss") + '">Day ' + d.day + "</span>" + esc(label) + "</button>");
       });
     });
@@ -545,8 +681,9 @@
     $("stats").innerHTML =
       '<div class="card" style="grid-column:1/-1"><div class="kpirow">' +
       '<div class="kpi"><b>' + t.pct + '%</b><span>overall · ' + t.daysDone + '/75 days</span></div><div class="kpi"><b>🔥 ' + t.streak + '</b><span>day streak</span></div>' +
-      '<div class="kpi"><b>' + t.lc + '</b><span>LeetCode of 225</span></div><div class="kpi"><b style="color:' + (t.behind ? "var(--bad)" : "var(--ok)") + '">' + t.behind +
-      '</b><span>days to catch up</span></div></div></div>' +
+      '<div class="kpi"><b>' + t.lc + '</b><span>LeetCode of 225</span></div><div class="kpi"><b>' + sqlDone + '</b><span>SQL of 75</span></div>' +
+      '<div class="kpi"><b>' + dsgDone + '</b><span>design of 75</span></div><div class="kpi"><b>' + qaKnown + '</b><span>Q&amp;A known of 900</span></div>' +
+      '<div class="kpi"><b style="color:' + (t.behind ? "var(--bad)" : "var(--ok)") + '">' + t.behind + '</b><span>days to catch up</span></div></div></div>' +
       '<div class="card"><h3>Phases</h3><div class="phases">' + phases + "</div></div>" +
       '<div class="card"><h3>Habit streaks</h3><div class="streaks"><div><b>🚶 ' + hs("walk") + '</b><span>walk / exercise</span></div><div><b>💧 ' + hs("water") +
       '</b><span>water 2.5 L+</span></div><div><b>🥗 ' + hs("food") + '</b><span>healthy food</span></div><div><b>😴 ' + hs("sleep") + '</b><span>sleep by 11:15</span></div></div></div>' +
@@ -565,6 +702,9 @@
   function renderAll() {
     renderKpis(); renderFilters();
     if (UI.view === "stats") { renderStats(); } else { renderCal(); renderPanel(); }
+    var qb = $("qbody"), qTop = qb ? qb.scrollTop : 0, qOpen = qb ? Array.prototype.map.call(qb.querySelectorAll("details.qi"), function (x) { return x.open; }) : null;
+    renderQa();
+    if (qOpen && $("qbody")) { var qs = $("qbody").querySelectorAll("details.qi"); if (qs.length === qOpen.length) qOpen.forEach(function (o, i) { qs[i].open = o; }); $("qbody").scrollTop = qTop; }
     $("v-cal").hidden = UI.view === "stats"; $("v-stats").hidden = UI.view !== "stats";
     document.querySelectorAll("#views button").forEach(function (b) { b.classList.toggle("on", b.dataset.view === UI.view); });
     var tab = UI.view === "stats" ? "stats" : (mobile() && UI.sel ? "today" : "cal");
@@ -581,6 +721,9 @@
     if (t.dataset.rv != null && n) { put(n + ".rv" + t.dataset.rv, get(n + ".rv" + t.dataset.rv, 0) ? 0 : 1); renderAll(); return; }
     if (t.dataset.water != null && n) { var v = +t.dataset.water; if (+get(n + ".water", 0) === v && v > 0) v -= 0.5; put(n + ".water", v); renderAll(); return; }
     if (t.dataset.easy != null && n) { put(n + ".easy", +t.dataset.easy); renderAll(); return; }
+    if (t.dataset.qa && n) { UI.qa = t.dataset.qa; loadQna().then(renderAll); renderAll(); return; }
+    if (t.dataset.qak && n) { UI.qa = t.dataset.qak; renderAll(); if ($("qbody")) $("qbody").scrollTop = 0; return; }
+    if (t.dataset.know != null && n) { var kk = n + ".qa." + UI.qa + t.dataset.know; put(kk, get(kk, 0) ? 0 : 1); renderAll(); return; }
     if (t.dataset.show) { UI.show = t.dataset.show; store.set("plan.f.show", UI.show); renderAll(); return; }
     if (t.dataset.phase) { UI.phase = t.dataset.phase; store.set("plan.f.phase", UI.phase); renderAll(); return; }
     if (t.dataset.view) { UI.view = t.dataset.view; renderAll(); return; }
@@ -596,7 +739,10 @@
       case "m-today": UI.month = monthOf(TODAY); UI.view = "cal"; renderAll(); break;
       case "d-prev": openDay(n - 1, -1); break;
       case "d-next": openDay(n + 1, 1); break;
-      case "d-close": UI.sel = null; renderAll(); break;
+      case "d-close": UI.sel = null; UI.qa = null; renderAll(); break;
+      case "qa-close": UI.qa = null; renderAll(); break;
+      case "qa-open": document.querySelectorAll("#qbody details").forEach(function (x) { x.open = true; }); break;
+      case "qa-shut": document.querySelectorAll("#qbody details.qi").forEach(function (x) { x.open = false; }); break;
       case "d-go": if (n < 75) openDay(n + 1, 1); else toast("75 days. Done. 🎉"); break;
       case "d-all":
         var all = progressOf(n).done < progressOf(n).total;
@@ -621,6 +767,7 @@
   });
   document.addEventListener("keydown", function (e) {
     if (e.target.matches("input, textarea")) return;
+    if (e.key === "Escape" && UI.qa) { UI.qa = null; renderAll(); return; }
     if (e.key === "Escape" && UI.sel) { UI.sel = null; renderAll(); }
     if (e.key === "ArrowRight" && UI.sel) openDay(UI.sel + 1, 1);
     if (e.key === "ArrowLeft" && UI.sel) openDay(UI.sel - 1, -1);
@@ -634,6 +781,7 @@
     if (Math.abs(dx) > 70 && Math.abs(dx) > 1.5 * Math.abs(dy)) openDay(UI.sel + (dx < 0 ? 1 : -1), dx < 0 ? 1 : -1);
   });
   window.addEventListener("resize", function () { renderAll(); });
+  $("qa-back").addEventListener("click", function () { UI.qa = null; renderAll(); });
   window.addEventListener("storage", function (e) { if (e.key === "jh:theme") location.reload(); });
 
   // ------------------------------------------------------------ GitHub sync
@@ -647,10 +795,15 @@
         if (host.length > 2 && host[1] === "github" && seg[0]) repo = host[0] + "/" + seg[0]; }
       return { token: token, repo: repo };
     }
-    function state(cls, text) { var el = $("sync"); el.className = "sync " + cls; el.textContent = text; var m = $("s-syncmsg"); if (m) m.textContent = text; }
+    function state(cls, text, detail) {
+      var el = $("sync"); el.className = "sync " + cls; el.textContent = text; el.title = detail || "Sync status - tap to sync now";
+      var m = $("s-syncmsg"); if (m) m.textContent = text + (detail ? " (" + detail + ")" : "");
+    }
     function gh(path, opts) {
       var c = cfg(); opts = opts || {};
       opts.headers = { "Accept": "application/vnd.github+json", "X-GitHub-Api-Version": "2022-11-28", "Authorization": "Bearer " + c.token };
+      // GitHub lets browsers cache API reads for 60 s; a cached file sha makes the next write a 409 conflict
+      opts.cache = "no-store";
       if (opts.body) opts.headers["Content-Type"] = "application/json";
       return fetch("https://api.github.com/repos/" + c.repo + path, opts).then(function (r) {
         if (r.status === 404) return null;
@@ -693,18 +846,42 @@
         return once().catch(function (e) { if ((e.status === 409 || e.status === 422) && ++tries < 3) return attempt(); throw e; });
       }
       return attempt().then(function (pulled) {
-        store.set("plan.synced", String(Date.now())); state("ok", "synced");
+        store.set("plan.synced", String(Date.now())); state("ok", "synced", "Last synced " + new Date().toLocaleTimeString());
+        retryIn = 30000;
         if (pulled) renderAll();
       }).catch(function (e) {
-        state("err", e.status === 403 || e.status === 401 ? "token can't write - check Contents permission" : "sync failed - saved here");
+        var auth = e.status === 403 || e.status === 401, net = !e.status;
+        // a dropped connection is temporary: say so and try again by itself, backing off to 5 minutes
+        state("err", auth ? "token can't write - check Contents permission" : net ? "offline - will retry" : "sync failed - saved here, retrying",
+              e.message + (e.status ? " (HTTP " + e.status + ")" : ""));
         if (manual) toast("Sync: " + e.message);
+        if (!auth) { clearTimeout(retryTimer); retryTimer = setTimeout(now, retryIn); retryIn = Math.min(retryIn * 2, 300000); }
       }).then(function () { busy = false; if (again) { again = false; soon(); } });
     }
+    var retryTimer = null, retryIn = 30000;
     function soon() { clearTimeout(timer); state("busy", "saving…"); timer = setTimeout(now, 2000); }
     window.addEventListener("online", function () { now(); });
     document.addEventListener("visibilitychange", function () { if (!document.hidden) now(); });
     return { now: now, soon: soon };
   })();
+
+  // ------------------------------------------------------------ header fold + site full screen
+  var fsOn = false;
+  function setHeader(min) {
+    var top = document.querySelector(".top"), folded = min || fsOn;
+    top.classList.toggle("min", folded);
+    $("hdr-tog").setAttribute("aria-expanded", folded ? "false" : "true");
+    $("hdr-tog").title = folded ? "Show the full header" : "Collapse the header";
+  }
+  function setFs(on) { fsOn = !!on; document.documentElement.classList.toggle("fs", fsOn); setHeader(store.get("plan.hdr", "open") === "min"); }
+  $("hdr-tog").addEventListener("click", function () {
+    var min = !document.querySelector(".top").classList.contains("min");
+    if (fsOn && !min) fsOn = false;          // opening the header in full screen shows it until full screen is toggled again
+    store.set("plan.hdr", min ? "min" : "open"); setHeader(min);
+  });
+  window.addEventListener("message", function (e) {
+    if (e.origin === location.origin && e.data && e.data.type === "site-fs") setFs(e.data.on);
+  });
 
   // ------------------------------------------------------------ boot
   fetch("plan.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (plan) {
@@ -712,6 +889,8 @@
     UI.month = monthOf(TODAY < startISO() ? startISO() : TODAY > dateOf(75) ? dateOf(75) : TODAY);
     var td = dayAt(TODAY); if (td && !mobile()) UI.sel = td.day;
     if (store.get("plan.acc.filters", "0") === "1") $("acc-filters").open = true;
+    setHeader(store.get("plan.hdr", "open") === "min");
+    try { setFs(window.parent !== window && window.parent.document.documentElement.classList.contains("site-fs")); } catch (e) {}
     renderAll(); Sync.now();
   }).catch(function (e) { $("cal").innerHTML = '<div class="card">Could not load plan.json: ' + esc(e.message) + "</div>"; });
 })();

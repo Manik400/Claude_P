@@ -61,7 +61,8 @@ def _safe_json(payload) -> str:
 # newline, which turns /^\n+/ into a regex literal broken across two lines and
 # takes the whole script down with it. Raw means what is written here is what
 # the browser receives. Nothing below may use Python escapes.
-TEMPLATE = r"""<title>__TITLE__</title>
+TEMPLATE = r"""<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>__TITLE__</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
