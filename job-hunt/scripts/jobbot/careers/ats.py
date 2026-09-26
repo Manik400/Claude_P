@@ -200,8 +200,83 @@ def _workday(http, c, keep, roles, details, place):
     return out, total, []
 
 
+def _personio(http, c, keep, roles, details, place):
+    # Personio's public feed is XML; the board is the subdomain of {board}.jobs.personio.de
+    # (some tenants live on .com - that answers on the same path).
+    import xml.etree.ElementTree as ET
+    r = http.get(f"https://{c.board}.jobs.personio.de/xml", params={"language": "en"}, allow_redirects=False)
+    r.raise_for_status()
+    if r.status_code != 200 or "xml" not in r.headers.get("content-type", ""):
+        raise ValueError(f"no Personio board at {c.board}")      # unknown tenants redirect to personio.com
+    rows = ET.fromstring(r.content).findall("position")
+    out = []
+    for p in rows:
+        title = (p.findtext("name") or "").strip()
+        if not keep(title):
+            continue
+        offices = [p.findtext("office")] + [o.text for o in p.findall("additionalOffices/office")]
+        text = " ".join((d.findtext("name") or "") + ": " + html_to_text(d.findtext("value") or "")
+                        for d in p.findall("jobDescriptions/jobDescription"))
+        extra = " ".join(x for x in (p.findtext("seniority"), p.findtext("yearsOfExperience")) if x)
+        out.append(_job(c, title, f"https://{c.board}.jobs.personio.de/job/{p.findtext('id')}", offices, [],
+                        (text + (" Experience: " + extra if extra else "")).strip(), p.findtext("createdAt"),
+                        remote=any("remote" in (o or "").lower() for o in offices) or None,
+                        department=p.findtext("department") or "",
+                        employment=" ".join(x for x in (p.findtext("employmentType"), p.findtext("schedule")) if x)))
+    return out, len(rows), []
+
+
+def _breezy(http, c, keep, roles, details, place):
+    rows = http.get_json(f"https://{c.board}.breezy.hr/json")
+    rows = rows if isinstance(rows, list) else []
+    out = []
+    for p in rows:
+        if not keep(p.get("name", "")):
+            continue
+        locs = [p.get("location") or {}] + list(p.get("locations") or [])
+        names = [l.get("name") for l in locs if isinstance(l, dict)]
+        iso = [(l.get("country") or {}).get("id") for l in locs if isinstance(l, dict)]
+        remote = any(isinstance(l, dict) and l.get("is_remote") for l in locs) or None
+        out.append(_job(c, p.get("name"), p.get("url"), names, iso, "", p.get("published_date"), remote=remote,
+                        department=p.get("department") or "", employment=(p.get("type") or {}).get("name") or ""))
+    return out, len(rows), []
+
+
+def _bamboohr(http, c, keep, roles, details, place):
+    # {board}.bamboohr.com/careers/list answers JSON to an Accept: application/json request
+    # (an unknown board redirects to bamboohr.com's home page instead).
+    r = http.get(f"https://{c.board}.bamboohr.com/careers/list", headers={"Accept": "application/json"},
+                 allow_redirects=False)
+    r.raise_for_status()
+    if r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
+        raise ValueError(f"no BambooHR board at {c.board}")
+    rows = r.json().get("result") or []
+    out = []
+    for i, p in enumerate(rows):
+        title = (p.get("jobOpeningName") or "").strip()
+        if not keep(title):
+            continue
+        loc, ats_loc = p.get("location") or {}, p.get("atsLocation") or {}
+        locs = [", ".join(x for x in (loc.get("city"), loc.get("state")) if x),
+                ", ".join(x for x in (ats_loc.get("city"), ats_loc.get("state") or ats_loc.get("province"),
+                                      ats_loc.get("country")) if x)]
+        url = f"https://{c.board}.bamboohr.com/careers/{p.get('id')}"
+        text = ""
+        if len(out) < details:
+            try:
+                d = http.get_json(url + "/detail", headers={"Accept": "application/json"})
+                text = html_to_text(((d.get("result") or {}).get("jobOpening") or {}).get("description") or "")
+            except Exception:  # noqa: BLE001 - the list entry is still worth keeping
+                pass
+        out.append(_job(c, title, url, locs, [ats_loc.get("country")], text, "",
+                        remote=bool(p.get("isRemote")) or p.get("locationType") == "1" or None,
+                        department=p.get("departmentLabel") or "", employment=p.get("employmentStatusLabel") or ""))
+    return out, len(rows), []
+
+
 READERS = {"greenhouse": _greenhouse, "lever": _lever, "ashby": _ashby, "smartrecruiters": _smartrecruiters,
-           "workable": _workable, "recruitee": _recruitee, "workday": _workday}
+           "workable": _workable, "recruitee": _recruitee, "workday": _workday,
+           "personio": _personio, "breezy": _breezy, "bamboohr": _bamboohr}
 
 
 class Unresolved(Exception):

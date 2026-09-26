@@ -93,6 +93,14 @@ ADZUNA_APP_ID + ADZUNA_APP_KEY, JOOBLE_API_KEY, RAPIDAPI_KEY (JSearch), FIRECRAW
 job poster as a contact). `APIFY_SOURCES` picks which run, default `naukri,indeed`. A search costs a
 few cents. Get a token at <https://console.apify.com/account/integrations>.
 
+Store any of these with `python scripts/set_key.py APIFY_TOKEN` (hidden input): it writes `.env`
+for the PC, sets the GitHub secret for the phone-triggered runs, and runs `check_keys.py`.
+JSearch's free plan is ~200 calls a month, so each day (PC) or run (GitHub) spends at most
+`JSEARCH_DAILY_MAX` of them (6 on the PC, repo variable default 4). Apify is paced against the
+account's real usage: `APIFY_MONTHLY_USD` (default 4.5, under the free $5) spread over the billing
+cycle, and at most `APIFY_DAILY_USD` a day (default monthly / 30); a call is cut to the results the
+budget still pays for, or skipped.
+
 ## The free local model (optional)
 `..i_setup.bat` (repo root) installs a small open model that runs on the CPU - Qwen 3.5 2B via
 `llama-cpp-python` and a `bge-small` embedding model, ~1.4 GB downloaded once, no key, no cloud

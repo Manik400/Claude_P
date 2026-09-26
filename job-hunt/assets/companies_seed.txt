@@ -1,0 +1,730 @@
+# Seed names for build_companies.py - companies the public lists under-cover.
+# One per line:  Name | tag   (tag goes into the note: where they hire / why they are here)
+# Only names whose job board answers (Greenhouse, Lever, Ashby, SmartRecruiters, Workable,
+# Recruitee) make it into companies.txt; the rest are dropped, so a wrong guess costs nothing.
+
+# ---- India: unicorns, soonicorns, well-funded startups
+Razorpay | India unicorn
+Zerodha | India
+Groww | India unicorn
+CRED | India unicorn
+PhonePe | India
+Meesho | India unicorn
+Swiggy | India
+Zomato | India
+Zepto | India unicorn
+Blinkit | India
+Dream11 | India unicorn
+Dream Sports | India unicorn
+Ola | India
+Ola Electric | India
+Paytm | India
+PolicyBazaar | India
+Nykaa | India
+Lenskart | India unicorn
+upGrad | India unicorn
+Unacademy | India unicorn
+Physics Wallah | India unicorn
+Byju's | India
+Vedantu | India
+Eruditus | India unicorn
+Scaler | India
+InterviewBit | India
+Postman | India unicorn, remote-friendly
+BrowserStack | India unicorn
+Freshworks | India, US
+Zoho | India
+Chargebee | India unicorn
+Druva | India unicorn
+Hasura | India, remote
+Innovaccer | India unicorn
+Icertis | India unicorn
+Darwinbox | India unicorn
+LeadSquared | India unicorn
+MindTickle | India unicorn
+Whatfix | India unicorn
+Uniphore | India unicorn
+Gupshup | India unicorn
+Yellow.ai | India
+Haptik | India
+Sprinklr | India
+Moengage | India unicorn
+CleverTap | India
+WebEngage | India
+Netcore Cloud | India
+Capillary Technologies | India
+Razorpay X | India
+Jupiter | India fintech
+Fi Money | India fintech
+Slice | India fintech
+Uni Cards | India fintech
+OneCard | India unicorn
+Open Financial | India unicorn
+Zeta | India unicorn
+M2P Fintech | India fintech
+Juspay | India fintech
+Cashfree | India fintech
+PayU | India fintech
+BharatPe | India unicorn
+Pine Labs | India unicorn
+Khatabook | India
+OkCredit | India
+Lendingkart | India
+KreditBee | India unicorn
+Navi | India
+Acko | India unicorn
+Digit Insurance | India unicorn
+InsuranceDekho | India
+CoinDCX | India unicorn
+CoinSwitch | India unicorn
+Mudrex | India
+Smallcase | India
+INDmoney | India
+Upstox | India unicorn
+Angel One | India
+5paisa | India
+Dhan | India
+Spinny | India unicorn
+Cars24 | India unicorn
+CarDekho | India unicorn
+Park+ | India
+Rapido | India unicorn
+BluSmart | India
+Yulu | India
+Porter | India unicorn
+Delhivery | India
+Shadowfax | India
+Ecom Express | India
+Shiprocket | India unicorn
+Xpressbees | India unicorn
+Udaan | India unicorn
+Infra.Market | India unicorn
+Zetwerk | India unicorn
+OfBusiness | India unicorn
+Moglix | India unicorn
+Jumbotail | India
+ElasticRun | India unicorn
+DealShare | India unicorn
+Licious | India unicorn
+FreshToHome | India
+Country Delight | India
+Rebel Foods | India unicorn
+Curefit | India unicorn
+HealthifyMe | India
+Pristyn Care | India unicorn
+PharmEasy | India unicorn
+Tata 1mg | India
+Practo | India
+MediBuddy | India
+Innov8 | India
+Oyo | India unicorn
+MakeMyTrip | India
+Cleartrip | India
+Ixigo | India
+EaseMyTrip | India
+Urban Company | India unicorn
+NoBroker | India unicorn
+Housing.com | India
+Livspace | India unicorn
+Pepperfry | India
+Cult.fit | India unicorn
+Games24x7 | India unicorn
+MPL | India unicorn
+Mobile Premier League | India unicorn
+WinZO | India
+Nazara Technologies | India
+Glance | India unicorn
+InMobi | India unicorn
+ShareChat | India unicorn
+Moj | India
+Dailyhunt | India unicorn
+VerSe Innovation | India unicorn
+Pocket FM | India unicorn
+Kuku FM | India
+Pratilipi | India
+Josh | India
+Apna | India unicorn
+apna.co | India unicorn
+Instahyre | India
+Cutshort | India
+Hirist | India
+Leap Finance | India
+Leap Scholar | India
+Classplus | India
+Teachmint | India
+LEAD School | India unicorn
+Simplilearn | India
+Great Learning | India
+Toppr | India
+Cuemath | India
+PlanetSpark | India
+Masai School | India
+Newton School | India
+AlmaBetter | India
+Coding Ninjas | India
+GeeksforGeeks | India
+HackerEarth | India
+HackerRank | India, US
+Codenation | India
+DeepSource | India, remote
+Appsmith | India, remote
+ToolJet | India, remote
+Hoppscotch | India, remote
+SigNoz | India, remote
+Plane | India, remote
+Novu | India, remote
+Supabase | remote worldwide
+Setu | India fintech
+Signzy | India fintech
+IDfy | India
+Perfios | India unicorn
+Decentro | India fintech
+Fyle | India
+Zluri | India
+Rocketlane | India
+Atlan | India unicorn, remote
+Sarvam AI | India AI
+Krutrim | India AI
+Ola Krutrim | India AI
+Observe.AI | India, US
+Sprinto | India
+Scrut Automation | India
+Salesken | India
+Exotel | India
+Ozonetel | India
+Knowlarity | India
+MyGate | India
+NoPaperForms | India
+Nium | Singapore, India unicorn
+Airwallex | Australia, Singapore, remote
+Rippling | India, US
+Deel | remote worldwide
+Remote | remote worldwide
+Oyster HR | remote worldwide
+Multiplier | India, Singapore, remote
+Skuad | India, remote
+Velocity | India
+Jar | India
+Kuvera | India
+Paytm Money | India
+Swiggy Instamart | India
+Flipkart | India
+Myntra | India
+Walmart Global Tech | India
+Amazon | India, global
+Uber | India, global
+Atlassian | India, Australia, remote
+Intuit | India, US
+Adobe | India, US
+Salesforce | India, global
+Microsoft | India, global
+Google | India, global
+Oracle | India, global
+SAP | India, Germany
+Cisco | India, global
+VMware | India
+Broadcom | India
+Nutanix | India, US
+Qualcomm | India, US
+Nvidia | India, US
+Intel | India, global
+AMD | India, global
+Texas Instruments | India
+Juniper Networks | India
+Arista Networks | India, US
+Palo Alto Networks | India, US
+Zscaler | India, US
+CrowdStrike | India, US
+Okta | India, US
+ServiceNow | India, US
+Workday | India, US
+Autodesk | India, US
+PTC | India
+Siemens | India, Germany
+Bosch | India, Germany
+Honeywell | India
+GE Healthcare | India
+Philips | India, Netherlands
+Schneider Electric | India, France
+ABB | India, Switzerland
+Goldman Sachs | India, global
+JPMorgan Chase | India, global
+Morgan Stanley | India, global
+Deutsche Bank | India, Germany
+Barclays | India, UK
+HSBC | India, UK
+Citi | India, global
+American Express | India
+Mastercard | India, global
+Visa | India, global
+PayPal | India, global
+Wells Fargo | India
+Fidelity Investments | India
+BlackRock | India, global
+DE Shaw | India, US
+Tower Research Capital | India, US
+Graviton Research Capital | India
+Quadeye | India
+Optiver | Amsterdam, Sydney, relocation
+IMC Trading | Amsterdam, Sydney, relocation
+Flow Traders | Amsterdam, relocation
+Jane Street | global
+Citadel | global
+Hudson River Trading | global
+Two Sigma | global
+Jump Trading | global
+Akuna Capital | global
+Da Vinci Trading | Amsterdam, relocation
+Maven Securities | global
+Squarepoint Capital | global
+Media.net | India
+Directi | India
+Radix | India
+Zeta Global | India
+Commvault | India
+NetApp | India
+Pure Storage | India, US
+Rubrik | India, US
+Cohesity | India, US
+Snowflake | India, US
+Databricks | India, global
+Confluent | India, remote
+MongoDB | India, global
+Elastic | remote worldwide
+HashiCorp | remote
+GitLab | remote worldwide
+Zapier | remote worldwide
+Automattic | remote worldwide
+Canonical | remote worldwide
+Toptal | remote worldwide
+Turing | remote worldwide, India
+Andela | remote worldwide
+X-Team | remote worldwide
+Crossover | remote worldwide
+Arc | remote worldwide
+Wellfound | remote
+Doist | remote worldwide
+Buffer | remote worldwide
+Hotjar | remote worldwide
+Toggl | remote worldwide
+Help Scout | remote worldwide
+Close | remote worldwide
+Articulate | remote
+InVision | remote
+Kinsta | remote worldwide
+Automattic | remote worldwide
+Sourcegraph | remote worldwide
+PostHog | remote worldwide
+Cal.com | remote worldwide
+Linear | remote
+Vercel | remote worldwide
+Netlify | remote worldwide
+Railway | remote worldwide
+Fly.io | remote worldwide
+Render | remote
+Replit | remote
+Clerk | remote
+Neon | remote worldwide
+PlanetScale | remote
+Tailscale | remote worldwide
+Grafana Labs | remote worldwide
+Temporal Technologies | remote
+Airbyte | remote worldwide
+Dagster Labs | remote
+Prefect | remote
+Mattermost | remote worldwide
+Rocket.Chat | remote worldwide
+Discourse | remote worldwide
+Ghost | remote worldwide
+Hashnode | India, remote
+Appwrite | remote worldwide
+Directus | remote
+Strapi | remote, France
+n8n | Berlin, remote
+Miro | Amsterdam, Berlin, remote
+Remote.com | remote worldwide
+Hubstaff | remote worldwide
+Time Doctor | remote worldwide
+Scrapinghub | remote worldwide
+Zyte | remote worldwide
+Wikimedia Foundation | remote worldwide
+Mozilla | remote
+DuckDuckGo | remote worldwide
+Proton | Geneva, remote
+1Password | remote
+Bitwarden | remote worldwide
+Kraken | remote worldwide
+Coinbase | remote
+Chainlink Labs | remote worldwide
+Consensys | remote worldwide
+Alchemy | remote
+Figment | remote worldwide
+Parity Technologies | remote worldwide
+Ledger | Paris, remote
+Binance | remote worldwide
+
+# ---- Europe: relocation + visa sponsorship (NL highly-skilled migrant, DE Blue Card, IE, UK, Nordics)
+Booking.com | Amsterdam, relocation + visa
+Adyen | Amsterdam, relocation + visa
+Mollie | Amsterdam, relocation
+Picnic | Amsterdam, relocation + visa
+Bunq | Amsterdam, relocation
+MessageBird | Amsterdam, relocation
+Bird | Amsterdam, relocation
+Catawiki | Amsterdam, relocation
+Elastic | Amsterdam, remote
+Backbase | Amsterdam, relocation
+Takeaway.com | Amsterdam, relocation
+Just Eat Takeaway | Amsterdam, relocation
+Uber Amsterdam | Amsterdam, relocation
+Tiqets | Amsterdam, relocation
+Framer | Amsterdam, relocation
+Productboard | Prague, remote
+Personio | Munich, relocation
+N26 | Berlin, relocation + visa
+Trade Republic | Berlin, relocation
+Delivery Hero | Berlin, relocation + visa
+Zalando | Berlin, relocation + visa
+HelloFresh | Berlin, relocation + visa
+GetYourGuide | Berlin, Zurich, relocation
+Celonis | Munich, relocation
+Contentful | Berlin, relocation
+SumUp | Berlin, London, relocation
+Scalable Capital | Munich, relocation
+Raisin | Berlin, relocation
+Solaris | Berlin, relocation
+Wefox | Berlin, relocation
+Taxfix | Berlin, relocation
+Blinkist | Berlin, relocation
+Babbel | Berlin, relocation
+Omio | Berlin, relocation
+Flix | Munich, Berlin, relocation
+FlixBus | Munich, relocation
+Auto1 Group | Berlin, relocation
+Sennder | Berlin, relocation
+Forto | Berlin, relocation
+Tier Mobility | Berlin, relocation
+Gorillas | Berlin
+Mambu | Berlin, relocation
+Commercetools | Munich, relocation
+Staffbase | Chemnitz, relocation
+Enpal | Berlin, relocation
+1Komma5 | Hamburg, relocation
+Grover | Berlin, relocation
+Moss | Berlin, relocation
+Pleo | Copenhagen, relocation
+Tradeshift | Copenhagen, relocation
+Unity | Copenhagen, global
+Trustpilot | Copenhagen, relocation
+Zendesk | Copenhagen, Dublin
+Spotify | Stockholm, relocation + visa
+Klarna | Stockholm, relocation + visa
+King | Stockholm, Barcelona, relocation
+Epidemic Sound | Stockholm, relocation
+Kry | Stockholm, relocation
+Tink | Stockholm, relocation
+Voi Technology | Stockholm, relocation
+Northvolt | Stockholm, relocation
+Wolt | Helsinki, relocation + visa
+Supercell | Helsinki, relocation + visa
+Reaktor | Helsinki, relocation
+Rovio | Helsinki, relocation
+Smartly.io | Helsinki, relocation + visa
+Aiven | Helsinki, relocation + visa
+ResQ Club | Helsinki
+Oura | Helsinki, relocation
+Varjo | Helsinki, relocation
+Swappie | Helsinki, relocation
+Unity Helsinki | Helsinki
+Vinted | Vilnius, relocation
+Bolt | Tallinn, relocation + visa
+Wise | Tallinn, London, relocation + visa
+Pipedrive | Tallinn, relocation + visa
+Veriff | Tallinn, relocation
+Glia | Tallinn, remote
+Revolut | London, relocation + visa
+Monzo | London, relocation + visa
+Starling Bank | London, relocation
+Deliveroo | London, relocation + visa
+Checkout.com | London, relocation + visa
+GoCardless | London, relocation + visa
+Thought Machine | London, relocation + visa
+Snyk | London, Tel Aviv, relocation
+Improbable | London, relocation
+Darktrace | Cambridge UK
+Arm | Cambridge UK, India
+Ocado Technology | London, relocation
+Skyscanner | Edinburgh, relocation
+FanDuel | Edinburgh
+Stripe | Dublin, global, relocation
+Intercom | Dublin, relocation + visa
+Workhuman | Dublin, relocation
+Fenergo | Dublin
+HubSpot | Dublin, global
+Toast | Dublin
+Datadog | Dublin, Paris, global
+Glovo | Barcelona, relocation + visa
+Typeform | Barcelona, relocation
+Travelperk | Barcelona, relocation + visa
+Factorial | Barcelona, relocation
+Wallapop | Barcelona, relocation
+Cabify | Madrid, relocation
+Idealista | Madrid
+Revolut Spain | Madrid
+Doctolib | Paris, relocation
+BlaBlaCar | Paris, relocation
+Criteo | Paris, relocation
+Qonto | Paris, relocation
+Alan | Paris, relocation
+Back Market | Paris, relocation
+Mirakl | Paris, relocation
+Algolia | Paris, relocation
+Dataiku | Paris, New York
+Contentsquare | Paris, relocation
+Swile | Paris
+Mistral AI | Paris
+Hugging Face | Paris, remote worldwide
+DeepL | Cologne, relocation
+Aleph Alpha | Heidelberg
+Helsing | Munich, relocation
+Isar Aerospace | Munich
+Lilium | Munich
+Scandit | Zurich
+Nothing | London
+Cleo | London, relocation
+Marshmallow | London, relocation
+Tide | London, India
+Zilch | London
+Onfido | London, Lisbon
+Farfetch | Porto, Lisbon, relocation
+Talkdesk | Lisbon, relocation
+OutSystems | Lisbon, relocation
+Feedzai | Lisbon, Coimbra, relocation
+Unbabel | Lisbon, relocation
+Sword Health | Porto, relocation
+Remote Portugal | Lisbon
+UiPath | Bucharest, global
+Bitdefender | Bucharest
+JetBrains | Amsterdam, Prague, relocation
+Kiwi.com | Brno, relocation
+Avast | Prague
+Docplanner | Warsaw, Barcelona
+Booksy | Warsaw
+DocuSign | Dublin, global
+Unity Technologies | global
+Canva | Sydney, relocation + visa
+Atlassian Sydney | Sydney, relocation + visa
+SafetyCulture | Sydney, relocation
+Airtasker | Sydney
+Culture Amp | Melbourne, relocation
+Afterpay | Melbourne, Sydney
+Xero | Wellington, relocation + visa
+Rocket Lab | Auckland
+Seek | Melbourne
+REA Group | Melbourne
+Envato | Melbourne, remote
+
+# ---- Asia / Middle East: relocation for Indian engineers
+Agoda | Bangkok, relocation + visa
+LINE MAN Wongnai | Bangkok, relocation
+Grab | Singapore, relocation
+Shopee | Singapore, relocation
+Sea Group | Singapore, relocation
+Lazada | Singapore
+Gojek | Singapore, Jakarta, India
+GoTo | Jakarta, Singapore
+Tokopedia | Jakarta
+Traveloka | Jakarta, Singapore, relocation
+Carousell | Singapore
+Ninja Van | Singapore
+PropertyGuru | Singapore, Bangkok
+StashAway | Singapore
+Endowus | Singapore
+Crypto.com | Singapore, remote
+OKX | Singapore, Hong Kong
+Bybit | Dubai, Singapore, remote
+Coda Payments | Singapore
+Xendit | Jakarta, Manila, remote
+Thunes | Singapore
+Rapyd | London, Singapore, Tel Aviv
+Mercari | Tokyo, relocation + visa
+Rakuten | Tokyo, relocation + visa
+LINE Yahoo | Tokyo, relocation
+SmartNews | Tokyo, relocation
+Money Forward | Tokyo, relocation
+PayPay | Tokyo, relocation + visa
+Woven by Toyota | Tokyo, relocation + visa
+Preferred Networks | Tokyo
+Paidy | Tokyo, relocation
+Cookpad | Tokyo
+freee | Tokyo
+SmartHR | Tokyo
+Sansan | Tokyo
+Treasure Data | Tokyo, relocation
+Indeed Japan | Tokyo, relocation
+LayerX | Tokyo
+Coupang | Seoul, relocation
+Toss | Seoul
+Careem | Dubai, relocation + visa
+Talabat | Dubai, relocation
+Noon | Dubai, relocation
+Kitopi | Dubai, relocation
+Tabby | Dubai, Riyadh, relocation
+Tamara | Riyadh, Dubai, relocation
+Property Finder | Dubai, relocation
+Bayut | Dubai
+Dubizzle | Dubai
+Anghami | Dubai
+Swvl | Dubai
+Salla | Riyadh
+Jahez | Riyadh
+Fetchr | Dubai
+Pure Harvest | Abu Dhabi
+G42 | Abu Dhabi, relocation
+Wio Bank | Abu Dhabi
+Majid Al Futtaim | Dubai
+Emirates Group | Dubai, relocation
+
+# ---- US / global tech that hires new grads and sponsors visas
+Meta | global, visa
+Apple | global, visa
+Netflix | global
+LinkedIn | India, global
+Snap | global, visa
+Pinterest | global, visa
+Reddit | remote, visa
+Discord | remote
+Roblox | San Mateo, visa
+Epic Games | global
+Riot Games | global
+Unity | global
+Twilio | remote, India
+Cloudflare | global, visa, India
+Fastly | remote
+Akamai | India, global
+DigitalOcean | remote, India
+Dropbox | remote
+Box | India, US
+Asana | global, visa
+Notion | global
+Figma | global, visa
+Canva US | global
+Airtable | global
+Retool | global
+Brex | remote
+Ramp | New York, visa
+Mercury | remote
+Plaid | global, visa
+Chime | remote
+Robinhood | global, visa
+SoFi | US
+Affirm | remote, visa
+Klarna US | global
+Marqeta | remote
+Toast | Boston, Dublin
+Square | global
+Block | global, visa
+DoorDash | global, visa
+Instacart | remote, visa
+Lyft | global, visa
+Airbnb | global, visa
+Expedia | India, global
+Booking Holdings | global
+Wayfair | Boston, Berlin
+Chewy | US
+Etsy | global
+eBay | India, global
+Shopify | remote worldwide
+Wix | Tel Aviv, global
+Monday.com | Tel Aviv, relocation
+Fiverr | Tel Aviv
+Gong | Tel Aviv
+Check Point | Tel Aviv
+Wiz | Tel Aviv, New York
+Palantir | global, visa
+Scale AI | San Francisco, visa
+OpenAI | San Francisco, visa
+Anthropic | San Francisco, London, visa
+Cohere | Toronto, remote
+Perplexity | San Francisco
+Mistral | Paris
+Character.AI | Palo Alto
+Runway | New York, remote
+ElevenLabs | remote worldwide
+Synthesia | London, remote
+Glean | Palo Alto, Bengaluru
+Harvey | San Francisco
+Cursor | San Francisco
+Anysphere | San Francisco
+Cognition | San Francisco
+Weights & Biases | remote
+Hugging Face US | remote
+Pinecone | remote
+Weaviate | remote worldwide
+Qdrant | remote worldwide
+LangChain | remote
+LlamaIndex | remote
+Together AI | San Francisco
+Modal | New York
+Baseten | San Francisco
+Anyscale | San Francisco
+Cerebras | global
+SambaNova | global
+Groq | global
+Lambda | San Francisco
+CoreWeave | global
+Samsara | global, visa
+Verkada | global
+Anduril | US
+Flexport | global
+Faire | global, visa
+Gusto | remote
+Rippling US | global
+Deel US | remote
+Zip | San Francisco
+Vanta | remote
+Drata | remote
+Snowflake US | global
+Datadog US | global
+New Relic | remote, India
+Splunk | global
+PagerDuty | remote
+Atlassian US | global
+Zendesk US | global
+Twitch | global
+Spotify US | global
+Duolingo | Pittsburgh, visa
+Coursera | remote, India
+Udemy | remote, India
+Chegg | India
+Quizlet | remote
+Khan Academy | remote
+Grammarly | Kyiv, remote, visa
+MacPaw | Kyiv
+Preply | Barcelona, Kyiv
+GitHub | remote worldwide
+Stack Overflow | remote worldwide
+Postman US | global
+Kong | remote
+Tyk | remote worldwide
+Auth0 | remote
+Algolia US | global
+Contentful US | global
+Sanity | remote
+Storyblok | remote worldwide
+Webflow | remote
+Framer US | remote
+Loom | remote
+Calendly | remote
+Zoom | global, India
+Slack | global
+Discord US | remote
+Nextdoor | San Francisco
+Quora | remote
+Medium | remote
+Substack | San Francisco
+Patreon | San Francisco
+Kickstarter | remote
+Squarespace | New York, Dublin
+Hopin | remote worldwide
+Remote First Capital | remote

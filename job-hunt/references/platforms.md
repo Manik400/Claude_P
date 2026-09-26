@@ -24,6 +24,8 @@ How each source is fetched, what it covers, and where it tends to break. Adapter
 | relocateme | Relocate.me | all | HTML `/international-jobs?page=N`, country from URL path | Jobs with relocation support. |
 | instahyre | Instahyre | IN | JSON `api/v1/job_search?q=` | Only used when India is requested. |
 | remotive, remoteok, jobicy, workingnomads | Remote boards | Remote tab | JSON feeds | `remote_util.assign_country` maps "Europe", "APAC", "Worldwide", city names to the user's countries, and drops US-only jobs. Jobicy's `geo` param is ignored server-side, so location filtering is client-side. |
+| himalayas | Himalayas | Remote tab | JSON `jobs/api/search?q=&page=` (no key) | ~100k remote postings; `locationRestrictions` goes through `assign_country`; seniority kept in `extra`. |
+| weworkremotely | We Work Remotely | Remote tab | RSS per category (programming, full-stack, back-end, front-end, devops) | Titles are `Company: Role`; `region` goes through `assign_country`. |
 
 ## Keyed sources (enabled when env vars exist)
 
@@ -31,7 +33,7 @@ How each source is fetched, what it covers, and where it tends to break. Adapter
 |---|---|---|
 | adzuna | `ADZUNA_APP_ID`, `ADZUNA_APP_KEY` | Free at developer.adzuna.com. Covers DE, NL, ES, AU, IN, SG, GB, … (not FI/JP/TH). |
 | jooble | `JOOBLE_API_KEY` | Free at jooble.org/api/about. All countries. |
-| jsearch | `RAPIDAPI_KEY` | JSearch on RapidAPI (Google for Jobs). Surfaces Indeed/Glassdoor/LinkedIn postings with apply links. |
+| jsearch | `RAPIDAPI_KEY` | JSearch on RapidAPI (Google for Jobs), endpoint `/search-v2`. Surfaces Indeed/Glassdoor/LinkedIn postings with apply links. Free plan ~200 calls/month, so calls are capped per day (`JSEARCH_DAILY_MAX`, default 6). |
 | firecrawl | `FIRECRAWL_API_KEY` | Runs the fallback `site:` queries automatically. |
 
 ## Blocked for scripts (links + web-search fallback)

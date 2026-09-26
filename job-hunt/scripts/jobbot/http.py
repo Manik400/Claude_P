@@ -33,13 +33,17 @@ class Http:
         self.requests_made = 0
 
     def _throttle(self, url):
+        # Reserve this host's next slot under the lock, then sleep outside it: requests to one
+        # host stay min_interval apart, while other hosts go ahead in parallel. (Sleeping inside
+        # the lock queued every request behind every other host's wait.)
         host = urlparse(url).netloc
         with self._lock:
-            last = self._last.get(host, 0)
-            wait = self.min_interval - (time.time() - last)
-            if wait > 0:
-                time.sleep(wait)
-            self._last[host] = time.time()
+            now = time.time()
+            start = max(now, self._last.get(host, 0) + self.min_interval)
+            self._last[host] = start
+        wait = start - time.time()
+        if wait > 0:
+            time.sleep(wait)
 
     def get(self, url, params=None, headers=None, retries=2, allow_block=False, **kw):
         return self.request("GET", url, params=params, headers=headers, retries=retries, allow_block=allow_block, **kw)

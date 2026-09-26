@@ -13,17 +13,50 @@ their scrapers instead, which is what makes an India search worth reading:
 Set APIFY_TOKEN (https://console.apify.com/account/integrations). APIFY_SOURCES
 picks which of the three run (default "naukri,indeed"; add "linkedin" to spend
 on it). Each actor call is synchronous and capped by --max-per-source.
+
+Spending is paced against the account's real usage (users/me/limits), so the PC's
+half-hourly rounds and the GitHub runs share one budget: APIFY_MONTHLY_USD (default 4.5,
+under the free plan's $5) spread evenly over the billing cycle. A call that would go past
+what the cycle has earned so far is skipped with a log line, and the next day's share
+lets it run again. On top of that no day spends more than APIFY_DAILY_USD (default the
+monthly budget / 30), counted on this PC (a GitHub runner starts at zero, so there it is
+a per-run cap), so a quiet fortnight cannot be spent in one afternoon.
 """
 import math
 import os
 import re
+import json
+import threading
+import time
 from datetime import datetime, timezone
+from pathlib import Path
 
 from ..config import COUNTRIES
 from ..textutil import clean_company, clean_title, normalize_ws, parse_date
 from .base import Source
 
 RUN_SYNC = "https://api.apify.com/v2/acts/{actor}/run-sync-get-dataset-items"
+LIMITS = "https://api.apify.com/v2/users/me/limits"
+# USD per result on the free tier, plus ~$0.001 per actor start (Apify Store, Sep 2026)
+PRICE = {"valig/naukri-jobs-scraper": 0.0004, "valig/indeed-jobs-scraper": 0.0001,
+         "curious_coder/linkedin-jobs-scraper": 0.002}
+START_USD = 0.001
+_budget_lock = threading.Lock()
+USAGE = Path(os.environ.get("LOCALAPPDATA") or Path.home()) / "JobHuntPhone" / "apify_usage.json"
+
+
+def _today_spent():
+    try:
+        used = json.loads(USAGE.read_text(encoding="utf-8"))
+    except (OSError, ValueError):
+        used = {}
+    return float(used.get("usd") or 0) if used.get("day") == time.strftime("%Y-%m-%d") else 0.0
+
+
+def _add_spent(usd):
+    USAGE.parent.mkdir(parents=True, exist_ok=True)
+    USAGE.write_text(json.dumps({"day": time.strftime("%Y-%m-%d"), "usd": round(_today_spent() + usd, 5)}),
+                     encoding="utf-8")
 INDEED_COUNTRIES = {"AR", "AU", "AT", "BH", "BE", "BR", "CA", "CL", "CN", "CO", "CR", "CZ", "DK", "EC", "EG", "FI", "FR", "DE",
                     "GR", "HK", "HU", "IN", "ID", "IE", "IL", "IT", "JP", "KW", "LU", "MY", "MX", "MA", "NL", "NZ", "NG", "NO",
                     "OM", "PK", "PA", "PE", "PH", "PL", "PT", "QA", "RO", "SA", "SG", "ZA", "KR", "ES", "SE", "CH", "TW", "TH",
@@ -35,18 +68,61 @@ def _enabled_sources():
     return {s.strip().lower() for s in raw.split(",") if s.strip()}
 
 
+def _allowance(ctx, token):
+    """(spent this cycle, what the cycle allows by now) in USD, or None when Apify does not say."""
+    try:
+        d = ctx.http.get_json(LIMITS, params={"token": token}, retries=1).get("data") or {}
+        spent = float((d.get("current") or {}).get("monthlyUsageUsd") or 0)
+        cycle = d.get("monthlyUsageCycle") or {}
+        start = datetime.fromisoformat(cycle["startAt"].replace("Z", "+00:00"))
+        end = datetime.fromisoformat(cycle["endAt"].replace("Z", "+00:00"))
+    except Exception:  # noqa: BLE001 - no answer: fall back to the per-call cap alone
+        return None
+    budget = float(os.environ.get("APIFY_MONTHLY_USD") or 4.5)
+    hard = float(((d.get("limits") or {}).get("maxMonthlyUsageUsd")) or budget)
+    budget = min(budget, hard)
+    days = max(1.0, (end - start).total_seconds() / 86400)
+    elapsed = (datetime.now(timezone.utc) - start).total_seconds() / 86400
+    # today's share is spendable from the start of the day
+    return spent, budget * min(1.0, (math.floor(elapsed) + 1) / days)
+
+
 def _run(ctx, actor, payload, log_name):
     token = os.environ["APIFY_TOKEN"]
+    key = "limitPerSource" if "limitPerSource" in payload else "limit"
+    limit = payload.get(key) or 100
+    price = PRICE.get(actor, 0.002)
+    with _budget_lock:          # parallel sources must not all read the same "room left"
+        daily = float(os.environ.get("APIFY_DAILY_USD") or float(os.environ.get("APIFY_MONTHLY_USD") or 4.5) / 30)
+        today = _today_spent()
+        room, why = daily - today, f"${today:.3f} of today's ${daily:.2f} (APIFY_DAILY_USD)"
+        cycle = _allowance(ctx, token)
+        if cycle is not None and cycle[1] - cycle[0] < room:
+            room, why = cycle[1] - cycle[0], f"${cycle[0]:.2f} of ${cycle[1]:.2f} this cycle (APIFY_MONTHLY_USD)"
+        # fewer results rather than none: the call is cut to what the budget still pays for
+        fits = int((room - START_USD) / price) if room > START_USD else 0
+        if fits < 10:
+            ctx.log(f"  {log_name}: skipped - Apify budget used: {why}")
+            return []
+        if fits < limit:
+            ctx.log(f"  {log_name}: {fits} result(s) instead of {limit} - Apify budget: {why}")
+            payload = dict(payload, **{key: fits})
+            limit = fits
     url = RUN_SYNC.format(actor=actor.replace("/", "~"))
     r = ctx.http.post(url, json=payload, params={"token": token, "timeout": 240, "memory": 1024},
                       timeout=280, retries=0)
     if r.status_code == 408:
+        with _budget_lock:      # a timed-out run is still billed for what it scraped
+            _add_spent(limit * price + START_USD)
         ctx.log(f"  {log_name}: actor timed out; partial results dropped")
         return []
     if r.status_code >= 400:
         raise RuntimeError(f"apify {actor}: HTTP {r.status_code} {r.text[:120]}")
     data = r.json()
-    return data if isinstance(data, list) else []
+    data = data if isinstance(data, list) else []
+    with _budget_lock:
+        _add_spent(len(data) * PRICE.get(actor, 0.002) + START_USD)
+    return data
 
 
 def _window_days(ctx):

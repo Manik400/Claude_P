@@ -9,3 +9,6 @@ __pycache__/
 
 # companies.txt backups from `careers_bot.py resolve --write` (the file itself is tracked)
 *.txt.bak
+
+# build_companies.py probe results (local cache, ~3 MB)
+job-hunt/assets/probe_cache.json

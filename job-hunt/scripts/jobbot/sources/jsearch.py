@@ -1,12 +1,42 @@
 """JSearch (RapidAPI) - Google-for-Jobs aggregator that also carries Indeed/Glassdoor/LinkedIn postings.
 Set RAPIDAPI_KEY (free tier at https://rapidapi.com/letscrape-6bRBa3QguO5/api/jsearch)."""
+import json
 import os
+import threading
+import time
+from pathlib import Path
 
 from ..config import COUNTRIES
 from ..textutil import clean_company, clean_title, normalize_ws, parse_date
 from .base import Source
 
-API = "https://jsearch.p.rapidapi.com/search"
+# JSearch moved its search to /search-v2 (the old /search now answers 404) and nests the
+# results as {"data": {"jobs": [...], "cursor": ...}}.
+API = "https://jsearch.p.rapidapi.com/search-v2"
+
+# The free plan is ~200 requests a month and the job-hunt search runs every hour, so calls
+# are budgeted per day (JSEARCH_DAILY_MAX, default 6 = ~180/month). The count lives next to
+# the other per-PC state; on GitHub Actions each run starts fresh, so keep that search daily.
+USAGE = Path(os.environ.get("LOCALAPPDATA") or Path.home()) / "JobHuntPhone" / "jsearch_usage.json"
+_usage_lock = threading.Lock()
+
+
+def _take_budget() -> bool:
+    limit = int(os.environ.get("JSEARCH_DAILY_MAX") or 6)
+    today = time.strftime("%Y-%m-%d")
+    with _usage_lock:
+        try:
+            used = json.loads(USAGE.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            used = {}
+        if used.get("day") != today:
+            used = {"day": today, "n": 0}
+        if used["n"] >= limit:
+            return False
+        used["n"] += 1
+        USAGE.parent.mkdir(parents=True, exist_ok=True)
+        USAGE.write_text(json.dumps(used), encoding="utf-8")
+        return True
 
 
 class JSearch(Source):
@@ -24,10 +54,16 @@ class JSearch(Source):
         date_posted = ("today" if h and h <= 24 else "3days" if h and h <= 72
                        else "week" if h and h <= 168 else "month")
         for kw in ctx.keywords():
+            if not _take_budget():
+                ctx.log(f"  JSearch: today's budget of {os.environ.get('JSEARCH_DAILY_MAX') or 6} request(s) is used; skipping")
+                break
             params = {"query": f"{kw} in {cname}", "country": country.lower(), "date_posted": date_posted,
-                      "page": 1, "num_pages": 2}
+                      "page": 1, "num_pages": 1}
             data = ctx.http.get_json(API, params=params, headers=headers)
-            for it in data.get("data") or []:
+            rows = data.get("data") or []
+            if isinstance(rows, dict):
+                rows = rows.get("jobs") or []
+            for it in rows:
                 jid = str(it.get("job_id"))
                 if jid in seen:
                     continue

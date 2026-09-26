@@ -19,7 +19,7 @@ is resolved on the first run by jobbot.careers.resolve and remembered in assets/
 import os
 from dataclasses import dataclass, field
 
-ATS_TYPES = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "workday")
+ATS_TYPES = ("greenhouse", "lever", "ashby", "smartrecruiters", "workable", "recruitee", "workday", "personio", "breezy", "bamboohr")
 AUTO = ("auto", "-", "?", "unknown", "")
 LINK = ("link", "url", "official", "site")
 DEFAULT_PATH = os.path.join(os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))),
@@ -59,6 +59,12 @@ class Company:
             return f"https://apply.workable.com/{b}"
         if self.ats == "recruitee":
             return f"https://{b}.recruitee.com"
+        if self.ats == "personio":
+            return f"https://{b}.jobs.personio.de"
+        if self.ats == "breezy":
+            return f"https://{b}.breezy.hr"
+        if self.ats == "bamboohr":
+            return f"https://{b}.bamboohr.com/careers"
         if self.ats == "workday":
             host, _, site = b.split("/", 2)
             return f"https://{host}/{site}"

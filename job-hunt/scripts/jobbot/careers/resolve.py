@@ -15,6 +15,7 @@ the order that costs the least and lies the least:
 What answers is written to assets/boards_cache.json, so the next run goes straight to it,
 and `careers_bot.py resolve --write` folds the findings back into companies.txt.
 """
+import html as htmlmod
 import json
 import os
 import re
@@ -40,6 +41,9 @@ _URL_RULES = [
     ("smartrecruiters", re.compile(r"(?:jobs|careers|api)\.smartrecruiters\.com/(?:v1/companies/)?([A-Za-z0-9_-]+)", re.I)),
     ("workable", re.compile(r"apply\.workable\.com/(?:api/v1/widget/accounts/)?([A-Za-z0-9_-]+)", re.I)),
     ("recruitee", re.compile(r"https?://([A-Za-z0-9_-]+)\.recruitee\.com", re.I)),
+    ("personio", re.compile(r"https?://([A-Za-z0-9_-]+)\.jobs\.personio\.(?:de|com)", re.I)),
+    ("breezy", re.compile(r"https?://([A-Za-z0-9_-]+)\.breezy\.hr", re.I)),
+    ("bamboohr", re.compile(r"https?://([A-Za-z0-9_-]+)\.bamboohr\.com/(?:careers|jobs)", re.I)),
 ]
 # <sub>.wdN.myworkdayjobs.com, then - in any of the shapes Workday hands out - an optional
 # wday/cxs prefix, an optional locale, and one or two path segments: <site> alone (the tenant is
@@ -139,6 +143,20 @@ def verify(http, ats, board, timeout_retries=0):
             d = http.get_json(f"https://apply.workable.com/api/v1/widget/accounts/{board}?details=true",
                               retries=timeout_retries)
             return len(d.get("jobs") or [])
+        if ats == "personio":
+            r = http.get(f"https://{board}.jobs.personio.de/xml", retries=timeout_retries, allow_redirects=False)
+            if r.status_code != 200 or "xml" not in r.headers.get("content-type", ""):
+                return None
+            return r.text.count("<position>")
+        if ats == "bamboohr":
+            r = http.get(f"https://{board}.bamboohr.com/careers/list", headers={"Accept": "application/json"},
+                         retries=timeout_retries, allow_redirects=False)
+            if r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
+                return None
+            return len(r.json().get("result") or [])
+        if ats == "breezy":
+            d = http.get_json(f"https://{board}.breezy.hr/json", retries=timeout_retries)
+            return len(d) if isinstance(d, list) else None
         if ats == "workday":
             host, tenant, site = board.split("/", 2)
             r = http.post(f"https://{host}/wday/cxs/{tenant}/{site}/jobs",
@@ -152,7 +170,7 @@ def verify(http, ats, board, timeout_retries=0):
     return None
 
 
-PROBE_ORDER = ("greenhouse", "ashby", "lever", "smartrecruiters", "workable", "recruitee")
+PROBE_ORDER = ("greenhouse", "ashby", "lever", "smartrecruiters", "workable", "recruitee", "breezy", "personio")
 
 
 def probe_slug(http, slug, order=PROBE_ORDER):
@@ -185,6 +203,13 @@ def owner(http, ats, board):
         if ats == "smartrecruiters":
             d = http.get_json(f"https://api.smartrecruiters.com/v1/companies/{board}/postings?limit=1", retries=0) or {}
             return (((d.get("content") or [{}])[0]).get("company") or {}).get("name") or ""
+        if ats == "breezy":
+            d = http.get_json(f"https://{board}.breezy.hr/json", retries=0) or []
+            return ((d[0] if d else {}).get("company") or {}).get("name") or ""
+        if ats == "personio":
+            r = http.get(f"https://{board}.jobs.personio.de/xml", retries=0, allow_redirects=False)
+            m = re.search(r"<subcompany>(.*?)</subcompany>", r.text if r.status_code == 200 else "", re.S)
+            return htmlmod.unescape(m.group(1).strip()) if m else ""
         if ats in ("ashby", "lever"):
             url = f"https://jobs.ashbyhq.com/{board}" if ats == "ashby" else f"https://jobs.lever.co/{board}"
             r = http.get(url, retries=0, allow_block=True)
@@ -232,6 +257,9 @@ _PAGE_HINTS = re.compile(r"(?:boards|job-boards)\.(?:eu\.)?greenhouse\.io/[A-Za-
                          r"|jobs\.smartrecruiters\.com/[A-Za-z0-9_-]+"
                          r"|apply\.workable\.com/[A-Za-z0-9_-]+"
                          r"|[A-Za-z0-9_-]+\.recruitee\.com"
+                         r"|[A-Za-z0-9_-]+\.jobs\.personio\.(?:de|com)"
+                         r"|[A-Za-z0-9_-]+\.breezy\.hr"
+                         r"|[A-Za-z0-9_-]+\.bamboohr\.com/(?:careers|jobs)"
                          r"|[A-Za-z0-9-]+\.wd\d+\.myworkdayjobs\.com/[^\"'<> ]+", re.I)
 
 

@@ -60,6 +60,7 @@ HEADER = """# Companies whose career pages the careers bot reads (phone page -> 
 # One company per line:   Name | ats | board | note
 #
 #   ats     greenhouse | lever | ashby | smartrecruiters | workable | recruitee | workday
+#           | personio | breezy | bamboohr
 #           auto  = find the board on the first run (and remember it in assets/boards_cache.json)
 #           link  = no public API; the note holds the careers URL to apply through
 #   board   the company's id on that job board:
@@ -69,6 +70,9 @@ HEADER = """# Companies whose career pages the careers bot reads (phone page -> 
 #             smartrecruiters  jobs.smartrecruiters.com/<board>      e.g. grab
 #             workable         apply.workable.com/<board>
 #             recruitee        <board>.recruitee.com                 e.g. bunq
+#             personio         <board>.jobs.personio.de              e.g. personio
+#             breezy           <board>.breezy.hr
+#             bamboohr         <board>.bamboohr.com/careers
 #             workday          <host>/<tenant>/<site> from the careers URL
 #                              e.g. nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite
 #   note    free text shown on the phone - and, if you paste a careers URL here, the link
@@ -255,7 +259,7 @@ _NOLOCK = _NullLock()
 
 
 def search_companies(companies, keep, roles, details, workers, place=None, use_ai=True, cache=None):
-    http = Http(log=log, min_interval=0.35)
+    http = Http(log=log, min_interval=0.12)   # per job-board host; boards run in parallel
     statuses, jobs, recruiters = {}, [], {}
     cache = load_cache() if cache is None else cache
     fix = make_resolver(http, cache, use_ai=use_ai, lock=threading.Lock())
@@ -573,7 +577,7 @@ def main(argv=None):
     p.add_argument("--must", help="keep only titles containing all of these terms (comma list)")
     p.add_argument("--resume", help="resume (.pdf/.docx/.txt) for the match score")
     p.add_argument("--details", type=int, default=120, help="full descriptions fetched per SmartRecruiters/Workday company")
-    p.add_argument("--workers", type=int, default=6)
+    p.add_argument("--workers", type=int, default=16)
     p.add_argument("--no-ai-boards", action="store_true",
                    help="do not ask the local model (Ollama) for a board when one cannot be found")
     p.add_argument("--out", help="output JSON path")
@@ -582,7 +586,7 @@ def main(argv=None):
     p = sub.add_parser("check", help="check every company in the list answers")
     p.add_argument("--companies")
     p.add_argument("--companies-file")
-    p.add_argument("--workers", type=int, default=6)
+    p.add_argument("--workers", type=int, default=16)
     p.add_argument("--no-ai-boards", action="store_true")
     p.set_defaults(fn=cmd_check)
 

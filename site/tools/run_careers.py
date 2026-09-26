@@ -37,7 +37,9 @@ def main():
 
     argv = [sys.executable, BOT, "run", "--out", out, "--role", ",".join(roles),
             "--countries", env("INPUT_COUNTRIES", "worldwide"), "--relocation", env("INPUT_RELOCATION", "any"),
-            "--fit", env("INPUT_FIT", "default"), "--days", env("INPUT_DAYS") or "0"]
+            "--fit", env("INPUT_FIT", "default"), "--days", env("INPUT_DAYS") or "0",
+            # ~10k boards on many hosts; each host is still throttled on its own
+            "--workers", env("INPUT_WORKERS", "32")]
     if env("INPUT_EXPERIENCE"):
         argv += ["--experience", env("INPUT_EXPERIENCE")]
     if env("INPUT_COMPANIES"):

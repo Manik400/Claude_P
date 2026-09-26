@@ -54,6 +54,8 @@ remotive       | on  | Remotive. Exact times
 remoteok       | on  | RemoteOK. Exact times
 jobicy         | on  | Jobicy. Exact times
 workingnomads  | on  | Working Nomads. Exact times
+himalayas      | on  | Himalayas. ~100k remote postings, search API; exact times
+weworkremotely | on  | We Work Remotely. Programming / devops RSS; exact times
 
 # ---- blocked for scripts: reached through search links / Apify instead
 # Indeed, Glassdoor, Naukri, StepStone, Hirist, Jobly, CareerCross, GaijinPot and

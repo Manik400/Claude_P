@@ -5,6 +5,7 @@ from .arbeitnow import Arbeitnow
 from .daijob import Daijob
 from .duunitori import Duunitori
 from .firecrawl import FirecrawlSearch
+from .himalayas import Himalayas
 from .infojobs import InfoJobs
 from .instahyre import Instahyre
 from .japandev import JapanDev
@@ -22,6 +23,7 @@ from .tecnoempleo import Tecnoempleo
 from .themuse import TheMuse
 from .tokyodev import TokyoDev
 from .wantedly import Wantedly
+from .weworkremotely import WeWorkRemotely
 from .wellfound import Wellfound
 from .workingnomads import WorkingNomads
 from .xing import Xing
@@ -30,7 +32,7 @@ from .xing import Xing
 ALL_SOURCES = [
     LinkedIn(), Seek(), Xing(), Arbeitnow(), Duunitori(), Tecnoempleo(), InfoJobs(), Wellfound(),
     TokyoDev(), JapanDev(), Daijob(), Wantedly(), JobThai(), TheMuse(), LandingJobs(), RelocateMe(),
-    Instahyre(), Remotive(), RemoteOK(), Jobicy(), WorkingNomads(),
+    Instahyre(), Remotive(), RemoteOK(), Jobicy(), WorkingNomads(), Himalayas(), WeWorkRemotely(),
     Adzuna(), Jooble(), JSearch(), FirecrawlSearch(),
     ApifyNaukri(), ApifyIndeed(), ApifyLinkedIn(),
 ]

@@ -50,10 +50,12 @@ def firecrawl(env):
 
 def jsearch(env):
     q = urllib.parse.urlencode({"query": "python developer in India", "num_pages": 1, "country": "in"})
-    code, body = call("https://jsearch.p.rapidapi.com/search?" + q,
+    code, body = call("https://jsearch.p.rapidapi.com/search-v2?" + q,
                       {"X-RapidAPI-Key": env["RAPIDAPI_KEY"], "X-RapidAPI-Host": "jsearch.p.rapidapi.com"})
     if code == 200:
-        return True, "%d jobs returned" % len(body.get("data") or [])
+        rows = body.get("data") or []
+        rows = rows.get("jobs") or [] if isinstance(rows, dict) else rows
+        return True, "%d jobs returned" % len(rows)
     hint = {403: "not subscribed to JSearch - press Subscribe (Basic, free) on its RapidAPI page",
             401: "key wrong", 429: "monthly free quota used up"}.get(code, body.get("message", ""))
     return False, "HTTP %s - %s" % (code, hint)
@@ -69,7 +71,13 @@ def adzuna(env):
 def jooble(env):
     code, body = call("https://jooble.org/api/" + env["JOOBLE_API_KEY"], {"Content-Type": "application/json"},
                       json.dumps({"keywords": "python", "location": "India"}).encode())
-    return (True, "%s jobs" % body.get("totalCount")) if code == 200 else (False, "HTTP %s - key wrong" % code)
+    if code == 200:
+        return True, "%s jobs" % body.get("totalCount")
+    # jooble.org answers 403 to some networks for every request (its docs page included), so a
+    # 403 only means "key wrong" when a request without any key gets through
+    if code == 403 and call("https://jooble.org/api/about")[0] == 403:
+        return False, "HTTP 403 - jooble.org refuses this network (key not tested); GitHub runs may still work"
+    return False, "HTTP %s - key wrong" % code
 
 
 CHECKS = [
