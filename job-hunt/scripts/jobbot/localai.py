@@ -20,7 +20,9 @@ module reports unavailable, so nothing here is ever required):
 
     scoring.py / naukri score.py   a semantic resume<->job similarity term
     job_bot.py / naukri export.py  a one-line "why it fits / gap" for the top jobs
-    naukri answers.py              screening answers, from your facts sheet only
+    naukri answers.py              screening answers, from your facts sheet only; whether a
+                                   new question is one you already answered (same_question);
+                                   open questions written from your resume (write_answer)
     careers_bot.py                 a second opinion on relocation / visa wording
 
 Nothing runs at import. `available()` only checks that the packages import;
@@ -153,7 +155,10 @@ def threads() -> int:
 # ----------------------------------------------------------------- ollama
 
 OLLAMA_PREFERRED = ("qwen", "llama", "mistral", "phi", "gemma", "deepseek")
-_ollama = {"checked": 0.0, "url": None, "model": None}
+_ollama = {"checked": 0.0, "url": None, "model": None, "names": []}
+# The personal model naukri/jobs/ai_train.py builds from your answers (`ollama create`).
+# Used for screening answers only; everything else talks to the base model.
+PERSONAL_MODEL = "jobbot-answers"
 
 
 def ollama_url() -> str:
@@ -169,6 +174,7 @@ def _pick_ollama_model(names):
             if n == want or n.split(":")[0] == want.split(":")[0]:
                 return n
         return want if names else None
+    names = [n for n in names if not n.startswith(PERSONAL_MODEL)]
     for family in OLLAMA_PREFERRED:
         for n in names:
             if n.lower().startswith(family) and "embed" not in n.lower():
@@ -192,9 +198,10 @@ def ollama_ready(recheck_after: float = 60.0) -> bool:
         import requests
         r = requests.get(ollama_url() + "/api/tags", timeout=2.5)
         names = [m.get("name") or m.get("model") or "" for m in (r.json().get("models") or [])]
-        _ollama["model"] = _pick_ollama_model([n for n in names if n])
+        _ollama["names"] = [n for n in names if n]
+        _ollama["model"] = _pick_ollama_model(_ollama["names"])
     except Exception:  # noqa: BLE001 - not running, wrong port, no requests
-        _ollama["model"] = None
+        _ollama["model"], _ollama["names"] = None, []
     return bool(_ollama["model"])
 
 
@@ -202,11 +209,18 @@ def ollama_model() -> str | None:
     return _ollama["model"] if ollama_ready() else None
 
 
-def _ask_ollama(prompt, system, max_tokens, json_mode, temperature, limit):
+def personal_model() -> str | None:
+    """The model built from your answers, when Ollama serves it."""
+    if not ollama_ready():
+        return None
+    return next((n for n in _ollama["names"] if n.split(":")[0] == PERSONAL_MODEL), None)
+
+
+def _ask_ollama(prompt, system, max_tokens, json_mode, temperature, limit, model=None):
     """One /api/chat completion against the Ollama server. None when it cannot answer."""
     import requests
     body = {
-        "model": _ollama["model"],
+        "model": model or _ollama["model"],
         "messages": [m for m in ({"role": "system", "content": system} if system else None,
                                  {"role": "user", "content": prompt}) if m],
         "stream": False,
@@ -458,18 +472,21 @@ def extract_json(text: str):
 
 
 def ask(prompt: str, *, system: str = "", max_tokens: int = 200, json: bool = False,
-        schema: dict | None = None, temperature: float = 0.0, timeout: float | None = None):
+        schema: dict | None = None, temperature: float = 0.0, timeout: float | None = None,
+        personal: bool = False):
     """One chat completion. Returns text, a dict (json=True), or None.
 
     None means: no model, budget spent, the call overran its time, or (json)
     the reply held no object. Callers treat None as "carry on without it".
+    `personal` asks the model built from your answers, when Ollama has it.
     """
     if budget_left() <= 0:
         return None
     limit = min(timeout or 60.0, budget_left())
     sys_text = (NO_THINK + " " + system).strip()
     if ollama_ready():
-        return _ask_ollama(prompt, sys_text, max_tokens, json, temperature, limit)
+        return _ask_ollama(prompt, sys_text, max_tokens, json, temperature, limit,
+                           model=personal_model() if personal else None)
     llm = _llm()
     if llm is None:
         return None
@@ -543,8 +560,10 @@ def answer_from_facts(question: str, options: list[str] | None, facts_sheet: str
         % (facts_sheet, question, " | ".join(options) if options else "free text"))
     out = ask(prompt,
               system="You answer job-application screening questions ONLY from FACTS. If FACTS do not "
-                     "contain the answer, set answer to \"UNKNOWN\". Never guess numbers.",
-              max_tokens=80, json=True,
+                     "contain the answer, set answer to \"UNKNOWN\". Never guess numbers. Lines starting "
+                     "with 'answered:' are the candidate's own earlier answers to other questions; use one "
+                     "only when it asks for the same information.",
+              max_tokens=80, json=True, personal=True,
               schema={"type": "object",
                       "properties": {"answer": {"type": "string"}, "confidence": {"type": "number"},
                                      "basis": {"type": "string"}},
@@ -557,6 +576,66 @@ def answer_from_facts(question: str, options: list[str] | None, facts_sheet: str
         conf = 0.0
     return {"answer": str(out.get("answer", "")).strip(), "confidence": conf,
             "basis": str(out.get("basis", "")).strip()}
+
+
+def same_question(asked: str, saved: str, options: list[str] | None = None):
+    """{"same": bool, "confidence": 0..1} - do two screening questions ask for the same
+    information, so one saved answer fits both? None when no model answers."""
+    if not available("llm"):
+        return None
+    prompt = (
+        "SAVED QUESTION: %s\nNEW QUESTION: %s\nNEW QUESTION'S OPTIONS: %s\n\n"
+        "Would the answer to the saved question be exactly the right answer to the new question? "
+        "They must ask for the same fact (e.g. 'DOB' and 'Date of birth' do; 'years with Java' and "
+        "'years with JavaScript' do not; 'current CTC' and 'expected CTC' do not). "
+        "Return JSON: {\"same\": true|false, \"confidence\": 0.0-1.0}"
+        % (saved, asked, " | ".join(options) if options else "free text"))
+    out = ask(prompt, system="You compare two job-application questions. Be strict. Reply with JSON only.",
+              max_tokens=30, json=True,
+              schema={"type": "object", "properties": {"same": {"type": "boolean"}, "confidence": {"type": "number"}},
+                      "required": ["same", "confidence"]})
+    if not out:
+        return None
+    try:
+        conf = float(out.get("confidence") or 0)
+    except (TypeError, ValueError):
+        conf = 0.0
+    same = out.get("same")
+    return {"same": same is True or str(same).lower() == "true", "confidence": conf}
+
+
+def write_answer(question: str, context: str, examples: list[tuple[str, str]] | None = None,
+                 max_words: int = 120):
+    """{"answer", "confidence"} for an open question ("tell us about something you shipped"),
+    written from `context` (resume, facts, the job) only - or None / answer UNKNOWN."""
+    if not available("llm"):
+        return None
+    shots = "\n".join("Q: %s\nA: %s" % (q, a) for q, a in (examples or [])[:6])
+    prompt = (
+        "CANDIDATE CONTEXT (resume, facts, the job):\n%s\n\n%s"
+        "QUESTION FROM THE APPLICATION FORM: %s\n\n"
+        "Write the candidate's answer in first person. Answer exactly what is asked: about their own work, "
+        "use their real experience in the context; when it asks for an opinion (a product or tool they admire), "
+        "name one they have used from the context and say why. "
+        "at most %d words, plain text, no greeting, no placeholders. Mention only projects, employers, "
+        "technologies and numbers that appear in the context. If the context gives nothing to answer "
+        "it with, set answer to UNKNOWN. Return JSON: {\"answer\": \"...\", \"confidence\": 0.0-1.0}"
+        % ((context or "")[:5000],
+           ("HOW THE CANDIDATE ANSWERED OTHER QUESTIONS:\n" + shots + "\n\n") if shots else "",
+           question, max_words))
+    out = ask(prompt,
+              system="You fill in job applications for a candidate, truthfully and only from their own context. "
+                     "Reply with JSON only.",
+              max_tokens=min(600, max_words * 2 + 60), json=True, temperature=0.3, timeout=120, personal=True,
+              schema={"type": "object", "properties": {"answer": {"type": "string"}, "confidence": {"type": "number"}},
+                      "required": ["answer", "confidence"]})
+    if not out:
+        return None
+    try:
+        conf = float(out.get("confidence") or 0)
+    except (TypeError, ValueError):
+        conf = 0.0
+    return {"answer": str(out.get("answer", "")).strip(), "confidence": conf}
 
 
 def relocation_opinion(title: str, text: str):

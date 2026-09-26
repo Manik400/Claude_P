@@ -226,6 +226,23 @@ def release_for_retry(items: list) -> int:
     return len(items)
 
 
+def release_answered(queue: dict, questions) -> int:
+    """Company-site items that stopped at a question you have since answered go back in the queue."""
+    ready = []
+    for it in queue["items"]:
+        if it["status"] not in ("manual", "offsite"):
+            continue
+        m = re.search(r"cannot answer: (.*?) \([A-Za-z]:\\", it.get("note") or "") or \
+            re.search(r"cannot answer: (.*)$", it.get("note") or "")
+        asked = [q.strip() for q in (m.group(1).split(";") if m else []) if q.strip()]
+        if asked and all(questions.answered(q) for q in asked):
+            ready.append(it)
+    if ready:
+        release_for_retry(ready)
+        log("answers: %d company-site job(s) back in the queue - their questions are answered now" % len(ready))
+    return len(ready)
+
+
 def retry_by_hand(include_captcha: bool = False) -> int:
     """Every queue item left "apply by hand" (company site, login, no form...) goes back
     in the queue. CAPTCHA ones stay unless asked: a CAPTCHA will stop the next try too."""
@@ -311,13 +328,40 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
             elif kind == "notes":
                 for job_id, note in payload.items():
                     if isinstance(note, dict):
-                        dashboard.save_note({"job_id": job_id, "status": note.get("status", ""),
-                                             "note": note.get("note", "")})
+                        # only the fields sent: a Remove (hidden) must not wipe the status you set
+                        dashboard.save_note(dict({k: note[k] for k in ("status", "note", "hidden") if k in note},
+                                                 job_id=job_id))
+            elif kind == "reports":
+                n = remove_reports(pages, payload.get("remove") or [])
+                log("reports: %d removed from the index" % n)
             else:
                 log("unknown request %s in %s" % (kind, name))
         except Exception as exc:
             log("request %s failed: %s" % (name, exc))
     return counts
+
+
+def remove_reports(pages: str, ids: list) -> int:
+    """Drop reports the phone removed: out of data/index.json, their files deleted.
+
+    Their (kind, title) goes on the index's "hidden" list, which phone_publish reads,
+    so a Naukri page still on this PC is not published again on the next run.
+    """
+    import publish
+    ids = {str(i) for i in ids}
+    idx = publish.load_index(pages)
+    gone = [i for i in idx["items"] if i.get("id") in ids]
+    if not gone:
+        return 0
+    hidden = idx.setdefault("hidden", [])
+    for item in gone:
+        idx["items"].remove(item)
+        publish._remove_files(pages, item)
+        if [item.get("kind"), item.get("title")] not in hidden:
+            hidden.append([item.get("kind"), item.get("title")])
+    idx["hidden"] = hidden[-500:]
+    publish.save_index(pages, idx)
+    return len(gone)
 
 
 def auto_enqueue(queue: dict, cfg: dict, pages: str, passphrase: str, settings: dict) -> int:
@@ -554,8 +598,12 @@ def main(argv=None) -> int:
     settings = settings_of(queue, cfg)
     limit = args.limit or int(os.environ.get("NAUKRI_APPLY_LIMIT") or settings.get("limit") or 5)
 
-    # 3. Auto rule.
+    # 3. Auto rule, and company-site jobs whose questions you have answered since.
     auto_enqueue(queue, cfg, pages, passphrase, settings)
+    try:
+        release_answered(queue, questions)
+    except Exception as exc:  # noqa: BLE001 - the retry button still works
+        log("release answered: %s" % exc)
 
     # 4. Apply. A scan that is applying holds the browser profile, and this run then waits
     # for it (up to 15 min per browser start) - check in first, so the phone does not

@@ -66,6 +66,8 @@ ERROR_RE = re.compile(r"invalid input|is required|required field|please (enter|s
 PLACEHOLDER_RE = re.compile(r"^\s*(select an option|select|choose|please select|--)?\s*$", re.IGNORECASE)
 YEARS_RE = re.compile(r"\byears?\b|how long|how many", re.IGNORECASE)
 PHONE_RE = re.compile(r"phone|mobile", re.IGNORECASE)
+OPTIONAL_RE = re.compile(r"middle\s*name|\(optional\)|\boptional\b", re.IGNORECASE)
+LOCATION_RE = re.compile(r"city|location", re.IGNORECASE)
 
 # Reads the open dialog: every field, tagged with data-nk="<n>" so Python can
 # address it afterwards, plus the buttons, any validation text and the "2/4
@@ -99,16 +101,24 @@ SCAN_JS = r"""
     const lb = byIds(el.getAttribute('aria-labelledby')); if (lb) return lb;
     return el.getAttribute('aria-label') || el.getAttribute('placeholder') || '';
   };
+  // a radio's own label: its <label>, else its value ("Yes"), else the text beside it
+  const optLabel = el => labelOf(el) || el.value || norm((el.parentElement || {}).innerText || '').slice(0, 80);
   const groupOf = el => {
     const fs = el.closest('fieldset');
-    if (fs) { const lg = fs.querySelector('legend'); if (lg) return norm(lg.innerText); }
+    if (fs) { const lg = fs.querySelector('legend'); if (lg && norm(lg.innerText || lg.textContent)) return norm(lg.innerText || lg.textContent); }
     const rg = el.closest('[role=radiogroup],[role=group]');
     if (rg) { const t = byIds(rg.getAttribute('aria-labelledby')) || rg.getAttribute('aria-label'); if (t) return norm(t); }
+    // Climb to the first box holding more than the options themselves: without this a
+    // legend-less yes/no group came out as the question "Yes No" and every such job stopped.
+    const opts = el.type === 'radio' && el.name
+      ? Array.from(modal.querySelectorAll('input[type=radio][name="' + CSS.escape(el.name) + '"]')).map(optLabel).filter(Boolean) : [];
+    const strip = t => opts.reduce((acc, o) => acc.split(o).join(' '), t);
     let p = el.parentElement, depth = 0;
     const own = norm((el.parentElement || {}).innerText || '').length;
-    while (p && p !== modal && depth < 6) {
+    while (p && p !== modal && depth < 8) {
       const t = norm(p.innerText);
-      if (t.length < 300 && t.length > own + 3) return t;
+      const q = norm(strip(t).replace(/\b(required|optional)\b/gi, ' '));
+      if (t.length < 400 && t.length > own + 3 && q.replace(/[^A-Za-z0-9]/g, '').length > 3) return opts.length ? q : t;
       p = p.parentElement; depth++;
     }
     return '';
@@ -121,7 +131,7 @@ SCAN_JS = r"""
     el.setAttribute('data-nk', String(idx));
     const me = idx++;
     if (el.type === 'radio') {
-      const opt = {idx: me, label: labelOf(el) || norm((el.parentElement || {}).innerText || '').slice(0, 80), checked: el.checked};
+      const opt = {idx: me, label: optLabel(el), checked: el.checked};
       const last = fields[fields.length - 1];
       if (last && last.kind === 'radio' && last.name === el.name) { last.options.push(opt); return; }
       fields.push({kind: 'radio', name: el.name, label: groupOf(el), options: [opt],
@@ -291,8 +301,10 @@ def _fill_page(page, info: dict, facts: dict, phone: str | None, capture: dict) 
                 continue
             if kind == "email":
                 continue
-            answer, why = answers_mod.resolve(label, [], facts)
+            answer, why = answers_mod.resolve(label, [], facts, long_text=kind == "textarea")
             if answer is None:
+                if not field.get("required") and OPTIONAL_RE.search(label):
+                    continue                # "Middle name": optional, and there is none
                 capture.update(question=label, options=[], why=why)
                 return False, why
             if kind == "number" or YEARS_RE.search(label):
@@ -303,6 +315,15 @@ def _fill_page(page, info: dict, facts: dict, phone: str | None, capture: dict) 
                 box.fill(str(answer), timeout=4000)
             except Exception as exc:
                 return False, f"could not type into '{label[:50]}': {str(exc)[:80]}"
+            if LOCATION_RE.search(label):
+                # a city typeahead only takes a pick from its suggestions
+                page.wait_for_timeout(1200)
+                try:
+                    option = page.locator("[role=listbox] [role=option], .basic-typeahead__selectable").first
+                    if option.is_visible(timeout=1500):
+                        option.click(timeout=3000)
+                except Exception:
+                    pass
             remember(label, [], answer, why)
             page.wait_for_timeout(random.uniform(300, 700))
             continue

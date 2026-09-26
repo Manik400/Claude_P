@@ -2,13 +2,14 @@
 
 Inputs come from the environment (set by .github/workflows/apply.yml):
     INPUT_ACTION      queue | remove | retry | pause | resume | settings |
-                      answers | profile | notes   (apply = old name for queue)
+                      answers | profile | notes | reports   (apply = old name for queue)
     INPUT_PAYLOAD     JSON. By action:
                         queue     {report, jobs: "all" | [keys]}  or  {items: [job dicts]}
                         remove    {keys: [...]}       retry  {keys: [...]}
                         settings  {auto: {enabled, min_score, boards}, limit, offsite}
                         answers   {question: answer}
-                        profile   the answers form     notes  {job_id: {status, note}}
+                        profile   the answers form     notes  {job_id: {status, note, hidden}}
+                        reports   {remove: [report ids]}   drops published reports from the index
     INPUT_REPORT / INPUT_JOBS / INPUT_ANSWERS   old-style inputs, still accepted
     INPUT_NOTE        free text
     PAGES_REPO_URL    push URL for the gh-pages branch (set by the workflow)
@@ -24,7 +25,7 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes"}
+ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes", "reports"}
 
 
 def env(name, default=""):
@@ -67,7 +68,7 @@ def main():
             raise SystemExit("answers must be a non-empty JSON object")
         payload = {str(k): str(v) for k, v in payload.items()}
         request["answers"] = payload
-    elif action in ("remove", "retry", "settings", "profile", "notes") and not payload:
+    elif action in ("remove", "retry", "settings", "profile", "notes", "reports") and not payload:
         raise SystemExit("%s needs a payload" % action)
     request["payload"] = payload
 

@@ -69,8 +69,10 @@ def state() -> dict:
         {"question": e.get("question", ""), "answer": e.get("answer", ""), "options": e.get("options") or []}
         for e in questions._read_list(questions.BANK_PATH)
     ]
-    apps = [a for a in applications.load() if not a.get("dry_run")]
     notes = _load_notes()
+    # "hidden" is set by the phone's Remove button; the log itself keeps every attempt
+    apps = [a for a in applications.load() if not a.get("dry_run")
+            and not (notes.get(a.get("job_id")) or {}).get("hidden")]
     per_app = responses.per_application()
     for app in apps:
         app["response"] = per_app.get(app.get("job_id"))
@@ -157,6 +159,8 @@ def save_note(payload: dict) -> dict:
         entry["status"] = str(payload.get("status") or "")
     if "note" in payload:
         entry["note"] = str(payload.get("note") or "")
+    if "hidden" in payload:
+        entry["hidden"] = bool(payload.get("hidden"))
     entry["updated"] = datetime.now().isoformat(timespec="seconds")
     notes[job_id] = entry
     _save_notes(notes)

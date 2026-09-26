@@ -7,16 +7,21 @@ from other boards and career pages. One attempt per posting:
     1. From a Naukri / LinkedIn job page, click the offsite Apply button and
        follow the tab it opens. From any other URL, open it and click its
        Apply button if the form is not already on the page.
-    2. Stop at a wall. A visible password box, "sign in / create an account to
+    2. Clear what covers the page: a cookie banner is declined ("Reject all" /
+       "Necessary only", never "Accept"), a "get job alerts" pop-up is closed,
+       and job-alert / newsletter / search boxes are never taken for the form.
+       Then stop at a wall. A visible password box, "sign in / create an account to
        apply", a login URL, or a board known to need its own account
        -> "login-required". A visible CAPTCHA -> "captcha". Nothing is ever
        typed into a login form and no CAPTCHA is attempted.
     3. Fill the form from facts you gave: name, email, phone, links, location
        and the resume file (jobs.yaml `applicant:`, else your resume and
        data/profile.json), screening questions through answers.resolve() (the
-       same rules and answer bank the Naukri and LinkedIn walkers use),
+       same rules and answer bank the Naukri and LinkedIn walkers use,
+       including open questions written from your resume by the local model),
        "prefer not to say" on voluntary diversity questions, and the required
-       privacy / consent box.
+       privacy / consent box. Google Forms and other ARIA widgets (div radios,
+       checkboxes, dropdowns) are filled as well as plain inputs.
     4. A required field it cannot answer from those facts -> "career-incomplete"
        (nothing submitted; the question is in the note). Otherwise press
        Submit, follow up to five form pages, and look for a thank-you page:
@@ -148,9 +153,17 @@ NOT_ACTION = re.compile(r"\b(filters?|alerts?|later|save (for|job)|similar|share
                         r"with (linkedin|indeed|google|seek|xing)|go back|cancel|newsletter)\b", re.I)
 NEXT_TEXT = re.compile(r"^\s*(next|next step|continue|save (and|&) continue|proceed|review|weiter|nächster schritt|siguiente|"
                        r"continuar|suivant|continuer|seuraava|jatka|volgende|次へ|次に進む|ถัดไป)\s*[›>→]?\s*$", re.I)
-THANKS = re.compile(r"thank(s| you) for (applying|your (application|interest))|application (has been |was )?"
-                    r"(received|submitted|sent|complete)|we('ve| have) received your application|"
-                    r"successfully (applied|submitted)|your application is on its way", re.I)
+THANKS = re.compile(r"thank(s| you) for (applying|your (application|interest|submission))|application (has been |was )?"
+                    r"(received|submitted|sent|complete|successful)|we('ve| have) received your application|"
+                    r"successfully (applied|submitted|sent)|your application is on its way|"
+                    r"your response has been recorded|we('ll| will) be in touch", re.I)
+# Cookie banners are declined, never accepted; pop-ups that are not the form are closed.
+COOKIE_DECLINE = re.compile(r"^\W*((reject|decline|deny|refuse)( all| optional| non-essential| additional)?( cookies)?|"
+                            r"(use |allow |accept )?(only )?(strictly )?(necessary|essential|required)( cookies)?( only)?)\W*$", re.I)
+POPUP_CLOSE = re.compile(r"^\W*(no,? thanks?( you)?|not now|maybe later|close|dismiss|skip( for now)?|×|✕|✖|x)\W*$", re.I)
+# Boxes that are not the application: job alerts, newsletters, site search.
+NOT_THE_FORM = re.compile(r"job alert|create (an |email )?alert|receive (an )?alert|jobs by email|similar jobs|newsletter|"
+                          r"subscribe|talent (community|network|pool)|search jobs|keyword|\brole=search\b", re.I)
 LOGIN_WALL = re.compile(r"(sign|log)\s*-?\s*in to (apply|continue|your account)|create (an |your )?account to (apply|continue)|"
                         r"please (sign|log)\s*-?\s*in|register to apply|already have an account\?", re.I)
 LOGIN_URL = re.compile(r"/(login|log-in|signin|sign-in|sign_in|auth|sso|oauth|account/(create|register)|register)\b", re.I)
@@ -169,6 +182,8 @@ FIELD_RULES: list[tuple[str, str]] = [
     ("full_name", r"^\s*(full\s*|your\s*|legal\s*)?name\s*\*?\s*$|full\s*name|candidate\s*name"),
     ("current_company", r"current\s*(company|employer)|present\s*employer|company\s*name"),
     ("current_title", r"current\s*(job\s*)?(title|role|position|designation)"),
+    ("state", r"^\s*state\b|state\s*/\s*(province|region|ut)|\bprovince\b"),
+    ("pincode", r"pin\s*code|postal\s*code|zip\s*code|^\s*zip\b"),
     ("city", r"^\s*city|current\s*city|town"),
     ("location", r"location|where\s+(are\s+you|do\s+you)\s+(based|live)|address"),
     ("country", r"^\s*country"),
@@ -177,6 +192,8 @@ FIELD_RULES: list[tuple[str, str]] = [
     ("consent", r"privacy|consent|i\s+agree|terms|acknowledg|data\s*(protection|processing)|gdpr"),
 ]
 EEO = re.compile(dict(FIELD_RULES)["eeo"], re.I)
+CONSENT_Q = re.compile(r"i\s+agree|consent|acknowledg|certify|terms (and|&) conditions|privacy (policy|notice)", re.I)
+AGREE = re.compile(r"^\W*(yes|i agree|agree|i accept|accept|i confirm|confirm|i understand|i acknowledge|acknowledged?)\b", re.I)
 PLACEHOLDER = re.compile(r"^\s*(select|choose|please|pick|--|—|-\s*$)", re.I)
 DECLINE = re.compile(r"(decline|prefer not|do not wish|don'?t wish|not (to )?(say|disclose|specify)|rather not)", re.I)
 
@@ -196,7 +213,18 @@ SCAN_JS = r"""
       const c = p.querySelector('label, legend, .label, [class*=label], [class*=question]'); if (c && !c.contains(e)) t = txt(c); } }
     return t.slice(0, 300);
   };
-  const out = []; let n = 0;
+  // the box a field sits in (form / dialog / section): job-alert and search boxes are not the application
+  const ctxOf = e => {
+    // no form / dialog around it: the field's own small wrapper (a "create alert" box is often a bare div)
+    const c = e.closest('form, [role=dialog], dialog, [role=search], aside, section') ||
+      (e.parentElement && e.parentElement.parentElement !== document.body ? e.parentElement.parentElement : e.parentElement);
+    if (!c) return { ctx: '', ctxFields: 99 };
+    return { ctx: [c.tagName, c.id || '', String(c.getAttribute('class') || ''), c.getAttribute('role') || '',
+                   c.getAttribute('aria-label') || '', txt(c).slice(0, 200)].join(' '),
+             ctxFields: c.querySelector('input[type=file]') ? 99 :
+               c.querySelectorAll('input:not([type=hidden]):not([type=submit]):not([type=button]), textarea, select').length };
+  };
+  const out = []; let n = 0, g = 0;
   document.querySelectorAll('input, textarea, select').forEach(e => {
     const type = (e.type || e.tagName).toLowerCase();
     if (['hidden', 'submit', 'button', 'image', 'reset', 'search'].includes(type)) return;
@@ -214,7 +242,32 @@ SCAN_JS = r"""
       required: e.required || e.getAttribute('aria-required') === 'true' || /\*\s*$/.test(labelOf(e)),
       options: e.tagName === 'SELECT' ? Array.from(e.options).map(o => o.text.trim()).filter(Boolean) : [],
       selectedText: e.tagName === 'SELECT' && e.selectedIndex >= 0 ? e.options[e.selectedIndex].text.trim() : '',
-      password: type === 'password' });
+      password: type === 'password', ...ctxOf(e) });
+  });
+  // Google Forms and other ARIA widgets: div radios / checkboxes / dropdowns
+  document.querySelectorAll('[role=radio], [role=checkbox], [role=listbox]').forEach(e => {
+    if (['INPUT', 'SELECT', 'TEXTAREA'].includes(e.tagName) || e.querySelector('input, select')) return;
+    if (!vis(e) || e.getAttribute('aria-disabled') === 'true') return;
+    const role = e.getAttribute('role');
+    const item = e.closest('[role=listitem], fieldset, [role=radiogroup], [role=group]');
+    const grp = e.closest('[role=radiogroup], [role=group], [role=listitem], fieldset');
+    let q = '';
+    const head = item && item.querySelector('[role=heading], legend');
+    if (head) q = txt(head);
+    if (!q && grp && grp.getAttribute('aria-labelledby')) q = grp.getAttribute('aria-labelledby').split(' ').map(i => txt(document.getElementById(i))).join(' ');
+    if (!q && grp) q = grp.getAttribute('aria-label') || '';
+    if (!q) q = labelOf(e);
+    let gid = '';
+    if (grp && role !== 'listbox') { if (!grp.getAttribute('data-ca-g')) grp.setAttribute('data-ca-g', 'g' + (g++)); gid = grp.getAttribute('data-ca-g'); }
+    const idx = String(n++); e.setAttribute('data-ca', idx);
+    const picked = role === 'listbox' ? e.querySelector('[role=option][aria-selected=true]') : null;
+    out.push({ idx, tag: 'aria', type: role === 'listbox' ? 'aria-select' : role, name: '', id: e.id || '',
+      placeholder: '', autocomplete: '', label: q.slice(0, 300), legend: q.slice(0, 300), group: gid,
+      optionLabel: (e.getAttribute('aria-label') || e.getAttribute('data-value') || e.getAttribute('data-answer-value') || txt(e)).trim(),
+      value: picked ? (picked.getAttribute('data-value') || '') : '', checked: e.getAttribute('aria-checked') === 'true',
+      required: /\*\s*$/.test(q) || !!(item && item.querySelector('[aria-label*="required" i]')) || (grp && grp.getAttribute('aria-required') === 'true'),
+      options: role === 'listbox' ? Array.from(e.querySelectorAll('[role=option]')).map(o => (o.getAttribute('data-value') || txt(o)).trim()).filter(Boolean) : [],
+      selectedText: '', password: false, ...ctxOf(e) });
   });
   return out;
 })()
@@ -272,7 +325,10 @@ def applicant(profile: dict, config: dict) -> dict:
     github = re.search(r"github\.com/[\w\-]+", text, re.I)
     name = app.get("name") or (profile.get("name") or "").strip()
     name = " ".join(w[:1].upper() + w[1:] for w in name.split())
-    location = app.get("location") or (profile.get("location") or "").replace(", INDIA", ", India")
+    # "gurgaon ,haryana , india" (the dashboard's current location) -> Gurgaon / Haryana / India
+    place = [p.strip().title() for p in str(app.get("location") or (config.get("fact_overrides") or {}).get("current_location")
+                                             or profile.get("location") or "").split(",") if p.strip()]
+    location = ", ".join(place)
     stated_phone = str((config.get("answers") or {}).get("phone") or "")
     who = {
         "name": name,
@@ -284,8 +340,10 @@ def applicant(profile: dict, config: dict) -> dict:
         "github": app.get("github") or ("https://" + github.group(0) if github else ""),
         "website": app.get("website") or "",
         "location": location,
-        "city": app.get("city") or location.split(",")[0].strip(),
-        "country": app.get("country") or (location.split(",")[-1].strip() if "," in location else ""),
+        "city": app.get("city") or (place[0] if place else ""),
+        "state": app.get("state") or (place[1] if len(place) >= 3 else ""),
+        "country": app.get("country") or (place[-1] if len(place) >= 2 else ""),
+        "pincode": str(app.get("pincode") or app.get("zip") or ""),
         "current_company": app.get("current_company") or "",
         "current_title": app.get("current_title") or "",
         "resume": resume,
@@ -355,6 +413,53 @@ def captcha(page) -> bool:
     return False
 
 
+OVERLAY_JS = r"""
+(() => {
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && getComputedStyle(e).visibility !== 'hidden'; };
+  const txt = e => (e.innerText || e.value || '').replace(/\s+/g, ' ').trim();
+  const out = []; let k = 0;
+  document.querySelectorAll('button, a, [role=button], input[type=button]').forEach(b => {
+    if (!vis(b)) return;
+    const box = b.closest('[role=dialog], dialog, [aria-modal=true], [class*=modal i], [class*=popup i], [class*=overlay i], ' +
+      '[id*=cookie i], [class*=cookie i], [id*=consent i], [class*=consent i], [id*=onetrust i], [class*=banner i]');
+    if (!box) return;
+    const formy = !!box.querySelector('input[type=file]') ||
+      box.querySelectorAll('input:not([type=hidden]):not([type=checkbox]):not([type=radio]), textarea, select').length > 2;
+    b.setAttribute('data-ca-x', String(k));
+    out.push({ k: String(k++), t: txt(b).slice(0, 60), aria: (b.getAttribute('aria-label') || '').slice(0, 60), formy,
+      cookie: /cookie|consent|gdpr|onetrust|privacy/i.test([box.id, box.getAttribute('class') || '', txt(box).slice(0, 400)].join(' ')) });
+  });
+  return out;
+})()
+"""
+
+
+def dismiss_overlays(page) -> int:
+    """Decline a cookie banner and close pop-ups that are not the application form.
+    Returns how many were clicked."""
+    clicked = 0
+    for frame in _frames(page)[:4]:
+        for _round in range(3):
+            try:
+                found = frame.evaluate(OVERLAY_JS)
+            except Exception:
+                break
+            pick = next((b for b in found if b["cookie"] and COOKIE_DECLINE.match(b["t"] or b["aria"])), None)
+            if pick is None:
+                pick = next((b for b in found if not b["formy"] and not b["cookie"]
+                             and (POPUP_CLOSE.match(b["t"] or "") or re.fullmatch(r"\s*(close|dismiss)( dialog| modal| popup)?\s*",
+                                                                                   b["aria"] or "", re.I))), None)
+            if pick is None:
+                break
+            try:
+                frame.locator(f'[data-ca-x="{pick["k"]}"]').first.click(timeout=3000)
+                clicked += 1
+                frame.wait_for_timeout(700)
+            except Exception:
+                break
+    return clicked
+
+
 def _click_text(target, pattern: re.Pattern, selector="button, a, input[type=submit], [role=button]") -> bool:
     """Click the first visible control whose text matches. `target` is a page (all its frames) or one frame."""
     for frame in (_frames(target) if hasattr(target, "main_frame") else [target]):
@@ -385,10 +490,18 @@ def _form_frame(page):
             fields = frame.evaluate(SCAN_JS)
         except Exception:
             continue
+        fields = [f for f in fields if not _not_the_form(f)]
         useful = [f for f in fields if f["type"] not in ("checkbox",) or f["required"]]
         if len(useful) > len(best_fields):
             best, best_fields = frame, fields
     return best, best_fields
+
+
+def _not_the_form(field: dict) -> bool:
+    """A job-alert, newsletter or search box (a small one - a whole-page <form> is not judged by its text)."""
+    if re.search(r"search|keyword|\bquery\b", " ".join([field["name"], field["id"], field["placeholder"]]), re.I):
+        return True
+    return field.get("ctxFields", 99) <= 3 and bool(NOT_THE_FORM.search(field.get("ctx") or ""))
 
 
 # ------------------------------------------------------------------ filling
@@ -433,6 +546,50 @@ def _cover(who: dict, job: dict) -> str:
             f"and my profile is at {who.get('linkedin') or who.get('github') or ''}.\n\nKind regards,\n{who.get('name')}")
 
 
+MONTHS = {m: i for i, m in enumerate("jan feb mar apr may jun jul aug sep oct nov dec".split(), 1)}
+
+
+def _iso_date(text: str) -> str | None:
+    """'23 / 09 / 2003' or '2003-09-23' -> '2003-09-23' (what <input type=date> takes)."""
+    text = str(text or "")
+    named = re.search(r"(\d{1,2})\s+([A-Za-z]{3,9})\.?,?\s+(\d{4})", text)
+    if named:
+        month = MONTHS.get(named.group(2)[:3].lower())
+        text = f"{named.group(1)}/{month}/{named.group(3)}" if month else text
+    m = re.search(r"(\d{1,4})\s*[/\-. ]\s*(\d{1,2})\s*[/\-. ]\s*(\d{1,4})", text)
+    if not m:
+        return None
+    a, b, c = m.groups()
+    y, mo, d = (a, b, c) if len(a) == 4 else (c, b, a)     # otherwise DD/MM/YYYY, as Indian forms write it
+    if len(y) == 2:
+        y = "20" + y if int(y) < 50 else "19" + y
+    try:
+        from datetime import date as _date
+        return _date(int(y), int(mo), int(d)).isoformat()
+    except ValueError:
+        return None
+
+
+def _shaped(field: dict, value) -> str | None:
+    """The value as the input takes it: an ISO date for a date box, a bare number for a number box."""
+    text = str(value)
+    if field["type"] == "date":
+        return _iso_date(text)
+    if field["type"] == "number":
+        m = re.search(r"-?\d+(?:\.\d+)?", text)
+        return m.group(0) if m else None
+    return text
+
+
+def _stable(frame, field: dict):
+    """The field found by its id, name or label - for when its data-ca tag was lost to a re-render."""
+    if field["id"]:
+        return frame.locator(f'[id={json.dumps(field["id"])}]').first
+    if field["name"]:
+        return frame.locator(f'{field["tag"]}[name={json.dumps(field["name"])}]').first
+    return frame.get_by_label(field["label"].strip(" *")[:80]).first
+
+
 def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capture: dict) -> tuple[int, list[str]]:
     """Fill what can be filled from facts. Returns (filled, unanswered required questions)."""
     from . import answers as answers_mod
@@ -445,6 +602,16 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
 
     def loc(f):
         return frame.locator(f'[data-ca="{f["idx"]}"]')
+
+    def tick(f):
+        # a div radio / checkbox (Google Forms) takes a click; a real one a check
+        if f["tag"] == "aria":
+            loc(f).click(timeout=4000)
+        else:
+            loc(f).check(timeout=4000, force=True)
+
+    def ask(q, options, long_text=False):
+        return answers_mod.resolve(q, options, facts, job=job, long_text=long_text)
 
     def record(q, a, src):
         capture.setdefault("answers", []).append({"question": q, "options": [], "answer": a, "source": src})
@@ -467,22 +634,44 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                 required = any(m["required"] for m in members)
                 if f["type"] == "checkbox" and len(members) == 1:
                     if meaning == "consent" or (required and re.search(r"agree|consent|confirm|acknowledg|certify", q, re.I)):
-                        loc(f).check(timeout=4000, force=True)
+                        tick(f)
                         filled += 1
                         record(q, "checked", "consent")
                     elif required:
-                        blocked.append(q)
+                        # "Joining WhatsApp is Mandatory": your rules / saved answers decide
+                        answer, why = ask(q, ["Yes", "No"])
+                        if answer is not None and answers_mod.choose_option(answer, ["Yes", "No"]) == "Yes":
+                            tick(f)
+                            filled += 1
+                            record(q, "checked", why)
+                        else:
+                            blocked.append(q)
+                            capture.setdefault("question", q)
+                            capture.setdefault("why", why)
                     continue
                 options = [m["optionLabel"] or m["label"] for m in members]
+                if required and (meaning == "consent" or CONSENT_Q.search(q or "")):
+                    # "By submitting this application, I agree ..." offered as a group
+                    pick = next((m for m in members if AGREE.match(m["optionLabel"] or m["label"])), None)
+                    if pick:
+                        tick(pick)
+                        filled += 1
+                        record(q, pick["optionLabel"] or pick["label"], "consent")
+                        continue
                 if meaning == "eeo" or EEO.search(q or ""):
                     pick = next((m for m in members if DECLINE.search(m["optionLabel"] or m["label"])), None)
+                    if pick is None and required:
+                        # no "prefer not to say": only an answer you saved (gender ...) is used
+                        answer, _why = ask(q, options)
+                        choice = answers_mod.choose_option(answer, options) if answer is not None else None
+                        pick = next((m for m in members if (m["optionLabel"] or m["label"]) == choice), None)
                     if pick:
-                        loc(pick).check(timeout=4000, force=True)
+                        tick(pick)
                         filled += 1
                     elif required:
                         blocked.append(q)
                     continue
-                answer, why = answers_mod.resolve(q, options, facts)
+                answer, why = ask(q, options)
                 choice = answers_mod.choose_option(answer, options) if answer is not None else None
                 if choice is None:
                     if required:
@@ -492,7 +681,28 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                         capture.setdefault("why", why)
                     continue
                 target = next(m for m in members if (m["optionLabel"] or m["label"]) == choice)
-                loc(target).check(timeout=4000, force=True)
+                tick(target)
+                filled += 1
+                record(q, choice, why)
+                continue
+
+            # ---- ARIA dropdowns (Google Forms): open the list, click the option
+            if f["type"] == "aria-select":
+                if f["value"]:
+                    continue
+                options = [o for o in f["options"] if not PLACEHOLDER.match(o)]
+                answer, why = ask(q, options)
+                choice = answers_mod.choose_option(answer, options) if answer is not None else None
+                if choice is None:
+                    if f["required"]:
+                        blocked.append(q)
+                        capture.setdefault("question", q)
+                        capture.setdefault("options", options)
+                    continue
+                loc(f).click(timeout=4000)
+                frame.wait_for_timeout(700)
+                frame.locator(f'[role=option][data-value={json.dumps(choice)}]:visible').first.click(timeout=4000)
+                frame.wait_for_timeout(500)
                 filled += 1
                 record(q, choice, why)
                 continue
@@ -515,7 +725,7 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
             # ---- plain values from your details
             value = None
             if meaning in ("first_name", "last_name", "email", "phone", "linkedin", "github", "website",
-                           "current_company", "current_title", "city", "location", "country"):
+                           "current_company", "current_title", "city", "state", "pincode", "location", "country"):
                 value = who.get(meaning) or None
                 if meaning == "website" and not value:
                     value = who.get("github") or who.get("linkedin") or None
@@ -527,6 +737,9 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                 value = _cover(who, job) if f["required"] else None
             elif meaning == "eeo" and f["tag"] == "select":
                 pick = next((o for o in f["options"] if DECLINE.search(o)), None)
+                if pick is None and f["required"]:
+                    answer, _why = ask(q, [o for o in f["options"] if not PLACEHOLDER.match(o)])
+                    pick = answers_mod.choose_option(answer, f["options"]) if answer is not None else None
                 if pick:
                     loc(f).select_option(label=pick, timeout=4000)
                     filled += 1
@@ -541,7 +754,7 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     choice = next((o for o in options if o.lower() == str(value).lower()), None) or \
                         next((o for o in options if str(value).lower() in o.lower() or o.lower() in str(value).lower()), None)
                 if choice is None and meaning not in ("country", "city", "location"):
-                    answer, why = answers_mod.resolve(q, options, facts)
+                    answer, why = ask(q, options)
                     choice = answers_mod.choose_option(answer, options) if answer is not None else None
                 if choice is None:
                     if f["required"]:
@@ -555,7 +768,7 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                 continue
 
             if value is None:
-                answer, why = answers_mod.resolve(q, [], facts) if q else (None, "")
+                answer, why = ask(q, [], long_text=f["tag"] == "textarea") if q else (None, "")
                 if answer is None:
                     if f["required"]:
                         blocked.append(q or f["name"] or "a required field")
@@ -564,7 +777,16 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     continue
                 value = answer
                 record(q, answer, why)
-            loc(f).fill(str(value), timeout=5000)
+            value = _shaped(f, value)
+            if value is None:
+                if f["required"]:
+                    blocked.append(q or "a required field")
+                continue
+            try:
+                loc(f).fill(value, timeout=5000)
+            except Exception:
+                # the page re-rendered while the model was writing: find the box again by what does not change
+                _stable(frame, f).fill(value, timeout=5000)
             filled += 1
             # Autocomplete boxes (city pickers) want a pick from their list.
             if meaning in ("city", "location"):
@@ -669,7 +891,9 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
     current = page
     tailored_note = ""
     try:
+        dismiss_overlays(page)
         jd_text = job.get("description") or _body(page)      # the posting, for the tailored resume
+        job = dict(job, description=jd_text[:4000])           # ...and for answers written about this job
         if CLOSED.search(_body(page)):
             return "closed", "the listing no longer accepts applications"
         if offsite_click is not None:
@@ -686,7 +910,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             return "login-required", f"{host} needs its own account (sign in once with: python main.py --platform-login)"
 
         total_filled = 0
-        ats_tried = outbound_tried = False
+        ats_tried = outbound_tried = waited = False
         for step in range(8):
             if CLOSED.search(_body(current)):
                 return "closed", "the listing no longer accepts applications"
@@ -696,6 +920,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 ats_tried = True
                 current.goto(form_url, wait_until="domcontentloaded", timeout=45000)
                 current.wait_for_timeout(2500)
+            dismiss_overlays(current)
             wall = login_wall(current)
             if wall:
                 _shot(current, job, "-login")
@@ -708,6 +933,10 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if len(fillable) < 2:
                 if total_filled:
                     break               # submitted a page and no further form: check for a thank-you
+                if not waited:
+                    waited = True       # a slow single-page app: its form may still be rendering
+                    current.wait_for_timeout(4000)
+                    continue
                 page_now = current
                 nxt = _follow_click(current, lambda: _click_text(page_now, APPLY_TEXT))
                 if nxt is None and not outbound_tried:
@@ -750,8 +979,9 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             filled, blocked = fill_form(frame, fields, who, facts, job, capture)
             total_filled += filled + prefilled
             if blocked:
+                capture["blocked_all"] = blocked
                 shot = _shot(current, job, "-incomplete")
-                return "career-incomplete", f"cannot answer: {'; '.join(b[:60] for b in blocked[:3])} ({shot})"
+                return "career-incomplete", f"cannot answer: {'; '.join(b[:120] for b in blocked[:3])} ({shot})"
             if dry_run:
                 return "would-apply", f"{total_filled} field(s) filled; dry run ({_shot(current, job, '-dry')})"
 

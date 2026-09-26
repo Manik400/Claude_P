@@ -39,6 +39,8 @@ PAGE_PATH = JOBS_DIR / "applications.html"
 FIX_HINTS: list[tuple[str, str]] = [
     (r"^local-ai", "answered by the local model from your facts sheet - add an answer_rule in jobs.yaml to override, "
                    "or set local_ai_answers: false"),
+    (r"^ai-written", "written by the local model from your resume for this job - save your own wording under "
+                     "Track -> Answers to specific questions, or set ai_written_answers: false in jobs.yaml"),
     (r"your rule", "jobs.yaml -> answer_rules"),
     (r"your saved answer", "data/jobs/answer_bank.yaml"),
     (r"IT-skills table", "jobs.yaml -> skill_years (or the IT skills table on your Naukri profile)"),
@@ -89,7 +91,7 @@ def record(board: str, job, status: str, note: str, capture: dict | None = None,
             "fix": fix_hint(source),
         })
     blocked = None
-    if capture.get("question") and status in ("questionnaire", "questionnaire-failed"):
+    if capture.get("question") and (status in ("questionnaire", "questionnaire-failed") or "cannot answer" in (note or "")):
         blocked = {
             "question": capture.get("question"),
             "options": list(capture.get("options") or []),
@@ -115,6 +117,14 @@ def record(board: str, job, status: str, note: str, capture: dict | None = None,
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     with LOG_PATH.open("a", encoding="utf-8") as handle:
         handle.write(json.dumps(entry, ensure_ascii=False) + "\n")
+    if status == "applied" and not dry_run:
+        # the model's short answers in a form that went through are kept, so the next
+        # form asking the same thing gets the same answer without a model call
+        try:
+            from . import questions
+            questions.learn([a for a in answers if a["source"].startswith("local-ai")])
+        except Exception as exc:  # noqa: BLE001 - learning is a bonus; the log line is written
+            log.debug("learn skipped: %s", exc)
     return entry
 
 

@@ -43,6 +43,13 @@ SELF-LEARNING (`learn`) - data/metrics/learned.json, read by score.py:
     method, so the report shows which routes work and autoapply can try the
     likelier ones first (`strategy_rank`).
 
+    Screening answers learn too: the answer bank grows with every answer you
+    give and every short answer the local model gave in a form that went
+    through (questions.learn), the closest saved answers are shown to the model
+    with each new question, and with Ollama a personal model is rebuilt from the
+    bank after every scan (naukri/jobs/ai_train.py). The page lists the
+    questions that stopped the most applications lately - answer those first.
+
 Nothing learns from fewer than MIN_LABELS labelled jobs - until then the
 learned component is 0 and the page says so.
 """
@@ -268,6 +275,11 @@ def learn(save: bool = True) -> dict:
         "strategies": strategy_stats(attempts),
     }
     if save:
+        try:
+            from .jobs import ai_train
+            model["personal_model"] = ai_train.rebuild_if_changed()
+        except Exception as exc:  # noqa: BLE001 - the scoring model does not depend on it
+            model["personal_model"] = {"built": False, "why": str(exc)[:200]}
         METRICS.mkdir(parents=True, exist_ok=True)
         LEARNED.write_text(json.dumps(model, indent=1), encoding="utf-8")
         _MODEL_CACHE.clear()
@@ -544,13 +556,31 @@ def build_accuracy(days: int = 30) -> Path:
     return ACCURACY_HTML
 
 
+def blockers(attempts, days: int = 14, n: int = 12) -> list[tuple[str, int]]:
+    """The questions that stopped the most applications in the last `days` days."""
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    count: Counter = Counter()
+    for r in attempts:
+        if str(r.get("at", "")) < cutoff:
+            continue
+        asked = []
+        if (r.get("blocked") or {}).get("question"):
+            asked.append(r["blocked"]["question"])
+        m = re.search(r"cannot answer: (.*?)(?: \([A-Za-z]:\\|$)", r.get("note") or "")
+        if m:
+            asked += [q.strip() for q in m.group(1).split(";") if q.strip()]
+        for q in dict.fromkeys(asked):
+            count[q[:120]] += 1
+    return count.most_common(n)
+
+
 def _learned_summary(learned: dict, n: int = 12) -> dict:
     w = learned.get("weights") or {}
     ranked = sorted(w.items(), key=lambda kv: kv[1])
     return {"labels": learned.get("labels", 0), "label_kinds": learned.get("label_kinds", {}),
             "active": learned.get("active", False), "taste": sorted((learned.get("taste") or {}).keys()),
             "top_positive": ranked[::-1][:n], "top_negative": [kv for kv in ranked[:n] if kv[1] < 0],
-            "strategies": learned.get("strategies", {})}
+            "strategies": learned.get("strategies", {}), "personal_model": learned.get("personal_model") or {}}
 
 
 # ---------------------------------------------------------------- page
@@ -586,6 +616,15 @@ def _page(rows: dict, learned: dict) -> str:
     status = ("<b class='ok'>active</b> - adjusting scores by up to ±%g points" % LEARNED_CAP if summ["active"]
               else f"<b class='warn'>collecting</b> - needs {MIN_LABELS}+ labelled jobs before it changes any score")
     kinds = ", ".join(f"{k} {v}" for k, v in summ["label_kinds"].items()) or "none"
+    stops = "".join(f"<li>{e(q)} <b class='warn'>×{c}</b></li>" for q, c in blockers(_attempts())) or "<li>none lately</li>"
+    try:
+        from .jobs import questions as questions_mod
+        bank = questions_mod._read_list(questions_mod.BANK_PATH)
+    except Exception:  # noqa: BLE001
+        bank = []
+    pm = summ["personal_model"]
+    pm_line = (f"personal Ollama model <code>jobbot-answers</code> on {e(str(pm.get('base')))} with {pm.get('examples')} answer(s), "
+               f"rebuilt {e(str(pm.get('built_at')))}" if pm.get("built_at") else e(str(pm.get("why") or "not built yet")))
 
     return f"""<!doctype html><html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -636,5 +675,12 @@ waiting on your answer, manual = company site or no apply button.</p>
 <p class="note">{summ['labels']} labelled job(s): {e(kinds)}.{' Taste centroid from the local embedding model: ' + ', '.join(summ['taste']) + '.' if summ['taste'] else ''}
 Labels come from interviews / shortlists / offers (Gmail replies or the status you set), jobs you queue or remove on the phone, and successful applies.</p>
 <div class="cols"><div><b>Pushes a job up</b><ul>{pos}</ul></div><div><b>Pushes a job down</b><ul>{neg}</ul></div></div>
+</div></details></section>
+
+<section><details class="fgrp" data-acc="accuracy.answers" open><summary>Screening answers</summary><div class="body">
+<p class="note">{len(bank)} saved answer(s), {sum(1 for b in bank if b.get("learned"))} of them learned from forms that went through.
+Local model: {pm_line}.</p>
+<div class="cols"><div><b>Questions that stopped the most applications (14 days)</b><ul>{stops}</ul>
+<p class="note">Answer these once (phone: Queue or Track) and every job waiting on them is retried.</p></div></div>
 </div></details></section>
 </main>{SNIPPET}</body></html>"""

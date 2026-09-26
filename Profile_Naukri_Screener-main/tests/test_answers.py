@@ -18,10 +18,10 @@ sys.path.insert(0, str(Path(__file__).resolve().parent.parent))
 from naukri.jobs import answers  # noqa: E402
 
 PROFILE = {
-    "experience": "6 Years 3 Months",
-    "notice_period": "2 Months notice period",
-    "current_salary": "₹ 15,75,000",
-    "location": "Pune, INDIA",
+    "experience": "2 years",
+    "notice_period": "1 Months notice period",
+    "current_salary": "₹ 900000",
+    "location": "India",
     "it_skills": [
         "Playwright - 2025 1 Year 3 Months",
         "Python 3.12 2025 2 Years 1 Month",
@@ -29,19 +29,19 @@ PROFILE = {
 }
 CONFIG = {
     "profile_skills": ["QA Automation", "Selenium", "Pytest", "Playwright", "Python", "Jenkins"],
-    "answers": {"expected_ctc": "22 LPA", "willing_to_relocate": True},
+    "answers": {"expected_ctc": "14 LPA", "willing_to_relocate": True},
 }
 
 FACTS = answers.build_facts(PROFILE, CONFIG)
 
 ANSWERED = [
-    ("What is your notice period?", ["Immediate", "15 Days", "1 Month", "2 Months", "3 Months"], "2 Months"),
-    ("What is your current CTC?", [], "15.75"),
-    ("What is your current CTC in lakhs?", [], "15.75"),
-    ("What is your expected CTC?", [], "22"),
-    ("How many years of total experience do you have?", [], "6.25"),
-    ("What is your total experience in years?", [], "6.25"),
-    ("What is your current location?", [], "Pune"),
+    ("What is your notice period?", ["Immediate", "15 Days", "1 Month", "2 Months", "3 Months"], "1 Month"),
+    ("What is your current CTC?", [], "9"),
+    ("What is your current CTC in lakhs?", [], "9"),
+    ("What is your expected CTC?", [], "14"),
+    ("How many years of total experience do you have?", [], "2"),
+    ("What is your total experience in years?", [], "2"),
+    ("What is your current location?", [], "India"),
     ("Are you willing to relocate to Hyderabad?", ["Yes", "No"], "Yes"),
     # Per-skill duration comes from the IT-skills table, never from the total.
     ("How many years of experience do you have in Playwright?", [], "1.25"),
@@ -305,3 +305,63 @@ def test_rules_and_refusals_still_win_over_the_model(monkeypatch):
     # An unknown skill's years are an explicit refusal, never handed to the model.
     answer, why = answers.resolve("How many years of experience do you have in Kubernetes?", [], FACTS)
     assert answer is None and "local-ai" not in why
+
+
+# ------------------------------------------------ other wordings, place names, answer types
+
+def test_a_saved_answer_covers_other_wordings_of_the_same_field(monkeypatch):
+    from naukri import localai
+    from naukri.jobs import questions
+
+    monkeypatch.setattr(localai, "available", lambda kind="any": False)
+    facts = dict(FACTS)
+    facts["_bank"] = {questions.key(q): {"question": q, "answer": a} for q, a in [
+        ("DOB (Date of Birth)", "23 / 09 / 2003"), ("LinkedIn Profile", "https://www.linkedin.com/in/me"),
+        ("How many years with NestJS?", "1")]}
+    for asked in ("Date of birth", "Date of Birth (DD/MM/YYYY)*", "D.O.B"):
+        answer, why = answers.resolve(asked, [], facts)
+        assert answer == "23 / 09 / 2003" and "saved answer" in why, (asked, answer, why)
+    assert answers.resolve("Please provide your LinkedIn profile URL", [], facts)[0] == "https://www.linkedin.com/in/me"
+    # different skills never share an answer
+    assert answers.resolve("How many years with Django?", [], facts)[0] is None
+
+
+def test_place_names_are_split_and_cleaned():
+    facts = answers.build_facts(PROFILE, dict(CONFIG, fact_overrides={"current_location": "gurgaon ,haryana , india"}))
+    assert answers.resolve("What is your current location?", [], facts)[0] == "Gurgaon"
+    assert answers.resolve("State", [], facts)[0] == "Haryana"
+
+
+def test_availability_to_join_is_the_notice_period_in_words():
+    assert answers.resolve("When are you available to join?", [], FACTS)[0] == "2 months"
+    assert answers.resolve("Notice period (in days)", [], FACTS)[0] == "60"
+
+
+def test_yes_leads_an_option_sentence():
+    assert answers.choose_option("Yes", ["Yes, I have joined", "No"]) == "Yes, I have joined"
+    assert answers.choose_option("No", ["I agree", "I do not agree"]) == "I do not agree"
+
+
+def test_model_yes_to_a_non_yes_no_question_is_refused(monkeypatch):
+    _with_fake_ai(monkeypatch, {"answer": "yes", "confidence": 0.99, "basis": "stated_willing_to_relocate: yes"})
+    assert answers.resolve("Which state do you live in", [], FACTS)[0] is None
+
+
+def test_written_answers_need_the_model_and_stay_off_money_and_identity(monkeypatch):
+    from naukri import localai
+
+    calls = []
+    monkeypatch.setattr(localai, "available", lambda kind="any": True)
+    monkeypatch.setattr(localai, "answer_from_facts", lambda q, o, sheet: None)
+    monkeypatch.setattr(localai, "write_answer", lambda q, ctx, ex, max_words=120: calls.append(q) or
+                        {"answer": "I built the payments service in Python and Kafka end to end.", "confidence": 0.9})
+    monkeypatch.setattr(answers, "_resume_text", lambda facts: "Python Kafka payments service " * 20)
+    answer, why = answers.resolve("Something you shipped end to end that you're proud of?", [], FACTS)
+    assert answer.startswith("I built") and why.startswith("ai-written")
+    assert answers.resolve("What is your expected joining bonus?", [], FACTS)[0] is None
+    assert answers.resolve("Tell us your father's occupation", [], FACTS)[0] is None
+    assert calls == ["Something you shipped end to end that you're proud of?"]
+    # a number the resume does not hold is never written
+    monkeypatch.setattr(localai, "write_answer", lambda q, ctx, ex, max_words=120:
+                        {"answer": "I cut latency by 73 percent for our payments service.", "confidence": 0.9})
+    assert answers.resolve("Describe a challenge you solved", [], FACTS)[0] is None

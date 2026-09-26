@@ -13,9 +13,9 @@ on:
   workflow_dispatch:
     inputs:
       action:
-        description: "queue = add jobs; remove / retry = by key; pause / resume the queue; settings = auto rule, limit, offsite; answers = screening answers; profile = your answers form; notes = application status/notes"
+        description: "queue = add jobs; remove / retry = by key; pause / resume the queue; settings = auto rule, limit, offsite; answers = screening answers; profile = your answers form; notes = application status/notes (hidden: true removes one); reports = {remove: [report ids]}"
         type: choice
-        options: [queue, remove, retry, pause, resume, settings, answers, profile, notes]
+        options: [queue, remove, retry, pause, resume, settings, answers, profile, notes, reports]
         default: queue
       payload:
         description: "JSON payload (see site/tools/run_apply_queue.py)"

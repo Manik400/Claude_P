@@ -60,6 +60,10 @@ POLICIES: list[dict] = [
      "match": r"own laptop|personal laptop|internet connection|work from home setup", "default": "yes"},
     {"id": "currently_working", "label": "Currently employed",
      "match": r"currently (working|employed)|are you working", "default": "ask"},
+    {"id": "acknowledge", "label": "Mandatory steps (join the company's WhatsApp group, confirm you read the details)",
+     "match": r"\b(is|are) (mandatory|compulsory)\b|must join|(please|kindly) (join|confirm)|join (our|the) (whatsapp|telegram)|"
+              r"whatsapp group|i have read (and understood|the)",
+     "default": "yes"},
 ]
 
 FACT_FIELDS: list[dict] = [
@@ -67,6 +71,7 @@ FACT_FIELDS: list[dict] = [
     {"id": "phone", "label": "Mobile number", "hint": "LinkedIn Easy Apply asks for it", "kind": "text"},
     {"id": "willing_to_relocate", "label": "Willing to relocate", "kind": "bool"},
     {"id": "notice_buyout", "label": "Can buy out notice period", "kind": "bool"},
+    {"id": "nationality", "label": "Nationality", "hint": "e.g. Indian", "kind": "text"},
     {"id": "notice_period_months", "label": "Notice period (months)", "hint": "blank = from your Naukri profile", "kind": "text", "override": True},
     {"id": "current_ctc_lpa", "label": "Current CTC (LPA)", "hint": "blank = from your Naukri profile", "kind": "text", "override": True},
     {"id": "total_experience_years", "label": "Total experience (years)", "hint": "blank = from your Naukri profile", "kind": "text", "override": True},
@@ -74,7 +79,7 @@ FACT_FIELDS: list[dict] = [
 ]
 
 OVERRIDE_KEYS = ("notice_period_months", "current_ctc_lpa", "total_experience_years", "current_location")
-ANSWER_KEYS = ("expected_ctc", "phone", "willing_to_relocate", "notice_buyout")
+ANSWER_KEYS = ("expected_ctc", "phone", "willing_to_relocate", "notice_buyout", "nationality")
 
 
 def load() -> dict:

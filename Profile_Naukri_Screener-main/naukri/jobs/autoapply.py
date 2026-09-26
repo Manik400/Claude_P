@@ -34,6 +34,7 @@ import json
 import logging
 import os
 import random
+import re
 import time
 from datetime import date, timedelta
 from pathlib import Path
@@ -111,6 +112,38 @@ def backlog(days: int = 2) -> tuple[list[Job], list[dict]]:
             if card.get("job_id") and card.get("url"):
                 cards[str(card["job_id"])] = dict(card)
     return list(jobs.values()), list(cards.values())
+
+
+# A radio group read without its question ("Yes No") - a reading bug fixed in
+# linkedin_apply; jobs parked on it are worth another look.
+OPTIONS_ONLY = re.compile(r"^(yes|no|ja|nee|nein|s[ií]|oui|non|はい|いいえ|ใช่|ไม่ใช่|prefer not to (say|disclose)|\s)+$", re.I)
+
+
+def unblocked_waiting(ledger: Ledger, answerable, days: int = 21, limit: int = 80) -> tuple[list[Job], list[dict]]:
+    """Jobs parked on a question that can be answered now, newest first.
+
+    absorb() re-attempts a job once, when your answer first arrives; a run that
+    then hit a daily cap or its time limit left it parked for good (306 of them
+    once). This finds them again: `answerable(question)` says whether your facts
+    or saved answers settle it today.
+    """
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    jobs, cards = [], []
+    for job_id, entry in sorted(ledger.entries.items(), key=lambda kv: str(kv[1].get("at", "")), reverse=True):
+        if entry.get("status") != WAITING or not entry.get("url") or str(entry.get("at", "")) < cutoff:
+            continue
+        m = re.search(r"cannot answer '(.*)' - ", entry.get("note") or "")
+        if not m or not (OPTIONS_ONLY.match(m.group(1)) or answerable(m.group(1))):
+            continue
+        if str(job_id).startswith("linkedin:"):
+            cards.append({"job_id": job_id, "title": entry.get("title"), "company": entry.get("company"),
+                          "url": entry["url"], "easy_apply": True})
+        else:
+            jobs.append(Job(job_id=job_id, title=entry.get("title") or "", company=entry.get("company") or "",
+                            url=entry["url"]))
+        if len(jobs) + len(cards) >= limit:
+            break
+    return jobs, cards
 
 
 def _deadline() -> float | None:
@@ -203,6 +236,9 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     from . import simplify
 
     deadline = _deadline()
+    # Applying runs on your PC, not a 45-minute runner: give the local model room for the
+    # written answers (about a minute each on the CPU). LOCAL_AI_BUDGET_SECONDS still wins.
+    os.environ.setdefault("LOCAL_AI_BUDGET_SECONDS", "2400")
     facts = answers_mod.build_facts(profile, config)
     facts["_bank"] = questions.load_bank()
     phone = str(facts.get("stated_phone") or "").strip() or None
@@ -259,6 +295,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn)
         if status == "submitted":
             career_left[0] -= 1
+        if status == "career-incomplete" and not dry_run:
+            # the form's unanswerable questions wait for you like any screening question;
+            # answered once, every later form asking them is filled (tap retry on the phone)
+            for q in capture.get("blocked_all") or []:
+                if len(q) > 3 and q not in ("a required field", "file upload") and questions.record(q, capture.get("options") if q == capture.get("question") else [], job, board):
+                    summary["questions_saved"] += 1
         if not dry_run and status != "would-apply" and not career_mod.transient(status, note):
             ledger.record(job, career_mod.ledger_status(status), career_mod.TRIED + note)
             applications.record(board, job, {"submitted": "applied", "closed": "skipped"}.get(status, "offsite"),
@@ -277,7 +319,10 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         cards = list(cards) + extra_cards
         summary["backlog"] = len(extra_jobs) + len(extra_cards)
 
-    # Answers you gave since the last run, and the jobs they unblock.
+    # Waiting questions the facts now settle (no model: fast, and only what is on record),
+    # then the answers you gave since the last run, and the jobs they unblock.
+    no_model = dict(facts, _local_ai=False)
+    questions.self_answer(lambda q, o: answers_mod.resolve(q, o, no_model))
     absorbed, retry = questions.absorb()
     retry_naukri = [Job(job_id=j["job_id"], title=j.get("title") or "", company=j.get("company") or "",
                         url=j.get("url") or "")
@@ -285,6 +330,13 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     retry_cards = [{"job_id": j["job_id"], "title": j.get("title"), "company": j.get("company"),
                     "url": j.get("url"), "easy_apply": True}
                    for j in retry if j.get("board") == "linkedin" and j.get("url")]
+    parked_jobs, parked_cards = unblocked_waiting(
+        ledger, lambda q: answers_mod.resolve(q, [], no_model)[0] is not None)
+    retry_naukri += [j for j in parked_jobs if j.job_id not in {r.job_id for r in retry_naukri}]
+    retry_cards += [c for c in parked_cards if c["job_id"] not in {r["job_id"] for r in retry_cards}]
+    if parked_jobs or parked_cards:
+        log.info("%d job(s) parked on questions that are answered now go back in the line",
+                 len(parked_jobs) + len(parked_cards))
     summary["retried"] = len(retry_naukri) + len(retry_cards)
     if absorbed:
         log.info("%d answered question(s) absorbed; re-attempting %d job(s)",

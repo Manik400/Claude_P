@@ -149,6 +149,15 @@ def published_titles(pages):
     return {(i.get("kind"), i.get("title")) for i in idx.get("items") or []}
 
 
+def hidden_titles(pages):
+    """(kind, title) of reports removed from the phone (phone_apply.remove_reports): never republished."""
+    try:
+        with open(os.path.join(pages, "data", "index.json"), encoding="utf-8") as f:
+            return {tuple(h) for h in json.load(f).get("hidden") or [] if len(h) == 2}
+    except (OSError, ValueError, TypeError):
+        return set()
+
+
 def _scan_kind(path):
     """" - Early" etc. from the page's <title>, written by naukri/jobs/page.py."""
     try:
@@ -180,6 +189,7 @@ def cmd_naukri(a):
     pages = pages_dir(cfg)
     done = cfg.setdefault("published", {})
     live = published_titles(pages)
+    hidden = hidden_titles(pages)
     count = 0
     openings = sorted(glob.glob(os.path.join(NAUKRI, "data", "jobs", "openings-*.html")), key=os.path.getmtime)
     preps = sorted(glob.glob(os.path.join(NAUKRI, "data", "interview", "interview-prep-*.html")), key=os.path.getmtime)
@@ -196,6 +206,8 @@ def cmd_naukri(a):
         kind, title = page_title(path)
         if key in done and (kind, title) in live and not a.force:
             continue
+        if (kind, title) in hidden and kind in ("naukri", "interview"):
+            continue            # you removed it on the phone
         name = os.path.basename(path)
         if kind == "naukri":
             m = re.search(r"(\d{4}-\d{2}-\d{2})", name)

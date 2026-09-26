@@ -296,7 +296,22 @@ line it used, every number in it is a number on the sheet (it cannot invent a
 CTC or a year count), it is at least 80 % sure, and, with options, it maps
 onto one of the chips. Such answers are logged with source `local-ai: <fact>`
 on the applications page; an `answer_rules` entry in `jobs.yaml` overrides
-them, and `local_ai_answers: false` turns them off. The model also adds a
+them, and `local_ai_answers: false` turns them off. The sheet also carries
+your closest saved answers and your resume (calendar years only - a
+graduation year - never durations), and every short answer the model gave in
+a form that went through is saved to the answer bank (`learned:`), so the
+next form asking it gets the same answer without a model call.
+
+Open questions ("something you shipped that you're proud of", a text area
+asking why this role) are written by the model from your resume, facts and
+the job posting, never for money, identity or legal questions, and never with
+a number the resume, facts or posting does not hold. They are logged as
+`ai-written from your resume`; `ai_written_answers: false` turns them off.
+A saved answer also covers other wordings of the same question ("DOB" answers
+"Date of birth") - by field, by the same words minus filler, or by the model
+agreeing, never across different skills. With Ollama, `python -m
+naukri.jobs.ai_train` (run after every scan) rebuilds a personal model,
+`jobbot-answers`, from your facts and answer bank. The model also adds a
 `semantic` component to the score (whole posting vs. whole profile; skills and
 title give up 10 points so the total stays 100) and a "Fit / Gap" line for the
 top jobs on the openings page and in the sheet's last column.
