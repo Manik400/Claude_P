@@ -460,6 +460,37 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
     return outcomes
 
 
+def profile_busy() -> bool:
+    """Is a browser running on the automation profile right now? Chrome keeps
+    <profile>/lockfile open while it runs, so it cannot be opened then."""
+    lock = os.path.join(config_dir(), "simplify-profile", "lockfile")
+    try:
+        with open(lock, "a"):
+            return False
+    except PermissionError:
+        return True
+    except OSError:
+        return False
+
+
+def check_in(queue: dict, queue_path: str, passphrase: str, pages: str, cfg: dict) -> None:
+    """Push the queue with a fresh pc.last_seen now, when the last push is getting old."""
+    last_push = cfg.get("last_heartbeat_push") or ""
+    if last_push > (datetime.now() - timedelta(minutes=45)).isoformat():
+        return
+    queue["pc"] = dict(queue.get("pc") or {}, last_seen=now_iso(), host=os.environ.get("COMPUTERNAME", ""),
+                       busy="applying from another run")
+    queue["updated"] = now_iso()
+    try:
+        write_enc(queue_path, queue, passphrase)
+        subprocess.run([sys.executable, os.path.join(HERE, "pages_git.py"), "push", pages,
+                        "queue: PC on, waiting for the browser"], check=True)
+        cfg["last_heartbeat_push"] = now_iso()
+        save_config(cfg)
+    except Exception as exc:  # noqa: BLE001 - the run goes on; the end-of-run push retries
+        log("check-in push failed: %s" % exc)
+
+
 # ------------------------------------------------------------------ main
 
 def main(argv=None) -> int:
@@ -526,7 +557,12 @@ def main(argv=None) -> int:
     # 3. Auto rule.
     auto_enqueue(queue, cfg, pages, passphrase, settings)
 
-    # 4. Apply.
+    # 4. Apply. A scan that is applying holds the browser profile, and this run then waits
+    # for it (up to 15 min per browser start) - check in first, so the phone does not
+    # call a busy PC "off".
+    if not args.dry_run and profile_busy():
+        log("apply: another run is using the browser; checking in before waiting for it")
+        check_in(queue, queue_path, passphrase, pages, cfg)
     outcomes = run_applies(queue, settings, limit, args.dry_run, autoapply, config_mod, NaukriJob)
     ledger = Ledger()
     sync_from_ledger(queue, ledger)
