@@ -316,6 +316,27 @@
   .toast { position: fixed; left: 50%; bottom: calc(20px + env(safe-area-inset-bottom)); transform: translateX(-50%);
     background: var(--fg); color: var(--bg); padding: 10px 16px; border-radius: 12px; font-size: 0.875rem; z-index: 30; max-width: 92vw; opacity: 0; transition: opacity .2s; pointer-events: none; box-shadow: 0 4px 16px rgba(0,0,0,.25); }
   .toast.on { opacity: .97; }
+  .toast.on.act { pointer-events: auto; display: flex; align-items: center; gap: 12px; }
+  .toast .undo { background: transparent; color: inherit; border: 1px solid currentColor; border-radius: 8px; padding: 3px 10px;
+    font: inherit; font-weight: 700; cursor: pointer; }
+  /* every section card folds away by its heading; open / closed remembered */
+  .card.fold > h2 { cursor: pointer; user-select: none; position: relative; padding-right: 24px; }
+  .card.fold > h2::after { content: "\25BE"; position: absolute; right: 2px; top: 50%; transform: translateY(-50%);
+    font-size: 0.875rem; transition: transform .15s; }
+  .card.fold.folded > h2::after { transform: translateY(-50%) rotate(-90deg); }
+  .card.fold.folded > h2 { margin-bottom: 0; }
+  .card.fold.folded > :not(h2) { display: none !important; }
+  .card.fold > h2:focus-visible { outline: 2px solid var(--accent); outline-offset: 4px; }
+  /* an application row: the row folds open, its actions stay on the right */
+  .arow { display: flex; align-items: flex-start; gap: 8px; border-top: 1px solid var(--line2); padding: 10px 0; }
+  .arow > details { flex: 1 1 auto; min-width: 0; }
+  .arow > details > summary { cursor: pointer; }
+  .aacts { display: flex; align-items: center; gap: 6px; flex: none; }
+  .aacts select { width: auto; margin: 0; padding: 4px 6px; font-size: 0.75rem; min-height: 0; }
+  .aacts .ib { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; padding: 0;
+    border: 1px solid var(--line); border-radius: 8px; background: transparent; color: inherit; cursor: pointer; text-decoration: none; font-size: 0.875rem; }
+  .aacts .ib:hover { border-color: var(--accent); }
+  .aacts .ib.danger:hover { border-color: var(--bad); color: var(--bad); }
   @media (min-width: 900px) { .toast { left: calc(var(--side-w) + (100vw - var(--side-w)) / 2); } }
 
   /* ---------- site full screen: hides the side drawer / tab strip and the
@@ -337,6 +358,11 @@
   #plan-frame { display: block; width: 100%; border: 0; border-radius: 14px; background: var(--bg);
     height: calc(100vh - 150px); height: calc(100dvh - 150px); }
   html.plan-on main { max-width: none; padding-left: 10px; padding-right: 10px; padding-bottom: 10px; }
+  /* the plan's own month bar is the heading row on this tab - no second title bar above it */
+  @media (min-width: 900px) {
+    html.plan-on .page-head { display: none; }
+    html.plan-on.side-closed main { padding-left: 58px; }   /* room for the open-menu button */
+  }
   @media (min-width: 900px) { #plan-frame { height: calc(100vh - 110px); height: calc(100dvh - 110px); } html.plan-on main { padding: 14px 18px; } }
   html.site-fs #plan-frame { height: calc(100vh - 20px); height: calc(100dvh - 20px); }
   /* one scroll at a time: on the Plan tab the frame is sized to the space left (fitPlan below),
@@ -644,7 +670,53 @@
   function hoursSince(iso) { return iso ? (Date.now() - new Date(iso).getTime()) / 3600000 : Infinity; }
   function msg(id, text, cls) { var el = $(id); if (el) el.innerHTML = text ? '<div class="msg ' + (cls || "info") + '">' + esc(text) + "</div>" : ""; }
   var toastT;
-  function toast(text) { var t = $("toast"); t.textContent = text; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 2600); }
+  function toast(text) { var t = $("toast"); t.classList.remove("act"); t.textContent = text; t.classList.add("on"); clearTimeout(toastT); toastT = setTimeout(function () { t.classList.remove("on"); }, 2600); }
+  // No "are you sure?" pop-ups: a removal happens at once, and the toast offers Undo for
+  // a few seconds. Only when that runs out is the change sent to the PC.
+  var pendingUndo = null;
+  function undoable(text, undo, commit) {
+    if (pendingUndo) pendingUndo();                      // the previous one is final now
+    var t = $("toast"), done = false, timer;
+    function finish(run) {
+      if (done) return; done = true; clearTimeout(timer); pendingUndo = null;
+      t.classList.remove("on", "act"); run();
+    }
+    clearTimeout(toastT);
+    t.innerHTML = "<span>" + esc(text) + '</span><button type="button" class="undo">Undo</button>';
+    t.classList.add("on", "act");
+    t.querySelector(".undo").addEventListener("click", function () { finish(undo); toast("Undone"); });
+    timer = setTimeout(function () { finish(commit); }, 6000);
+    pendingUndo = function () { finish(commit); };
+  }
+  window.addEventListener("pagehide", function () { if (pendingUndo) pendingUndo(); });
+
+  // Every section card with a heading folds away by tapping the heading.
+  function foldKey(h) {
+    var k = (h.firstChild && h.firstChild.nodeType === 3 ? h.firstChild.nodeValue : h.textContent)
+      .replace(/\([^)]*\)|\d+/g, "").trim().toLowerCase().replace(/[^a-z]+/g, "-").replace(/^-|-$/g, "");
+    return k ? "fold." + k : "";
+  }
+  function applyFolds() {
+    document.querySelectorAll(".card > h2:first-child").forEach(function (h) {
+      var c = h.parentElement; if (c.classList.contains("fold")) return;
+      var key = foldKey(h); if (!key) return;
+      c.classList.add("fold"); h.dataset.fold = key; h.tabIndex = 0; h.setAttribute("role", "button");
+      var folded = !!store.get(key, ""); c.classList.toggle("folded", folded); h.setAttribute("aria-expanded", folded ? "false" : "true");
+    });
+  }
+  function toggleFold(h) {
+    var folded = h.parentElement.classList.toggle("folded");
+    h.setAttribute("aria-expanded", folded ? "false" : "true"); store.set(h.dataset.fold, folded ? "1" : "");
+  }
+  document.addEventListener("click", function (e) {
+    var h = e.target.closest(".card.fold > h2"); if (!h || e.target.closest("a,button,select,input,.r")) return;
+    toggleFold(h);
+  });
+  document.addEventListener("keydown", function (e) {
+    if ((e.key === "Enter" || e.key === " ") && e.target.matches && e.target.matches(".card.fold > h2")) { e.preventDefault(); toggleFold(e.target); }
+  });
+  new MutationObserver(applyFolds).observe(document.documentElement, { childList: true, subtree: true });
+  document.addEventListener("DOMContentLoaded", applyFolds);
   function chip(cls, text) { return '<span class="chip ' + (cls || "") + '">' + esc(text) + "</span>"; }
   function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : "#"; }
   // ---- accordions. Every filter block on the page is one of these: a title, a summary
@@ -906,10 +978,12 @@
   }
   function reportById(id) { return ((index || {}).items || []).filter(function (i) { return i.id === id; })[0]; }
   function removeReport(item) {
-    if (!item || !confirm('Remove "' + item.title + '" from the list? Your PC deletes it on its next run.')) return;
+    if (!item) return;
     var rm = idList("rm.reports"); if (rm.indexOf(item.id) < 0) rm.push(item.id); setIdList("rm.reports", rm);
     renderIndex();
-    request("reports", { remove: [item.id] }, "Removing - the PC deletes it on its next run.");
+    undoable('Removed "' + item.title + '"',
+      function () { setIdList("rm.reports", idList("rm.reports").filter(function (x) { return x !== item.id; })); renderIndex(); },
+      function () { request("reports", { remove: [item.id] }, "Removing - the PC deletes it on its next run."); });
   }
   function reportRow(i) {
     var m = i.meta || {}, sub = [ago(i.when)];
@@ -957,12 +1031,20 @@
     p.then(function (text) {
       if (el) el.textContent = "open ›";
       if (item.kind === "careers") showCareers(item.title, JSON.parse(text), item);
-      else showViewer(item.title, text);
+      else showViewer(item.title, text, "", item);
     }).catch(function (e) { if (el) el.textContent = "open ›"; toast(errText(e)); });
   }
-  function showViewer(title, html, anchor) {
+  function showViewer(title, html, anchor, item) {
     if (!/<base\s/i.test(html)) html = html.replace(/<head([^>]*)>/i, '<head$1><base target="_blank">');
     $("v-title").textContent = title; $("v-right").innerHTML = "";
+    // the report open right now can be deleted from here - e.g. one day's interview prep
+    if (item && item.id && item.kind !== "applications" && item.kind !== "accuracy") {
+      $("v-right").innerHTML = '<button class="icon-btn" id="v-del" title="Delete this report" aria-label="Delete this report">🗑</button>';
+      $("v-del").addEventListener("click", function () {
+        var pushed = history.state && history.state.viewer; closeViewer(); if (pushed) history.back();
+        removeReport(item);
+      });
+    }
     $("v-box").hidden = false; $("c-box").hidden = true; $("j-box").hidden = true;
     var f = document.createElement("iframe"); f.title = "report"; f.srcdoc = html;
     f.addEventListener("load", function () { wireReportLinks(f, anchor); });
@@ -974,21 +1056,44 @@
   // applications.html, openings-2026-09-18-r3.html. Those files are not on
   // github.io; their published copies are, under other names. So every click
   // inside the report is looked up in the index and opened from there.
+  // Published titles carry the scan kind ("Naukri openings 2026-09-26 run 18 - All jobs"),
+  // so a link is matched by title prefix. A run that never reached the phone falls back
+  // to the nearest one that did - same day first, then the newest - instead of a dead end.
   function siblingItem(href) {
-    var m, items = (index || {}).items || [];
-    var byTitle = function (kind, title) { return items.filter(function (i) { return i.kind === kind && i.title === title; })[0]; };
-    if (/(^|\/)applications\.html$/i.test(href)) return byTitle("applications", "Applications sent") || items.filter(function (i) { return i.kind === "applications"; })[0] || null;
-    if ((m = /interview-prep-([0-9]{4}-[0-9]{2}-[0-9]{2}(?:-r[0-9]+)?)\.html$/i.exec(href))) return byTitle("interview", "Interview prep " + m[1]) || null;
-    if ((m = /openings-([0-9]{4}-[0-9]{2}-[0-9]{2})(?:-r([0-9]+))?\.html$/i.exec(href))) return byTitle("naukri", "Naukri openings " + m[1] + (m[2] ? " run " + m[2] : "")) || null;
+    var m, items = ((index || {}).items || []).slice().sort(function (a, b) { return String(b.when).localeCompare(String(a.when)); });
+    var rm = idList("rm.reports");
+    var live = items.filter(function (i) { return rm.indexOf(i.id) < 0; });
+    // `base` itself, or `base` followed by a separator - "run 1" must not match "run 10"
+    var starts = function (kind, base, seps) {
+      return live.filter(function (i) {
+        return i.kind === kind && (i.title === base || (seps || " ").split("").some(function (s) { return i.title.indexOf(base + s) === 0; }));
+      })[0];
+    };
+    var newest = function (kind) { return live.filter(function (i) { return i.kind === kind; })[0]; };
+    if (/(^|\/)applications\.html$/i.test(href)) return { item: newest("applications") || null };
+    if ((m = /interview-prep-([0-9]{4}-[0-9]{2}-[0-9]{2})(-r[0-9]+)?\.html$/i.exec(href))) {
+      var exact = starts("interview", "Interview prep " + m[1] + (m[2] || ""));
+      if (exact) return { item: exact };
+      var near = starts("interview", "Interview prep " + m[1], " -") || newest("interview");
+      return { item: near || null, note: near ? "That run is not on the phone - showing " + near.title : "" };
+    }
+    if ((m = /openings-([0-9]{4}-[0-9]{2}-[0-9]{2})(?:-r([0-9]+))?\.html$/i.exec(href))) {
+      var base = "Naukri openings " + m[1];
+      var run = m[2] ? starts("naukri", base + " run " + m[2]) : starts("naukri", base);
+      if (run) return { item: run };
+      var day = starts("naukri", base) || newest("naukri");
+      return { item: day || null, note: day ? "Run " + m[2] + " is not on the phone - showing " + day.title : "" };
+    }
     return undefined;   // not one of ours: let the browser have it
   }
   function followSibling(href) {
-    var q = href.split("#"), item = siblingItem(q[0]);
-    if (item === undefined) return false;
-    if (!item) { toast("Not on the phone yet - run publish_to_phone.bat on the PC"); return true; }
+    var q = href.split("#"), hit = siblingItem(q[0]);
+    if (hit === undefined) return false;
+    var item = hit.item;
+    if (!item) { toast("Nothing of this kind is on the phone yet - it arrives with the PC's next publish"); return true; }
     var p = cache[item.id] ? Promise.resolve(cache[item.id]) : fetchEnc(item.file, { cache: "force-cache" }).then(function (t) { cache[item.id] = t; return t; });
-    toast("Opening " + item.title + "…");
-    p.then(function (text) { showViewer(item.title, text, q[1] || ""); }).catch(function (e) { toast(errText(e)); });
+    toast(hit.note || "Opening " + item.title + "…");
+    p.then(function (text) { showViewer(item.title, text, q[1] || "", item); }).catch(function (e) { toast(errText(e)); });
     return true;
   }
   function wireReportLinks(f, anchor) {
@@ -1091,7 +1196,7 @@
     if (st.h > 1.25) s += '<div class="msg warn">The PC has not checked in for ' + (st.h < 48 ? Math.round(st.h) + " h" : Math.round(st.h / 24) + " days") + '. Everything you queue waits safely and is applied when it is on again (lock screen is fine; sleep is not).</div>';
     var a = pc.applied_today || {}, caps = pc.caps || {};
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
-      " · up to " + (pc.limit || 5) + " per board each run" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
+      " · up to " + (pc.limit || 5) + " each on Naukri / LinkedIn per run, company sites unlimited" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
     return s;
   }
 
@@ -1129,9 +1234,13 @@
       pend.map(function (q, i) {
         var d = qDraft()[q.question] || "", attrs = ' data-' + pfx + '="' + i + '" data-qd="' + esc(q.question) + '"';
         var input = q.options && q.options.length
-          ? '<select' + attrs + '><option value="">choose…</option>' + q.options.map(function (o) { return '<option' + (d === o ? " selected" : "") + ">" + esc(o) + "</option>"; }).join("") + '<option value="skip"' + (d === "skip" ? " selected" : "") + '>skip - never answer</option></select>'
-          : '<input' + attrs + ' value="' + esc(d) + '" placeholder="your answer (or skip)" autocapitalize="none">';
-        return '<div class="question"><b>' + esc(q.question) + '</b><div class="muted">' + esc((q.jobs || []).map(function (j) { return j.title + " - " + j.company; }).join("; ")) + "</div>" + input + "</div>";
+          ? '<select' + attrs + '><option value="">choose…</option>' +
+            (q.previous_answer ? '<option value="keep"' + (d === "keep" ? " selected" : "") + ">keep: " + esc(q.previous_answer) + "</option>" : "") + q.options.map(function (o) { return '<option' + (d === o ? " selected" : "") + ">" + esc(o) + "</option>"; }).join("") + '<option value="skip"' + (d === "skip" ? " selected" : "") + '>skip - never answer</option></select>'
+          : '<input' + attrs + ' value="' + esc(d) + '" placeholder="' + (q.previous_answer ? "new answer, or keep" : "your answer (or skip)") + '" autocapitalize="none">';
+        // a saved answer over 3 months old, asked again: show what was said, "keep" confirms it
+        var prev = q.previous_answer ? '<div class="muted">Asked again - over 3 months since you answered <b>' + esc(q.previous_answer) +
+          '</b>. Type <b>keep</b> to keep it.</div>' : "";
+        return '<div class="question"><b>' + esc(q.question) + "</b>" + prev + '<div class="muted">' + esc((q.jobs || []).map(function (j) { return j.title + " - " + j.company; }).join("; ")) + "</div>" + input + "</div>";
       }).join("") + '<button class="primary" id="' + pfx + '-send">Send answers</button><div id="' + pfx + '-msg"></div>';
   }
   function bindQuestions(pfx, pend) {
@@ -1192,13 +1301,13 @@
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
     var rsum = (auto.enabled ? "auto-queue " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") : "auto-queue off") +
       " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) +
-      " · " + (st.limit || 5) + " per board per run";
+      " · " + (st.limit || 5) + " each on Naukri / LinkedIn per run · company sites: no limit";
     h += acc("qr", "Rules", rsum,
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
-      " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " per board per run.</div>" +
+      " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " each on Naukri and LinkedIn per run; company sites have no limit.</div>" +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
-      '<div><label>Per board per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
+      '<div><label>Naukri / LinkedIn, each, per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
       '<label>Boards</label><div class="chips small" id="r-boards">' + ["linkedin", "naukri", "web"].map(function (b) { return '<button type="button" data-b="' + b + '"' + ((dirty["r-boards"] || auto.boards || []).indexOf(b) >= 0 ? ' class="on"' : "") + ">" + ({ linkedin: "LinkedIn", naukri: "Naukri", web: "Company sites" }[b]) + "</button>"; }).join("") + "</div>" +
       '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify-submit", "Simplify fills, PC answers the rest and submits"]]) +
       '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify needs a one-time sign-in on the PC: <code>python -m naukri.jobs.simplify --setup</code> (in Profile_Naukri_Screener-main).') + ((q.pc || {}).simplify_default ? ' jobs.yaml has <code>simplify: true</code>, so "PC fills and submits" already goes through Simplify.' : "") + "</div>" +
@@ -1240,9 +1349,11 @@
       request("retry", { keys: retryKeys }, jobsN(retryKeys.length) + " will be retried on the PC's next run.").then(function () { if ($("q-retry-all")) $("q-retry-all").disabled = false; });
     });
     if ($("q-rm-all")) $("q-rm-all").addEventListener("click", function () {
-      if (!confirm("Remove " + jobsN(rmKeys.length) + " from the queue? Your PC drops them on its next run.")) return;
-      $("q-rm-all").disabled = true;
-      request("remove", { keys: rmKeys }, "Removing " + jobsN(rmKeys.length) + " on the PC's next run.").then(function () { if ($("q-rm-all")) $("q-rm-all").disabled = false; });
+      var keys = rmKeys.slice(), btn = $("q-rm-all");
+      btn.disabled = true;
+      undoable("Removing " + jobsN(keys.length) + " from the queue",
+        function () { if ($("q-rm-all")) $("q-rm-all").disabled = false; },
+        function () { request("remove", { keys: keys }, "Removing " + jobsN(keys.length) + " on the PC's next run.").then(function () { if ($("q-rm-all")) $("q-rm-all").disabled = false; }); });
     });
     $("q-list").addEventListener("click", function (e) {
       var b = e.target.closest("button[data-act]"); if (!b) return;
@@ -1837,31 +1948,41 @@
       var qa = (x.answers || []).length ? x.answers.map(function (y) { return '<div style="margin-top:6px"><div class="muted">' + esc(y.question) + "</div><b>" + esc(y.answer) + '</b> <span class="muted">(' + esc(y.source) + (y.fix ? " - fix at " + esc(y.fix) : "") + ")</span></div>"; }).join("") : '<div class="muted">One-click apply, no questions asked.</div>';
       var blocked = x.blocked ? '<div class="msg info">Stopped at: <b>' + esc(x.blocked.question) + "</b> - " + esc(x.blocked.why) + "</div>" : "";
       var mails = r ? r.emails.map(function (e) { return '<div style="margin-top:6px;padding-left:8px;border-left:3px solid var(--line)"><b>' + esc(e.subject) + '</b> <span class="chip ' + kCls(e.kind) + '">' + esc((track.kind_labels || {})[e.kind] || e.kind) + '</span><div class="muted">' + esc((e.date || "").slice(0, 16).replace("T", " ")) + " - " + esc(e.from) + '</div><div class="muted">' + esc(e.snippet) + "</div></div>"; }).join("") : "";
-      return '<details style="border-top:1px solid var(--line2);padding:10px 0"><summary style="cursor:pointer"><b>' + esc(x.title) + '</b> <span class="muted">' + esc(x.company) + '</span><br><span class="chip">' + esc(x.board) + "</span> " +
+      var id = x.job_id != null && x.job_id !== "" ? String(x.job_id) : "";
+      var acts = '<div class="aacts">' +
+        (id ? '<select data-tns="' + esc(id) + '" title="Your status - saved as soon as you pick one" aria-label="Your status">' +
+          statuses.map(function (st) { return '<option value="' + st + '"' + (m.status === st ? " selected" : "") + ">" + (st || "status") + "</option>"; }).join("") + "</select>" : "") +
+        (x.url ? '<a class="ib" href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="noopener" title="Open the posting" aria-label="Open the posting">↗</a>' : "") +
+        (id ? '<button type="button" class="ib danger" data-tnrm="' + esc(id) + '" data-title="' + esc(x.title || "") + '" title="Remove from your applications" aria-label="Remove">🗑</button>' : "") +
+        "</div>";
+      return '<div class="arow"><details><summary><b>' + esc(x.title) + '</b> <span class="muted">' + esc(x.company) + '</span><br><span class="chip">' + esc(x.board) + "</span> " +
         '<span class="chip ' + tCls(x.status) + '">' + esc(T_LABELS[x.status] || x.status) + "</span> " + reply + ' <span class="muted">' + esc((x.at || "").slice(0, 16).replace("T", " ")) + "</span></summary>" +
-        '<div class="muted"><a href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="noopener">open posting</a></div>' + qa + blocked + mails +
-        '<label style="margin-top:8px">Your status</label><select data-tns="' + esc(x.job_id) + '">' + statuses.map(function (st) { return '<option value="' + st + '"' + (m.status === st ? " selected" : "") + ">" + (st || "none") + "</option>"; }).join("") + "</select>" +
-        '<input data-tnn="' + esc(x.job_id) + '" placeholder="note (interview date, recruiter name...)" value="' + esc(m.note || "") + '" style="margin-top:6px">' +
-        '<div class="bulk" style="margin-top:6px;align-items:center"><button class="ghost" data-tnsave="' + esc(x.job_id) + '">Save status</button>' +
-        (x.job_id != null && x.job_id !== "" ? '<button class="ghost small danger" data-tnrm="' + esc(x.job_id) + '" data-title="' + esc(x.title || "") + '">🗑 Remove</button>' : "") + "</div></details>";
+        qa + blocked + mails +
+        (id ? '<input data-tnn="' + esc(id) + '" placeholder="note (interview date, recruiter name...) - saved when you leave the field" value="' + esc(m.note || "") + '" style="margin-top:8px">' : "") +
+        "</details>" + acts + "</div>";
     }).join("") || '<div class="muted">No applications here.</div>';
     restoreDirty($("t-apps"));
-    $("t-apps").querySelectorAll("[data-tnsave]").forEach(function (b) {
-      b.addEventListener("click", function () {
-        var id = b.dataset.tnsave, payload = {}, sel = '[data-tns="' + id.replace(/"/g, '\\"') + '"]', inp = '[data-tnn="' + id.replace(/"/g, '\\"') + '"]';
-        payload[id] = { status: document.querySelector(sel).value, note: document.querySelector(inp).value };
-        b.disabled = true;
-        request("notes", payload, "Sent. The PC saves it on its next run.").then(function (ok) { b.disabled = false; if (ok) { delete dirty["tns=" + id]; delete dirty["tnn=" + id]; } });
-      });
+    function saveNote(id, text) {
+      var q = function (a) { return document.querySelector("[" + a + '="' + id.replace(/"/g, '\\"') + '"]'); };
+      var payload = {}; payload[id] = { status: (q("data-tns") || {}).value || "", note: (q("data-tnn") || {}).value || "" };
+      request("notes", payload, text).then(function (ok) { if (ok) { delete dirty["tns=" + id]; delete dirty["tnn=" + id]; } });
+    }
+    $("t-apps").querySelectorAll("[data-tns]").forEach(function (s) {
+      s.addEventListener("change", function () { saveNote(s.dataset.tns, "Status saved - the PC records it on its next run."); });
+    });
+    $("t-apps").querySelectorAll("[data-tnn]").forEach(function (i) {
+      var was = i.value;
+      i.addEventListener("change", function () { if (i.value !== was) { was = i.value; saveNote(i.dataset.tnn, "Note saved - the PC records it on its next run."); } });
     });
     $("t-apps").querySelectorAll("[data-tnrm]").forEach(function (b) {
       b.addEventListener("click", function () {
         var id = b.dataset.tnrm, payload = {};
-        if (!confirm('Remove "' + (b.dataset.title || "this application") + '" from your applications? Your PC hides it on its next run.')) return;
         var rm = idList("rm.apps"); if (rm.indexOf(id) < 0) rm.push(id); setIdList("rm.apps", rm);
         renderTrackApps();
         payload[id] = { hidden: true };
-        request("notes", payload, "Removed - the PC hides it on its next run.");
+        undoable('Removed "' + (b.dataset.title || "application") + '"',
+          function () { setIdList("rm.apps", idList("rm.apps").filter(function (x) { return x !== id; })); renderTrackApps(); },
+          function () { request("notes", payload, "Removed - the PC hides it on its next run."); });
       });
     });
   }
