@@ -132,6 +132,13 @@
   .item .t { flex: 1; min-width: 0; }
   .item .t b { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-weight: 600; }
   .item .t span { font-size: 0.8125rem; color: var(--muted); display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+  .item.gone { opacity: .55; }
+  .item .racts { display: flex; flex-wrap: wrap; gap: 6px; margin-top: 7px; }
+  /* compact sort box above a list (report cards, queue, track) */
+  select.compact { width: auto; max-width: 100%; min-height: 34px; padding: 5px 34px 5px 10px; font-size: 0.8125rem; border-radius: 8px; background-position: right 8px center; }
+  .rsort { display: flex; justify-content: flex-end; align-items: center; gap: 8px; margin: -4px 0 4px; }
+  .rsort + .item { border-top: 0; }
+  .bulk { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 10px; }
   .chip { font-size: 0.75rem; padding: 3px 9px; border-radius: 999px; background: var(--chip); white-space: nowrap; display: inline-block; font-weight: 500; }
   .chip.ok { color: var(--ok); background: var(--ok-bg); } .chip.warn { color: var(--warn); background: var(--warn-bg); }
   .chip.bad { color: var(--bad); background: var(--bad-bg); } .chip.acc { color: var(--accent); background: var(--accent-bg); }
@@ -854,20 +861,55 @@
 
   // ---- reports index
   var index = null, cache = {};
+  // ids / job_ids hidden in this browser right away, while the PC catches up on its next run
+  function idList(k) { try { var v = JSON.parse(store.get(k, "[]")); return Array.isArray(v) ? v : []; } catch (e) { return []; } }
+  function setIdList(k, list) { store.set(k, JSON.stringify(list.slice(-500))); }
+  function tms(iso) { var t = iso ? new Date(iso).getTime() : 0; return isNaN(t) ? 0 : t; }
+  var R_SORTS = [["new", "Newest first"], ["old", "Oldest first"], ["jobs", "Most jobs"], ["title", "Title A–Z"]];
+  var rShowRemoved = {};  // per kind
+  function sortReports(items, how) {
+    var n = function (i) { var v = parseFloat((i.meta || {}).jobs); return isNaN(v) ? -1 : v; };
+    return items.sort(function (a, b) {
+      if (how === "old") return tms(a.when) - tms(b.when);
+      if (how === "jobs") return n(b) - n(a) || tms(b.when) - tms(a.when);
+      if (how === "title") return String(a.title || "").localeCompare(String(b.title || ""), undefined, { numeric: true, sensitivity: "base" });
+      return tms(b.when) - tms(a.when);
+    });
+  }
   function loadIndex() {
     return fetch("data/index.json?t=" + Date.now(), { cache: "no-store" }).then(function (r) { return r.ok ? r.json() : { items: [] }; })
       .then(function (j) {
         index = j;
-        ["jobhunt", "careers", "naukri", "interview", "applications", "accuracy"].forEach(function (kind) {
-          var items = (j.items || []).filter(function (i) { return i.kind === kind; });
-          var box = $("list-" + kind);
-          box.innerHTML = items.length ? items.map(reportRow).join("") : '<span class="muted">Nothing here yet.</span>';
-          bindReportRows(box);
-        });
-        $("index-updated").textContent = j.updated ? "Last update " + ago(j.updated) : "";
-        renderHomeReports();
+        renderIndex();
         return j;
       }).catch(function (e) { $("list-jobhunt").innerHTML = '<span class="muted">' + esc(e.message) + "</span>"; });
+  }
+  function renderIndex() {
+    var j = index || {}, rm = idList("rm.reports");
+    ["jobhunt", "careers", "naukri", "interview", "applications", "accuracy"].forEach(function (kind) {
+      var all = (j.items || []).filter(function (i) { return i.kind === kind; });
+      var nGone = all.filter(function (i) { return rm.indexOf(i.id) >= 0; }).length;
+      var items = sortReports(all.filter(function (i) { return rShowRemoved[kind] || rm.indexOf(i.id) < 0; }), store.get("rs." + kind, "new"));
+      var box = $("list-" + kind);
+      box.innerHTML = (all.length > 1 ? '<div class="rsort">' + '<select class="compact" data-rs="' + kind + '" aria-label="Sort">' +
+          R_SORTS.map(function (o) { return '<option value="' + o[0] + '"' + (store.get("rs." + kind, "new") === o[0] ? " selected" : "") + ">" + esc(o[1]) + "</option>"; }).join("") + "</select></div>" : "") +
+        (items.length ? items.map(reportRow).join("") : '<span class="muted">' + (all.length ? "Everything here is removed." : "Nothing here yet.") + "</span>") +
+        removedHint(nGone, !!rShowRemoved[kind]);
+      bindReportRows(box);
+      var s = box.querySelector("select[data-rs]");
+      if (s) s.addEventListener("change", function () { store.set("rs." + kind, s.value); renderIndex(); });
+      var t = box.querySelector("[data-showremoved]");
+      if (t) t.addEventListener("click", function (e) { e.preventDefault(); rShowRemoved[kind] = !rShowRemoved[kind]; renderIndex(); });
+    });
+    $("index-updated").textContent = j.updated ? "Last update " + ago(j.updated) : "";
+    renderHomeReports();
+  }
+  function reportById(id) { return ((index || {}).items || []).filter(function (i) { return i.id === id; })[0]; }
+  function removeReport(item) {
+    if (!item || !confirm('Remove "' + item.title + '" from the list? Your PC deletes it on its next run.')) return;
+    var rm = idList("rm.reports"); if (rm.indexOf(item.id) < 0) rm.push(item.id); setIdList("rm.reports", rm);
+    renderIndex();
+    request("reports", { remove: [item.id] }, "Removing - the PC deletes it on its next run.");
   }
   function reportRow(i) {
     var m = i.meta || {}, sub = [ago(i.when)];
@@ -880,10 +922,26 @@
     var right = (i.kind === "jobhunt" || i.kind === "naukri")
       ? (m.jobs_file ? chip("acc", "jobs ›") : chip("", "report ›"))
       : chip("", "open ›");
-    return '<div class="item" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" + esc(sub.join(" · ")) + "</span></div>" + right + "</div>";
+    var gone = idList("rm.reports").indexOf(i.id) >= 0;
+    var acts = '<div class="racts"><button class="ghost small" data-ra="open">Open</button>' +
+      ((i.kind === "jobhunt" || i.kind === "naukri") && m.jobs_file ? '<button class="ghost small" data-ra="full">Full report</button>' : "") +
+      (gone ? '<button class="ghost small" data-ra="restore" title="Show it in the list again">↺ restore</button>'
+        : '<button class="ghost small danger" data-ra="remove" title="Remove from the list" aria-label="Remove from the list">🗑</button>') + "</div>";
+    return '<div class="item' + (gone ? " gone" : "") + '" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" + esc(sub.join(" · ")) + "</span>" + acts + "</div>" + right + "</div>";
   }
   function bindReportRows(box) {
-    box.querySelectorAll(".item[data-id]").forEach(function (el) { el.addEventListener("click", function () { openItem(el.dataset.id); }); });
+    box.querySelectorAll(".item[data-id]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        var b = e.target.closest("button[data-ra]"), id = el.dataset.id;
+        if (!b) { openItem(id); return; }
+        e.stopPropagation();
+        var act = b.dataset.ra, item = reportById(id);
+        if (act === "open") openItem(id);
+        else if (act === "full") { if (item) openReport(item); }
+        else if (act === "remove") removeReport(item);
+        else if (act === "restore") { setIdList("rm.reports", idList("rm.reports").filter(function (x) { return x !== id; })); renderIndex(); }
+      });
+    });
   }
   $("btn-refresh").addEventListener("click", loadIndex);
   function openItem(id) {
@@ -898,7 +956,7 @@
     var p = cache[item.id] ? Promise.resolve(cache[item.id]) : fetchEnc(item.file, { cache: "force-cache" }).then(function (t) { cache[item.id] = t; return t; });
     p.then(function (text) {
       if (el) el.textContent = "open ›";
-      if (item.kind === "careers") showCareers(item.title, JSON.parse(text));
+      if (item.kind === "careers") showCareers(item.title, JSON.parse(text), item);
       else showViewer(item.title, text);
     }).catch(function (e) { if (el) el.textContent = "open ›"; toast(errText(e)); });
   }
@@ -983,7 +1041,9 @@
     skipped: ["", "applied earlier / closed"], offsite: ["man", "company site - apply by hand"], manual: ["man", "company site - apply by hand"],
     prefilled: ["man", "form pre-filled - finish on PC"], unconfirmed: ["bad", "unconfirmed"], error: ["bad", "error"],
     "questionnaire-failed": ["bad", "form failed"], "offsite-error": ["bad", "company site failed"], failed: ["bad", "failed - tap retry"],
-    removed: ["", "removed"], "would-apply": ["", "would apply (dry run)"]
+    removed: ["", "removed"], "would-apply": ["", "would apply (dry run)"],
+    closed: ["", "closed / no longer open"], "no-form": ["man", "no form found - apply by hand"], captcha: ["man", "CAPTCHA - apply by hand"],
+    "career-unconfirmed": ["warn", "submitted, no confirmation seen"]
   };
   function stChip(st, note) { var s = STATUS[st] || ["", st]; var cls = s[0]; return '<span class="chip ' + cls + '" title="' + esc(note || "") + '">' + esc(s[1]) + "</span>"; }
   function loadQueue(force) {
@@ -1051,7 +1111,8 @@
   }
   function renderHomeReports() {
     var box = $("home-reports"); if (!box || !index) return;
-    var items = (index.items || []).filter(function (i) { return i.kind === "jobhunt" || i.kind === "naukri"; }).slice(0, 4);
+    var rm = idList("rm.reports");
+    var items = (index.items || []).filter(function (i) { return (i.kind === "jobhunt" || i.kind === "naukri") && rm.indexOf(i.id) < 0; }).slice(0, 4);
     box.innerHTML = items.length ? items.map(reportRow).join("") : '<span class="muted">No reports yet. Start a search.</span>';
     bindReportRows(box);
   }
@@ -1097,15 +1158,35 @@
     if (f === "todo") return st === "queued" || st === "retry" || st === "requested";
     if (f === "applied") return st === "applied" || st === "submitted";
     if (f === "waiting") return st === "questionnaire-pending";
-    if (f === "manual") return st === "offsite" || st === "manual" || st === "prefilled" || st === "login-required" || st === "career-incomplete";
-    if (f === "failed") return st === "failed" || st === "error" || st === "unconfirmed" || st === "questionnaire-failed" || st === "offsite-error";
+    if (f === "manual") return st === "offsite" || st === "manual" || st === "prefilled" || st === "login-required" || st === "career-incomplete" || st === "no-form" || st === "captcha";
+    if (f === "failed") return st === "failed" || st === "error" || st === "unconfirmed" || st === "questionnaire-failed" || st === "offsite-error" || st === "career-unconfirmed";
     return true;
+  }
+  function qCanRetry(i) { return /^(failed|error|unconfirmed|questionnaire-failed|offsite-error|manual|offsite|login-required|career-incomplete|no-form|captcha|career-unconfirmed)$/.test(i.status) && !i.local; }
+  function qCanRemove(i) { return !i.local && !/^(applied|submitted)$/.test(i.status); }
+  var qSort = store.get("q.sort", "latest");
+  var Q_SORTS = [["latest", "Latest activity"], ["oldest", "Oldest first"], ["score", "Best match"], ["company", "Company A–Z"], ["status", "Status"]];
+  // "Status" puts what needs you first: answers, failures, by hand, to do, applied, the rest
+  var Q_RANK = ["waiting", "failed", "manual", "todo", "applied"];
+  function qRank(i) { for (var k = 0; k < Q_RANK.length; k++) if (inFilter(i, Q_RANK[k])) return k; return Q_RANK.length; }
+  function sortQueue(items, how) {
+    var t = function (i) { return String(i.at || i.added_at || ""); };
+    var latest = function (a, b) { return t(b).localeCompare(t(a)); };
+    return items.sort(function (a, b) {
+      if (how === "oldest") return t(a).localeCompare(t(b));
+      if (how === "score") return (b.score != null ? +b.score : -1) - (a.score != null ? +a.score : -1) || latest(a, b);
+      if (how === "company") return String(a.company || "").localeCompare(String(b.company || ""), undefined, { sensitivity: "base" }) || String(a.title || "").localeCompare(String(b.title || "")) || latest(a, b);
+      if (how === "status") return qRank(a) - qRank(b) || latest(a, b);
+      return latest(a, b);
+    });
   }
   function renderQueue() {
     var q = queue || { items: [] }, st = q.settings || {}, auto = st.auto || {}, pend = q.pending_questions || [];
     var items = itemsLive();
     pendingLocal().forEach(function (p) { if (!items.some(function (i) { return i.key === p.key; })) items.push({ key: p.key, title: p.title, company: p.company, board: p.board, status: "requested", added_at: new Date(p.at).toISOString(), local: true, url: p.url }); });
-    items.sort(function (a, b) { return String(b.at || b.added_at || "").localeCompare(String(a.at || a.added_at || "")); });
+    sortQueue(items, qSort);
+    var shown = items.filter(function (i) { return inFilter(i, qFilter); });
+    var retryKeys = shown.filter(qCanRetry).map(function (i) { return i.key; }), rmKeys = shown.filter(qCanRemove).map(function (i) { return i.key; });
     var h = '<div class="card"><h2>Progress</h2>' + progressHtml(q.progress) + pcHtml() +
       '<div class="acts2"><button class="ghost" id="q-pause">' + (q.paused ? "▶ Resume queue" : "⏸ Pause queue") + '</button><button class="ghost" id="q-refresh">↻ Refresh</button></div></div>';
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
@@ -1122,10 +1203,15 @@
       '<label>Company-site postings</label>' + sel("r-offsite", st.offsite || "career", [["career", "PC fills and submits (skips sites that need a login)"], ["manual", "Leave for me (open from the report)"], ["simplify-submit", "Simplify fills, PC answers the rest and submits"]]) +
       '<div class="hint">The PC opens the career page; if it needs a login / account or shows a CAPTCHA the job is marked "by hand", otherwise it fills the form from your details and submits.' + ((q.pc || {}).simplify_ready ? "" : ' Simplify needs a one-time sign-in on the PC: <code>python -m naukri.jobs.simplify --setup</code> (in Profile_Naukri_Screener-main).') + ((q.pc || {}).simplify_default ? ' jobs.yaml has <code>simplify: true</code>, so "PC fills and submits" already goes through Simplify.' : "") + "</div>" +
       '<button class="primary" id="r-save">Save rules</button>');
-    var qsum = (FILTERS.filter(function (f) { return f[0] === qFilter; })[0] || ["", "All"])[1] + " · " + items.filter(function (i) { return inFilter(i, qFilter); }).length + " shown";
+    var qsum = (FILTERS.filter(function (f) { return f[0] === qFilter; })[0] || ["", "All"])[1] + " · " + shown.length + " shown" +
+      (qSort !== "latest" ? " · " + (Q_SORTS.filter(function (s) { return s[0] === qSort; })[0] || ["", ""])[1].toLowerCase() : "");
     h += '<div class="card"><h2>' + items.length + " job" + (items.length !== 1 ? "s" : "") + " in the queue</h2>" +
-      acc("qf", "Filters", qsum, '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>", "sub") +
-      '<div id="q-list">' + (items.filter(function (i) { return inFilter(i, qFilter); }).map(queueItemHtml).join("") || '<div class="muted" style="margin-top:8px">Nothing here.</div>') + "</div></div>";
+      acc("qf", "Filters", qsum, '<div class="chips small" id="q-filters">' + FILTERS.map(function (f) { var n = items.filter(function (i) { return inFilter(i, f[0]); }).length; return '<button type="button" data-f="' + f[0] + '"' + (qFilter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>"; }).join("") + "</div>" +
+        "<label>Sort</label>" + sel("q-sort", qSort, Q_SORTS), "sub") +
+      (retryKeys.length || rmKeys.length ? '<div class="bulk">' +
+        (retryKeys.length ? '<button class="ghost small" id="q-retry-all">↻ Retry all shown (' + retryKeys.length + ")</button>" : "") +
+        (rmKeys.length ? '<button class="ghost small danger" id="q-rm-all">🗑 Remove all shown (' + rmKeys.length + ")</button>" : "") + "</div>" : "") +
+      '<div id="q-list">' + (shown.map(queueItemHtml).join("") || '<div class="muted" style="margin-top:8px">Nothing here.</div>') + "</div></div>";
     var hist = q.history || [];
     if (hist.length) h += '<div class="card"><h2>Recent runs on the PC</h2>' + hist.slice().reverse().slice(0, 8).map(function (r) {
       var f = function (c) { return Object.keys(c || {}).map(function (k) { return c[k] + " " + k; }).join(", "); };
@@ -1147,6 +1233,17 @@
         "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("qr")); delete dirty["r-boards"]; } });
     });
     $("q-filters").addEventListener("click", function (e) { var b = e.target.closest("button[data-f]"); if (!b) return; qFilter = b.dataset.f; store.set("q.filter", qFilter); renderQueue(); });
+    $("q-sort").addEventListener("change", function () { qSort = $("q-sort").value; store.set("q.sort", qSort); renderQueue(); });
+    var jobsN = function (n) { return n + " job" + (n > 1 ? "s" : ""); };
+    if ($("q-retry-all")) $("q-retry-all").addEventListener("click", function () {
+      $("q-retry-all").disabled = true;
+      request("retry", { keys: retryKeys }, jobsN(retryKeys.length) + " will be retried on the PC's next run.").then(function () { if ($("q-retry-all")) $("q-retry-all").disabled = false; });
+    });
+    if ($("q-rm-all")) $("q-rm-all").addEventListener("click", function () {
+      if (!confirm("Remove " + jobsN(rmKeys.length) + " from the queue? Your PC drops them on its next run.")) return;
+      $("q-rm-all").disabled = true;
+      request("remove", { keys: rmKeys }, "Removing " + jobsN(rmKeys.length) + " on the PC's next run.").then(function () { if ($("q-rm-all")) $("q-rm-all").disabled = false; });
+    });
     $("q-list").addEventListener("click", function (e) {
       var b = e.target.closest("button[data-act]"); if (!b) return;
       var key = b.dataset.key, act = b.dataset.act;
@@ -1158,8 +1255,7 @@
     var src = i.source || {}, board = { linkedin: "LinkedIn", naukri: "Naukri", web: "Company site" }[i.board] || i.board || "";
     var sub = [i.company, i.location, board, i.score != null ? Math.round(i.score) + "% match" : ""].filter(Boolean).join(" · ");
     var when = i.at || i.added_at;
-    var canRetry = /^(failed|error|unconfirmed|questionnaire-failed|offsite-error|manual|offsite|login-required|career-incomplete)$/.test(i.status) && !i.local;
-    var canRemove = !i.local && !/^(applied|submitted)$/.test(i.status);
+    var canRetry = qCanRetry(i), canRemove = qCanRemove(i);
     return '<div class="qitem"><div class="top"><div class="t"><b>' + esc(i.title) + '</b><span class="sub">' + esc(sub) + "</span></div>" + stChip(i.status, i.note) + "</div>" +
       (i.note ? '<div class="note">' + esc(i.note) + "</div>" : "") +
       '<div class="note">' + (src.auto ? "auto-queued" : "queued") + (src.title ? " from " + esc(src.title) : "") + (when ? " · " + esc(ago(when)) : "") + (i.attempts > 1 ? " · " + i.attempts + " tries" : "") + "</div>" +
@@ -1584,8 +1680,9 @@
     html += '<div class="card"><h2>Applied by your PC (' + autoApps().length + ')</h2>' +
       '<div class="muted">Every job the PC applied to by itself, newest first — LinkedIn and Naukri one-click applies and the company-site forms it filled and submitted. Tap one to see the form it sent.</div>' +
       '<div id="t-auto"></div></div>';
-    html += '<div class="card"><h2>Applications (' + apps.length + ')</h2>' +
-      acc("tf", "Filters", "All", '<input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div class="chips small" id="t-status" style="margin-top:6px"></div>', "sub") +
+    html += '<div class="card"><h2>Applications (<span id="t-apps-n">' + visibleApps().length + '</span>)</h2>' +
+      acc("tf", "Filters", "All", '<input id="t-q" placeholder="filter by company or title" autocapitalize="none"><div class="chips small" id="t-status" style="margin-top:6px"></div>' +
+        "<label>Sort</label>" + sel("t-sort", tSort, T_SORTS), "sub") +
       '<div id="t-apps"></div></div>';
     html += '<div class="card"><details><summary><b>My answers</b> <span class="muted">— what the agent says on your behalf</span></summary>';
     html += '<div class="muted" style="margin-top:6px">Blank fields fall back to your Naukri profile or jobs.yaml (shown as the placeholder).</div>';
@@ -1612,6 +1709,7 @@
     $("t-skill-add").addEventListener("click", function () { var n = $("t-skill-name").value.trim(), y = parseFloat($("t-skill-years").value); if (n && !isNaN(y)) { trackSkills[n] = y; $("t-skill-name").value = ""; $("t-skill-years").value = ""; renderTrackSkills(); } });
     $("t-bank-add").addEventListener("click", function () { var q = $("t-bank-q").value.trim(), an = $("t-bank-a").value.trim(); if (q && an) { trackBank.push({ question: q, answer: an, options: [] }); $("t-bank-q").value = ""; $("t-bank-a").value = ""; renderTrackBank(); } });
     $("t-q").addEventListener("input", renderTrackApps);
+    $("t-sort").addEventListener("change", function () { tSort = $("t-sort").value; store.set("t.sort", tSort); renderTrackApps(); });
     $("t-save").addEventListener("click", function () {
       document.querySelectorAll("[data-ts]").forEach(function (i) { trackSkills[i.dataset.ts] = parseFloat(i.value) || 0; });
       document.querySelectorAll("[data-tb]").forEach(function (i) { trackBank[+i.dataset.tb].answer = i.value; });
@@ -1623,9 +1721,26 @@
     });
   }
   var tStatus = "all";
+  var tSort = store.get("t.sort", "new");
+  var T_SORTS = [["new", "Newest"], ["old", "Oldest"], ["company", "Company A–Z"], ["status", "Status"]];
+  // removed here at once (rm.apps) or already hidden by the PC; one job_id can be several attempt rows
+  function visibleApps() {
+    var rm = idList("rm.apps");
+    return ((track || {}).applications || []).filter(function (x) { return !(x.manual || {}).hidden && !(x.job_id != null && x.job_id !== "" && rm.indexOf(String(x.job_id)) >= 0); });
+  }
+  function sortByWhen(list, how, statusOf) {
+    var t = function (x) { return String(x.at || ""); };
+    return list.sort(function (a, b) {
+      if (how === "old") return t(a).localeCompare(t(b));
+      if (how === "company") return String(a.company || "").localeCompare(String(b.company || ""), undefined, { sensitivity: "base" }) || t(b).localeCompare(t(a));
+      if (how === "status" && statusOf) return statusOf(a).localeCompare(statusOf(b)) || t(b).localeCompare(t(a));
+      return t(b).localeCompare(t(a));
+    });
+  }
   // ---- "Applied by your PC": every application the PC itself sent, newest first, with the
   // form it filled in. Reachable from Home in two taps (Track → the card at the top).
-  var AA = { filter: "all", sel: -1 };
+  var AA = { filter: "all", sel: -1, sort: store.get("aa.sort", "new") };
+  var AA_SORTS = [["new", "Newest"], ["old", "Oldest"], ["company", "Company A–Z"]];
   var A_BOARD = { linkedin: "LinkedIn", naukri: "Naukri", web: "Company site", career: "Company site" };
   function autoApps() {
     return ((track || {}).applications || []).filter(function (a) { return /^(applied|submitted)$/.test(a.status) && !a.dry_run; });
@@ -1651,13 +1766,15 @@
       if (f === "linkedin" || f === "naukri") return a.board === f;
       return true;
     };
-    var list = all.filter(function (a) { return keep(AA.filter, a); });
+    var list = sortByWhen(all.filter(function (a) { return keep(AA.filter, a); }), AA.sort);
     if (AA.sel >= list.length) AA.sel = -1;
     var chips = '<div class="chips small" id="t-auto-f">' + AA_FILTERS.map(function (f) {
       var n = all.filter(function (a) { return keep(f[0], a); }).length;
       return '<button type="button" data-aaf="' + f[0] + '"' + (AA.filter === f[0] ? ' class="on"' : "") + ">" + f[1] + (n ? " · " + n : "") + "</button>";
     }).join("") + "</div>";
-    var sum = (AA_FILTERS.filter(function (f) { return f[0] === AA.filter; })[0] || ["", "All"])[1] + " · " + list.length;
+    chips += "<label>Sort</label>" + sel("t-aa-sort", AA.sort, AA_SORTS);
+    var sum = (AA_FILTERS.filter(function (f) { return f[0] === AA.filter; })[0] || ["", "All"])[1] + " · " + list.length +
+      (AA.sort !== "new" ? " · " + (AA_SORTS.filter(function (s) { return s[0] === AA.sort; })[0] || ["", ""])[1].toLowerCase() : "");
     var keys = queueKeys();
     var rows = list.map(function (a, i) {
       var hand = handMark(a);
@@ -1673,6 +1790,7 @@
       (wide() && selApp ? '<aside class="jdetail">' + detailHtml(appJob(selApp), keys[appJob(selApp)._key], { noContacts: 1 }) + "</aside>" : "") + "</div>";
     bindAcc(box);
     $("t-auto-f").addEventListener("click", function (e) { var b = e.target.closest("button[data-aaf]"); if (!b) return; AA.filter = b.dataset.aaf; AA.sel = -1; renderAuto(); });
+    $("t-aa-sort").addEventListener("change", function () { AA.sort = $("t-aa-sort").value; store.set("aa.sort", AA.sort); AA.sel = -1; renderAuto(); });
     box.querySelectorAll("[data-aa]").forEach(function (el) {
       el.addEventListener("click", function (e) {
         if (e.target.closest("a,button,input,.dt")) return;
@@ -1693,7 +1811,8 @@
   }
   function renderTrackApps() {
     var q = ($("t-q").value || "").trim().toLowerCase();
-    var all = track.applications || [];
+    var all = visibleApps();
+    $("t-apps-n").textContent = all.length;
     var groups = [["all", "All", all.length], ["applied", "Applied", all.filter(function (x) { return x.status === "applied" || x.status === "submitted"; }).length],
       ["replied", "Replied", all.filter(function (x) { return x.response; }).length], ["questionnaire", "Needs answer", all.filter(function (x) { return x.status === "questionnaire"; }).length],
       ["offsite", "Company site", all.filter(function (x) { return x.status === "offsite"; }).length], ["phone", "From phone", all.filter(function (x) { return x.project === "phone"; }).length]];
@@ -1708,7 +1827,9 @@
       if (tStatus === "phone") return x.project === "phone";
       return true;
     });
-    accSum("tf", (groups.filter(function (g) { return g[0] === tStatus; })[0] || ["", "All"])[1] + (q ? ' · "' + q + '"' : "") + " · " + apps.length + " shown");
+    sortByWhen(apps, tSort, function (x) { return String(T_LABELS[x.status] || x.status || ""); });
+    accSum("tf", (groups.filter(function (g) { return g[0] === tStatus; })[0] || ["", "All"])[1] + (q ? ' · "' + q + '"' : "") + " · " + apps.length + " shown" +
+      (tSort !== "new" ? " · " + (T_SORTS.filter(function (s) { return s[0] === tSort; })[0] || ["", ""])[1].toLowerCase() : ""));
     var statuses = track.manual_statuses || ["", "viewed", "shortlisted", "interview", "offer", "rejected", "withdrawn"];
     $("t-apps").innerHTML = apps.map(function (x, i) {
       var r = x.response, m = x.manual || {};
@@ -1720,7 +1841,9 @@
         '<span class="chip ' + tCls(x.status) + '">' + esc(T_LABELS[x.status] || x.status) + "</span> " + reply + ' <span class="muted">' + esc((x.at || "").slice(0, 16).replace("T", " ")) + "</span></summary>" +
         '<div class="muted"><a href="' + esc(safeUrl(x.url)) + '" target="_blank" rel="noopener">open posting</a></div>' + qa + blocked + mails +
         '<label style="margin-top:8px">Your status</label><select data-tns="' + esc(x.job_id) + '">' + statuses.map(function (st) { return '<option value="' + st + '"' + (m.status === st ? " selected" : "") + ">" + (st || "none") + "</option>"; }).join("") + "</select>" +
-        '<input data-tnn="' + esc(x.job_id) + '" placeholder="note (interview date, recruiter name...)" value="' + esc(m.note || "") + '" style="margin-top:6px"><button class="ghost" data-tnsave="' + esc(x.job_id) + '" style="margin-top:6px">Save status</button></details>';
+        '<input data-tnn="' + esc(x.job_id) + '" placeholder="note (interview date, recruiter name...)" value="' + esc(m.note || "") + '" style="margin-top:6px">' +
+        '<div class="bulk" style="margin-top:6px;align-items:center"><button class="ghost" data-tnsave="' + esc(x.job_id) + '">Save status</button>' +
+        (x.job_id != null && x.job_id !== "" ? '<button class="ghost small danger" data-tnrm="' + esc(x.job_id) + '" data-title="' + esc(x.title || "") + '">🗑 Remove</button>' : "") + "</div></details>";
     }).join("") || '<div class="muted">No applications here.</div>';
     restoreDirty($("t-apps"));
     $("t-apps").querySelectorAll("[data-tnsave]").forEach(function (b) {
@@ -1729,6 +1852,16 @@
         payload[id] = { status: document.querySelector(sel).value, note: document.querySelector(inp).value };
         b.disabled = true;
         request("notes", payload, "Sent. The PC saves it on its next run.").then(function (ok) { b.disabled = false; if (ok) { delete dirty["tns=" + id]; delete dirty["tnn=" + id]; } });
+      });
+    });
+    $("t-apps").querySelectorAll("[data-tnrm]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var id = b.dataset.tnrm, payload = {};
+        if (!confirm('Remove "' + (b.dataset.title || "this application") + '" from your applications? Your PC hides it on its next run.')) return;
+        var rm = idList("rm.apps"); if (rm.indexOf(id) < 0) rm.push(id); setIdList("rm.apps", rm);
+        renderTrackApps();
+        payload[id] = { hidden: true };
+        request("notes", payload, "Removed - the PC hides it on its next run.");
       });
     });
   }
@@ -1977,12 +2110,29 @@
     return country;
   }
   function expText(e) { if (e[1] === null || e[1] === undefined) return e[0] + "+ yrs"; return e[0] === e[1] ? e[0] + " yrs" : e[0] + "–" + e[1] + " yrs"; }
-  function showCareers(title, data) {
+  function showCareers(title, data, item) {
     $("j-box").hidden = true; $("j-box").innerHTML = "";
-    CV = { data: data, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false };
+    CV = { data: data, item: item || null, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false, keys: {} };
+    (data.jobs || []).forEach(function (j) { var k = jobKey({ url: j.url }); j._qk = k.key; });
     $("v-title").textContent = title; $("v-right").innerHTML = "";
     $("v-box").hidden = true; $("c-box").hidden = false;
     renderCareers(); $("c-box").scrollTop = 0; openViewer();
+    // queue statuses: fresh queue.json, then draw again
+    loadQueue(true).then(function () { if (CV && CV.data === data && !$("c-box").hidden) renderCareers(); });
+  }
+  function cQueueable(j) { return !!j.url && !!(CV && CV.item) && !CV.keys[j._qk] && !marks.applied["c:" + j.id]; }
+  function queueCareers(jobs, btn) {
+    jobs = jobs.filter(cQueueable);
+    if (!jobs.length) return;
+    var n = jobs.length;
+    if (btn) btn.disabled = true;
+    request("queue", { report: CV.item.id, kind: "careers", items: jobs.map(function (j) { return { url: j.url, title: j.title, company: j.company, location: j.location, score: j.score, source: "careers" }; }) },
+      "Queued " + n + " job" + (n > 1 ? "s" : "") + ". Your PC fills and submits the company forms within 30 min while on.").then(function (ok) {
+      if (!ok) { if (btn) btn.disabled = false; return; }
+      var p = pendingLocal();
+      jobs.forEach(function (j) { p.push({ key: j._qk, title: j.title, company: j.company, board: "web", url: j.url, at: Date.now() }); });
+      savePending(p); if (CV) renderCareers();
+    });
   }
   function careersJobs(withCountry) {
     return (CV.data.jobs || []).filter(function (j) {
@@ -2008,6 +2158,10 @@
       if (CV.sort === "new") return String(b.posted || "").localeCompare(String(a.posted || "")) || b.chance - a.chance;
       return b.chance - a.chance || (b.score || 0) - (a.score || 0);
     });
+    CV.keys = queueKeys();
+    var todo = jobs.filter(function (j) { return !marks.applied["c:" + j.id]; }), done = jobs.filter(function (j) { return marks.applied["c:" + j.id]; });
+    CV.shown = todo.filter(function (j) { return !marks.removed["c:" + j.id]; });  // "show removed" does not put them back in "Queue all"
+    var toQueue = CV.shown.filter(cQueueable);
     var all = d.jobs || [], nReloc = all.filter(function (j) { return j.reloc === "yes"; }).length;
     var dropped = Object.keys(m.dropped || {}).map(function (k) { return m.dropped[k] + " " + k; }).join(", ");
     var asked = [(m.roles || []).join(", "), m.experience ? m.experience + " yrs" : "", (m.countries || []).indexOf("*") >= 0 ? "worldwide" : (m.countries || []).join(", "),
@@ -2021,10 +2175,11 @@
         '<div class="hint">Ordered by best chance of getting hired first.</div>', "sub") +
       acc("crf-opts", "Relocation · sort · match", [CV.reloc, CV.sort, CV.min ? CV.min + "%+" : "any match", CV.view].join(" · "),
         '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) + '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
-        '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div>", "sub") + "</div>";
+        '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div>", "sub") +
+      (CV.view === "jobs" && CV.item ? '<button class="primary" id="cq-all"' + (toQueue.length ? "" : " disabled") + ">Queue all shown (" + toQueue.length + ")</button>" +
+        '<div class="hint">Your PC opens each career page, fills the form from your details and submits it; ones behind a login or CAPTCHA are marked "by hand" under Queue.</div>' : "") + "</div>";
     if (CV.view === "companies") h += companiesHtml(jobs);
     else {
-      var todo = jobs.filter(function (j) { return !marks.applied["c:" + j.id]; }), done = jobs.filter(function (j) { return marks.applied["c:" + j.id]; });
       if (!jobs.length) h += '<div class="card muted">No jobs match these filters.</div>';
       else if (!todo.length) h += '<div class="card muted">Nothing left to apply to here. Everything shown is in Applied below.</div>';
       else h += '<div class="jobs">' + todo.slice(0, CV.limit).map(cJobHtml).join("") + "</div>";
@@ -2043,7 +2198,9 @@
   }
   function cJobHtml(j) {
     var R = RELOC[j.reloc] || ["", j.reloc], F = FIT[j.fit] || ["", j.fit], t = [], mk = "c:" + j.id, applied = !!marks.applied[mk];
+    var q = j.url ? CV.keys[j._qk] : null, qBtn = !q && !applied && cQueueable(j) ? '<button class="btn" data-cq="' + esc(j.id) + '">+ Queue</button>' : "";
     if (applied) t.push(chip("ok", "✓ applied"));
+    if (q) t.push(stChip(q.status, q.note));
     t.push(chip(j.chance >= 65 ? "ok" : j.chance >= 45 ? "warn" : "", "chance " + j.chance));
     if (typeof j.score === "number") t.push(chip(j.score >= 55 ? "ok" : j.score >= 35 ? "warn" : "bad", "match " + Math.round(j.score) + "%"));
     t.push(chip(R[0], R[1])); t.push(chip(F[0], F[1] + (j.exp && j.exp[0] !== null && j.exp[0] !== undefined ? " · asks " + expText(j.exp) : "")));
@@ -2052,7 +2209,8 @@
     if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
     return '<div class="job' + (applied ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + aiLine(j) + skills +
-      '<div class="acts">' + openLink(j.url, applied ? "Open" : "Open & apply", applied ? "btn2" : "btn", mk) + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a>" + markBtns(mk, applied) + "</div>" +
+      // with the PC applying ("+ Queue" or a status), opening it is no longer the main action
+      '<div class="acts">' + (applied || q || qBtn ? openLink(j.url, "Open", "btn2", mk) : openLink(j.url, "Open & apply", "btn", mk)) + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a>" + qBtn + markBtns(mk, applied) + "</div>" +
       (CV.open[j.id] ? '<div class="contacts">' + contactsHtml(j.company, cityOf(j.location, CV.country || (j.countries || [])[0]), j.recruiter) + "</div>" : "") + "</div>";
   }
   function contactsHtml(company, city, recruiter) {
@@ -2084,7 +2242,14 @@
     return h || '<div class="card muted">No companies.</div>';
   }
   $("c-box").addEventListener("click", function (e) {
-    var b = e.target.closest("[data-cc],[data-contacts],[data-more]"); if (!b || !CV) return;
+    if (!CV) return;
+    var qb = e.target.closest("#cq-all,[data-cq]");
+    if (qb) {
+      if (qb.id === "cq-all") queueCareers(CV.shown || [], qb);
+      else queueCareers((CV.data.jobs || []).filter(function (j) { return String(j.id) === qb.dataset.cq; }), qb);
+      return;
+    }
+    var b = e.target.closest("[data-cc],[data-contacts],[data-more]"); if (!b) return;
     if (b.hasAttribute("data-cc")) { CV.country = b.dataset.cc; CV.limit = 60; }
     else if (b.hasAttribute("data-more")) CV.limit += 60;
     else { e.preventDefault(); CV.open[b.dataset.contacts] = !CV.open[b.dataset.contacts]; }
