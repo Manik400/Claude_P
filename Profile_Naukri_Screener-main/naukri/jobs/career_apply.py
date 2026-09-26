@@ -43,7 +43,88 @@ SHOTS = ROOT / "data" / "jobs" / "career_shots"
 
 # Every status apply_from_page() returns (callers record these themselves).
 STATUSES = {"submitted", "login-required", "captcha", "no-form", "career-incomplete",
-            "career-unconfirmed", "career-error"}
+            "career-unconfirmed", "career-error", "closed"}
+
+# A listing that no longer takes applications. Before this was checked, a closed
+# LinkedIn / Naukri posting showed up as "no application form found - apply by hand".
+CLOSED = re.compile(r"no longer accepting applications|(this |the )?(job|position|posting|vacancy|role|opening) "
+                    r"(is |has )?(no longer (available|open|active)|(been )?(closed|filled|expired|removed))|"
+                    r"job (has )?expired|applications (are )?(now )?closed|this job is closed|"
+                    r"stelle (ist )?(nicht mehr|bereits) (verfügbar|besetzt)|oferta (no disponible|cerrada|caducada)|"
+                    r"募集(は)?終了|ประกาศนี้หมดอายุ", re.I)
+
+# Hosted application systems, from the posting page to the form page itself.
+# They need no account, and their form URLs are predictable.
+ATS_FORM = [
+    (re.compile(r"^(https?://jobs\.lever\.co/[^/?#]+/[0-9a-f-]{20,})/?(?:[?#].*)?$", re.I), r"\1/apply"),
+    (re.compile(r"^(https?://jobs\.ashbyhq\.com/[^/?#]+/[0-9a-f-]{20,})/?(?:[?#].*)?$", re.I), r"\1/application"),
+    (re.compile(r"^(https?://apply\.workable\.com/[^/?#]+/j/[0-9A-F]+)/?(?:[?#].*)?$", re.I), r"\1/apply/"),
+    (re.compile(r"^(https?://[^/]+\.breezy\.hr/p/[^/?#]+)/?(?:[?#].*)?$", re.I), r"\1/apply"),
+    (re.compile(r"^(https?://[^/]+\.recruitee\.com/o/[^/?#]+)/?(?:[?#].*)?$", re.I), r"\1/c/new"),
+    (re.compile(r"^(https?://[^/]+\.teamtailor\.com/jobs/[^/?#]+)/?(?:[?#].*)?$", re.I), r"\1/applications/new"),
+    (re.compile(r"^(https?://jobs\.jobvite\.com/[^/?#]+/job/[^/?#]+)/?(?:[?#].*)?$", re.I), r"\1/apply"),
+]
+# Application systems that always make you create an account first.
+ACCOUNT_ATS = ("myworkdayjobs.com", "myworkday.com", "taleo.net", "icims.com", "successfactors.", "oraclecloud.com",
+               "brassring.com", "avature.net", "ultipro.com", "haystack", "jobvite.com/careers")
+# Hosts that are an application form, or lead straight to one: an outbound
+# link to these from an aggregator is the way to the employer's form.
+ATS_HOSTS = ("greenhouse.io", "lever.co", "ashbyhq.com", "workable.com", "smartrecruiters.com", "breezy.hr",
+             "recruitee.com", "teamtailor.com", "bamboohr.com", "personio.", "jobvite.com", "join.com",
+             "jazzhr.com", "applytojob.com", "zohorecruit.", "freshteam.com", "keka.com", "darwinbox.",
+             "hirist.", "instahyre.com", "cutshort.io", "wellfound.com", "relocate.me")
+LOGINS_FILE = ROOT / "data" / "platform_logins.json"
+
+
+def saved_logins() -> set[str]:
+    """Hosts you signed in to with `python main.py --platform-login` (the automation browser keeps
+    their session), so their "needs its own account" wall no longer applies."""
+    try:
+        return set(json.loads(LOGINS_FILE.read_text(encoding="utf-8")).get("hosts") or [])
+    except (OSError, ValueError):
+        return set()
+
+
+def _needs_account(url: str) -> str | None:
+    """The host, when the URL is a board or system that needs an account you have not saved."""
+    url = (url or "").lower()
+    have = saved_logins()
+    for h in LOGIN_HOSTS + ACCOUNT_ATS:
+        if h in url and not any(s in url for s in have):
+            return re.sub(r"^https?://(www\.)?", "", url).split("/")[0]
+    return None
+
+
+def _ats_form_url(url: str) -> str | None:
+    for pattern, repl in ATS_FORM:
+        if pattern.match(url or ""):
+            return pattern.sub(repl, url)
+    return None
+
+
+def _outbound_apply(page) -> str | None:
+    """On an aggregator's listing (Arbeitnow, JobThai, Duunitori, TokyoDev...), the link to the
+    employer's application: an Apply-worded link leaving the site, else a link to a known
+    application system."""
+    try:
+        links = page.evaluate("""() => Array.from(document.querySelectorAll('a[href]')).map(a => ({
+            href: a.href, text: (a.innerText || a.getAttribute('aria-label') || '').replace(/\\s+/g, ' ').trim(),
+            vis: !!(a.offsetWidth || a.offsetHeight) }))""")
+    except Exception:
+        return None
+    from urllib.parse import urlparse
+    here = urlparse(page.url or "").netloc.replace("www.", "")
+    apply_words = re.compile(r"apply|bewerb|postul|candidat|hae\b|haku|応募|エントリー|สมัคร|solicit", re.I)
+    best = None
+    for l in links:
+        href = l.get("href") or ""
+        if not href.startswith("http") or here and here in href:
+            continue
+        if apply_words.search(l.get("text") or "") and l.get("vis"):
+            return href
+        if best is None and any(h in href for h in ATS_HOSTS):
+            best = href
+    return best
 
 # Ledger notes for company-site attempts start with this, so a posting is tried
 # on its careers site once and then left alone.
@@ -57,7 +138,7 @@ LOGIN_HOSTS = ("wellfound.com", "angel.co", "xing.com", "seek.com", "jobsdb.com"
 # Button texts, in the languages of the boards the search covers. Loose on
 # purpose ("Apply for this job at Acme", "Jetzt bewerben", "応募する"), with the
 # look-alikes that are not an application ruled out by NOT_ACTION.
-APPLY_TEXT = re.compile(r"^\W*(apply|easy apply|i'?m interested|start (your |an )?application|(jetzt )?bewerben|"
+APPLY_TEXT = re.compile(r"^\W*(apply|easy apply|quick apply|i'?m interested|start (your |an )?application|(jetzt )?bewerben|"
                         r"postular|postúlate|inscr[ií]b|solliciteer|hae\b|haku|candidat|応募|エントリー|สมัคร)"
                         r".{0,45}$", re.I)
 SUBMIT_TEXT = re.compile(r"^\W*(submit|send|apply|finish|complete (my |your )?application|bewerbung|absenden|"
@@ -65,7 +146,8 @@ SUBMIT_TEXT = re.compile(r"^\W*(submit|send|apply|finish|complete (my |your )?ap
                          r".{0,30}$", re.I)
 NOT_ACTION = re.compile(r"\b(filters?|alerts?|later|save (for|job)|similar|share|sign ?(in|up)|log ?in|register|"
                         r"with (linkedin|indeed|google|seek|xing)|go back|cancel|newsletter)\b", re.I)
-NEXT_TEXT = re.compile(r"^\s*(next|continue|save (and|&) continue|proceed)\s*[›>→]?\s*$", re.I)
+NEXT_TEXT = re.compile(r"^\s*(next|next step|continue|save (and|&) continue|proceed|review|weiter|nächster schritt|siguiente|"
+                       r"continuar|suivant|continuer|seuraava|jatka|volgende|次へ|次に進む|ถัดไป)\s*[›>→]?\s*$", re.I)
 THANKS = re.compile(r"thank(s| you) for (applying|your (application|interest))|application (has been |was )?"
                     r"(received|submitted|sent|complete)|we('ve| have) received your application|"
                     r"successfully (applied|submitted)|your application is on its way", re.I)
@@ -569,7 +651,7 @@ def _follow_click(page, click) -> object:
 
 
 def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = True,
-                    capture: dict | None = None, offsite_click=None, prefill=None) -> tuple[str, str]:
+                    capture: dict | None = None, offsite_click=None, prefill=None, tailor=None) -> tuple[str, str]:
     """Apply starting from `page`, which shows the posting.
 
     `offsite_click` is a callable that presses the board's own offsite button
@@ -585,21 +667,35 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
         return "career-incomplete", f"set applicant.{', applicant.'.join(lacking)} in jobs.yaml"
     opened = set()
     current = page
+    tailored_note = ""
     try:
+        jd_text = job.get("description") or _body(page)      # the posting, for the tailored resume
+        if CLOSED.search(_body(page)):
+            return "closed", "the listing no longer accepts applications"
         if offsite_click is not None:
             nxt = _follow_click(page, offsite_click)
             if nxt is None:
+                if CLOSED.search(_body(page)):
+                    return "closed", "the listing no longer accepts applications"
                 return "career-error", "could not press the company-site Apply button"
             current = nxt
         if current is not page:
             opened.add(current)
-        url = current.url or ""
-        if any(h in url for h in LOGIN_HOSTS):
-            host = re.sub(r"^https?://(www\.)?", "", url).split("/")[0]
-            return "login-required", f"{host} needs its own account"
+        host = _needs_account(current.url)
+        if host:
+            return "login-required", f"{host} needs its own account (sign in once with: python main.py --platform-login)"
 
         total_filled = 0
-        for step in range(6):
+        ats_tried = outbound_tried = False
+        for step in range(8):
+            if CLOSED.search(_body(current)):
+                return "closed", "the listing no longer accepts applications"
+            # a hosted application system: go straight to its form page
+            form_url = None if ats_tried else _ats_form_url(current.url)
+            if form_url and form_url != current.url:
+                ats_tried = True
+                current.goto(form_url, wait_until="domcontentloaded", timeout=45000)
+                current.wait_for_timeout(2500)
             wall = login_wall(current)
             if wall:
                 _shot(current, job, "-login")
@@ -614,15 +710,36 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                     break               # submitted a page and no further form: check for a thank-you
                 page_now = current
                 nxt = _follow_click(current, lambda: _click_text(page_now, APPLY_TEXT))
+                if nxt is None and not outbound_tried:
+                    # an aggregator's listing: follow its link out to the employer's application
+                    outbound_tried = True
+                    target = _outbound_apply(current)
+                    if target:
+                        current.goto(target, wait_until="domcontentloaded", timeout=45000)
+                        current.wait_for_timeout(2500)
+                        _leave_linkedin(current)
+                        nxt = current
                 if nxt is None:
                     return "no-form", "no application form or Apply button found on the company page"
                 if nxt is not current:
                     opened.add(nxt)
                 current = nxt
-                if any(h in (current.url or "") for h in LOGIN_HOSTS):
-                    return "login-required", "the Apply button leads to a site that needs its own account"
+                host = _needs_account(current.url)
+                if host:
+                    return "login-required", f"the Apply button leads to {host}, which needs its own account"
                 continue
 
+            if tailor is not None and not tailored_note:
+                # a resume arranged for this job, uploaded instead of the generic one (naukri/jobs/tailor.py)
+                tailored_note = " · generic resume"
+                try:
+                    path, info = tailor(job, jd_text if len(jd_text) > 300 else _body(current))
+                    if path:
+                        who = dict(who, resume=str(path))
+                        capture["tailored_resume"] = info
+                        tailored_note = f" · tailored resume, {info.get('match')}% of the job's skills"
+                except Exception as exc:  # noqa: BLE001 - the generic resume still works
+                    log.debug("tailor failed: %s", exc)
             prefilled = 0
             if prefill is not None:
                 try:
@@ -650,7 +767,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 return "captcha", "a CAPTCHA appeared on submit - apply by hand"
             body = _body(current)
             if THANKS.search(body) or re.search(r"thank|confirm|success|submitted", current.url or "", re.I):
-                return "submitted", f"{total_filled} field(s) filled and submitted ({_shot(current, job, '-done')})"
+                return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
             try:
                 invalid = frame.locator("[aria-invalid=true]:visible, .error:visible, .field-error:visible, [class*=error-message]:visible").count()
             except Exception:
@@ -660,8 +777,8 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             # Otherwise a multi-page form moved on: fill the next page.
         body = _body(current)
         if THANKS.search(body):
-            return "submitted", f"{total_filled} field(s) filled and submitted ({_shot(current, job, '-done')})"
-        return "career-unconfirmed", f"pressed Submit, no confirmation seen ({_shot(current, job, '-after')})"
+            return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
+        return "career-unconfirmed", f"pressed Submit, no confirmation seen{tailored_note} ({_shot(current, job, '-after')})"
     except Exception as exc:  # noqa: BLE001
         return "career-error", str(exc)[:160]
     finally:
@@ -679,13 +796,14 @@ def transient(status: str, note: str) -> bool:
 
 
 def ledger_status(status: str) -> str:
-    """How an outcome is stored: a submission counts as applied; everything
-    else is finished on this site ("offsite") so it is not retried every run."""
-    return "applied" if status == "submitted" else "offsite"
+    """How an outcome is stored: a submission counts as applied, a closed listing
+    as skipped; everything else is finished on this site ("offsite") so it is not
+    retried every run."""
+    return {"submitted": "applied", "closed": "skipped"}.get(status, "offsite")
 
 
 def queue_status(status: str) -> str:
-    return {"submitted": "submitted", "would-apply": "queued"}.get(status, "manual")
+    return {"submitted": "submitted", "would-apply": "queued", "closed": "skipped"}.get(status, "manual")
 
 
 def main(argv=None) -> int:

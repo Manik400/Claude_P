@@ -204,6 +204,12 @@ JOB_APPLY_BUTTON = [
     "#apply-button",
     "button.apply-button",
     "button[class*='apply-button']",
+    # "Apply on company site" is a different element; without these the
+    # company-site click failed on 261 postings ("could not press ... Apply button")
+    "#company-site-button",
+    "button.company-site-button",
+    "button[class*='company-site']",
+    "button:has-text('Apply on company site')",
 ]
 
 # The button's own label is the most reliable signal of what a click will do:

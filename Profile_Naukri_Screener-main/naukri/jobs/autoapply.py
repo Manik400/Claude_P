@@ -245,16 +245,23 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         entry = ledger.entries.get(job_id) or {}
         return entry.get("status") == "offsite" and not str(entry.get("note", "")).startswith(career_mod.TRIED)
 
+    # company-site forms get a resume tailored to the job (naukri/jobs/tailor.py); tailor_resume: false turns it off
+    tailor_fn = None
+    if config.get("tailor_resume", True):
+        from . import tailor as tailor_mod
+        tailor_fn = tailor_mod.tailor
+
     def try_career(page, job, board: str, offsite_click=None) -> tuple[str, str]:
         capture: dict = {}
         status, note = career_mod.apply_from_page(
-            page, {"title": job.title, "company": job.company, "url": job.url}, who, facts,
-            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill)
+            page, {"title": job.title, "company": job.company, "url": job.url,
+                   "description": getattr(job, "description", "") or ""}, who, facts,
+            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn)
         if status == "submitted":
             career_left[0] -= 1
         if not dry_run and status != "would-apply" and not career_mod.transient(status, note):
             ledger.record(job, career_mod.ledger_status(status), career_mod.TRIED + note)
-            applications.record(board, job, "applied" if status == "submitted" else "offsite",
+            applications.record(board, job, {"submitted": "applied", "closed": "skipped"}.get(status, "offsite"),
                                 career_mod.TRIED + note, capture, dry_run=False, per_run=per_run, project=project)
         summary["career"][status] = summary["career"].get(status, 0) + 1
         log.info("[company site %s] %s @ %s - %s", status, job.title, job.company, note)

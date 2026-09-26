@@ -203,6 +203,45 @@ def settings_of(queue: dict, cfg: dict) -> dict:
     return s
 
 
+def release_for_retry(items: list) -> int:
+    """Queue items for another go - including a fresh company-site attempt.
+
+    Setting the item to "queued" alone did not stick: the screener's ledger still
+    said "offsite, company site tried", so the apply step skipped the posting and
+    sync_from_ledger() then put the old status back. The ledger note loses its
+    "company site: " mark too, which is what makes autoapply try the site again.
+    """
+    from naukri.jobs import career_apply as career_mod
+    from naukri.jobs.ledger import Ledger
+    ledger = Ledger()
+    touched = False
+    for it in items:
+        it.update(status="queued", note="", attempts=0, career_tried=False, at=now_iso())
+        entry = ledger.entries.get(it["key"] if it["board"] == "linkedin" else it["job_id"])
+        if entry and str(entry.get("note", "")).startswith(career_mod.TRIED):
+            entry["note"] = "retry requested: " + entry["note"][len(career_mod.TRIED):]   # status stays "offsite"
+            touched = True
+    if touched:
+        ledger.save()
+    return len(items)
+
+
+def retry_by_hand(include_captcha: bool = False) -> int:
+    """Every queue item left "apply by hand" (company site, login, no form...) goes back
+    in the queue. CAPTCHA ones stay unless asked: a CAPTCHA will stop the next try too."""
+    cfg = load_config()
+    path = os.path.join(pages_dir(cfg), "data", "apply", "queue.json")
+    queue = load_queue(path, cfg.get("passphrase") or "")
+    items = [i for i in queue["items"] if i["status"] in ("manual", "offsite", "failed")
+             and (include_captcha or "captcha" not in (i.get("note") or "").lower())]
+    n = release_for_retry(items)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(queue, f, ensure_ascii=False, indent=1)
+    log("retry: %d job(s) back in the queue; the next runs apply to them (%d per board per run)"
+        % (n, int((queue.get("settings") or {}).get("limit") or 5)))
+    return n
+
+
 def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, dashboard, questions) -> dict:
     """Fold the phone's requests into the queue. Returns counts per type."""
     by_key = {i["key"]: i for i in queue["items"]}
@@ -244,9 +283,7 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                     if key in by_key and by_key[key]["status"] not in ("applied", "submitted"):
                         by_key[key].update(status="removed", note="removed from the phone", at=now_iso())
             elif kind == "retry":
-                for key in payload.get("keys") or []:
-                    if key in by_key:
-                        by_key[key].update(status="queued", note="", attempts=0, at=now_iso())
+                release_for_retry([by_key[k] for k in payload.get("keys") or [] if k in by_key])
             elif kind == "pause":
                 queue["paused"] = True
             elif kind == "resume":
@@ -430,7 +467,13 @@ def main(argv=None) -> int:
     ap.add_argument("--limit", type=int, default=None, help="applications per board per run (default: phone setting, else 5)")
     ap.add_argument("--dry-run", action="store_true", dest="dry_run", help="report what would be sent; push nothing")
     ap.add_argument("--no-publish", action="store_true", dest="no_publish", help="skip publishing new Naukri scan pages")
+    ap.add_argument("--retry-by-hand", action="store_true", dest="retry_by_hand",
+                    help="put every 'apply by hand' job back in the queue (after new apply logic or new logins), then exit")
+    ap.add_argument("--include-captcha", action="store_true", dest="include_captcha", help="with --retry-by-hand: CAPTCHA ones too")
     args = ap.parse_args(argv)
+    if args.retry_by_hand:
+        retry_by_hand(args.include_captcha)
+        return 0
 
     cfg = load_config()
     passphrase = cfg.get("passphrase") or vault.get_passphrase()   # only to read files from the old, encrypted site

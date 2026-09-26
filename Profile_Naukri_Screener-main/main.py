@@ -113,6 +113,9 @@ def main() -> int:
     action.add_argument("--applications", action="store_true",
                         help="List every application the agent attempted, with each screening "
                              "answer and where it came from, and rebuild data/jobs/applications.html")
+    action.add_argument("--platform-login", nargs="*", metavar="PLATFORM", dest="platform_login", default=None,
+                        help="Sign in once to LinkedIn, Naukri, Instahyre, Hirist, Wellfound, SEEK, StepStone, "
+                             "Daijob... in the auto-apply browser, so applies go through them (all, or the named ones)")
     action.add_argument("--learn", action="store_true",
                         help="Relearn score adjustments from outcomes (data/metrics/learned.json)")
     action.add_argument("--accuracy", action="store_true",
@@ -258,6 +261,10 @@ def main() -> int:
                 from naukri.jobs import autoapply
                 print(autoapply.summarise(apply_report))
             return 0
+
+        if args.platform_login is not None:
+            from naukri.jobs import platform_login
+            return platform_login.run(args.platform_login)
 
         if args.learn or args.accuracy:
             from naukri import learning
