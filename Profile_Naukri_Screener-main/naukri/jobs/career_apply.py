@@ -496,15 +496,17 @@ CAPTCHA_JS = r"""
 """
 
 
-def captcha(page) -> bool:
-    """A CAPTCHA that blocks the form - a checkbox / image challenge, not the invisible badge."""
+def captcha(page) -> str:
+    """The CAPTCHA that blocks the form ("recaptcha checkbox", "hcaptcha", ...) - a checkbox /
+    image challenge, not the invisible badge. Empty when there is none."""
     for frame in _frames(page)[:4]:
         try:
-            if frame.evaluate(CAPTCHA_JS):
-                return True
+            kind = frame.evaluate(CAPTCHA_JS)
+            if kind:
+                return str(kind)
         except Exception:
             continue
-    return False
+    return ""
 
 
 OVERLAY_JS = r"""
@@ -1371,9 +1373,10 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if wall:
                 _shot(current, job, "-login")
                 return "login-required", wall
-            if captcha(current):
-                _shot(current, job, "-captcha")
-                return "captcha", "the form has a CAPTCHA - apply by hand"
+            kind = captcha(current)
+            if kind:
+                _shot(current, job, "-captcha", full=True)
+                return "captcha", f"the form has a CAPTCHA ({kind}) - apply by hand"
             on_board = platform_host(current.url)
             if on_board and offsite_click is None and board_applied(current):
                 if step == 0 or total_filled == 0 and not pressed_apply:
@@ -1502,8 +1505,8 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             why: dict = {}
             result = _after_submit(current, frame, before, why)
             if result == "captcha":
-                _shot(current, job, "-captcha")
-                return "captcha", "a CAPTCHA appeared on submit - apply by hand"
+                _shot(current, job, "-captcha", full=True)
+                return "captcha", f"a CAPTCHA appeared on submit ({captcha(current) or 'challenge'}) - apply by hand"
             if result == "submitted":
                 return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
             if result == "errors":
