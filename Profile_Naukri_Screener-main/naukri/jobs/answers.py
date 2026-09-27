@@ -87,6 +87,40 @@ SKILL_STOPWORDS = {
     "any", "some", "detail", "details", "short", "brief", "mind", "person",
 }
 
+# Questions every application system asks that have one honest answer for a candidate
+# who is not, and never was, with the company: (name, pattern, answer). "Have you ever
+# worked at MongoDB before?" stopped a form that was otherwise complete. The employer's
+# name is checked against your current / earlier companies first, so a "No" is never
+# given to a company you did work for.
+STANDARD: list[tuple[str, str, str]] = [
+    ("worked here before", r"(have|had) you (ever |previously )?(worked|been employed|been (a |an )?(contractor|intern|consultant)) "
+                           r"(at|for|with|by)|(are|were) you (a |an )?(former|previous|ex-?\s?)employee|previously (worked|employed) (at|for|with)|"
+                           r"(current|former) (employee|contractor) of", "No"),
+    ("applied here before", r"(have|had) you (ever |previously )?applied (to|at|for|with)|previous(ly)? appl(ied|ication)", "No"),
+    ("works here now", r"(are|do) you (currently )?(work(ing)?|employed) (at|for|with) (us|this company|the company)|"
+                       r"currently (an |a )?employee", "No"),
+    ("referral", r"referred by|employee referral|were you referred|do you know (anyone|someone) (at|who works)", "No"),
+    ("of age", r"(at least|over|above|older than) (18|eighteen)|\b18 (years )?(of age )?(or older|\+|and over)|legal (working )?age", "Yes"),
+    ("contact consent", r"(agree|consent|happy|ok|okay|permission) (to|for) (be(ing)? contacted|receiv(e|ing) (updates|communications|"
+                        r"emails|e-mails|messages|notifications|information))|(may|can) we contact you|keep (me|you) (informed|updated|posted)|"
+                        r"opt.?in to (receive|communications)", "Yes"),
+]
+
+
+def _resolve_standard(text: str, facts: dict, job: dict | None) -> tuple[str, str] | None:
+    for name, pattern, answer in STANDARD:
+        if not re.search(pattern, text, re.IGNORECASE):
+            continue
+        if name in ("worked here before", "works here now"):
+            employers = " ".join(str(facts.get(k) or "") for k in ("current_company", "previous_companies", "companies", "employers")).lower()
+            company = _norm((job or {}).get("company") or "")
+            stem = re.sub(r"\b(pvt|private|ltd|limited|inc|llc|technologies|technology|solutions|labs|group|co)\b.*", "", company).strip()
+            if stem and len(stem) > 2 and stem in employers:
+                return "Yes", f"standard answer ({name}: you were at {company})"
+        return answer, f"standard answer ({name})"
+    return None
+
+
 AFFIRMATIVE = ("yes", "y", "true")
 NEGATIVE = ("no", "n", "false")
 YES_LEAD = re.compile(r"(yes|yeah|sure|ok|okay|i (agree|accept|confirm|understand|have|will|am|do|can))\b")
@@ -436,6 +470,11 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
         if str(saved.get("answer", "")).strip().lower() == questions_mod.SKIP:
             return None, "you chose to skip this question (data/jobs/answer_bank.yaml)"
         return _format("_bank", saved.get("answer")), "your saved answer"
+    # The one-answer questions every application system asks ("worked here before?").
+    standard = _resolve_standard(text, facts, job or facts.get("_job"))
+    if standard is not None:
+        return standard
+
     # Skill-specific questions are handled before the generic rules, because
     # "how many years of experience do you have in Playwright" also matches the
     # total-experience pattern - and answering it with your total is a lie.
