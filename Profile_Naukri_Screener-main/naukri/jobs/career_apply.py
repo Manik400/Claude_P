@@ -1852,7 +1852,7 @@ OFFSITE_TEXT = re.compile(r"^\W*(apply (on|via|at) (the )?(company|employer)('s)
 
 WORK_RIGHTS = re.compile(r"verify your work rights|verify your right to work|right to work in [A-Z][\w ]+", re.I)
 SPONSOR_LINK = re.compile(r"^\W*i (require|need|will need|would need) (visa |work )?sponsorship", re.I)
-VERIFY_BUTTON = re.compile(r"^\W*verify (now|my work rights|work rights)", re.I)
+VERIFY_BUTTON = re.compile(r"^\W*verify (now|my work rights|work rights)\b", re.I)
 
 
 def _has_control(target, pattern: re.Pattern, selector="button, a, input[type=submit], [role=button]") -> bool:
@@ -1931,7 +1931,7 @@ def _apply_words(page) -> str:
 RELEASABLE = re.compile(r"no application form or Apply button|found no Submit button|no confirmation seen|"
                         r"page did not open|could not press the company-site Apply|needs its own account|"
                         r"platform auto-apply is off|the form rejected some answers|Target (page|closed)|"
-                        r"the form has a CAPTCHA|ends with an e-mail verification code|the e-mail verification code|"
+                        r"the form has a CAPTCHA|ends with an e-mail verification code|the e-mail verification code|verify your right to work|"
                         r"Timeout \d+ms|net::ERR", re.I)
 
 
