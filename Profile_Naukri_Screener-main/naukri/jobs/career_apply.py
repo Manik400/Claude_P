@@ -265,7 +265,9 @@ COOKIE_DECLINE = re.compile(r"^\W*((reject|decline|deny|refuse|disagree)( all| o
                             r"alleen (noodzakelijke|essentiële|functionele)( cookies)?( toestaan| accepteren)?|"
                             r"s[oó]lo (las )?(necesarias|esenciales|imprescindibles)( cookies)?|"
                             r"(uniquement|seulement) (les )?(cookies )?(nécessaires|essentiels)|vain välttämättömät( evästeet)?)\W*$", re.I)
-POPUP_CLOSE = re.compile(r"^\W*(no,? thanks?( you)?|not now|maybe later|close|dismiss|skip( for now)?|×|✕|✖|x)\W*$", re.I)
+POPUP_CLOSE = re.compile(r"^\W*(no,? thanks?( you)?(,? (take me|continue|go) to the (job|site|application|posting))?|not now|maybe later|close|dismiss|"
+                         r"skip( for now| this step)?|take me to the (job|site|application)|continue to (the )?(job|employer|site|application|"
+                         r"posting)( site| website)?|×|✕|✖|x)\W*$", re.I)
 # Boxes that are not the application: job alerts, newsletters, site search.
 NOT_THE_FORM = re.compile(r"job alert|create (an |email )?alert|receive (an )?alert|jobs by email|similar jobs|newsletter|"
                           r"subscribe|talent (community|network|pool)|search jobs|keyword|\brole=search\b", re.I)
