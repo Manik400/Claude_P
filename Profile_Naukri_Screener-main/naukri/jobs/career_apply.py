@@ -122,7 +122,8 @@ def _outbound_apply(page) -> str | None:
         return None
     from urllib.parse import urlparse
     here = urlparse(page.url or "").netloc.replace("www.", "")
-    apply_words = re.compile(r"apply|bewerb|postul|candidat|hae\b|haku|応募|エントリー|สมัคร|solicit", re.I)
+    apply_words = re.compile(r"apply|bewerb|postul|candidat|hae\b|haku|応募|エントリー|สมัคร|solicit|"
+                             r"employer('s)? (web)?site|company('s)? (web)?site|zum arbeitgeber|zur stellenanzeige|werkgever", re.I)
     best = None
     for l in links:
         href = l.get("href") or ""
@@ -184,7 +185,11 @@ def platform_host(url: str, hosts: tuple = PLATFORM_HOSTS) -> str | None:
 # purpose ("Apply for this job at Acme", "Jetzt bewerben", "応募する"), with the
 # look-alikes that are not an application ruled out by NOT_ACTION.
 APPLY_TEXT = re.compile(r"^\W*(apply|easy apply|quick apply|i'?m interested|start (your |an )?application|(jetzt )?bewerben|"
-                        r"postular|postúlate|inscr[ií]b|solliciteer|hae\b|haku|candidat|応募|エントリー|สมัคร)"
+                        r"postular|postúlate|inscr[ií]b|solliciteer|hae\b|haku|candidat|応募|エントリー|สมัคร|"
+                        # boards that send you on: XING "Visit employer website" / "Zum Arbeitgeber", SEEK "Apply on employer site"
+                        r"visit (the )?(employer|company)('s)? ?(web)?site|go to (the )?(employer|company)('s)? ?(web)?site|"
+                        r"zum arbeitgeber|zur (bewerbung|stellenanzeige)|externe bewerbung|auf (der )?(arbeitgeber|unternehmens)(web)?seite bewerben|"
+                        r"naar (de )?werkgever|solicitar en (la )?web|postuler sur le site|hae työnantajan sivuilla|企業サイト)"
                         r".{0,45}$", re.I)
 SUBMIT_TEXT = re.compile(r"^\W*(submit|send|apply|finish|complete (my |your )?application|bewerbung|absenden|"
                          r"enviar|envoyer|verzenden|verstuur|lähetä|送信|応募する|ส่ง)"
