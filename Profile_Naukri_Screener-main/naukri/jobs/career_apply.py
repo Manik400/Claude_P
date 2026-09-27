@@ -219,6 +219,9 @@ def platform_host(url: str, hosts: tuple = PLATFORM_HOSTS) -> str | None:
 # purpose ("Apply for this job at Acme", "Jetzt bewerben", "応募する"), with the
 # look-alikes that are not an application ruled out by NOT_ACTION.
 APPLY_TEXT = re.compile(r"^\W*(apply|easy apply|quick apply|i'?m interested|start (your |an )?application|(jetzt )?bewerben|"
+                        r"(auf diese|für diese) (stelle|position) bewerben|hier bewerben|online bewerben|bewerbung starten|"
+                        r"solliciteer (nu|direct)|op deze (vacature|functie) solliciteren|postuler( maintenant)?|"
+                        r"(inscribirme|inscribirse) (en|a) (la|esta) oferta|candidatar|"
                         r"postular|postúlate|inscr[ií]b|solliciteer|hae\b|haku|candidat|応募|エントリー|สมัคร|"
                         # boards that send you on: XING "Visit employer website" / "Zum Arbeitgeber", SEEK "Apply on employer site"
                         r"visit (the )?(employer|company)('s)? ?(web)?site|go to (the )?(employer|company)('s)? ?(web)?site|"
@@ -247,7 +250,7 @@ THANKS_URL = re.compile(r"/(thank[-_]?you|thanks|confirmation|application[-_]?(c
 THANKS = re.compile(r"thank(s| you) for (applying|your (application|interest|submission))|application (has been |was )?"
                     r"(received|submitted|sent|complete|successful)|we('ve| have) received your application|"
                     r"successfully (applied|submitted|sent)|your application is on its way|"
-                    r"your response has been recorded|we('ll| will) be in touch|you (have )?applied (to|for) this|"
+                    r"your response has been recorded|you (have )?applied (to|for) this|"
                     r"application (is )?(under review|in progress)|"
                     r"vielen dank für (ihre|deine) bewerbung|bewerbung (wurde )?(erfolgreich )?(gesendet|eingereicht|übermittelt)|"
                     r"bedankt voor (je|uw) sollicitatie|sollicitatie (is )?(verzonden|ontvangen)|"

@@ -102,6 +102,8 @@ STANDARD: list[tuple[str, str, str]] = [
                        r"currently (an |a )?employee", "No"),
     ("referral", r"referred by|employee referral|were you referred|do you know (anyone|someone) (at|who works)", "No"),
     ("of age", r"(at least|over|above|older than) (18|eighteen)|\b18 (years )?(of age )?(or older|\+|and over)|legal (working )?age", "Yes"),
+    ("us person", r"u\.?s\.? person|itar|export control|us citizen|u\.?s\.? citizen(ship)?|green card|permanent resident of the (us|united states)", "No"),
+    ("security clearance", r"security clearance|hold(s)? a clearance", "No"),
     ("contact consent", r"(agree|consent|happy|ok|okay|permission) (to|for) (be(ing)? contacted|receiv(e|ing) (\w+ ){0,2}(updates|communications|"
                         r"emails?|e-mails?|messages|notifications|information|news))|(may|can) we contact you|keep (me|you) (informed|updated|posted)|"
                         r"opt.?in to (receive|communications)|select yes to receive|receive (text|sms) messages|text messages? for recruiting", "Yes"),
@@ -533,6 +535,12 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
     if found:
         name, key, value = found[0]
         if key == "notice_period_months":
+            if not options and re.search(r"available from|start(ing)? date|earliest (possible )?(start|join)|frühest|"
+                                         r"verfügbar ab|eintrittsdatum|beschikbaar vanaf|fecha de (inicio|incorporación)", text):
+                # a date is wanted, not "1 month": today plus the notice period
+                from datetime import date as _date, timedelta as _td
+                start = _date.today() + _td(days=int(round(float(value) * 30)))
+                return start.isoformat(), f"from {name} (today + {value:g} month(s))"
             if not options:
                 return _notice_text(text, value), f"from {name}"
             option_text = " ".join(options).lower()
@@ -543,6 +551,11 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
             if re.search(r"\bweeks?\b", option_text) and not re.search(r"\bmonths?\b", option_text):
                 return f"{round(float(value) * 4.33):g}", f"from {name}"
         if key in ("current_ctc_lpa", "expected_ctc_lpa"):
+            if _job_in_india(job or facts.get("_job"), facts) is False:
+                # a figure in lakhs means nothing on a German or Australian form: leave the
+                # choice open in words, or unanswered when it is a pick-list
+                return (None if options else "Negotiable / as per your standard range for this role"), \
+                    "salary: the job is outside India, lakhs would mislead"
             return _salary(text, key, value, options, facts, name)
         return _format(key, value), f"from {name}"
 
