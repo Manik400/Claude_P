@@ -75,6 +75,24 @@ def test_a_form_with_a_resume_or_name_and_email_is_an_application():
     assert ca.looks_like_application([field(label="Full name"), field(type="email", label="Email"), field(tag="textarea", label="Why us?")])
 
 
+def test_a_contact_or_quote_form_is_not_an_application():
+    # Createntropy / Loop Methods: name, e-mail, phone, "tell us about your project", Send Message
+    fields = [field(label="Name", name="name"), field(type="email", label="Email"), field(label="Phone", type="tel"),
+              field(tag="select", label="Project type", name="projectType", options=["Full Stack", "AI"]),
+              field(tag="textarea", label="Tell us about your project...", ctx="Get In Touch Ready to transform your ideas")]
+    assert not ca.looks_like_application(fields, "Send Message")
+    assert not ca.looks_like_application(fields[:3] + [field(tag="textarea", label="Message")], "Send Message")
+    # ...but a real form that mentions the job / a resume still counts, whatever its button says
+    assert ca.looks_like_application(fields[:3] + [field(tag="textarea", label="Why do you want this position?")], "Send")
+    assert ca.looks_like_application(fields + [field(type="file", label="Resume")], "Send Message")
+
+
+def test_the_site_saying_the_submission_failed_is_caught():
+    assert ca.PAGE_ERROR.search("Failed to submit. Please try again.")
+    assert ca.PAGE_ERROR.search("Something went wrong")
+    assert not ca.PAGE_ERROR.search("Thank you for applying")
+
+
 def test_a_location_field_is_part_of_the_form():
     assert not ca._not_the_form(field(label="Location", name="location"))
     assert not ca._not_the_form(field(label="Where did you hear about us?", name="source"))

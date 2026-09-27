@@ -575,16 +575,28 @@ def _not_the_form(field: dict) -> bool:
     return field.get("ctxFields", 99) <= 3 and bool(NOT_THE_FORM.search(field.get("ctx") or ""))
 
 
-def looks_like_application(fields: list[dict]) -> bool:
+# A "Get in touch" / "Request a quote" box on a company's home page: name, e-mail, phone,
+# "tell us about your project", Send Message. Not an application, however many fields.
+CONTACT_FORM = re.compile(r"get in touch|contact (us|form)|send (us )?(a )?message|your project|project ?type|"
+                          r"request a (quote|demo|call)|book a (call|demo)|enquir|inquir|how can we help|"
+                          r"subject|newsletter|subscribe|kontakt(formular)?|neem contact|contáct|contactez", re.I)
+
+
+def looks_like_application(fields: list[dict], buttons: str = "") -> bool:
     """Is this set of fields an application form, not a search / alert / contact box?
 
     A resume upload settles it; else an e-mail box with a name or phone box;
     else a textarea or select with a question. Two lone text boxes - a search
-    box and an alert e-mail - are not.
+    box and an alert e-mail - are not, and neither is a contact form (its
+    labels / box / button say so), whatever it asks for.
     """
     fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
     if any(f["type"] == "file" for f in fillable):
         return True
+    around = " ".join(" ".join([f["label"], f["name"], f["placeholder"], f["legend"], (f.get("ctx") or "")[:200]])
+                      for f in fillable)
+    if CONTACT_FORM.search(around + " " + buttons) and not re.search(r"resume|\bcv\b|curriculum|cover letter|applicant|candidat|position|vacancy|job", around, re.I):
+        return False
     meanings = {_meaning(f) for f in fillable}
     if "email" in meanings and (meanings & {"first_name", "last_name", "full_name", "phone", "linkedin", "resume"}):
         return True
@@ -1048,7 +1060,19 @@ def _press_submit(frame, page) -> str | None:
 
 
 FEEDBACK = ("[role=alert]:visible, [role=status]:visible, [aria-live]:visible, [class*=toast i]:visible, [class*=snackbar i]:visible, "
-            "[class*=notification i]:visible, [class*=success i]:visible, [class*=alert i]:visible, [class*=message i]:visible")
+            "[class*=notification i]:visible, [class*=success i]:visible, [class*=alert i]:visible, [class*=message i]:visible, "
+            "[class*=error i]:visible, [class*=fail i]:visible, [class*=status i]:visible")
+# The page's own words for a submission that did not go through.
+PAGE_ERROR = re.compile(r"failed to submit|please try again|something went wrong|an error (has )?occurred|could not (be )?submit|"
+                        r"submission failed|unable to (submit|process)|try again later", re.I)
+
+
+def _form_buttons(frame) -> str:
+    """The texts of the buttons in the form the fields sit in ("Send Message" tells a contact form)."""
+    try:
+        return " ".join(b["t"] for b in frame.evaluate(SUBMIT_JS) if b.get("inForm"))[:300]
+    except Exception:
+        return ""
 INVALID = "[aria-invalid=true]:visible, .error:visible, .field-error:visible, [class*=error-message i]:visible, [class*=invalid-feedback i]:visible, [class*=has-error i]:visible"
 ERROR_WORDS = re.compile(r"\b(error|invalid|required|fail|missing|please (fill|enter|select|upload|complete)|not valid|"
                          r"pflichtfeld|erforderlich|verplicht|obligatorio|obligatoire|pakollinen|必須)\b", re.I)
@@ -1081,7 +1105,7 @@ def _after_submit(current, frame, wait_s: float = 10.0) -> str:
             invalid = frame.locator(INVALID).count()
         except Exception:
             invalid = 0
-        if invalid or (said and ERROR_WORDS.search(said)):
+        if invalid or (said and ERROR_WORDS.search(said)) or PAGE_ERROR.search(body):
             return "errors"
         try:
             gone = frame.locator("[data-ca]").count() and frame.locator("[data-ca]:visible").count() == 0
@@ -1255,8 +1279,8 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if aggregator_host(current.url):
                 fields = []                      # an aggregator's page is never the application
             fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
-            if len(fillable) >= 2 and not looks_like_application(fields):
-                fillable = []                    # a search box and an alert e-mail, not a form
+            if len(fillable) >= 2 and not looks_like_application(fields, _form_buttons(frame)):
+                fillable = []                    # a search box and an alert e-mail, or a contact form - not the application
             if len(fillable) >= 2 and on_board and not platform_ok(current.url):
                 return "platform-off", f"the form is on {on_board} - {platform_switch.off_note(current.url)}"
             if len(fillable) < 2:
@@ -1375,10 +1399,13 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
         if THANKS.search(body):
             return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
         frame, fields = _form_frame(current)
-        still = [f for f in fields if f["type"] not in ("checkbox", "radio") and not f.get("value")]
-        if submitted_pages and not still:
-            # Submit was pressed, the form is gone or cleared and no error appeared: the
-            # site just has no thank-you text (Designoweb, several Indian career pages)
+        remaining = [f for f in fields if f["type"] not in ("checkbox", "radio")]
+        if PAGE_ERROR.search(body):
+            return "career-incomplete", f"the site said the submission failed ({_shot(current, job, '-errors', full=True)})"
+        if submitted_pages and len(remaining) < 2:
+            # Submit was pressed, the form itself is gone and no error appeared: the site
+            # just has no thank-you text (Designoweb, several Indian career pages). A form
+            # still standing there - filled or not - is NOT that.
             return "submitted", (f"{total_filled} field(s) filled and submitted - form closed, no thank-you text"
                                  f"{tailored_note} ({_shot(current, job, '-done', full=True)})")
         return "career-unconfirmed", f"pressed Submit, no confirmation seen{tailored_note} ({_shot(current, job, '-after', full=True)})"
