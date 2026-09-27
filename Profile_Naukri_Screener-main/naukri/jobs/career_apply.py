@@ -547,9 +547,15 @@ CAPTCHA_JS = r"""
 """
 
 
+BOT_WALL = re.compile(r"verification required|slide right to|press and hold|prove (that )?you('re| are) (not a robot|human)|"
+                      r"are you a robot|unusual activity from your (device|network)|checking your browser|"
+                      r"verify you are human|just a moment\.\.\.", re.I)
+
+
 def captcha(page) -> str:
     """The CAPTCHA that blocks the form ("recaptcha checkbox", "hcaptcha", ...) - a checkbox /
-    image challenge, not the invisible badge. Empty when there is none."""
+    image challenge, not the invisible badge - or a bot wall (SmartRecruiters' slider,
+    Cloudflare's "Just a moment"). Empty when there is none."""
     for frame in _frames(page)[:4]:
         try:
             kind = frame.evaluate(CAPTCHA_JS)
@@ -557,6 +563,13 @@ def captcha(page) -> str:
                 return str(kind)
         except Exception:
             continue
+    try:
+        head = _body(page)[:2500]
+    except Exception:
+        head = ""
+    m = BOT_WALL.search(head)
+    if m and len(head) < 2500:          # a short page that is only the wall, not a job description mentioning robots
+        return "bot wall: " + m.group(0)
     return ""
 
 
@@ -1196,6 +1209,7 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     pass
         except Exception as exc:  # noqa: BLE001 - one odd widget should not sink the form
             log.debug("could not fill %r: %s", q, exc)
+            capture.setdefault("fill_errors", []).append(f"{(q or f['name'] or f['type'])[:30]}: {str(exc)[:80]}")
             if f.get("required"):
                 blocked.append(q or "a required field")
     return filled, blocked
@@ -1791,8 +1805,15 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             dismiss_overlays(current)            # an error / info pop-up would sit on the Submit button
             before = page_state(current, frame)
             pressed = _press_submit(frame, current)
+            if pressed is None and frame is not current.main_frame:
+                pressed = _press_submit(current.main_frame, current)      # the button may sit outside the form's frame
             if pressed is None:
-                return "career-incomplete", f"filled {total_filled} field(s) but found no Submit button ({_shot(current, job, '-nosubmit', full=True)})"
+                why_not = ""
+                if capture.get("fill_errors"):
+                    why_not = " · fill errors: " + "; ".join(capture["fill_errors"][:2])
+                if frame is not current.main_frame:
+                    why_not += f" · form frame: {(frame.url or '')[:60]}"
+                return "career-incomplete", f"filled {total_filled} field(s) but found no Submit button{why_not} ({_shot(current, job, '-nosubmit', full=True)})"
             submitted_pages += 1
             why: dict = {}
             result = _after_submit(current, frame, before, why)
