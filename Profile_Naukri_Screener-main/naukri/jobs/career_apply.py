@@ -1053,7 +1053,10 @@ def _after_submit(current, frame, wait_s: float = 10.0) -> str:
             said = ""
         if said and THANKS.search(said):
             return "submitted"
-        if said and OK_WORDS.search(said) and not ERROR_WORDS.search(said):
+        # a toast that says the application went ("Application sent!") - not a static
+        # "our success stories" block that happens to carry a success-ish class
+        if said and OK_WORDS.search(said) and not ERROR_WORDS.search(said) \
+                and re.search(r"applic|apply|applied|submission|form|resume|candidat|bewerbung|sollicitatie|hakemus", said, re.I):
             return "submitted"
         try:
             invalid = frame.locator(INVALID).count()
