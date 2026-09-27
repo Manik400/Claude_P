@@ -1815,6 +1815,20 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
         if PAGE_ERROR.search(body):
             return "career-incomplete", f"the site said the submission failed ({_shot(current, job, '-errors', full=True)})"
         if submitted_pages and len(remaining) < 2:
+            if platform_host(current.url):
+                # a board (Wellfound ...): its own Applied state is the only proof - a dialog that
+                # merely closed once left the Apply button live
+                current.wait_for_timeout(3000)
+                if not board_applied(current):
+                    try:
+                        current.reload(wait_until="domcontentloaded", timeout=30000)
+                        current.wait_for_timeout(3000)
+                    except Exception:
+                        pass
+                if board_applied(current):
+                    return "submitted", f"applied on {platform_host(current.url)} with your saved login ({_shot(current, job, '-done')})"
+                return "career-unconfirmed", (f"the application box closed but {platform_host(current.url)} does not show Applied"
+                                             f" ({_shot(current, job, '-after', full=True)})")
             # Submit was pressed, the form itself is gone and no error appeared: the site
             # just has no thank-you text (Designoweb, several Indian career pages). A form
             # still standing there - filled or not - is NOT that.
