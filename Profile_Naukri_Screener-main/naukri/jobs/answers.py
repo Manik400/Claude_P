@@ -536,8 +536,9 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
             if not options:
                 return _notice_text(text, value), f"from {name}"
             option_text = " ".join(options).lower()
-            if re.search(r"\bdays?\b", text) or re.search(r"\bdays?\b", option_text):
-                # "Notice period (in days)", or chips in days ("1-15 days", "16-30 days"): 30, not 1
+            if re.search(r"\bdays?\b", text) or (re.search(r"\bdays?\b", option_text) and not re.search(r"\bmonths?\b", option_text)):
+                # "Notice period (in days)", or chips only in days ("1-15 days", "16-30 days"): 30, not 1.
+                # Mixed chips ("15 Days", "1 Month", "2 Months") keep months.
                 return f"{float(value) * 30:g}", f"from {name}"
             if re.search(r"\bweeks?\b", option_text) and not re.search(r"\bmonths?\b", option_text):
                 return f"{round(float(value) * 4.33):g}", f"from {name}"
