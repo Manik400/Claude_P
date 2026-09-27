@@ -1146,7 +1146,7 @@
     skipped: ["", "applied earlier / closed"], offsite: ["man", "company site - apply by hand"], manual: ["man", "company site - apply by hand"],
     prefilled: ["man", "form pre-filled - finish on PC"], unconfirmed: ["bad", "unconfirmed"], error: ["bad", "error"],
     "questionnaire-failed": ["bad", "form failed"], "offsite-error": ["bad", "company site failed"], failed: ["bad", "failed - tap retry"],
-    removed: ["", "removed"], "would-apply": ["", "would apply (dry run)"],
+    removed: ["", "removed"], "would-apply": ["", "would apply (dry run)"], "platform-off": ["warn", "waits - platform auto-apply off"],
     closed: ["", "closed / no longer open"], "no-form": ["man", "no form found - apply by hand"], captcha: ["man", "CAPTCHA - apply by hand"],
     "career-unconfirmed": ["warn", "submitted, no confirmation seen"]
   };
@@ -1301,10 +1301,12 @@
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
     var rsum = (auto.enabled ? "auto-queue " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") : "auto-queue off") +
       " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) +
-      " · " + (st.limit || 5) + " each on Naukri / LinkedIn per run · company sites: no limit";
+      " · " + ((q.pc || {}).platform_apply ? (st.limit || 5) + " each on Naukri / LinkedIn per run" : "platform auto-apply OFF (company sites only)") + " · company sites: no limit";
     h += acc("qr", "Rules", rsum,
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
       " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " each on Naukri and LinkedIn per run; company sites have no limit.</div>" +
+      '<label class="check"><input type="checkbox" id="r-platform"' + ((q.pc || {}).platform_apply ? " checked" : "") + '> Auto-apply on job platforms (Naukri, LinkedIn Easy Apply, Instahyre, Hirist, ...)</label>' +
+      '<div class="hint">Off: the PC applies only on company career pages and the employer job page itself. Platform jobs wait untouched until you switch this on.</div>' +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Naukri / LinkedIn, each, per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
@@ -1338,7 +1340,9 @@
     $("r-save").addEventListener("click", function () {
       var boards = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (b) { return b.dataset.b; });
       $("r-save").disabled = true;
-      request("settings", { auto: { enabled: $("r-auto").checked, min_score: +$("r-min").value, boards: boards }, limit: +$("r-limit").value, offsite: $("r-offsite").value },
+      var rules = { auto: { enabled: $("r-auto").checked, min_score: +$("r-min").value, boards: boards }, limit: +$("r-limit").value, offsite: $("r-offsite").value };
+      if ($("r-platform").checked !== !!(q.pc || {}).platform_apply) rules.platform_apply = $("r-platform").checked;
+      request("settings", rules,
         "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("qr")); delete dirty["r-boards"]; } });
     });
     $("q-filters").addEventListener("click", function (e) { var b = e.target.closest("button[data-f]"); if (!b) return; qFilter = b.dataset.f; store.set("q.filter", qFilter); renderQueue(); });
