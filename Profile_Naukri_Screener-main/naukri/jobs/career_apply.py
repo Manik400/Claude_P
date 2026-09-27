@@ -1184,7 +1184,8 @@ APPLIED_JS = r"""
   const vis = e => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && getComputedStyle(e).visibility !== 'hidden'; };
   const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
   const re = /^\W*(applied|application (sent|submitted)|you('ve| have) applied|already applied|bereits beworben|ya aplicaste|応募済み)\b/i;
-  for (const e of document.querySelectorAll('button, [role=button], input[type=submit], input[type=button], [aria-disabled=true], [disabled]')) {
+  // Naukri's badge is a <div class="already-applied">, hence the class selector
+  for (const e of document.querySelectorAll('button, [role=button], input[type=submit], input[type=button], [aria-disabled=true], [disabled], [class*=applied i]')) {
     if (!vis(e) || !re.test(txt(e))) continue;
     if (e.tagName === 'A' || e.closest('a[href], nav, aside, header, footer, [role=navigation], [role=menu], [class*=sidebar i], [class*=nav i]')) continue;
     return txt(e).slice(0, 40);
@@ -1555,6 +1556,10 @@ def release_failed(days: int = 30, dry_run: bool = False) -> dict:
             if not key.startswith("web:") or _needs_account(url):
                 counts["kept"] += 1
                 continue
+        if int(entry.get("released") or 0) >= 2:
+            # released twice already and still failing: a real wall, not a bug - stop spending runs on it
+            counts["kept"] += 1
+            continue
         if key.startswith("web:"):
             if not dry_run:
                 del ledger.entries[key]
@@ -1562,6 +1567,7 @@ def release_failed(days: int = 30, dry_run: bool = False) -> dict:
         else:
             if not dry_run:
                 entry["note"] = "retry requested: " + (note[len(TRIED):] if note.startswith(TRIED) else note)
+                entry["released"] = int(entry.get("released") or 0) + 1
             counts["linkedin" if key.startswith("linkedin:") else "naukri"] += 1
     if not dry_run:
         ledger.save()

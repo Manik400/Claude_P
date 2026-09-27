@@ -265,7 +265,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
     # company sites the rest: a run of 95 Naukri re-checks once used the whole window and
     # the 137 company forms behind them never came up.
     board_deadline = deadline
-    if web_jobs and deadline:
+    if web_jobs and deadline and project != "phone":
         board_deadline = time.monotonic() + (deadline - time.monotonic()) * 0.4
     # Applying runs on your PC, not a 45-minute runner: give the local model room for the
     # written answers (about a minute each on the CPU). LOCAL_AI_BUDGET_SECONDS still wins.
@@ -393,6 +393,83 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
         log.info("%d answered question(s) absorbed; re-attempting %d job(s)",
                  len(absorbed), summary["retried"])
     before = questions.pending_count()
+
+    def run_web():
+        """Other boards' and career pages' postings (web_jobs). For the phone queue this runs
+        FIRST: the postings you picked go before the boards' re-checks; for a scan it runs last."""
+        # ------------------------------------------- other boards' / career pages
+        web = []
+        for item in web_jobs or []:
+            url = (item.get("url") or "").strip()
+            if not url:
+                continue
+            job_id = item.get("job_id") or "web:" + hashlib.sha1(url.split("#")[0].lower().encode("utf-8")).hexdigest()[:16]
+            if ledger.status(job_id) and not item.get("retry"):
+                continue
+            job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
+            job.score = item.get("score") or 0
+            if career_mod.platform_host(url, career_mod.APPLY_ON_BOARD) and not platform_switch.allowed(url, config):
+                # a board that applies on its own site (Instahyre, Hirist, SEEK, ...) whose switch is off: not opened
+                outcomes[job_id] = {"status": "platform-off", "note": platform_switch.off_note(url)}
+                summary["career"]["platform-off"] = summary["career"].get("platform-off", 0) + 1
+                continue
+            web.append(job)
+        web.sort(key=lambda j: -(j.score or 0))
+        if web and career_ready():
+            log.info("Company sites: %s from %d posting(s)%s",
+                     "no limit" if career_left[0] is None else "up to %d submission(s)" % career_left[0], len(web),
+                     " (dry run)" if dry_run else "")
+            with sync_playwright() as p:
+                if use_simplify:
+                    browser = simplify.launch(p, headless=headless, states=[DEFAULT_STATE, linkedin_mod.STATE_PATH])
+                    context = browser.context
+                else:
+                    browser = launch_browser(p, headless=headless, offscreen=not headless)
+                    context = new_context(browser, viewport={"width": 1366, "height": 900})
+                try:
+                    for n, job in enumerate(web):
+                        if not career_ready():
+                            _out_of_time(deadline, "Company sites", len(web) - n)
+                            break
+                        # A board that wants its own account - unless you signed in to it once
+                        # (python main.py --platform-login; data/platform_logins.json). The bare
+                        # host list here ignored those logins and skipped 1,466 postings.
+                        need = career_mod._needs_account(job.url)
+                        if need:
+                            status, note = "login-required", f"{need} needs its own account (sign in once with: python main.py --platform-login)"
+                            summary["career"][status] = summary["career"].get(status, 0) + 1
+                            log.info("[company site %s] %s @ %s - %s", status, job.title, job.company, note)
+                            if not dry_run:
+                                ledger.record(job, "offsite", career_mod.TRIED + note)
+                        else:
+                            page = context.new_page()
+                            try:
+                                page.goto(job.url, wait_until="domcontentloaded", timeout=45000)
+                                page.wait_for_timeout(random.uniform(2500, 4000))
+                                status, note = try_career(page, job, "web")
+                            except Exception as exc:
+                                status, note = "career-error", f"page did not open: {str(exc)[:100]}"
+                                if not dry_run and not career_mod.transient(status, note):
+                                    ledger.record(job, "offsite", career_mod.TRIED + note)
+                            finally:
+                                try:
+                                    page.close()
+                                except Exception:
+                                    pass
+                        outcomes[job.job_id] = {"status": status, "note": note}
+                        if status == "submitted" and not dry_run:
+                            # a one-click apply on a board took seconds; a person reads the next posting
+                            # before applying again - ten Wellfound applies a minute apart read as a bot
+                            time.sleep(random.uniform(*(BOARD_PAUSE if "with your saved login" in note else SHORT_PAUSE)))
+                finally:
+                    browser.close()
+            if not dry_run:
+                ledger.save()
+
+
+    web_first = project == "phone" and bool(web_jobs)
+    if web_first:
+        run_web()
 
     # ---------------------------------------------------------------- Naukri
     min_score = float(config.get("scan_apply_min_score") or 0)
@@ -596,74 +673,8 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
             if not dry_run:
                 ledger.save()
 
-    # ------------------------------------------- other boards' / career pages
-    web = []
-    for item in web_jobs or []:
-        url = (item.get("url") or "").strip()
-        if not url:
-            continue
-        job_id = item.get("job_id") or "web:" + hashlib.sha1(url.split("#")[0].lower().encode("utf-8")).hexdigest()[:16]
-        if ledger.status(job_id) and not item.get("retry"):
-            continue
-        job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
-        job.score = item.get("score") or 0
-        if career_mod.platform_host(url, career_mod.APPLY_ON_BOARD) and not platform_switch.allowed(url, config):
-            # a board that applies on its own site (Instahyre, Hirist, SEEK, ...) whose switch is off: not opened
-            outcomes[job_id] = {"status": "platform-off", "note": platform_switch.off_note(url)}
-            summary["career"]["platform-off"] = summary["career"].get("platform-off", 0) + 1
-            continue
-        web.append(job)
-    web.sort(key=lambda j: -(j.score or 0))
-    if web and career_ready():
-        log.info("Company sites: %s from %d posting(s)%s",
-                 "no limit" if career_left[0] is None else "up to %d submission(s)" % career_left[0], len(web),
-                 " (dry run)" if dry_run else "")
-        with sync_playwright() as p:
-            if use_simplify:
-                browser = simplify.launch(p, headless=headless, states=[DEFAULT_STATE, linkedin_mod.STATE_PATH])
-                context = browser.context
-            else:
-                browser = launch_browser(p, headless=headless, offscreen=not headless)
-                context = new_context(browser, viewport={"width": 1366, "height": 900})
-            try:
-                for n, job in enumerate(web):
-                    if not career_ready():
-                        _out_of_time(deadline, "Company sites", len(web) - n)
-                        break
-                    # A board that wants its own account - unless you signed in to it once
-                    # (python main.py --platform-login; data/platform_logins.json). The bare
-                    # host list here ignored those logins and skipped 1,466 postings.
-                    need = career_mod._needs_account(job.url)
-                    if need:
-                        status, note = "login-required", f"{need} needs its own account (sign in once with: python main.py --platform-login)"
-                        summary["career"][status] = summary["career"].get(status, 0) + 1
-                        log.info("[company site %s] %s @ %s - %s", status, job.title, job.company, note)
-                        if not dry_run:
-                            ledger.record(job, "offsite", career_mod.TRIED + note)
-                    else:
-                        page = context.new_page()
-                        try:
-                            page.goto(job.url, wait_until="domcontentloaded", timeout=45000)
-                            page.wait_for_timeout(random.uniform(2500, 4000))
-                            status, note = try_career(page, job, "web")
-                        except Exception as exc:
-                            status, note = "career-error", f"page did not open: {str(exc)[:100]}"
-                            if not dry_run and not career_mod.transient(status, note):
-                                ledger.record(job, "offsite", career_mod.TRIED + note)
-                        finally:
-                            try:
-                                page.close()
-                            except Exception:
-                                pass
-                    outcomes[job.job_id] = {"status": status, "note": note}
-                    if status == "submitted" and not dry_run:
-                        # a one-click apply on a board took seconds; a person reads the next posting
-                        # before applying again - ten Wellfound applies a minute apart read as a bot
-                        time.sleep(random.uniform(*(BOARD_PAUSE if "with your saved login" in note else SHORT_PAUSE)))
-            finally:
-                browser.close()
-        if not dry_run:
-            ledger.save()
+    if not web_first:
+        run_web()
 
     summary["pending_questions"] = questions.pending_count()
     summary["new_questions"] = max(0, summary["pending_questions"] - before)
