@@ -1816,9 +1816,9 @@ def work_rights_wall(page, facts: dict, job: dict) -> str | None:
     if not WORK_RIGHTS.search(_body(page)[:6000]):
         return None
     from . import answers as answers_mod
-    answer, _why = answers_mod.resolve("Will you now or in the future require visa sponsorship?", ["Yes", "No"], facts, job=job)
-    if str(answer or "").lower().startswith("y") and _click_text(page, SPONSOR_LINK):
-        page.wait_for_timeout(1500)
+    permit, _why = answers_mod.resolve("Do you have the right to work in the country this role is posted in?", ["Yes", "No"], facts, job=job)
+    if str(permit or "").lower().startswith("n") and _click_text(page, SPONSOR_LINK):
+        page.wait_for_timeout(1500)          # no work permit there: "I require sponsorship" is the truth
         return "continued"
     return "verify"
 
