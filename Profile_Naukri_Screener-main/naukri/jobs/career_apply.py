@@ -277,6 +277,8 @@ SCAN_JS = r"""
     if (!t) t = e.getAttribute('aria-label') || '';
     if (!t) { const f = e.closest('fieldset'); if (f && f.querySelector('legend')) t = txt(f.querySelector('legend')); }
     if (!t) { let p = e.parentElement; for (let i = 0; i < 3 && p && !t; i++, p = p.parentElement) {
+      // an ancestor's label names this field only when the ancestor wraps this one field
+      if (p.querySelectorAll('input:not([type=hidden]), select, textarea').length > 1) break;
       const c = p.querySelector('label, legend, .label, [class*=label], [class*=question]'); if (c && !c.contains(e)) t = txt(c); } }
     if (!t) {
       // a combobox whose label is not linked to it (Greenhouse's React selects read as "Select..."):
@@ -320,7 +322,10 @@ SCAN_JS = r"""
       required: e.required || e.getAttribute('aria-required') === 'true' || /\*\s*$/.test(labelOf(e)),
       options: e.tagName === 'SELECT' ? Array.from(e.options).map(o => o.text.trim()).filter(Boolean) : [],
       selectedText: e.tagName === 'SELECT' && e.selectedIndex >= 0 ? e.options[e.selectedIndex].text.trim() : '',
-      password: type === 'password', ...ctxOf(e) });
+      password: type === 'password',
+      combo: e.tagName === 'INPUT' && (e.getAttribute('role') === 'combobox' || e.getAttribute('aria-autocomplete') === 'list' ||
+        e.getAttribute('aria-haspopup') === 'listbox' || !!e.closest('[class*="select__control"], [class*="react-select"], [class*="Select-control"], [class*="autocomplete" i], [class*="combobox" i]')),
+      ...ctxOf(e) });
   });
   // Google Forms and other ARIA widgets: div radios / checkboxes / dropdowns
   document.querySelectorAll('[role=radio], [role=checkbox], [role=listbox]').forEach(e => {
@@ -732,6 +737,85 @@ def _stable(frame, field: dict):
     return frame.get_by_label(field["label"].strip(" *")[:80]).first
 
 
+COMBO_OPTIONS = ("[role=option]:visible, [role=listbox] li:visible, [class*='__option']:visible, [class*='-option']:visible, "
+                 ".pac-item:visible, [class*='suggestion' i]:visible, [class*='autocomplete' i] li:visible, [class*='menu' i] [class*='item' i]:visible")
+WHO_FIELDS = ("first_name", "last_name", "email", "phone", "linkedin", "github", "website", "current_company", "current_title",
+              "city", "state", "pincode", "location", "country")
+
+
+def _combo_options(frame) -> list[str]:
+    try:
+        return [t.strip() for t in frame.locator(COMBO_OPTIONS).all_inner_texts()[:60] if t.strip()]
+    except Exception:
+        return []
+
+
+def _click_option(frame, pg, text: str) -> bool:
+    try:
+        opt = frame.locator(COMBO_OPTIONS).filter(has_text=re.compile(r"^\s*" + re.escape(text) + r"\s*$", re.I)).first
+        if not opt.count():
+            opt = frame.locator(COMBO_OPTIONS).filter(has_text=text).first
+        human.click(pg, opt, timeout=4000)
+        return True
+    except Exception:
+        return False
+
+
+def _fill_combo(frame, pg, f: dict, q: str, meaning, who: dict, ask, record) -> tuple[bool, str | None]:
+    """A combobox: open it, read its options and choose the answer; an autocomplete (a
+    location box): type your value and take the matching suggestion. Returns (filled, the
+    question when it could not be answered)."""
+    from . import answers as answers_mod
+    box = frame.locator(f'[data-ca="{f["idx"]}"]')
+    human.click(pg, box, timeout=4000)
+    frame.wait_for_timeout(900)
+    opts = _combo_options(frame)
+    value = who.get(meaning) or None if meaning in WHO_FIELDS else None
+    if meaning == "website" and not value:
+        value = who.get("github") or who.get("linkedin") or None
+    listy = opts and not re.search(r"no (options|results)|start typing|type to search|search\.\.\.", " ".join(opts), re.I)
+    if listy and value is None:
+        # a question with a fixed list ("right to work?": Yes / No)
+        answer, why = ask(q, opts)
+        choice = answers_mod.choose_option(answer, opts) if answer is not None else None
+        if choice is None:
+            pg.keyboard.press("Escape")
+            return False, q
+        if _click_option(frame, pg, choice):
+            record(q, choice, why)
+            return True, None
+        pg.keyboard.press("Escape")
+        return False, q
+    why = meaning or "answers"
+    if value is None:
+        answer, why = ask(q, [])
+        if answer is None:
+            pg.keyboard.press("Escape")
+            return False, q
+        value = str(answer)
+    typed = str(value)
+    if meaning in ("location", "city") and who.get("city"):
+        typed = who["city"]                      # "Gurugram" finds the suggestion; the full address does not
+    pg.keyboard.type(typed, delay=random.uniform(45, 110))
+    frame.wait_for_timeout(1600)
+    opts = _combo_options(frame)
+    if opts:
+        head = typed.split(",")[0].strip().lower()
+        pick = next((o for o in opts if head and head in o.lower()), None)
+        if pick is None and listy:
+            pick = answers_mod.choose_option(typed, opts) or None
+        if pick is None:
+            pick = opts[0]
+        if not _click_option(frame, pg, pick):
+            pg.keyboard.press("Tab")   # never Enter: that submits a half-filled form
+        record(q, pick, why)
+    else:
+        pg.keyboard.press("Tab")   # never Enter: that submits a half-filled form
+        record(q, typed, why)
+    frame.wait_for_timeout(400)
+    return True, None
+
+
 def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capture: dict) -> tuple[int, list[str]]:
     """Fill what can be filled from facts. Returns (filled, unanswered required questions)."""
     from . import answers as answers_mod
@@ -871,6 +955,18 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     human.pause(pg, 600, 1500)
                 elif f["required"] and meaning != "resume":
                     blocked.append(q or "file upload")
+                continue
+
+            # ---- comboboxes and autocompletes (Greenhouse's React selects, Google Places boxes):
+            # typing into the box does nothing until an option is chosen
+            if f.get("combo") and f["tag"] == "input":
+                ok, block_q = _fill_combo(frame, pg, f, q, meaning, who, ask, record)
+                if ok:
+                    filled += 1
+                    human.pause(pg, 250, 800)
+                elif f["required"]:
+                    blocked.append(block_q or q or "a required field")
+                    capture.setdefault("question", q)
                 continue
 
             # ---- plain values from your details

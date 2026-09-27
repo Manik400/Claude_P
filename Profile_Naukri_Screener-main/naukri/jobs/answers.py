@@ -103,7 +103,7 @@ STANDARD: list[tuple[str, str, str]] = [
     ("of age", r"(at least|over|above|older than) (18|eighteen)|\b18 (years )?(of age )?(or older|\+|and over)|legal (working )?age", "Yes"),
     ("contact consent", r"(agree|consent|happy|ok|okay|permission) (to|for) (be(ing)? contacted|receiv(e|ing) (\w+ ){0,2}(updates|communications|"
                         r"emails?|e-mails?|messages|notifications|information|news))|(may|can) we contact you|keep (me|you) (informed|updated|posted)|"
-                        r"opt.?in to (receive|communications)", "Yes"),
+                        r"opt.?in to (receive|communications)|select yes to receive|receive (text|sms) messages|text messages? for recruiting", "Yes"),
 ]
 
 
