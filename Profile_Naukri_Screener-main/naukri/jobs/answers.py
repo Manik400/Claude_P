@@ -101,8 +101,8 @@ STANDARD: list[tuple[str, str, str]] = [
                        r"currently (an |a )?employee", "No"),
     ("referral", r"referred by|employee referral|were you referred|do you know (anyone|someone) (at|who works)", "No"),
     ("of age", r"(at least|over|above|older than) (18|eighteen)|\b18 (years )?(of age )?(or older|\+|and over)|legal (working )?age", "Yes"),
-    ("contact consent", r"(agree|consent|happy|ok|okay|permission) (to|for) (be(ing)? contacted|receiv(e|ing) (updates|communications|"
-                        r"emails|e-mails|messages|notifications|information))|(may|can) we contact you|keep (me|you) (informed|updated|posted)|"
+    ("contact consent", r"(agree|consent|happy|ok|okay|permission) (to|for) (be(ing)? contacted|receiv(e|ing) (\w+ ){0,2}(updates|communications|"
+                        r"emails?|e-mails?|messages|notifications|information|news))|(may|can) we contact you|keep (me|you) (informed|updated|posted)|"
                         r"opt.?in to (receive|communications)", "Yes"),
 ]
 
