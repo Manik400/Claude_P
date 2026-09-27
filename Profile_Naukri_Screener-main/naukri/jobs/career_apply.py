@@ -1852,17 +1852,47 @@ OFFSITE_TEXT = re.compile(r"^\W*(apply (on|via|at) (the )?(company|employer)('s)
 
 WORK_RIGHTS = re.compile(r"verify your work rights|verify your right to work|right to work in [A-Z][\w ]+", re.I)
 SPONSOR_LINK = re.compile(r"^\W*i (require|need|will need|would need) (visa |work )?sponsorship", re.I)
+VERIFY_BUTTON = re.compile(r"^\W*verify (now|my work rights|work rights)", re.I)
+
+
+def _has_control(target, pattern: re.Pattern, selector="button, a, input[type=submit], [role=button]") -> bool:
+    """Is a visible control whose text matches on the page (or frame)? Nothing is clicked."""
+    for frame in (_frames(target) if hasattr(target, "main_frame") else [target]):
+        try:
+            items = frame.locator(selector)
+            for i in range(min(items.count(), 150)):
+                el = items.nth(i)
+                try:
+                    if el.is_visible(timeout=150) and pattern.match(re.sub(r"\s+", " ", el.inner_text(timeout=200) or "").strip()):
+                        return True
+                except Exception:
+                    continue
+        except Exception:
+            continue
+    return False
 
 
 def work_rights_wall(page, facts: dict, job: dict) -> str | None:
     """SEEK's "Verify your work rights to continue applying" box. When your facts say the job
     needs sponsorship (a foreign posting), its "I require sponsorship" link is the honest way
     on and is pressed; otherwise the SEEK Pass verification is yours to do once -> "verify"."""
-    if not WORK_RIGHTS.search(_body(page)[:6000]):
+    body = _body(page)[:6000]
+    if not WORK_RIGHTS.search(body):
         return None
-    from . import answers as answers_mod
-    permit, _why = answers_mod.resolve("Do you have the right to work in the country this role is posted in?", ["Yes", "No"], facts, job=job)
-    if str(permit or "").lower().startswith("n") and _click_text(page, SPONSOR_LINK):
+    # the box, not a job description that says "must have the right to work in Australia"
+    if not (_has_control(page, SPONSOR_LINK) or _has_control(page, VERIFY_BUTTON)):
+        return None
+    # the box names the country ("Right to work in Australia"); SEEK's own location lines
+    # ("Sydney NSW · Hybrid") do not, so the box is the better source
+    named = re.search(r"right to work in ([A-Z][A-Za-z .'-]{2,40}?)(?=[\n.!?]|$| to | and )", body)
+    country = (named.group(1).strip() if named else "").lower()
+    home = str(facts.get("nationality") or facts.get("current_country") or "India").lower()
+    abroad = bool(country) and country not in (home, "india", "indian")
+    if not country:
+        from . import answers as answers_mod
+        permit, _why = answers_mod.resolve("Do you have the right to work in the country this role is posted in?", ["Yes", "No"], facts, job=job)
+        abroad = str(permit or "").lower().startswith("n")
+    if abroad and _click_text(page, SPONSOR_LINK):
         page.wait_for_timeout(1500)          # no work permit there: "I require sponsorship" is the truth
         return "continued"
     return "verify"
