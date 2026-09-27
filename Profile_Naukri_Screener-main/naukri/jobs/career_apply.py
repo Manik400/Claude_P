@@ -666,8 +666,14 @@ def _meaning(field: dict) -> str | None:
         return "phone"
     if field["type"] == "file":
         return "cover_letter" if re.search(r"cover|motivation", text, re.I) else "resume"
+    label = field["label"] or ""
+    question_like = len(label) > 60 or label.rstrip().endswith("?") or bool(re.match(r"\s*(do|are|will|have|can|would|which)\b", label, re.I))
     for meaning, pattern in FIELD_RULES:
-        if re.search(pattern, field["label"] or "", re.I):
+        if re.search(pattern, label, re.I):
+            if question_like and meaning in ("location", "city", "state", "country", "current_company", "current_title", "pincode"):
+                # "Do you currently live in or are you willing to relocate to one of our
+                # locations?" is a question to answer, not your "location" to type
+                return None
             return meaning
     for meaning, pattern in FIELD_RULES:
         if meaning in ("full_name",):
@@ -772,9 +778,15 @@ WHO_FIELDS = ("first_name", "last_name", "email", "phone", "linkedin", "github",
               "city", "state", "pincode", "location", "country")
 
 
+NOT_AN_OPTION = re.compile(r"^(no (options|results|matches)( found)?|start typing|type to search|loading|searching)\b", re.I)
+
+
 def _combo_options(frame) -> list[str]:
+    """The visible options of an open dropdown - never its "No options" placeholder (that text
+    was once chosen as the answer)."""
     try:
-        return [t.strip() for t in frame.locator(COMBO_OPTIONS).all_inner_texts()[:60] if t.strip()]
+        return [t.strip() for t in frame.locator(COMBO_OPTIONS).all_inner_texts()[:60]
+                if t.strip() and not NOT_AN_OPTION.match(t.strip())]
     except Exception:
         return []
 
