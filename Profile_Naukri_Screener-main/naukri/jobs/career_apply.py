@@ -175,7 +175,7 @@ TRIED = "company site: "
 
 # Boards whose apply always needs an account there - not worth opening.
 LOGIN_HOSTS = ("wellfound.com", "angel.co", "xing.com", "seek.com", "jobsdb.com", "jobstreet.com",
-               "indeed.", "glassdoor.", "infojobs.net", "instahyre.com", "monster.", "foundit.in",
+               "indeed.", "glassdoor.", "infojobs.net", "tecnoempleo.com", "instahyre.com", "monster.", "foundit.in",
                "naukri.com/mnjuser", "linkedin.com/login", "simplyhired.")
 
 # Aggregators: the posting page is never the application. Adzuna's "land"
