@@ -1921,9 +1921,17 @@ def release_failed(days: int = 30, dry_run: bool = False) -> dict:
 
     ledger = Ledger()
     cutoff = (date.today() - timedelta(days=days)).isoformat()
-    counts = {"web": 0, "naukri": 0, "linkedin": 0, "kept": 0}
+    counts = {"web": 0, "naukri": 0, "linkedin": 0, "kept": 0, "unproven": 0}
     for key, entry in list(ledger.entries.items()):
         note = str(entry.get("note") or "")
+        if entry.get("status") == "applied" and "form closed, no thank-you text" in note and platform_host(entry.get("url") or ""):
+            # a board (Wellfound ...) whose dialog merely closed: only its Applied state proves an
+            # application, so this goes back for a re-check (the board itself refuses a duplicate)
+            if not dry_run:
+                entry["status"] = "offsite"
+                entry["note"] = "retry requested: the application box closed but the board did not show Applied - re-check"
+            counts["unproven"] += 1
+            continue
         if entry.get("status") != "offsite" or str(entry.get("at", ""))[:10] < cutoff or not RELEASABLE.search(note):
             continue
         url = entry.get("url") or ""
