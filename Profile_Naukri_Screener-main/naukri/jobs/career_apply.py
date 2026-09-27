@@ -685,7 +685,7 @@ def _meaning(field: dict) -> str | None:
     if auto == "tel" or field["type"] == "tel":
         return "phone"
     if field["type"] == "file":
-        if re.search(r"image/", field.get("accept") or "") or re.search(r"photo|avatar|picture|headshot|image|logo", text, re.I):
+        if re.search(r"image/", field.get("accept") or "") or re.search(r"photo|avatar|picture|headshot|\bimage\b|logo", text, re.I):
             return "photo"          # SEEK's profile-photo input took the resume once ("Unable to upload photo")
         return "cover_letter" if re.search(r"cover|motivation", text, re.I) else "resume"
     label = field["label"] or ""
@@ -1224,7 +1224,7 @@ APPLY_JS = r"""
 """
 
 
-THIRD_PARTY_APPLY = re.compile(r"with\s+(indeed|seek)", re.I)
+THIRD_PARTY_APPLY = re.compile(r"\bwith\s+(indeed|seek)\b", re.I)
 
 
 def _third_party_apply_ok(text: str) -> bool:
