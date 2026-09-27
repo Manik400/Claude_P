@@ -404,7 +404,12 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
             if not url:
                 continue
             job_id = item.get("job_id") or "web:" + hashlib.sha1(url.split("#")[0].lower().encode("utf-8")).hexdigest()[:16]
-            if ledger.status(job_id) and not item.get("retry"):
+            settled = ledger.entries.get(job_id) or {}
+            if settled.get("status") in ("applied", "skipped") or "possibly submitted" in str(settled.get("note", "")):
+                # applied (or maybe applied) already: the queue's retry flag never re-sends an application
+                outcomes[job_id] = {"status": "already", "note": settled.get("note") or "applied earlier"}
+                continue
+            if settled and not item.get("retry"):
                 continue
             job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
             job.score = item.get("score") or 0

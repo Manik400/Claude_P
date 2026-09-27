@@ -1623,7 +1623,7 @@ def ledger_status(status: str) -> str:
 
 def queue_status(status: str) -> str:
     return {"submitted": "submitted", "would-apply": "queued", "platform-off": "queued",
-            "closed": "skipped"}.get(status, "manual")
+            "closed": "skipped", "already": "skipped"}.get(status, "manual")
 
 
 def main(argv=None) -> int:
