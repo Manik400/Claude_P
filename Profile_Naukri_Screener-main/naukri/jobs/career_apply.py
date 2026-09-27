@@ -825,17 +825,26 @@ def _fill_combo(frame, pg, f: dict, q: str, meaning, who: dict, ask, record) -> 
     if opts:
         pick = None
         if meaning in ("location", "city"):
-            # the suggestion that matches your whole location, not the first "Gurgaon" on the
-            # list ("Gurgaon, Bihar, India" was chosen over "Gurugram, Haryana, India")
-            want = set(re.findall(r"[a-z]+", (who.get("location") or typed).lower()))
-            if "gurugram" in want or "gurgaon" in want:
-                want |= {"gurugram", "gurgaon"}
-            scored = sorted(((len(want & set(re.findall(r"[a-z]+", o.lower()))), -i, o) for i, o in enumerate(opts)), reverse=True)
+            # the suggestion that matches your whole location - state counts most: "Gurgaon,
+            # Bihar, India" was chosen over the Haryana one, and "Gurgaon" / "Gurugram" are one city
+            city = {(who.get("city") or typed).lower()}
+            if city & {"gurugram", "gurgaon"}:
+                city |= {"gurugram", "gurgaon"}
+            state, country = (who.get("state") or "").lower(), (who.get("country") or "").lower()
+
+            def score(o: str) -> int:
+                words = set(re.findall(r"[a-z]+", o.lower()))
+                return 3 * bool(state and state in words) + 2 * bool(city & words) + bool(country and country in words)
+            scored = sorted(((score(o), -i, o) for i, o in enumerate(opts)), reverse=True)
             if scored and scored[0][0] > 0:
                 pick = scored[0][2]
         if pick is None:
+            # a whole-word match: "India" is not "British Indian Ocean Territory"
             head = typed.split(",")[0].strip().lower()
-            pick = next((o for o in opts if head and head in o.lower()), None)
+            wordy = re.compile(r"(?<![a-z])" + re.escape(head) + r"(?![a-z])") if head else None
+            pick = next((o for o in opts if wordy and wordy.search(o.lower())), None)
+            if pick is None and wordy:
+                pick = next((o for o in opts if o.lower().startswith(head)), None)
         if pick is None and listy:
             pick = answers_mod.choose_option(typed, opts) or None
         if pick is None:
