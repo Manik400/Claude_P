@@ -37,11 +37,12 @@ from __future__ import annotations
 import json
 import logging
 import os
+import random
 import re
 import time
 from pathlib import Path
 
-from . import platform_switch
+from . import human, platform_switch
 
 log = logging.getLogger("naukri.jobs.career_apply")
 
@@ -518,7 +519,7 @@ def dismiss_overlays(page) -> int:
             if pick is None:
                 break
             try:
-                frame.locator(f'[data-ca-x="{pick["k"]}"]').first.click(timeout=3000)
+                human.click(frame.page, frame.locator(f'[data-ca-x="{pick["k"]}"]').first, timeout=3000)
                 clicked += 1
                 frame.wait_for_timeout(700)
             except Exception:
@@ -539,7 +540,7 @@ def _click_text(target, pattern: re.Pattern, selector="button, a, input[type=sub
                     text = el.inner_text(timeout=300) if el.evaluate("e => e.tagName") != "INPUT" else (el.get_attribute("value") or "")
                     text = re.sub(r"\s+", " ", text or "").strip()
                     if pattern.match(text) and not NOT_ACTION.search(text):
-                        el.click(timeout=6000)
+                        human.click(frame.page, el, timeout=6000)
                         return True
                 except Exception:
                     continue
@@ -687,16 +688,22 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
     for f in fields:
         if f["type"] in ("radio", "checkbox") and f["group"]:
             groups.setdefault(f["group"], []).append(f)
+    pg = frame.page
 
     def loc(f):
         return frame.locator(f'[data-ca="{f["idx"]}"]')
 
     def tick(f):
-        # a div radio / checkbox (Google Forms) takes a click; a real one a check
-        if f["tag"] == "aria":
-            loc(f).click(timeout=4000)
-        else:
-            loc(f).check(timeout=4000, force=True)
+        # a div radio / checkbox (Google Forms) takes a click; a real one too - by hand,
+        # then the DOM check only when the click did not take (a hidden native box)
+        human.click(pg, loc(f), timeout=4000)
+        if f["tag"] != "aria":
+            try:
+                if not loc(f).is_checked(timeout=1500):
+                    loc(f).check(timeout=4000, force=True)
+            except Exception:
+                loc(f).check(timeout=4000, force=True)
+        human.pause(pg, 250, 800)
 
     def ask(q, options, long_text=False):
         return answers_mod.resolve(q, options, facts, job=job, long_text=long_text)
@@ -787,11 +794,12 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                         capture.setdefault("question", q)
                         capture.setdefault("options", options)
                     continue
-                loc(f).click(timeout=4000)
+                human.click(pg, loc(f), timeout=4000)
                 frame.wait_for_timeout(700)
-                frame.locator(f'[role=option][data-value={json.dumps(choice)}]:visible').first.click(timeout=4000)
+                human.click(pg, frame.locator(f'[role=option][data-value={json.dumps(choice)}]:visible').first, timeout=4000)
                 frame.wait_for_timeout(500)
                 filled += 1
+                human.pause(pg)
                 record(q, choice, why)
                 continue
 
@@ -804,8 +812,10 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
             # ---- files
             if f["type"] == "file":
                 if meaning == "resume" and who.get("resume"):
+                    human.hover(pg, loc(f))
                     loc(f).set_input_files(who["resume"], timeout=8000)
                     filled += 1
+                    human.pause(pg, 600, 1500)
                 elif f["required"] and meaning != "resume":
                     blocked.append(q or "file upload")
                 continue
@@ -829,8 +839,10 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     answer, _why = ask(q, [o for o in f["options"] if not PLACEHOLDER.match(o)])
                     pick = answers_mod.choose_option(answer, f["options"]) if answer is not None else None
                 if pick:
+                    human.hover(pg, loc(f))
                     loc(f).select_option(label=pick, timeout=4000)
                     filled += 1
+                    human.pause(pg)
                 elif f["required"]:
                     blocked.append(q)
                 continue
@@ -850,9 +862,11 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                         capture.setdefault("question", q)
                         capture.setdefault("options", options)
                     continue
+                human.hover(pg, loc(f))
                 loc(f).select_option(label=choice, timeout=4000)
                 filled += 1
                 record(q, choice, meaning or "answers")
+                human.pause(pg)
                 continue
 
             if value is None:
@@ -871,18 +885,23 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     blocked.append(q or "a required field")
                 continue
             try:
-                loc(f).fill(value, timeout=5000)
+                if f["type"] in ("date", "number", "time", "month", "week", "color", "range"):
+                    human.click(pg, loc(f), timeout=5000)
+                    loc(f).fill(value, timeout=5000)          # typed digits do not land in a date box
+                else:
+                    human.type_into(pg, loc(f), value, timeout=5000)
             except Exception:
                 # the page re-rendered while the model was writing: find the box again by what does not change
                 _stable(frame, f).fill(value, timeout=5000)
             filled += 1
+            human.pause(pg, 250, 900)
             # Autocomplete boxes (city pickers) want a pick from their list.
             if meaning in ("city", "location"):
                 frame.wait_for_timeout(900)
                 try:
                     option = frame.locator("[role=option]").first
                     if option.is_visible(timeout=700):
-                        option.click(timeout=3000)
+                        human.click(pg, option, timeout=3000)
                 except Exception:
                     pass
         except Exception as exc:  # noqa: BLE001 - one odd widget should not sink the form
@@ -960,7 +979,7 @@ def _click_apply(page) -> bool:
             if score < 0:
                 break
             try:
-                frame.locator(f'[data-ca-a="{k}"]').first.click(timeout=6000)
+                human.click(frame.page, frame.locator(f'[data-ca-a="{k}"]').first, timeout=6000)
                 return True
             except Exception:
                 continue
@@ -1012,7 +1031,7 @@ def _press_submit(frame, page) -> str | None:
     for kind, cands in order:
         for b in cands:
             try:
-                frame.locator(f'[data-ca-s="{b["k"]}"]').first.click(timeout=5000)
+                human.click(frame.page, frame.locator(f'[data-ca-s="{b["k"]}"]').first, timeout=5000)
                 return kind
             except Exception:
                 continue
@@ -1022,7 +1041,7 @@ def _press_submit(frame, page) -> str | None:
     if _click_text(frame, NEXT_TEXT) or _click_text(page, NEXT_TEXT):
         return "next"
     try:
-        frame.locator("button[type=submit], input[type=submit]").first.click(timeout=5000)
+        human.click(frame.page, frame.locator("button[type=submit], input[type=submit]").first, timeout=5000)
         return "submit"
     except Exception:
         return None
@@ -1117,7 +1136,7 @@ def _leave_linkedin(page) -> None:
         for el in page.locator("button, a").all()[:60]:
             txt = (el.inner_text(timeout=200) or "").strip()
             if CONTINUE_TEXT.match(txt) and el.is_visible():
-                el.click(timeout=3000)
+                human.click(page, el, timeout=3000)
                 page.wait_for_load_state("domcontentloaded", timeout=30000)
                 page.wait_for_timeout(2000)
                 return
@@ -1209,9 +1228,9 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             return "login-required", f"{host} needs its own account (sign in once with: python main.py --platform-login)"
 
         total_filled = 0
-        ats_tried = outbound_tried = waited = blank_waited = False
+        ats_tried = outbound_tried = waited = blank_waited = scrolled = False
         submitted_pages = 0
-        for step in range(8):
+        for step in range(12):
             if CLOSED.search(_body(current)):
                 return "closed", "the listing no longer accepts applications"
             # a hosted application system: go straight to its form page
@@ -1276,6 +1295,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                         _leave_linkedin(current)
                         nxt = current
                 if nxt is None:
+                    human.wander(current)
                     nxt = _follow_click(current, lambda: _click_apply(page_now))
                 if nxt is None and not outbound_tried:
                     outbound_tried = True
@@ -1285,6 +1305,16 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                         current.wait_for_timeout(2500)
                         _leave_linkedin(current)
                         nxt = current
+                if nxt is None and not scrolled:
+                    # a form or an Apply button further down that only renders once scrolled to
+                    scrolled = True
+                    for _ in range(5):
+                        try:
+                            current.mouse.wheel(0, random.uniform(500, 900))
+                        except Exception:
+                            break
+                        current.wait_for_timeout(random.uniform(500, 900))
+                    continue
                 if nxt is None:
                     shot = _shot(current, job, "-noform", full=True)
                     seen = _apply_words(current)

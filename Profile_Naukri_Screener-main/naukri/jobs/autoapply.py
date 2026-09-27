@@ -41,6 +41,7 @@ from pathlib import Path
 
 from . import answers as answers_mod
 from . import career_apply as career_mod
+from . import human
 from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, linkedin_daily, linkedin_limit, platform_switch, questions
 from .ledger import Ledger
 from .runlock import RunLock
@@ -202,7 +203,7 @@ def _press(page, candidates) -> bool:
         try:
             el = page.locator(selector).first
             if el.count() and el.is_visible(timeout=2500):
-                el.click(timeout=8000)
+                human.click(page, el, timeout=8000)
                 return True
         except Exception:
             continue
