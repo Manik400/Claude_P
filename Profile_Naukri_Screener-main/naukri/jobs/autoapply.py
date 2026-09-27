@@ -411,7 +411,8 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                 continue
             if settled and not item.get("retry"):
                 continue
-            job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
+            job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web",
+                      location=item.get("location") or "")
             job.score = item.get("score") or 0
             if career_mod.platform_host(url, career_mod.APPLY_ON_BOARD) and not platform_switch.allowed(url, config):
                 # a board that applies on its own site (Instahyre, Hirist, SEEK, ...) whose switch is off: not opened

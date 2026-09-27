@@ -1560,6 +1560,9 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
         dismiss_overlays(page)
         jd_text = job.get("description") or _body(page)      # the posting, for the tailored resume
         job = dict(job, description=jd_text[:4000])           # ...and for answers written about this job
+        if not job.get("location"):
+            # work-permit / relocation questions need the job's location: the posting's own line
+            job["location"] = _page_location(page)
         if CLOSED.search(_body(page)):
             return "closed", "the listing no longer accepts applications"
         if offsite_click is not None:
@@ -1778,6 +1781,20 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
 
 OFFSITE_TEXT = re.compile(r"^\W*(apply (on|via|at) (the )?(company|employer)('s)? ?(site|website|page)?|"
                           r"apply on company|company site|apply externally|apply on website)", re.I)
+
+
+def _page_location(page) -> str:
+    """The posting's location line ("Bangalore, India" under the title) when the job record has none."""
+    for frame in _frames(page)[:2]:
+        try:
+            items = frame.locator("[class*='location' i], [data-qa*='location' i], [itemprop='jobLocation'], [class*='job-meta' i] li")
+            for i in range(min(items.count(), 12)):
+                text = re.sub(r"\s+", " ", items.nth(i).inner_text(timeout=300) or "").strip()
+                if 2 < len(text) <= 80 and not re.search(r"relocat|location\s*\(city\)|your location|enter", text, re.I):
+                    return text
+        except Exception:
+            continue
+    return ""
 
 
 def _apply_words(page) -> str:

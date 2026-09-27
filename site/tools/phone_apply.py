@@ -484,6 +484,7 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
         config["simplify"] = True
     web = [i for i in todo if i["board"] == "web"]
     web_jobs = [{"job_id": i["key"], "url": i["url"], "title": i["title"], "company": i["company"],
+                 "location": i.get("location") or "",     # work-permit / relocation answers depend on it
                  "score": i.get("score"), "retry": i.get("attempts", 0) > 1 or i["status"] in ("queued", "retry")}
                 for i in web] if mode == "career" else []
     log("apply: %d Naukri + %d LinkedIn + %d company-site queued, at most %d each this run%s"
