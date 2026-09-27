@@ -15,7 +15,8 @@
 param(
     [switch]$Remove,
     [int]$Every = 30,
-    [int]$Limit = 5
+    [int]$Limit = 5,
+    [int]$Minutes = 100      # a run keeps applying for this long (APPLY_MAX_MINUTES); the task is stopped at +20
 )
 
 $ErrorActionPreference = "Stop"
@@ -45,12 +46,12 @@ $settings = New-ScheduledTaskSettingsSet `
     -DontStopOnIdleEnd `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `
-    -ExecutionTimeLimit (New-TimeSpan -Minutes 50) `
+    -ExecutionTimeLimit (New-TimeSpan -Minutes ($Minutes + 20)) `
     -MultipleInstances IgnoreNew
 
 $action = New-ScheduledTaskAction `
     -Execute "$env:SystemRoot\System32\wscript.exe" `
-    -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=$Limit" `
+    -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=$Limit APPLY_MAX_MINUTES=$Minutes" `
     -WorkingDirectory $PSScriptRoot
 
 # Repeats every -Every minutes, indefinitely, starting a few minutes from now -
