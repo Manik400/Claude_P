@@ -1224,6 +1224,20 @@ APPLY_JS = r"""
 """
 
 
+THIRD_PARTY_APPLY = re.compile(r"with\s+(indeed|seek)", re.I)
+
+
+def _third_party_apply_ok(text: str) -> bool:
+    """"Apply with Indeed" / "Apply with SEEK": a way in when that board is switched on and you are
+    signed in to it (the boards' own flows then take your saved profile). Never LinkedIn / Google."""
+    m = THIRD_PARTY_APPLY.search(text or "")
+    if not m:
+        return False
+    board = m.group(1).lower()
+    host = {"indeed": "indeed.", "seek": "seek.com"}[board]
+    return platform_switch.allowed(board) and host in saved_logins()
+
+
 def _click_apply(page) -> bool:
     """Press the posting's own Apply control - the most likely one, not the first.
 
@@ -1241,10 +1255,13 @@ def _click_apply(page) -> bool:
         ranked = []
         for b in found:
             text = b["t"]
-            if not APPLY_TEXT.match(text) or NOT_ACTION.search(text):
+            if not APPLY_TEXT.match(text):
+                continue
+            third_party = _third_party_apply_ok(text)
+            if NOT_ACTION.search(text) and not third_party:
                 continue
             href = (b.get("href") or "").lower()
-            score = 0
+            score = -2 if third_party else 0     # a direct Apply wins over "Apply with Indeed"
             score += 4 if ("apply" in href or "bewerb" in href or "candidat" in href or any(h in href for h in ATS_HOSTS)) else 0
             score += 3 if b["inMain"] else 0
             score += 2 if b["isButton"] else 0
