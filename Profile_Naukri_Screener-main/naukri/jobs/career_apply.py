@@ -1118,6 +1118,42 @@ def _after_submit(current, frame, wait_s: float = 10.0) -> str:
         current.wait_for_timeout(1000)
 
 
+PICKER_BUTTON = re.compile(r"^\W*(add file|upload (your |a )?(resume|cv|file)|attach (your |a )?(resume|cv|file)|choose file|select file)", re.I)
+PICKER_BROWSE = re.compile(r"^\W*(browse|select files? from (your )?(device|computer)|upload|choose files?|from (your )?(device|computer))", re.I)
+
+
+def upload_via_picker(page, resume: str) -> int:
+    """Resume boxes that are a button, not an <input type=file>: Google Forms' "Add file"
+    opens Drive's picker, whose Browse opens the OS file chooser - answered here with the
+    resume. Returns how many files went up."""
+    done = 0
+    for frame in _frames(page)[:3]:
+        try:
+            buttons = frame.get_by_role("button", name=PICKER_BUTTON).all()[:3]
+        except Exception:
+            continue
+        for btn in buttons:
+            try:
+                if not btn.is_visible(timeout=500):
+                    continue
+                human.click(page, btn, timeout=4000)
+                page.wait_for_timeout(2500)
+                picker = next((f for f in page.frames if "picker" in (f.url or "")), None)
+                with page.expect_file_chooser(timeout=8000) as chooser:
+                    if not _click_text(picker or page, PICKER_BROWSE):
+                        raise RuntimeError("no Browse button in the picker")
+                chooser.value.set_files(resume)
+                page.wait_for_timeout(5000)          # the upload itself
+                done += 1
+            except Exception as exc:  # noqa: BLE001 - the form then stops at its required question, as before
+                log.debug("picker upload failed: %s", exc)
+                try:
+                    page.keyboard.press("Escape")
+                except Exception:
+                    pass
+    return done
+
+
 def board_applied(page) -> bool:
     """The board itself says the application is in (one-click applies on Instahyre,
     Hirist, Cutshort, Wellfound ...): the Apply button now reads "Applied", or a
@@ -1372,6 +1408,9 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 frame, fields = _form_frame(current)     # rescan: values and pages may have changed
             filled, blocked = fill_form(frame, fields, who, facts, job, capture)
             total_filled += filled + prefilled
+            if who.get("resume") and not any(f["type"] == "file" for f in fields):
+                # no file box on the page: a Google Form's "Add file" button (the Drive picker) instead?
+                total_filled += upload_via_picker(current, who["resume"])
             if blocked:
                 capture["blocked_all"] = blocked
                 shot = _shot(current, job, "-incomplete")
