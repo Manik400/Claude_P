@@ -56,7 +56,7 @@ STATUSES = {"submitted", "login-required", "captcha", "no-form", "career-incompl
 # LinkedIn / Naukri posting showed up as "no application form found - apply by hand".
 CLOSED = re.compile(r"no longer accepting applications|(this |the )?(job|position|posting|vacancy|role|opening) "
                     r"(is |has )?(no longer (available|open|active)|(been )?(closed|filled|expired|removed))|"
-                    r"job (has )?expired|applications (are )?(now )?closed|this job is closed|"
+                    r"job (has )?expired|(job|posting) you are looking for (is|has) expired|applications (are )?(now )?closed|this job is closed|"
                     r"stelle (ist )?(nicht mehr|bereits) (verfügbar|besetzt)|oferta (no disponible|cerrada|caducada)|"
                     r"募集(は)?終了|ประกาศนี้หมดอายุ", re.I)
 
