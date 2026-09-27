@@ -125,6 +125,7 @@ AFFIRMATIVE = ("yes", "y", "true")
 NEGATIVE = ("no", "n", "false")
 YES_LEAD = re.compile(r"(yes|yeah|sure|ok|okay|i (agree|accept|confirm|understand|have|will|am|do|can))\b")
 NO_LEAD = re.compile(r"(no|nope|not)\b|i (do not|don'?t|have not|haven'?t|will not|won'?t|am not|cannot|can'?t)\b")
+NEGATION = re.compile(r"\b(not|no|never|neither|nor|don'?t|doesn'?t|cannot|can'?t|won'?t|unable|unwilling|without)\b")
 
 
 def _norm(text: str) -> str:
@@ -383,7 +384,23 @@ def choose_option(answer: str, options: list[str]) -> str | None:
                 return option
         lead = YES_LEAD if want is AFFIRMATIVE else NO_LEAD
         hits = [o for o in options if lead.match(_norm(o))]
-        return hits[0] if len(hits) == 1 else None
+        if len(hits) == 1:
+            return hits[0]
+        # Sentences instead of Yes / No - Cloudflare: "I currently live in this job's location." /
+        # "I am willing to relocate to this job's location." / "I do not live and not willing to
+        # relocate ...": a "No" is the sentence with the negation, a "Yes" one without.
+        negated = [o for o in options if NEGATION.search(_norm(o))]
+        plain = [o for o in options if o not in negated]
+        if want is NEGATIVE:
+            return negated[0] if len(negated) >= 1 and plain else None
+        if len(plain) == 1 and negated:
+            return plain[0]
+        if len(plain) > 1 and negated:
+            # more than one affirmative sentence: the one that commits least ("willing to
+            # relocate" over "currently live there"), then the first
+            soft = [o for o in plain if re.search(r"willing|open to|can|able|would", _norm(o))]
+            return soft[0] if soft else plain[0]
+        return None
 
     # Numeric. Options are often bands rather than single values - "No
     # experience", "<5 years", "5-6 years", ">9 years" - so match by which
