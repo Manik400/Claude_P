@@ -323,8 +323,9 @@ SCAN_JS = r"""
       options: e.tagName === 'SELECT' ? Array.from(e.options).map(o => o.text.trim()).filter(Boolean) : [],
       selectedText: e.tagName === 'SELECT' && e.selectedIndex >= 0 ? e.options[e.selectedIndex].text.trim() : '',
       password: type === 'password',
-      combo: e.tagName === 'INPUT' && (e.getAttribute('role') === 'combobox' || e.getAttribute('aria-autocomplete') === 'list' ||
-        e.getAttribute('aria-haspopup') === 'listbox' || !!e.closest('[class*="select__control"], [class*="react-select"], [class*="Select-control"], [class*="autocomplete" i], [class*="combobox" i]')),
+      combo: e.tagName === 'INPUT' && !['tel', 'email', 'url', 'number', 'date'].includes(type) &&
+        (e.getAttribute('role') === 'combobox' || e.getAttribute('aria-autocomplete') === 'list' ||
+         e.getAttribute('aria-haspopup') === 'listbox' || !!e.closest('[class*="select__control"], [class*="react-select"], [class*="Select-control"]')),
       ...ctxOf(e) });
   });
   // Google Forms and other ARIA widgets: div radios / checkboxes / dropdowns
@@ -693,6 +694,7 @@ def _cover(who: dict, job: dict) -> str:
             f"and my profile is at {who.get('linkedin') or who.get('github') or ''}.\n\nKind regards,\n{who.get('name')}")
 
 
+VERIFY_Q = re.compile(r"verification code|enter the \d+.?(character|digit) code|code (was |we )?(sent|e-?mailed) to|one.?time (code|password)|\botp\b", re.I)
 MOTIVATION_Q = re.compile(r"why (do you want|are you interested|us|this (role|job|company))|interest(s|ed)? (you )?(in|about)|motivat|"
                           r"about (you|yourself)|tell us|introduce yourself|(cover|application) (letter|note|message)|"
                           r"^\W*(message|note|additional (information|comments?))\W*$", re.I)
@@ -781,6 +783,12 @@ def _fill_combo(frame, pg, f: dict, q: str, meaning, who: dict, ask, record) -> 
     location box): type your value and take the matching suggestion. Returns (filled, the
     question when it could not be answered)."""
     from . import answers as answers_mod
+    if meaning in ("phone", "email", "first_name", "last_name", "full_name", "linkedin", "github", "website", "pincode"):
+        # plain identity boxes are never a dropdown, whatever their wrapper's class says: the
+        # phone number once went into the country picker ("British Indian Ocean Territory")
+        human.type_into(pg, frame.locator(f'[data-ca="{f["idx"]}"]'), str(who.get(meaning) or who.get("github") or ""), timeout=5000)
+        record(q, who.get(meaning) or "", meaning)
+        return True, None
     box = frame.locator(f'[data-ca="{f["idx"]}"]')
     human.click(pg, box, timeout=4000)
     frame.wait_for_timeout(900)
@@ -815,8 +823,19 @@ def _fill_combo(frame, pg, f: dict, q: str, meaning, who: dict, ask, record) -> 
     frame.wait_for_timeout(1600)
     opts = _combo_options(frame)
     if opts:
-        head = typed.split(",")[0].strip().lower()
-        pick = next((o for o in opts if head and head in o.lower()), None)
+        pick = None
+        if meaning in ("location", "city"):
+            # the suggestion that matches your whole location, not the first "Gurgaon" on the
+            # list ("Gurgaon, Bihar, India" was chosen over "Gurugram, Haryana, India")
+            want = set(re.findall(r"[a-z]+", (who.get("location") or typed).lower()))
+            if "gurugram" in want or "gurgaon" in want:
+                want |= {"gurugram", "gurgaon"}
+            scored = sorted(((len(want & set(re.findall(r"[a-z]+", o.lower()))), -i, o) for i, o in enumerate(opts)), reverse=True)
+            if scored and scored[0][0] > 0:
+                pick = scored[0][2]
+        if pick is None:
+            head = typed.split(",")[0].strip().lower()
+            pick = next((o for o in opts if head and head in o.lower()), None)
         if pick is None and listy:
             pick = answers_mod.choose_option(typed, opts) or None
         if pick is None:
@@ -1034,7 +1053,19 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                 continue
 
             if value is None:
-                answer, why = ask(q, [], long_text=f["tag"] == "textarea") if q else (None, "")
+                if VERIFY_Q.search(q or ""):
+                    # "enter the 8-character code we e-mailed you": read it from your inbox
+                    from . import mailcode
+                    code = mailcode.wait_for_code()
+                    if code:
+                        answer, why = code, "verification code from your inbox"
+                    else:
+                        blocked.append("the e-mail verification code" + ("" if mailcode.configured() else
+                                                                          " (set up Gmail under Settings so the PC can read it)"))
+                        capture.setdefault("question", q)
+                        continue
+                else:
+                    answer, why = ask(q, [], long_text=f["tag"] == "textarea") if q else (None, "")
                 if answer is None and f["tag"] == "textarea" and MOTIVATION_Q.search(q or ""):
                     # "what interests you about working here?": never sent blank - a plain paragraph
                     # from your details when the written answer is not available (model budget spent)
