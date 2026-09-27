@@ -756,6 +756,18 @@ def _stable(frame, field: dict):
 
 COMBO_OPTIONS = ("[role=option]:visible, [role=listbox] li:visible, [class*='__option']:visible, [class*='-option']:visible, "
                  ".pac-item:visible, [class*='suggestion' i]:visible, [class*='autocomplete' i] li:visible, [class*='menu' i] [class*='item' i]:visible")
+# A city under the names location lists know it by, the official one first.
+CITY_NAMES = {
+    "gurgaon": ["Gurugram", "Gurgaon"], "gurugram": ["Gurugram", "Gurgaon"],
+    "bangalore": ["Bengaluru", "Bangalore"], "bengaluru": ["Bengaluru", "Bangalore"],
+    "bombay": ["Mumbai", "Bombay"], "mumbai": ["Mumbai", "Bombay"],
+    "madras": ["Chennai", "Madras"], "chennai": ["Chennai", "Madras"],
+    "calcutta": ["Kolkata", "Calcutta"], "kolkata": ["Kolkata", "Calcutta"],
+    "poona": ["Pune", "Poona"], "pune": ["Pune", "Poona"],
+    "mysore": ["Mysuru", "Mysore"], "mysuru": ["Mysuru", "Mysore"],
+    "trivandrum": ["Thiruvananthapuram", "Trivandrum"], "cochin": ["Kochi", "Cochin"],
+    "noida": ["Noida", "Greater Noida"], "new delhi": ["New Delhi", "Delhi"], "delhi": ["Delhi", "New Delhi"],
+}
 WHO_FIELDS = ("first_name", "last_name", "email", "phone", "linkedin", "github", "website", "current_company", "current_title",
               "city", "state", "pincode", "location", "country")
 
@@ -817,38 +829,56 @@ def _fill_combo(frame, pg, f: dict, q: str, meaning, who: dict, ask, record) -> 
             return False, q
         value = str(answer)
     typed = str(value)
-    if meaning in ("location", "city") and who.get("city"):
-        typed = who["city"]                      # "Gurugram" finds the suggestion; the full address does not
-    pg.keyboard.type(typed, delay=random.uniform(45, 110))
-    frame.wait_for_timeout(1600)
-    opts = _combo_options(frame)
-    if opts:
-        pick = None
-        if meaning in ("location", "city"):
-            # the suggestion that matches your whole location - state counts most: "Gurgaon,
-            # Bihar, India" was chosen over the Haryana one, and "Gurgaon" / "Gurugram" are one city
-            city = {(who.get("city") or typed).lower()}
-            if city & {"gurugram", "gurgaon"}:
-                city |= {"gurugram", "gurgaon"}
-            state, country = (who.get("state") or "").lower(), (who.get("country") or "").lower()
+    names = [typed]
+    if meaning in ("location", "city"):
+        # the city's names in turn - Greenhouse's location list knows "Gurugram, Haryana" but files
+        # nothing under "Gurgaon, Haryana" (only Bihar / UP / Rajasthan Gurgaons); Bengaluru likewise
+        city_name = (who.get("city") or typed).strip()
+        names = CITY_NAMES.get(city_name.lower(), [city_name])
+        state, country = (who.get("state") or "").lower(), (who.get("country") or "").lower()
+        city_words = {n.lower() for n in names}
 
-            def score(o: str) -> int:
-                words = set(re.findall(r"[a-z]+", o.lower()))
-                return 3 * bool(state and state in words) + 2 * bool(city & words) + bool(country and country in words)
-            scored = sorted(((score(o), -i, o) for i, o in enumerate(opts)), reverse=True)
-            if scored and scored[0][0] > 0:
-                pick = scored[0][2]
-        if pick is None:
-            # a whole-word match: "India" is not "British Indian Ocean Territory"
-            head = typed.split(",")[0].strip().lower()
-            wordy = re.compile(r"(?<![a-z])" + re.escape(head) + r"(?![a-z])") if head else None
-            pick = next((o for o in opts if wordy and wordy.search(o.lower())), None)
-            if pick is None and wordy:
-                pick = next((o for o in opts if o.lower().startswith(head)), None)
+        def score(o: str) -> int:
+            words = set(re.findall(r"[a-z]+", o.lower()))
+            return 3 * bool(state and state in words) + 2 * bool(city_words & words) + bool(country and country in words)
+    best: tuple[int, str] | None = None
+    pick = None
+    for n, name in enumerate(names):
+        if n:
+            pg.keyboard.press("Control+A")
+        pg.keyboard.type(name, delay=random.uniform(45, 110))
+        frame.wait_for_timeout(1600)
+        opts = _combo_options(frame)
+        if not opts:
+            continue
+        if meaning in ("location", "city"):
+            ranked = sorted(((score(o), -i, o) for i, o in enumerate(opts)), reverse=True)
+            top = ranked[0]
+            if best is None or top[0] > best[0]:
+                best = (top[0], top[2])
+            if top[0] >= 3:                      # the state matched: this is the one
+                pick = top[2]
+                break
+            continue                             # try the next name for a better match
+        # a whole-word match: "India" is not "British Indian Ocean Territory"
+        head = name.split(",")[0].strip().lower()
+        wordy = re.compile(r"(?<![a-z])" + re.escape(head) + r"(?![a-z])") if head else None
+        pick = next((o for o in opts if wordy and wordy.search(o.lower())), None)
+        if pick is None and wordy:
+            pick = next((o for o in opts if o.lower().startswith(head)), None)
         if pick is None and listy:
-            pick = answers_mod.choose_option(typed, opts) or None
+            pick = answers_mod.choose_option(name, opts) or None
         if pick is None:
             pick = opts[0]
+        break
+    if pick is None and best is not None:
+        pick = best[1]
+        if best[0] < 3 and meaning in ("location", "city"):
+            # no suggestion in your state under any name: re-type the last name and take the best there was
+            pg.keyboard.press("Control+A")
+            pg.keyboard.type(names[-1], delay=random.uniform(45, 110))
+            frame.wait_for_timeout(1600)
+    if pick is not None:
         if not _click_option(frame, pg, pick):
             pg.keyboard.press("Tab")   # never Enter: that submits a half-filled form
         record(q, pick, why)
