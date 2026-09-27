@@ -1673,7 +1673,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             wall = login_wall(current, text=False)
             if wall:
                 _shot(current, job, "-login")
-                return "login-required", wall
+                return "login-required", _wall_note(current, wall)
             kind = captcha(current)
             if kind:
                 _shot(current, job, "-captcha", full=True)
@@ -1706,7 +1706,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 wall = login_wall(current)
                 if wall:
                     _shot(current, job, "-login")
-                    return "login-required", wall
+                    return "login-required", _wall_note(current, wall)
                 if not waited and not aggregator_host(current.url):
                     waited = True       # a slow single-page app: its form may still be rendering
                     current.wait_for_timeout(4000)
@@ -1921,6 +1921,17 @@ def work_rights_wall(page, facts: dict, job: dict) -> str | None:
         page.wait_for_timeout(1500)          # no work permit there: "I require sponsorship" is the truth
         return "continued"
     return "verify"
+
+
+def _wall_note(page, wall: str) -> str:
+    """A login wall on a board you had signed in to means the sign-in has lapsed: say how to renew it."""
+    host = _host(page.url)
+    for saved in saved_logins():
+        if saved in host:
+            from .platform_login import PLATFORMS
+            name = next((n for n, _u, h in PLATFORMS if h == saved), saved)
+            return f"{wall} - your {name} sign-in has expired; renew it once with: python main.py --platform-login {name.lower()}"
+    return wall
 
 
 def _page_location(page) -> str:
