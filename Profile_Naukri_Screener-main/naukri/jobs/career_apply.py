@@ -1184,10 +1184,15 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
         if CLOSED.search(_body(page)):
             return "closed", "the listing no longer accepts applications"
         if offsite_click is not None:
+            if board_applied(page):
+                # the board's page shows "Applied" (an earlier application, by hand or by us)
+                return "closed", "the job page already shows Applied"
             nxt = _follow_click(page, offsite_click)
             if nxt is None:
                 if CLOSED.search(_body(page)):
                     return "closed", "the listing no longer accepts applications"
+                if board_applied(page):
+                    return "closed", "the job page already shows Applied"
                 # the board's button selector missed: the labelled control, by its text
                 nxt = _follow_click(page, lambda: _click_text(page, OFFSITE_TEXT))
             if nxt is None:
