@@ -468,15 +468,37 @@ def login_wall(page, text: bool = True) -> str | None:
     return None
 
 
+CAPTCHA_JS = r"""
+(() => {
+  // A CAPTCHA a person would have to solve: a checkbox widget or an open challenge. NOT the
+  // invisible reCAPTCHA badge in the corner (size=invisible, ~70px) - every Greenhouse board
+  // and many career sites carry that badge, and it was read as "CAPTCHA - apply by hand".
+  const shown = e => { const r = e.getBoundingClientRect(); if (r.width < 120 || r.height < 40) return false;
+    for (let p = e; p; p = p.parentElement) { const s = getComputedStyle(p);
+      if (s.visibility === 'hidden' || s.display === 'none' || parseFloat(s.opacity || '1') < 0.2) return false; }
+    return true; };
+  for (const f of document.querySelectorAll('iframe')) {
+    const src = (f.src || '') + ' ' + (f.title || '');
+    if (/recaptcha\/(api2|enterprise)\/anchor/.test(src)) { if (!/size=invisible/.test(src) && shown(f)) return 'recaptcha checkbox'; }
+    else if (/recaptcha\/(api2|enterprise)\/bframe/.test(src)) { if (shown(f)) return 'recaptcha challenge'; }
+    else if (/hcaptcha\.com/.test(src)) { if (shown(f)) return 'hcaptcha'; }
+    else if (/challenges\.cloudflare\.com/.test(src)) { if (shown(f)) return 'cloudflare turnstile'; }
+    else if (/captcha/i.test(f.title || '')) { if (shown(f)) return 'captcha'; }
+  }
+  const img = document.querySelector('img[src*="captcha" i], img[alt*="captcha" i], input[name*="captcha" i]:not([type=hidden])');
+  return img && shown(img.tagName === 'INPUT' ? img : img) ? 'image captcha' : '';
+})()
+"""
+
+
 def captcha(page) -> bool:
-    for sel in ("iframe[src*='recaptcha/api2/anchor']", "iframe[src*='recaptcha/api2/bframe']",
-                "iframe[src*='hcaptcha.com']", "iframe[src*='challenges.cloudflare.com']", "iframe[title*='captcha' i]"):
-        for frame in _frames(page):
-            try:
-                if _visible(frame.locator(sel), timeout=300):
-                    return True
-            except Exception:
-                continue
+    """A CAPTCHA that blocks the form - a checkbox / image challenge, not the invisible badge."""
+    for frame in _frames(page)[:4]:
+        try:
+            if frame.evaluate(CAPTCHA_JS):
+                return True
+        except Exception:
+            continue
     return False
 
 
@@ -1482,6 +1504,7 @@ def _apply_words(page) -> str:
 RELEASABLE = re.compile(r"no application form or Apply button|found no Submit button|no confirmation seen|"
                         r"page did not open|could not press the company-site Apply|needs its own account|"
                         r"platform auto-apply is off|the form rejected some answers|Target (page|closed)|"
+                        r"the form has a CAPTCHA|"
                         r"Timeout \d+ms|net::ERR", re.I)
 
 

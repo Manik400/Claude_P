@@ -141,8 +141,9 @@ def test_release_failed_releases_fixed_failures_only(tmp_path, monkeypatch):
     monkeypatch.setattr(ca, "saved_logins", lambda: {"instahyre.com"})
     counts = ca.release_failed()
     after = json.loads(path.read_text(encoding="utf-8"))
-    assert counts == {"web": 2, "naukri": 1, "linkedin": 0, "kept": 1}
+    assert counts == {"web": 3, "naukri": 1, "linkedin": 0, "kept": 1}
     assert "web:1" not in after and "web:2" not in after          # listed again by the next search
-    assert "web:3" in after and "web:4" in after and "web:5" in after   # Workday login, CAPTCHA, applied: kept
+    assert "web:4" not in after                                    # "form has a CAPTCHA" was the invisible badge: retried
+    assert "web:3" in after and "web:5" in after                   # Workday login, applied: kept
     assert after["123"]["note"].startswith("retry requested: ")   # tried again on the career site
     assert after["linkedin:9"]["note"].startswith(ca.TRIED)       # too old
