@@ -278,6 +278,17 @@ SCAN_JS = r"""
     if (!t) { const f = e.closest('fieldset'); if (f && f.querySelector('legend')) t = txt(f.querySelector('legend')); }
     if (!t) { let p = e.parentElement; for (let i = 0; i < 3 && p && !t; i++, p = p.parentElement) {
       const c = p.querySelector('label, legend, .label, [class*=label], [class*=question]'); if (c && !c.contains(e)) t = txt(c); } }
+    if (!t) {
+      // a combobox whose label is not linked to it (Greenhouse's React selects read as "Select..."):
+      // the nearest block of text above the field, walking up through its ancestors
+      let node = e;
+      for (let i = 0; i < 5 && node && !t; i++, node = node.parentElement) {
+        for (let sib = node.previousElementSibling; sib && !t; sib = sib.previousElementSibling) {
+          if (sib.querySelector('input, select, textarea, button')) break;
+          const s0 = txt(sib); if (s0 && s0.length <= 220) t = s0;
+        }
+      }
+    }
     return t.slice(0, 300);
   };
   // the box a field sits in (form / dialog / section): job-alert and search boxes are not the application
@@ -663,7 +674,8 @@ def _meaning(field: dict) -> str | None:
 
 
 def _question(field: dict) -> str:
-    return (field["legend"] or field["label"] or field["placeholder"] or field["name"]).strip(" *")
+    placeholder = field["placeholder"] if not PLACEHOLDER.match(field["placeholder"] or "") else ""   # "Select..." is no question
+    return (field["legend"] or field["label"] or placeholder or field["name"]).strip(" *")
 
 
 def _cover(who: dict, job: dict) -> str:
