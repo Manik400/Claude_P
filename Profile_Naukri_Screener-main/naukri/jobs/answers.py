@@ -38,7 +38,8 @@ import re
 # "expected ctc" must be tested before "ctc", or every salary question resolves
 # to your current pay.
 RULES: list[tuple[str, str, str]] = [
-    ("expected_ctc", r"expect\w*\s+(ctc|salary|compensation|package)", "expected_ctc_lpa"),
+    ("expected_ctc", r"expect\w*\s+(ctc|salary|compensation|package)|salary expectation|(desired|target) (salary|compensation|pay)|"
+                     r"salary (requirement|range|you are looking for)|gehaltsvorstellung|salarisindicatie|expectativa salarial", "expected_ctc_lpa"),
     ("current_ctc", r"(current|present)\s+(in.?hand\s+|annual\s+|monthly\s+)?(ctc|salary|compensation|package)|"
                     r"current\s+fixed|in.?hand\s+(salary|ctc|pay)", "current_ctc_lpa"),
     ("notice_period", r"notice\s*period|when\s+can\s+you\s+(join|start)|how\s+soon.*(join|start)|availab\w*\s+to\s+(join|start)|"
