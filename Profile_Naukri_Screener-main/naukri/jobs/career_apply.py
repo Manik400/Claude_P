@@ -233,7 +233,7 @@ NOT_ACTION = re.compile(r"\b(filters?|alerts?|later|save (for|job)|similar|share
                         # nav links and widgets that also say "apply" / "send": "Apply & Interview
                         # Resources" (Thermo Fisher), "How to apply", a chat box's Send, a search box
                         r"resources?|tips?|process|how to|faq|guide|interview|learn|events?|blog|chat|message|"
-                        r"comment|subscribe|feedback|search|suche|zoeken|buscar|referr?al|refer a)\b", re.I)
+                        r"comment|subscribe|feedback|search|suche|zoeken|buscar|referr?al|refer a|to \d+ jobs?|all jobs|selected jobs)\b", re.I)
 # The page says the application went through on the board itself (Instahyre, Hirist,
 # Cutshort, Wellfound ... one-click applies): the Apply button becomes "Applied".
 APPLIED_TEXT = re.compile(r"^\W*(applied|application (sent|submitted)|you('ve| have) applied|already applied|"
@@ -1247,7 +1247,9 @@ APPLY_JS = r"""
     const t = txt(b); if (!t || t.length > 70) return;
     b.setAttribute('data-ca-a', String(k));
     out.push({ k: String(k++), t, href: b.href || b.getAttribute('href') || '',
-      inNav: !!b.closest('nav, header, footer, [role=navigation], [role=menu], [class*=navbar i], [class*=footer i], [class*=site-header i], [class*=menu i]'),
+      // the site's top navigation / footer - not a sticky job header that carries the Apply button (Instahyre)
+      inNav: !!b.closest('nav, footer, [role=navigation], [role=menu], [class*=navbar i], [class*=footer i], [class*=site-header i], [class*=menu i]') ||
+        (!!b.closest('header') && b.closest('header') === document.querySelector('header') && !/apply/i.test(txt(b.closest('header')).slice(0, 400))),
       inMain: !!b.closest('main, article, [role=main], form, [class*=job i], [class*=posting i], [class*=vacancy i], [class*=position i], [class*=apply i], [id*=job i], [id*=apply i]'),
       isButton: b.tagName !== 'A', y: b.getBoundingClientRect().top + window.scrollY });
   });
