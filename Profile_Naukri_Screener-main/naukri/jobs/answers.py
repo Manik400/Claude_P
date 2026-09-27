@@ -107,7 +107,17 @@ STANDARD: list[tuple[str, str, str]] = [
 ]
 
 
+OFFICE_Q = re.compile(r"hybrid|in.?office|on.?site|work (from|in|at) (the |our )?office|return to office|days? (a|per) week|"
+                      r"based in our \w+ office", re.I)
+
+
 def _resolve_standard(text: str, facts: dict, job: dict | None) -> tuple[str, str] | None:
+    # "This role is based in our Bangalore office and requires you to work in office 3 days a
+    # week - can you commit to that?": yes when you are willing to relocate (a fact), else left to you
+    if OFFICE_Q.search(text) and re.search(r"\b(are|can|will|do|would|able|willing|commit|comply|agree|confirm|acknowledge)\b", text, re.I):
+        if facts.get("willing_to_relocate") is True:
+            return "Yes", "office attendance: you are willing to relocate / work on site"
+        return None
     for name, pattern, answer in STANDARD:
         if not re.search(pattern, text, re.IGNORECASE):
             continue
