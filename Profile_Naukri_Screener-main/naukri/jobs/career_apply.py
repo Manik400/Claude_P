@@ -337,7 +337,7 @@ SCAN_JS = r"""
     }
     const fs = e.closest('fieldset'), legend = fs && fs.querySelector('legend') ? txt(fs.querySelector('legend')) : '';
     out.push({ idx, tag: e.tagName.toLowerCase(), type, name: e.name || '', id: e.id || '',
-      placeholder: e.placeholder || '', autocomplete: e.getAttribute('autocomplete') || '',
+      placeholder: e.placeholder || '', autocomplete: e.getAttribute('autocomplete') || '', accept: e.getAttribute('accept') || '',
       label: labelOf(e), legend, group, optionLabel, value: e.value || '', checked: !!e.checked,
       required: e.required || e.getAttribute('aria-required') === 'true' || /\*\s*$/.test(labelOf(e)),
       options: e.tagName === 'SELECT' ? Array.from(e.options).map(o => o.text.trim()).filter(Boolean) : [],
@@ -685,6 +685,8 @@ def _meaning(field: dict) -> str | None:
     if auto == "tel" or field["type"] == "tel":
         return "phone"
     if field["type"] == "file":
+        if re.search(r"image/", field.get("accept") or "") or re.search(r"photo|avatar|picture|headshot|image|logo", text, re.I):
+            return "photo"          # SEEK's profile-photo input took the resume once ("Unable to upload photo")
         return "cover_letter" if re.search(r"cover|motivation", text, re.I) else "resume"
     label = field["label"] or ""
     question_like = len(label) > 60 or label.rstrip().endswith("?") or bool(re.match(r"\s*(do|are|will|have|can|would|which)\b", label, re.I))
@@ -1053,6 +1055,8 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
 
             # ---- files
             if f["type"] == "file":
+                if meaning == "photo":
+                    continue
                 if meaning == "resume" and who.get("resume"):
                     human.hover(pg, loc(f))
                     loc(f).set_input_files(who["resume"], timeout=8000)
@@ -1749,6 +1753,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if dry_run:
                 return "would-apply", f"{total_filled} field(s) filled; dry run ({_shot(current, job, '-dry')})"
 
+            dismiss_overlays(current)            # an error / info pop-up would sit on the Submit button
             before = page_state(current, frame)
             pressed = _press_submit(frame, current)
             if pressed is None:
