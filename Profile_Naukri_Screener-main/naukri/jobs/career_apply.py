@@ -82,6 +82,26 @@ ATS_HOSTS = ("greenhouse.io", "lever.co", "ashbyhq.com", "workable.com", "smartr
              "jazzhr.com", "applytojob.com", "zohorecruit.", "freshteam.com", "keka.com", "darwinbox.",
              "hirist.", "instahyre.com", "cutshort.io", "wellfound.com", "relocate.me")
 LOGINS_FILE = ROOT / "data" / "platform_logins.json"
+# Hosts whose form ends with an e-mail verification code (Greenhouse boards like MongoDB's).
+# While Gmail is not set up, their other postings are not filled for eight minutes each only
+# to stop at the same prompt.
+MAILCODE_HOSTS_FILE = ROOT / "data" / "jobs" / "needs_mailcode.json"
+
+
+def _mailcode_hosts() -> set[str]:
+    try:
+        return set(json.loads(MAILCODE_HOSTS_FILE.read_text(encoding="utf-8")).get("hosts") or [])
+    except (OSError, ValueError):
+        return set()
+
+
+def _remember_mailcode_host(url: str) -> None:
+    hosts = _mailcode_hosts() | {_host(url)}
+    try:
+        MAILCODE_HOSTS_FILE.parent.mkdir(parents=True, exist_ok=True)
+        MAILCODE_HOSTS_FILE.write_text(json.dumps({"hosts": sorted(hosts)}, indent=1), encoding="utf-8")
+    except OSError:
+        pass
 
 
 def saved_logins() -> set[str]:
@@ -1111,6 +1131,8 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                     if code:
                         answer, why = code, "verification code from your inbox"
                     else:
+                        if not mailcode.configured():
+                            _remember_mailcode_host(pg.url)
                         blocked.append("the e-mail verification code" + ("" if mailcode.configured() else
                                                                           " (set up Gmail under Settings so the PC can read it)"))
                         capture.setdefault("question", q)
@@ -1676,6 +1698,11 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                     return "login-required", f"the Apply button leads to {host}, which needs its own account"
                 continue
 
+            if _host(current.url) in _mailcode_hosts():
+                from . import mailcode
+                if not mailcode.configured():
+                    return "career-incomplete", ("this site ends with an e-mail verification code - set up Gmail under "
+                                                 "Settings so the PC can read it, then retry")
             if tailor is not None and not tailored_note:
                 # a resume arranged for this job, uploaded instead of the generic one (naukri/jobs/tailor.py)
                 tailored_note = " · generic resume"
