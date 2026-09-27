@@ -43,6 +43,7 @@ from . import answers as answers_mod
 from . import career_apply as career_mod
 from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, linkedin_daily, linkedin_limit, platform_switch, questions
 from .ledger import Ledger
+from .runlock import RunLock
 from .model import Job
 
 log = logging.getLogger("naukri.jobs.autoapply")
@@ -238,6 +239,23 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     from ..session import DEFAULT_STATE, launch_browser, new_context, open_profile
     from . import simplify
 
+    # One apply pass at a time on this PC: the phone queue and the hourly round share
+    # one browser profile, and the second Chrome to open it dies at launch (runlock.py).
+    lock = RunLock()
+    if not lock.acquire():
+        log.warning("another apply run (%s) is still going - this run steps aside; nothing was tried", lock.holder())
+        return {"_summary": {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "per_run": per_run,
+                             "questions_saved": 0, "retried": 0, "pending_questions": 0, "backlog": 0,
+                             "busy": True, "note": "another apply run was in progress; nothing was tried"}}
+    try:
+        return _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,
+                    sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify)
+    finally:
+        lock.release()
+
+
+def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,
+         sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify) -> dict:
     deadline = _deadline()
     # Applying runs on your PC, not a 45-minute runner: give the local model room for the
     # written answers (about a minute each on the CPU). LOCAL_AI_BUDGET_SECONDS still wins.
@@ -250,13 +268,17 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     summary = {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "questions_saved": 0,
                "retried": 0, "pending_questions": 0, "per_run": per_run, "backlog": 0}
 
-    # Platform auto-apply (Naukri's own apply, LinkedIn Easy Apply, Instahyre,
-    # Hirist, ...) is off unless switched on (platform_switch.py): only company
-    # career pages are applied to then.
+    # Per-platform switches (platform_switch.py): a platform's OWN apply - Naukri
+    # one-click / questionnaire, LinkedIn Easy Apply, Instahyre / Hirist / ... forms -
+    # runs only while that platform is on. Postings that lead to the employer's site
+    # (Naukri "Apply on company site", LinkedIn plain Apply, a board's link out) are
+    # followed and filled whatever the switch says.
     platform_on = platform_switch.enabled(config)
-    if not platform_on:
-        log.info("Platform auto-apply is off: applying on company career pages only")
+    naukri_on = platform_switch.allowed("naukri", config)
+    linkedin_on = platform_switch.allowed("linkedin", config)
+    log.info("Platforms: %s", platform_switch.summary(config))
     summary["platform_apply"] = platform_on
+    summary["platforms"] = platform_switch.platforms(config)
 
     # ---------------------------------------------------------- company sites
     career_on = bool(config.get("career_apply", True))
@@ -310,8 +332,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             page, {"title": job.title, "company": job.company, "url": job.url,
                    "location": getattr(job, "location", "") or ("India" if board == "naukri" else ""),
                    "description": getattr(job, "description", "") or ""}, who, facts,
-            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn,
-            platforms=platform_on)
+            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn)
         if status == "submitted" and career_left[0] is not None:
             career_left[0] -= 1
         if status == "career-incomplete" and not dry_run:
@@ -368,8 +389,8 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     budget = max(0, int(config.get("max_auto_applies") or 0) - _applied_today(ledger, "naukri"))
     if per_run is not None:
         budget = min(budget, max(0, int(per_run)))
-    if not platform_on:
-        budget = 0                  # Naukri's own apply is a platform apply
+    if not naukri_on:
+        budget = 0                  # Naukri's own apply is off; its company-site postings still go
     naukri_jobs = []
     from naukri import learning
     # Score first, weighted by the learned chance this job's apply route works
@@ -387,7 +408,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             naukri_jobs.append(job)
 
     counts = summary["naukri"]
-    if naukri_jobs and budget <= 0 and platform_on:
+    if naukri_jobs and budget <= 0 and naukri_on:
         log.info("Naukri: this run's / today's cap (%s a day) is spent - only its company-site postings are applied to",
                  config.get("max_auto_applies"))
     if naukri_jobs and (budget > 0 or career_ready()):
@@ -404,9 +425,9 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                         break
                     company_site = getattr(job, "company_apply", False) or career_untried(job.job_id)
                     if budget <= 0 and not company_site:
-                        if not platform_on:
+                        if not naukri_on:
                             outcomes[f"naukri:{job.job_id}"] = {"status": "platform-off",
-                                                                "note": platform_switch.OFF_NOTE}
+                                                                "note": platform_switch.off_note("naukri")}
                             counts["platform-off"] = counts.get("platform-off", 0) + 1
                         if not career_ready():
                             break
@@ -414,7 +435,9 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                     if career_untried(job.job_id) and not career_ready():
                         continue            # already settled as offsite; nothing new to do this run
                     capture: dict = {}
-                    naukri_offsite = lambda: _press(page, S.JOB_APPLY_BUTTON)  # noqa: E731
+                    # only the "Apply on company site" control - never Naukri's own Apply, which
+                    # is the platform apply the Naukri switch governs
+                    naukri_offsite = lambda: _press(page, [sel for sel in S.JOB_APPLY_BUTTON if "company" in sel])  # noqa: E731
                     if getattr(job, "company_apply", False) or career_untried(job.job_id):
                         if career_ready():
                             try:
@@ -460,15 +483,10 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         li_cards = []
         seen_ids = set()
         for card in list(cards) + retry_cards:
-            if not platform_on and card.get("easy_apply"):
-                # Easy Apply is LinkedIn's own apply: left for when the switch is on
-                job = _card_job(card)
-                outcomes[job.job_id] = {"status": "platform-off", "note": platform_switch.OFF_NOTE}
-                counts["platform-off"] = counts.get("platform-off", 0) + 1
-                continue
-            # Plain-Apply postings are worth opening too when the career
-            # applier is on: apply_to() reports them "offsite" and try_career
-            # follows the button to the company's form.
+            # With LinkedIn's switch off, Easy Apply is never pressed - but the posting is
+            # still opened (once a day, linkedin_daily.py): a plain Apply leads to the
+            # company's site, where the career applier fills the form. apply_to() reports
+            # those "offsite"; Easy Apply ones come back "limit-cooldown" -> "platform-off".
             if not card.get("url") or not (card.get("easy_apply") or career_on):
                 continue
             job = _card_job(card)
@@ -485,7 +503,10 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         # said its limit is reached (linkedin_limit.py, 24 h). The postings
         # are still opened when the career applier can use them: a plain
         # Apply leads to the company's site, which no limit touches.
-        paused = [linkedin_limit.active() or not platform_on]
+        paused = [linkedin_limit.active() or not linkedin_on]
+        if li_cards and not linkedin_on:
+            log.info("LinkedIn Easy Apply is off: %d posting(s) are opened only to follow a plain Apply to the company site",
+                     len(li_cards))
         if li_cards and li_budget <= 0:
             log.info("LinkedIn: daily cap of %s already reached; %d job(s) left for tomorrow",
                      config.get("linkedin_max_applies_per_day"), len(li_cards))
@@ -531,8 +552,8 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                             status, note = linkedin_apply.apply_to(
                                 page, card, facts, dry_run=dry_run, phone=phone, capture=capture,
                                 easy_apply_paused=paused[0])
-                            if status == "limit-cooldown" and not platform_on:
-                                status, note = "platform-off", platform_switch.OFF_NOTE
+                            if status == "limit-cooldown" and not linkedin_on:
+                                status, note = "platform-off", platform_switch.off_note("linkedin")
                             if status == "limit-reached":
                                 end = linkedin_limit.hit()
                                 paused[0] = True
@@ -576,9 +597,9 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             continue
         job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
         job.score = item.get("score") or 0
-        if not platform_on and career_mod.platform_host(url, career_mod.APPLY_ON_BOARD):
-            # a board that applies on its own site (Instahyre, Hirist, SEEK, ...): not opened
-            outcomes[job_id] = {"status": "platform-off", "note": platform_switch.OFF_NOTE}
+        if career_mod.platform_host(url, career_mod.APPLY_ON_BOARD) and not platform_switch.allowed(url, config):
+            # a board that applies on its own site (Instahyre, Hirist, SEEK, ...) whose switch is off: not opened
+            outcomes[job_id] = {"status": "platform-off", "note": platform_switch.off_note(url)}
             summary["career"]["platform-off"] = summary["career"].get("platform-off", 0) + 1
             continue
         web.append(job)
@@ -599,8 +620,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                     if not career_ready():
                         _out_of_time(deadline, "Company sites", len(web) - n)
                         break
-                    if any(h in job.url for h in career_mod.LOGIN_HOSTS):
-                        status, note = "login-required", "this board needs its own account"
+                    # A board that wants its own account - unless you signed in to it once
+                    # (python main.py --platform-login; data/platform_logins.json). The bare
+                    # host list here ignored those logins and skipped 1,466 postings.
+                    need = career_mod._needs_account(job.url)
+                    if need:
+                        status, note = "login-required", f"{need} needs its own account (sign in once with: python main.py --platform-login)"
                         summary["career"][status] = summary["career"].get(status, 0) + 1
                         log.info("[company site %s] %s @ %s - %s", status, job.title, job.company, note)
                         if not dry_run:

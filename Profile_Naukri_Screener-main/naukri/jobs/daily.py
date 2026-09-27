@@ -41,10 +41,10 @@ def run(headless: bool = False, dry_run: bool = True, config_overrides: dict | N
     config = config_mod.load(profile=profile)
     if config_overrides:
         config.update(config_overrides)
-    # Naukri's own apply is a platform apply: off unless switched on (platform_switch.py).
-    platform_on = platform_switch.enabled(config)
+    # Naukri's own apply is a platform apply: off unless its switch is on (platform_switch.py).
+    platform_on = platform_switch.allowed("naukri", config)
     if not platform_on:
-        log.info("Platform auto-apply is off: matches are listed, nothing is applied to")
+        log.info("Naukri auto-apply is off: matches are listed, nothing is applied to through Naukri")
 
     log.info(
         "Profile: %s, %s, %s years",
@@ -136,7 +136,7 @@ def run(headless: bool = False, dry_run: bool = True, config_overrides: dict | N
                     queue.append(_queue_entry(job, "daily apply cap reached"))
                     continue
                 if not platform_on:
-                    queue.append(_queue_entry(job, platform_switch.OFF_NOTE))
+                    queue.append(_queue_entry(job, platform_switch.off_note("naukri")))
                     continue
 
                 attempts += 1

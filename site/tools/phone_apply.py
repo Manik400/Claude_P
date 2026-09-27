@@ -120,10 +120,13 @@ def load_index(pages: str) -> list[dict]:
 
 
 def report_jobs(pages: str, item: dict | None, passphrase: str) -> list[dict]:
-    """The job list published next to a report, or []."""
+    """The job list published next to a report, or []. A career-page search (kind
+    "careers") IS its job list: the JSON the Careers tab renders."""
     if not item:
         return []
     rel = (item.get("meta") or {}).get("jobs_file")
+    if not rel and item.get("kind") == "careers":
+        rel = item.get("file")
     if not rel:
         return []
     path = os.path.join(pages, rel)
@@ -134,6 +137,8 @@ def report_jobs(pages: str, item: dict | None, passphrase: str) -> list[dict]:
     except Exception as exc:
         log("cannot read job list %s: %s" % (rel, exc))
         return []
+    if isinstance(data, dict) and isinstance(data.get("jobs"), list):
+        return [dict(j, source=j.get("source") or "careers") for j in data["jobs"] if isinstance(j, dict) and j.get("url")]
     return data if isinstance(data, list) else []
 
 
@@ -313,9 +318,11 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                     elif k in ("limit", "offsite"):
                         s[k] = v
                     elif k == "platform_apply":
-                        # lives on the PC, so scheduled scans obey it too (naukri/jobs/platform_switch.py)
+                        # lives on the PC, so scheduled scans obey it too (naukri/jobs/platform_switch.py):
+                        # {naukri: false, instahyre: true, ...} per platform, or true / false for all
                         from naukri.jobs import platform_switch
-                        log("platform auto-apply switched %s" % ("ON" if platform_switch.set_enabled(bool(v)) else "OFF"))
+                        platform_switch.set_enabled(v if isinstance(v, dict) else bool(v))
+                        log("platforms: " + platform_switch.summary())
             elif kind == "answers":
                 pending = questions.load_pending()
                 given = {questions.key(k): v for k, v in (req.get("answers") or payload).items()}
@@ -379,9 +386,10 @@ def auto_enqueue(queue: dict, cfg: dict, pages: str, passphrase: str, settings: 
     min_score = float(auto.get("min_score") or 0)
     added = 0
     for item in load_index(pages):
-        if item.get("kind") not in ("jobhunt", "naukri") or item["id"] in seen:
+        # worldwide searches, Naukri scans and career-page searches (their JSON is the job list)
+        if item.get("kind") not in ("jobhunt", "naukri", "careers") or item["id"] in seen:
             continue
-        if not (item.get("meta") or {}).get("jobs_file"):
+        if not (item.get("meta") or {}).get("jobs_file") and item.get("kind") != "careers":
             continue
         for job in report_jobs(pages, item, passphrase):
             key, board, jid = job_key(job)
@@ -484,6 +492,12 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
     if naukri_jobs or cards or web_jobs:
         outcomes = autoapply.run(naukri_jobs, cards, config, profile, headless=True, dry_run=dry_run,
                                  per_run=limit, include_backlog=False, project="phone", web_jobs=web_jobs)
+    if (outcomes.get("_summary") or {}).get("busy"):
+        # another apply run held the browser the whole time: nothing was tried, no try is counted
+        log("apply: " + outcomes["_summary"]["note"])
+        for it in todo:
+            it["attempts"] = max(0, it.get("attempts", 0) - 1)
+        return outcomes
     # LinkedIn's daily Easy Apply limit (24 h pause, naukri/jobs/linkedin_limit.py):
     # nothing happened to these, so they stay queued and the try is not counted.
     for it in todo:
@@ -549,7 +563,17 @@ def main(argv=None) -> int:
     ap.add_argument("--retry-by-hand", action="store_true", dest="retry_by_hand",
                     help="put every 'apply by hand' job back in the queue (after new apply logic or new logins), then exit")
     ap.add_argument("--include-captcha", action="store_true", dest="include_captcha", help="with --retry-by-hand: CAPTCHA ones too")
+    ap.add_argument("--release", action="store_true",
+                    help="after a fix to the career applier: put every company-site posting it gave up on back in line "
+                         "(the queue's 'by hand' items and the screener's ledger), then exit")
     args = ap.parse_args(argv)
+    if args.release:
+        from naukri.jobs import career_apply as career_mod
+        counts = career_mod.release_failed()
+        log("ledger: released %d worldwide-board, %d Naukri, %d LinkedIn posting(s); %d kept (host still needs a login)"
+            % (counts["web"], counts["naukri"], counts["linkedin"], counts["kept"]))
+        retry_by_hand(args.include_captcha)
+        return 0
     if args.retry_by_hand:
         retry_by_hand(args.include_captcha)
         return 0
@@ -643,12 +667,16 @@ def main(argv=None) -> int:
         "naukri": sum(1 for k, e in ledger.entries.items() if not k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
     }
     caps, simplify_default, linkedin_paused, platform_apply = {}, False, "", False
+    platforms, platform_labels, platform_summary = {}, [], ""
     try:
         c = config_mod.load()
         caps = {"linkedin": c.get("linkedin_max_applies_per_day"), "naukri": c.get("max_auto_applies")}
         simplify_default = bool(c.get("simplify"))
         from naukri.jobs import platform_switch
         platform_apply = platform_switch.enabled(c)
+        platforms = platform_switch.platforms(c)
+        platform_labels = [[k, platform_switch.LABELS[k]] for k in platform_switch.KEYS]
+        platform_summary = platform_switch.summary(c)
     except Exception:
         pass
     try:
@@ -668,6 +696,7 @@ def main(argv=None) -> int:
                "simplify_ready": os.path.exists(os.path.join(config_dir(), "simplify-profile")),
                "simplify_default": simplify_default,
                "platform_apply": platform_apply,
+               "platforms": platforms, "platform_labels": platform_labels, "platform_summary": platform_summary,
                "linkedin_easy_apply_paused": linkedin_paused},
         "settings": settings,
         "progress": progress_of(queue),
@@ -679,10 +708,10 @@ def main(argv=None) -> int:
         ],
     })
     queue["history"] = (queue.get("history") or [])[-30:]
-    if outcomes and outcomes.get("_summary"):
+    if outcomes and outcomes.get("_summary") and not outcomes["_summary"].get("busy"):
         s = outcomes["_summary"]
         queue["history"].append({"at": now_iso(), "naukri": s.get("naukri"), "linkedin": s.get("linkedin"),
-                                 "dry_run": args.dry_run})
+                                 "career": s.get("career"), "dry_run": args.dry_run})
     write_enc(queue_path, queue, passphrase)
     if not args.dry_run:
         save_config(cfg)

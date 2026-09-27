@@ -173,7 +173,23 @@ def _plain_user_agent(p, channel: str | None) -> str | None:
 
 
 def _profile_busy(exc: Exception | None) -> bool:
-    return exc is not None and "exitCode=21" in str(exc)
+    """Chrome refused the profile because another Chrome holds it: exit code 21, or the
+    launch "closed" at once while the profile's lockfile is held."""
+    if exc is None:
+        return False
+    text = str(exc)
+    if "exitCode=21" in text:
+        return True
+    if "has been closed" in text or "Target closed" in text:
+        lock = os.path.join(PROFILE_DIR, "lockfile")
+        try:
+            with open(lock, "a"):
+                return False
+        except PermissionError:
+            return True
+        except OSError:
+            return False
+    return False
 
 
 def launch(p, headless: bool, states: list[Path] | None = None,

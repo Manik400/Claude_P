@@ -71,6 +71,14 @@ it cannot answer from your facts stops the form unsent - *form needs you* - and 
 question. Every attempt leaves a screenshot in `data/jobs/career_shots/`. Queue → Rules switches this to
 *leave for me* or to Simplify.
 
+**...which platforms apply by themselves.** Queue → Rules → **Auto-apply through these platforms**: one
+switch per platform. A lit platform lets the PC use that platform's *own* apply (Naukri one-click /
+questionnaire, LinkedIn Easy Apply, an Instahyre / Hirist / SEEK form); unlit, those postings wait
+untouched (`waits - that platform's auto-apply is off`). Default: Naukri and LinkedIn off, everything else
+on. Whatever the switch says, a posting that leads to the **employer's site** - Naukri "Apply on company
+site", LinkedIn's plain Apply, a board's link out - is followed and its career form filled and submitted.
+The same switches are on the PC dashboard's Settings tab (`data/jobs/platform_apply.json`).
+
 **...I want it fully automatic.** Queue → Rules → **Auto-queue jobs from every new report**, pick a
 minimum resume match (say 60%) and the boards. From then on every new worldwide report and every Naukri
 scan feeds the queue by itself; you only answer questions and read the Track tab.
@@ -91,7 +99,8 @@ applying without losing anything; *Resume* continues.
 | `applied on company site` | the PC filled the career form and submitted it |
 | `needs login - apply by hand` | the career site wants an account, or shows a CAPTCHA |
 | `form needs you - apply by hand` | a required question no fact of yours answers; nothing was sent |
-| `company site - apply by hand` | not one-click; open it from the list (or set up Simplify) |
+| `company site - apply by hand` | the career applier tried and could not finish - the note says why, `data/jobs/career_shots/` shows it |
+| `waits - that platform's auto-apply is off` | the posting applies through a platform whose switch is off (Queue → Rules) |
 | `form pre-filled - finish on PC` / `submitted` | Simplify modes |
 | `unconfirmed` / `error` / `form failed` | retried twice more, then `failed - tap retry` |
 
@@ -127,6 +136,9 @@ applying without losing anything; *Resume* continues.
    "Apply on company site", LinkedIn's plain Apply (not just Easy Apply), the worldwide boards'
    links - is opened, its Apply button followed to the company's form, and the form filled and
    submitted. Only forms that want a login / account or show a CAPTCHA are left for you ("by hand").
+   After a fix to the applier, `site\phone_apply.bat --release` puts every posting it had given up on
+   (no form found, no Submit button, no confirmation, "needs its own account" on a board you have since
+   signed in to) back in line, in the queue and in the screener's ledger.
    Check `Profile_Naukri_Screener-main\jobs.yaml` → `applicant:` if the details it reads from your
    resume need correcting, and `data\jobs\career_shots\` for what it sent.
 8. Simplify Copilot fills those forms first (it knows 500+ ATSes; the career applier then only

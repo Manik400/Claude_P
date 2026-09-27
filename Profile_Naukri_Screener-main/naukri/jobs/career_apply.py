@@ -142,9 +142,23 @@ LOGIN_HOSTS = ("wellfound.com", "angel.co", "xing.com", "seek.com", "jobsdb.com"
                "indeed.", "glassdoor.", "infojobs.net", "instahyre.com", "monster.", "foundit.in",
                "naukri.com/mnjuser", "linkedin.com/login", "simplyhired.")
 
+# Aggregators: the posting page is never the application. Adzuna's "land"
+# pages, Jooble, Arbeitnow, Remotive, ... show the ad with a search box and a
+# job-alert box - filling those and looking for Submit is how 157 postings
+# ended "filled 6 field(s) but found no Submit button". Their link out to the
+# employer is followed instead.
+AGGREGATOR_HOSTS = ("adzuna.", "jooble.", "arbeitnow.com", "remotive.", "remoteok.", "jobicy.", "workingnomads.",
+                    "themuse.com", "landing.jobs", "landingjobs.", "careerjet.", "talent.com", "jobrapido.",
+                    "neuvoo.", "jobs.google", "google.com/search", "duunitori.fi", "jobthai.com", "tokyodev.com",
+                    "japan-dev.com", "daijob.com", "tecnoempleo.com", "infojobs.net", "wantedly.com")
+
+
+def aggregator_host(url: str) -> bool:
+    return any(h in _host(url) for h in AGGREGATOR_HOSTS)
+
 # Job platforms: a form on one of these is the platform's own apply, not the
-# employer's. Left alone while platform auto-apply is off (platform_switch.py),
-# saved login or not.
+# employer's. Left alone while that platform's auto-apply is off
+# (platform_switch.py), saved login or not.
 # APPLY_ON_BOARD always apply on the board itself, so their postings are not
 # even opened; the others often link out to the employer and are followed.
 APPLY_ON_BOARD = ("naukri.com", "linkedin.com", "indeed.", "glassdoor.", "wellfound.com", "angel.co", "xing.com",
@@ -175,16 +189,38 @@ SUBMIT_TEXT = re.compile(r"^\W*(submit|send|apply|finish|complete (my |your )?ap
                          r"enviar|envoyer|verzenden|verstuur|lähetä|送信|応募する|ส่ง)"
                          r".{0,30}$", re.I)
 NOT_ACTION = re.compile(r"\b(filters?|alerts?|later|save (for|job)|similar|share|sign ?(in|up)|log ?in|register|"
-                        r"with (linkedin|indeed|google|seek|xing)|go back|cancel|newsletter)\b", re.I)
+                        r"with (linkedin|indeed|google|seek|xing)|go back|cancel|newsletter|"
+                        # nav links and widgets that also say "apply" / "send": "Apply & Interview
+                        # Resources" (Thermo Fisher), "How to apply", a chat box's Send, a search box
+                        r"resources?|tips?|process|how to|faq|guide|interview|learn|events?|blog|chat|message|"
+                        r"comment|subscribe|feedback|search|suche|zoeken|buscar|referr?al|refer a)\b", re.I)
+# The page says the application went through on the board itself (Instahyre, Hirist,
+# Cutshort, Wellfound ... one-click applies): the Apply button becomes "Applied".
+APPLIED_TEXT = re.compile(r"^\W*(applied|application (sent|submitted)|you('ve| have) applied|already applied|"
+                          r"bereits beworben|ya aplicaste|応募済み)\b", re.I)
 NEXT_TEXT = re.compile(r"^\s*(next|next step|continue|save (and|&) continue|proceed|review|weiter|nächster schritt|siguiente|"
                        r"continuar|suivant|continuer|seuraava|jatka|volgende|次へ|次に進む|ถัดไป)\s*[›>→]?\s*$", re.I)
 THANKS = re.compile(r"thank(s| you) for (applying|your (application|interest|submission))|application (has been |was )?"
                     r"(received|submitted|sent|complete|successful)|we('ve| have) received your application|"
                     r"successfully (applied|submitted|sent)|your application is on its way|"
-                    r"your response has been recorded|we('ll| will) be in touch", re.I)
+                    r"your response has been recorded|we('ll| will) be in touch|you (have )?applied (to|for) this|"
+                    r"application (is )?(under review|in progress)|"
+                    r"vielen dank für (ihre|deine) bewerbung|bewerbung (wurde )?(erfolgreich )?(gesendet|eingereicht|übermittelt)|"
+                    r"bedankt voor (je|uw) sollicitatie|sollicitatie (is )?(verzonden|ontvangen)|"
+                    r"gracias por (tu|su) (candidatura|solicitud|postulación)|candidatura enviada|"
+                    r"merci pour votre candidature|candidature (a été )?envoyée|kiitos hakemuksesta|hakemus(esi)? on (lähetetty|vastaanotettu)|"
+                    r"応募(が)?完了|ご応募ありがとう|ส่งใบสมัคร(เรียบร้อย|สำเร็จ)", re.I)
 # Cookie banners are declined, never accepted; pop-ups that are not the form are closed.
-COOKIE_DECLINE = re.compile(r"^\W*((reject|decline|deny|refuse)( all| optional| non-essential| additional)?( cookies)?|"
-                            r"(use |allow |accept )?(only )?(strictly )?(necessary|essential|required)( cookies)?( only)?)\W*$", re.I)
+# In the languages of the boards the search covers: 15 of the "no Submit button"
+# postings were an Adzuna page behind "ALLE ABLEHNEN" / "ALLES AFWIJZEN".
+COOKIE_DECLINE = re.compile(r"^\W*((reject|decline|deny|refuse|disagree)( all| optional| non-essential| additional)?( cookies)?|"
+                            r"(use |allow |accept )?(only )?(strictly )?(necessary|essential|required)( cookies)?( only)?|"
+                            r"(alle |alles )?(ablehnen|verweigern|afwijzen|weigeren|rechazar( todo| todas)?|refuser( tout)?|"
+                            r"tout refuser|hylkää( kaikki)?|kieltäydy|rifiuta( tutto)?|すべて拒否|拒否|ปฏิเสธ(ทั้งหมด)?)|"
+                            r"nur (notwendige|erforderliche|essenzielle)( cookies)?( zulassen| akzeptieren)?|"
+                            r"alleen (noodzakelijke|essentiële|functionele)( cookies)?( toestaan| accepteren)?|"
+                            r"s[oó]lo (las )?(necesarias|esenciales|imprescindibles)( cookies)?|"
+                            r"(uniquement|seulement) (les )?(cookies )?(nécessaires|essentiels)|vain välttämättömät( evästeet)?)\W*$", re.I)
 POPUP_CLOSE = re.compile(r"^\W*(no,? thanks?( you)?|not now|maybe later|close|dismiss|skip( for now)?|×|✕|✖|x)\W*$", re.I)
 # Boxes that are not the application: job alerts, newsletters, site search.
 NOT_THE_FORM = re.compile(r"job alert|create (an |email )?alert|receive (an )?alert|jobs by email|similar jobs|newsletter|"
@@ -410,7 +446,10 @@ def _body(page) -> str:
     return " ".join(out)
 
 
-def login_wall(page) -> str | None:
+def login_wall(page, text: bool = True) -> str | None:
+    """A login URL or a visible password box; with `text`, also a "sign in to apply" line -
+    checked only when no form was found, since Workable and friends print "Already have an
+    account?" next to a form that needs none."""
     if LOGIN_URL.search(page.url or "") and not re.search(r"/apply", page.url or "", re.I):
         return "the site sends you to a login page"
     for frame in _frames(page):
@@ -419,6 +458,8 @@ def login_wall(page) -> str | None:
                 return "the site asks for a login / account"
         except Exception:
             continue
+    if not text:
+        return None
     body = _body(page)
     m = LOGIN_WALL.search(body)
     if m:
@@ -522,11 +563,33 @@ def _form_frame(page):
     return best, best_fields
 
 
+SEARCH_BOX = re.compile(r"search|keyword|\bquery\b|\bsuche|zoek|buscar|recherche|\bhaku|検索|ค้นหา|"
+                        r"^(q|w|l|what|where|kw|loc|was|wo|wat|waar)$|^(job|vacature|stelle|puesto|emploi), ", re.I)
+
+
 def _not_the_form(field: dict) -> bool:
     """A job-alert, newsletter or search box (a small one - a whole-page <form> is not judged by its text)."""
-    if re.search(r"search|keyword|\bquery\b", " ".join([field["name"], field["id"], field["placeholder"]]), re.I):
+    if any(SEARCH_BOX.search(part or "") for part in (field["name"], field["id"], field["placeholder"], field.get("autocomplete"))):
         return True
     return field.get("ctxFields", 99) <= 3 and bool(NOT_THE_FORM.search(field.get("ctx") or ""))
+
+
+def looks_like_application(fields: list[dict]) -> bool:
+    """Is this set of fields an application form, not a search / alert / contact box?
+
+    A resume upload settles it; else an e-mail box with a name or phone box;
+    else a textarea or select with a question. Two lone text boxes - a search
+    box and an alert e-mail - are not.
+    """
+    fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
+    if any(f["type"] == "file" for f in fillable):
+        return True
+    meanings = {_meaning(f) for f in fillable}
+    if "email" in meanings and (meanings & {"first_name", "last_name", "full_name", "phone", "linkedin", "resume"}):
+        return True
+    if any(f["tag"] in ("textarea", "select") or f["type"] == "aria-select" for f in fillable) and len(fillable) >= 3:
+        return True
+    return len(fillable) >= 5
 
 
 # ------------------------------------------------------------------ filling
@@ -831,15 +894,201 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
 
 # ------------------------------------------------------------------ the attempt
 
-def _shot(page, job: dict, suffix: str = "") -> str:
+def _shot(page, job: dict, suffix: str = "", full: bool = False) -> str:
+    """A screenshot of the page's state. `full` (the whole page, for "no Submit button" and
+    "no confirmation") so the reason is in the picture, not below the fold."""
     SHOTS.mkdir(parents=True, exist_ok=True)
     key = re.sub(r"[^a-z0-9]+", "-", (job.get("company", "") + "-" + job.get("title", "")).lower())[:60].strip("-") or "posting"
     path = SHOTS / f"{time.strftime('%Y%m%d-%H%M')}-{key}{suffix}.png"
     try:
-        page.screenshot(path=str(path), full_page=False)
+        page.screenshot(path=str(path), full_page=full)
     except Exception:
-        return ""
+        try:
+            page.screenshot(path=str(path), full_page=False)
+        except Exception:
+            return ""
     return str(path)
+
+
+APPLY_JS = r"""
+(() => {
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && getComputedStyle(e).visibility !== 'hidden'; };
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || e.getAttribute('title') || '').replace(/\s+/g, ' ').trim();
+  const out = []; let k = 0;
+  document.querySelectorAll('button, a, [role=button], input[type=submit], input[type=button]').forEach(b => {
+    if (!vis(b)) return;
+    const t = txt(b); if (!t || t.length > 70) return;
+    b.setAttribute('data-ca-a', String(k));
+    out.push({ k: String(k++), t, href: b.href || b.getAttribute('href') || '',
+      inNav: !!b.closest('nav, header, footer, [role=navigation], [role=menu], [class*=navbar i], [class*=footer i], [class*=site-header i], [class*=menu i]'),
+      inMain: !!b.closest('main, article, [role=main], form, [class*=job i], [class*=posting i], [class*=vacancy i], [class*=position i], [class*=apply i], [id*=job i], [id*=apply i]'),
+      isButton: b.tagName !== 'A', y: b.getBoundingClientRect().top + window.scrollY });
+  });
+  return out;
+})()
+"""
+
+
+def _click_apply(page) -> bool:
+    """Press the posting's own Apply control - the most likely one, not the first.
+
+    The first text match used to win, which on Thermo Fisher was the nav link
+    "Apply & Interview Resources". Now: nav / header / footer links are out,
+    buttons and links whose href says apply (or leads to an application
+    system) rank first, the job's own section before the rest, then the
+    higher one on the page.
+    """
+    for frame in _frames(page)[:4]:
+        try:
+            found = frame.evaluate(APPLY_JS)
+        except Exception:
+            continue
+        ranked = []
+        for b in found:
+            text = b["t"]
+            if not APPLY_TEXT.match(text) or NOT_ACTION.search(text):
+                continue
+            href = (b.get("href") or "").lower()
+            score = 0
+            score += 4 if ("apply" in href or "bewerb" in href or "candidat" in href or any(h in href for h in ATS_HOSTS)) else 0
+            score += 3 if b["inMain"] else 0
+            score += 2 if b["isButton"] else 0
+            score -= 10 if b["inNav"] else 0
+            score -= 3 if href.startswith("mailto:") else 0
+            ranked.append((score, b["y"], b["k"]))
+        for score, _y, k in sorted(ranked, key=lambda r: (-r[0], r[1])):
+            if score < 0:
+                break
+            try:
+                frame.locator(f'[data-ca-a="{k}"]').first.click(timeout=6000)
+                return True
+            except Exception:
+                continue
+    return False
+
+
+SUBMIT_JS = r"""
+(() => {
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && getComputedStyle(e).visibility !== 'hidden'; };
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+  const marked = Array.from(document.querySelectorAll('[data-ca]'));
+  const forms = new Map();
+  marked.forEach(e => { const f = e.closest('form'); if (f) forms.set(f, (forms.get(f) || 0) + 1); });
+  let form = null, best = 0; forms.forEach((n, f) => { if (n > best) { best = n; form = f; } });
+  const scope = form || (marked.length ? (marked[0].closest('[role=dialog], dialog, section, main, article') || document) : document);
+  const out = []; let k = 0;
+  scope.querySelectorAll('button, input[type=submit], input[type=button], [role=button], a').forEach(b => {
+    if (!vis(b)) return;
+    b.setAttribute('data-ca-s', String(k));
+    out.push({ k: String(k++), t: txt(b).slice(0, 60), type: (b.getAttribute('type') || '').toLowerCase(), inForm: !!form,
+      disabled: !!(b.disabled || b.getAttribute('aria-disabled') === 'true') });
+  });
+  return out;
+})()
+"""
+
+
+def _press_submit(frame, page) -> str | None:
+    """Press the filled form's own Submit (or Next) button. Returns "submit" / "next" / None.
+
+    The button is looked for inside the <form> that holds the fields just
+    filled - a page-wide text match picked the chat widget's "Send" on
+    Designoweb and the job-alert box's "Subscribe" elsewhere, and the real
+    "Submit Application" was never pressed.
+    """
+    try:
+        found = [b for b in frame.evaluate(SUBMIT_JS) if not b["disabled"]]
+    except Exception:
+        found = []
+    scoped = [b for b in found if b["inForm"]]
+    order = [
+        ("submit", [b for b in scoped if b["type"] == "submit" and (not b["t"] or SUBMIT_TEXT.match(b["t"]) or not NOT_ACTION.search(b["t"]))]),
+        ("submit", [b for b in scoped if SUBMIT_TEXT.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
+        ("next", [b for b in scoped if NEXT_TEXT.match(b["t"])]),
+        ("submit", [b for b in found if SUBMIT_TEXT.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
+        ("next", [b for b in found if NEXT_TEXT.match(b["t"])]),
+        ("submit", [b for b in scoped if b["type"] == "submit"]),
+    ]
+    for kind, cands in order:
+        for b in cands:
+            try:
+                frame.locator(f'[data-ca-s="{b["k"]}"]').first.click(timeout=5000)
+                return kind
+            except Exception:
+                continue
+    # nothing marked (Simplify filled everything): the page-wide text match, as before
+    if _click_text(frame, SUBMIT_TEXT) or _click_text(page, SUBMIT_TEXT):
+        return "submit"
+    if _click_text(frame, NEXT_TEXT) or _click_text(page, NEXT_TEXT):
+        return "next"
+    try:
+        frame.locator("button[type=submit], input[type=submit]").first.click(timeout=5000)
+        return "submit"
+    except Exception:
+        return None
+
+
+FEEDBACK = ("[role=alert]:visible, [role=status]:visible, [aria-live]:visible, [class*=toast i]:visible, [class*=snackbar i]:visible, "
+            "[class*=notification i]:visible, [class*=success i]:visible, [class*=alert i]:visible, [class*=message i]:visible")
+INVALID = "[aria-invalid=true]:visible, .error:visible, .field-error:visible, [class*=error-message i]:visible, [class*=invalid-feedback i]:visible, [class*=has-error i]:visible"
+ERROR_WORDS = re.compile(r"\b(error|invalid|required|fail|missing|please (fill|enter|select|upload|complete)|not valid|"
+                         r"pflichtfeld|erforderlich|verplicht|obligatorio|obligatoire|pakollinen|必須)\b", re.I)
+OK_WORDS = re.compile(r"success|sent|received|submitted|thank|erfolgreich|gesendet|verzonden|enviad|envoyé|lähetetty|完了", re.I)
+
+
+def _after_submit(current, frame, wait_s: float = 10.0) -> str:
+    """What the page says after Submit was pressed, polled for `wait_s`:
+    "submitted" (a thank-you text, or a success toast), "errors" (a field complaint),
+    "captcha", "gone" (the form vanished, nothing said), or "" (the form is still there)."""
+    end = time.monotonic() + wait_s
+    while True:
+        if captcha(current):
+            return "captcha"
+        body = _body(current)
+        if THANKS.search(body) or re.search(r"thank|confirm|success|submitted", current.url or "", re.I):
+            return "submitted"
+        try:
+            said = " ".join(t for f in _frames(current)[:3] for t in f.locator(FEEDBACK).all_inner_texts()[:8])
+        except Exception:
+            said = ""
+        if said and THANKS.search(said):
+            return "submitted"
+        if said and OK_WORDS.search(said) and not ERROR_WORDS.search(said):
+            return "submitted"
+        try:
+            invalid = frame.locator(INVALID).count()
+        except Exception:
+            invalid = 0
+        if invalid or (said and ERROR_WORDS.search(said)):
+            return "errors"
+        try:
+            gone = frame.locator("[data-ca]").count() and frame.locator("[data-ca]:visible").count() == 0
+        except Exception:
+            gone = False
+        if gone:
+            return "gone"
+        if time.monotonic() >= end:
+            return ""
+        current.wait_for_timeout(1000)
+
+
+def board_applied(page) -> bool:
+    """The board itself says the application is in (one-click applies on Instahyre,
+    Hirist, Cutshort, Wellfound ...): the Apply button now reads "Applied", or a
+    thank-you line appeared."""
+    for frame in _frames(page)[:3]:
+        try:
+            items = frame.locator("button, [role=button], a, span, div[class*=appl i]")
+            for i in range(min(items.count(), 120)):
+                el = items.nth(i)
+                try:
+                    if el.is_visible(timeout=150) and APPLIED_TEXT.match((el.inner_text(timeout=200) or "").strip()):
+                        return True
+                except Exception:
+                    continue
+        except Exception:
+            continue
+    return bool(THANKS.search(_body(page)))
 
 
 LEAVE_LINKEDIN = re.compile(r"linkedin\.com/(safety/go|redir/|checkpoint/)", re.I)
@@ -899,7 +1148,7 @@ def _follow_click(page, click) -> object:
 
 def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = True,
                     capture: dict | None = None, offsite_click=None, prefill=None, tailor=None,
-                    platforms: bool = True) -> tuple[str, str]:
+                    platforms: bool | None = None) -> tuple[str, str]:
     """Apply starting from `page`, which shows the posting.
 
     `offsite_click` is a callable that presses the board's own offsite button
@@ -907,8 +1156,10 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
     the form is not on the page yet. `prefill(page) -> int` gets the form
     first when given (Simplify's autofill, see simplify.py); fill_form then
     only answers what it left empty. Returns (status, note); extra tabs opened
-    here are closed before returning. `platforms=False` (platform auto-apply
-    off) stops before filling any form that is on a job platform.
+    here are closed before returning. `platforms` overrides the per-platform
+    switches (platform_switch.py): False stops before any apply on a job
+    platform, True allows every one, None (default) asks the switch for the
+    platform the form is on.
     """
     capture = capture if capture is not None else {}
     lacking = missing_details(who)
@@ -917,6 +1168,12 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
     opened = set()
     current = page
     tailored_note = ""
+
+    def platform_ok(url: str) -> bool:
+        if platforms is not None:
+            return bool(platforms)
+        return platform_switch.allowed(url)
+
     try:
         dismiss_overlays(page)
         jd_text = job.get("description") or _body(page)      # the posting, for the tailored resume
@@ -928,7 +1185,14 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if nxt is None:
                 if CLOSED.search(_body(page)):
                     return "closed", "the listing no longer accepts applications"
-                return "career-error", "could not press the company-site Apply button"
+                # the board's button selector missed: the labelled control, by its text
+                nxt = _follow_click(page, lambda: _click_text(page, OFFSITE_TEXT))
+            if nxt is None:
+                shot = _shot(page, job, "-nobutton")
+                seen = _apply_words(page)
+                return "career-error", ("could not press the company-site Apply button" +
+                                        (f" (buttons seen: {seen})" if seen else " (no apply-worded button on the page)") +
+                                        (f" ({shot})" if shot else ""))
             current = nxt
         if current is not page:
             opened.add(current)
@@ -938,6 +1202,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
 
         total_filled = 0
         ats_tried = outbound_tried = waited = False
+        submitted_pages = 0
         for step in range(8):
             if CLOSED.search(_body(current)):
                 return "closed", "the listing no longer accepts applications"
@@ -948,28 +1213,44 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 current.goto(form_url, wait_until="domcontentloaded", timeout=45000)
                 current.wait_for_timeout(2500)
             dismiss_overlays(current)
-            wall = login_wall(current)
+            wall = login_wall(current, text=False)
             if wall:
                 _shot(current, job, "-login")
                 return "login-required", wall
             if captcha(current):
                 _shot(current, job, "-captcha")
                 return "captcha", "the form has a CAPTCHA - apply by hand"
+            on_board = platform_host(current.url)
+            if step and on_board and board_applied(current):
+                # a one-click apply on the board itself went through
+                return "submitted", f"applied on {on_board} with your saved login ({_shot(current, job, '-done')})"
             frame, fields = _form_frame(current)
+            if aggregator_host(current.url):
+                fields = []                      # an aggregator's page is never the application
             fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
-            if len(fillable) >= 2 and not platforms and platform_host(current.url):
-                return "platform-off", f"the form is on {platform_host(current.url)} - {platform_switch.OFF_NOTE}"
+            if len(fillable) >= 2 and not looks_like_application(fields):
+                fillable = []                    # a search box and an alert e-mail, not a form
+            if len(fillable) >= 2 and on_board and not platform_ok(current.url):
+                return "platform-off", f"the form is on {on_board} - {platform_switch.off_note(current.url)}"
             if len(fillable) < 2:
                 if total_filled:
                     break               # submitted a page and no further form: check for a thank-you
-                if not waited:
+                wall = login_wall(current)
+                if wall:
+                    _shot(current, job, "-login")
+                    return "login-required", wall
+                if not waited and not aggregator_host(current.url):
                     waited = True       # a slow single-page app: its form may still be rendering
                     current.wait_for_timeout(4000)
                     continue
+                if on_board and on_board not in _host(page.url) and not platform_ok(current.url) \
+                        and not aggregator_host(current.url):
+                    # a board that applies on its own site, reached from elsewhere, and its switch is off
+                    return "platform-off", f"{on_board} applies on its own site - {platform_switch.off_note(current.url)}"
                 page_now = current
-                nxt = _follow_click(current, lambda: _click_text(page_now, APPLY_TEXT))
-                if nxt is None and not outbound_tried:
-                    # an aggregator's listing: follow its link out to the employer's application
+                nxt = None
+                if aggregator_host(current.url) and not outbound_tried:
+                    # an aggregator's listing: its link out to the employer first
                     outbound_tried = True
                     target = _outbound_apply(current)
                     if target:
@@ -978,7 +1259,20 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                         _leave_linkedin(current)
                         nxt = current
                 if nxt is None:
-                    return "no-form", "no application form or Apply button found on the company page"
+                    nxt = _follow_click(current, lambda: _click_apply(page_now))
+                if nxt is None and not outbound_tried:
+                    outbound_tried = True
+                    target = _outbound_apply(current)
+                    if target:
+                        current.goto(target, wait_until="domcontentloaded", timeout=45000)
+                        current.wait_for_timeout(2500)
+                        _leave_linkedin(current)
+                        nxt = current
+                if nxt is None:
+                    shot = _shot(current, job, "-noform", full=True)
+                    seen = _apply_words(current)
+                    return "no-form", ("no application form or Apply button found on the company page" +
+                                       (f" (buttons seen: {seen})" if seen else "") + (f" ({shot})" if shot else ""))
                 if nxt is not current:
                     opened.add(nxt)
                 current = nxt
@@ -1014,30 +1308,33 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if dry_run:
                 return "would-apply", f"{total_filled} field(s) filled; dry run ({_shot(current, job, '-dry')})"
 
-            if not (_click_text(frame, SUBMIT_TEXT) or _click_text(current, SUBMIT_TEXT)):
-                if not (_click_text(frame, NEXT_TEXT) or _click_text(current, NEXT_TEXT)):
-                    try:
-                        frame.locator("button[type=submit], input[type=submit]").first.click(timeout=5000)
-                    except Exception:
-                        return "career-incomplete", f"filled {total_filled} field(s) but found no Submit button ({_shot(current, job, '-nosubmit')})"
-            current.wait_for_timeout(5000)
-            if captcha(current):
+            pressed = _press_submit(frame, current)
+            if pressed is None:
+                return "career-incomplete", f"filled {total_filled} field(s) but found no Submit button ({_shot(current, job, '-nosubmit', full=True)})"
+            submitted_pages += 1
+            result = _after_submit(current, frame)
+            if result == "captcha":
                 _shot(current, job, "-captcha")
                 return "captcha", "a CAPTCHA appeared on submit - apply by hand"
-            body = _body(current)
-            if THANKS.search(body) or re.search(r"thank|confirm|success|submitted", current.url or "", re.I):
+            if result == "submitted":
                 return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
-            try:
-                invalid = frame.locator("[aria-invalid=true]:visible, .error:visible, .field-error:visible, [class*=error-message]:visible").count()
-            except Exception:
-                invalid = 0
-            if invalid:
-                return "career-incomplete", f"the form rejected some answers ({_shot(current, job, '-errors')})"
+            if result == "errors":
+                return "career-incomplete", f"the form rejected some answers ({_shot(current, job, '-errors', full=True)})"
+            if result == "gone" and pressed == "submit":
+                # the form closed and nothing complained: the next scan finds no form and settles below
+                current.wait_for_timeout(2500)
             # Otherwise a multi-page form moved on: fill the next page.
         body = _body(current)
         if THANKS.search(body):
             return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
-        return "career-unconfirmed", f"pressed Submit, no confirmation seen{tailored_note} ({_shot(current, job, '-after')})"
+        frame, fields = _form_frame(current)
+        still = [f for f in fields if f["type"] not in ("checkbox", "radio") and not f.get("value")]
+        if submitted_pages and not still:
+            # Submit was pressed, the form is gone or cleared and no error appeared: the
+            # site just has no thank-you text (Designoweb, several Indian career pages)
+            return "submitted", (f"{total_filled} field(s) filled and submitted - form closed, no thank-you text"
+                                 f"{tailored_note} ({_shot(current, job, '-done', full=True)})")
+        return "career-unconfirmed", f"pressed Submit, no confirmation seen{tailored_note} ({_shot(current, job, '-after', full=True)})"
     except Exception as exc:  # noqa: BLE001
         return "career-error", str(exc)[:160]
     finally:
@@ -1048,6 +1345,70 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             except Exception:
                 pass
 
+
+OFFSITE_TEXT = re.compile(r"^\W*(apply (on|via|at) (the )?(company|employer)('s)? ?(site|website|page)?|"
+                          r"apply on company|company site|apply externally|apply on website)", re.I)
+
+
+def _apply_words(page) -> str:
+    """The apply-worded controls on the page, for the note when none could be pressed."""
+    seen = []
+    for frame in _frames(page)[:3]:
+        try:
+            for t in frame.locator("button, a, [role=button], input[type=submit]").all_inner_texts()[:200]:
+                t = re.sub(r"\s+", " ", t or "").strip()
+                if t and re.search(r"apply|bewerb|postul|solicit|candidat|応募|สมัคร", t, re.I) and t not in seen:
+                    seen.append(t[:40])
+        except Exception:
+            continue
+    return "; ".join(seen[:6])
+
+
+# Ledger notes of company-site failures the applier has since been fixed for; release_failed()
+# puts these postings back in line once.
+RELEASABLE = re.compile(r"no application form or Apply button|found no Submit button|no confirmation seen|"
+                        r"page did not open|could not press the company-site Apply|needs its own account|"
+                        r"platform auto-apply is off|the form rejected some answers|Target (page|closed)|"
+                        r"Timeout \d+ms|net::ERR", re.I)
+
+
+def release_failed(days: int = 30, dry_run: bool = False) -> dict:
+    """Put back in line every posting the applier gave up on for a reason that is fixed now.
+
+    Worldwide-board postings ("web:" keys) are dropped from the ledger, so the
+    next round's search lists them again and applies; Naukri / LinkedIn ones
+    get their "company site: " mark replaced by "retry requested: ", which is
+    what makes autoapply try the career site once more. A "needs its own
+    account" note is released only when that host is signed in now
+    (data/platform_logins.json) or was never a login host.
+    """
+    from datetime import date, timedelta
+
+    from .ledger import Ledger
+
+    ledger = Ledger()
+    cutoff = (date.today() - timedelta(days=days)).isoformat()
+    counts = {"web": 0, "naukri": 0, "linkedin": 0, "kept": 0}
+    for key, entry in list(ledger.entries.items()):
+        note = str(entry.get("note") or "")
+        if entry.get("status") != "offsite" or str(entry.get("at", ""))[:10] < cutoff or not RELEASABLE.search(note):
+            continue
+        url = entry.get("url") or ""
+        if "needs its own account" in note:
+            if not key.startswith("web:") or _needs_account(url):
+                counts["kept"] += 1
+                continue
+        if key.startswith("web:"):
+            if not dry_run:
+                del ledger.entries[key]
+            counts["web"] += 1
+        else:
+            if not dry_run:
+                entry["note"] = "retry requested: " + (note[len(TRIED):] if note.startswith(TRIED) else note)
+            counts["linkedin" if key.startswith("linkedin:") else "naukri"] += 1
+    if not dry_run:
+        ledger.save()
+    return counts
 
 def transient(status: str, note: str) -> bool:
     """A failure worth another go next run (network down, a timeout) - not recorded as tried."""
@@ -1076,10 +1437,20 @@ def main(argv=None) -> int:
     from ..session import launch_browser, new_context
 
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("url")
+    ap.add_argument("url", nargs="?", help="a posting to try")
     ap.add_argument("--submit", action="store_true", help="really submit (default: fill only)")
     ap.add_argument("--show", action="store_true", help="visible browser")
+    ap.add_argument("--release", action="store_true",
+                    help="put every company-site posting the applier gave up on (for a reason fixed since) back in line, then exit")
+    ap.add_argument("--dry-run", action="store_true", dest="dry_run", help="with --release: only count")
     a = ap.parse_args(argv)
+    if a.release:
+        counts = release_failed(dry_run=a.dry_run)
+        print("released%s: %d worldwide-board, %d Naukri, %d LinkedIn posting(s); %d kept (host still needs a login)"
+              % (" (dry run)" if a.dry_run else "", counts["web"], counts["naukri"], counts["linkedin"], counts["kept"]))
+        return 0
+    if not a.url:
+        ap.error("a posting URL is needed (or --release)")
     profile = config_mod.load_profile()
     config = config_mod.load(profile=profile)
     facts = answers_mod.build_facts(profile, config)

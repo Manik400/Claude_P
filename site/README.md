@@ -36,7 +36,7 @@ The phone page has six tabs: **Home** (queue progress, PC status, questions wait
 (worldwide boards with country chips - India first - or company career pages), **Jobs** (every report;
 worldwide searches and Naukri scans open as job lists with filters, contacts and **Queue all** /
 **+ Queue**), **Queue** (the one list with every job's status, pause / resume, retry / remove, the rules:
-auto-queue, minimum match, boards, per-run limit, company-site handling), **Track** (applications, Q&A,
+auto-queue, minimum match, boards, per-run limit, company-site handling, one auto-apply switch per platform), **Track** (applications, Q&A,
 Gmail replies, your answers form) and **Settings**.
 
 Every tap that asks the PC for something starts `apply.yml`, which only *queues* the request

@@ -24,8 +24,10 @@ and right after it boots) applies to those jobs with your LinkedIn and Naukri lo
 
 ## Good to know
 
-* LinkedIn Easy Apply and Naukri jobs are applied to for you. Company sites: open them from the list, or set up
-  Simplify (see AUTO_APPLY.md) and let it fill the forms.
+* Company sites are filled and submitted by the PC (login walls and CAPTCHAs are left for you). Queue → Rules has one
+  switch per platform for applying *through* that platform (Naukri one-click, LinkedIn Easy Apply, Instahyre, ...);
+  Naukri and LinkedIn are off by default, the rest on. A Naukri "Apply on company site" or LinkedIn plain-Apply posting
+  is always followed to the employer's form.
 * PC switched off when you tapped? Nothing is lost - the queue waits and continues when the PC is back.
 * Big lists are fine - "Queue all (60)" is spread over hours/days, not fired at once.
 * India: add the `APIFY_TOKEN` secret once and searches read Naukri, Indeed and LinkedIn properly.

@@ -94,6 +94,8 @@ def state() -> dict:
         "counts": applications.counts(apps),
         "gmail": gmail,
         "platform_apply": platform_switch.enabled(config),
+        "platforms": platform_switch.platforms(config),
+        "platform_labels": [[k, platform_switch.LABELS[k]] for k in platform_switch.KEYS],
         "manual_statuses": MANUAL_STATUSES,
         "kind_labels": responses.KIND_LABELS,
         "generated": datetime.now().isoformat(timespec="seconds"),
@@ -153,7 +155,10 @@ def sync_gmail() -> dict:
 
 
 def save_platform(payload: dict) -> dict:
-    return {"ok": True, "enabled": platform_switch.set_enabled(bool(payload.get("enabled")))}
+    """{"platforms": {key: bool}} (one or more), or the old {"enabled": bool} for every platform."""
+    value = payload.get("platforms") if isinstance(payload.get("platforms"), dict) else bool(payload.get("enabled"))
+    platforms = platform_switch.set_enabled(value)
+    return {"ok": True, "enabled": any(platforms.values()), "platforms": platforms}
 
 
 def save_note(payload: dict) -> dict:
@@ -369,8 +374,8 @@ __KIT_HEAD__
   <section id="tab-settings">
     <div class="card">
       <h2 style="margin-top:0">Auto-apply on job platforms</h2>
-      <p class="sub">Off: runs apply only on company career pages and the employer's own job pages. Nothing goes through Naukri's apply, LinkedIn Easy Apply, or Instahyre / Hirist / Wellfound / SEEK forms &mdash; those jobs wait untouched and are picked up when you switch this on. The phone's Queue &rarr; Rules has the same switch.</p>
-      <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="platform-apply"> Auto-apply on job platforms (Naukri, LinkedIn Easy Apply, ...)</label>
+      <p class="sub">Each switch covers that platform's <b>own</b> apply (Naukri one-click / questionnaire, LinkedIn Easy Apply, an Instahyre / Hirist / SEEK form). Off: those postings wait untouched. Postings that lead to the <b>employer's site</b> &mdash; Naukri "Apply on company site", LinkedIn's plain Apply, a board's link out &mdash; are always followed and their career form filled and submitted. The phone's Queue &rarr; Rules has the same switches.</p>
+      <div id="platform-list" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:6px"></div>
     </div>
     <div class="card">
       <h2 style="margin-top:0">Gmail, for reading recruiter replies</h2>
@@ -392,10 +397,12 @@ __KIT_HEAD__
   const $ = id => document.getElementById(id);
   function toast(msg, bad) { const t = $('status'); t.textContent = msg; t.style.background = bad ? 'var(--bad)' : 'var(--ink)'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); }
   async function post(path, body) { const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body || {})}); return r.json(); }
-  $('platform-apply').addEventListener('change', async e => {
-    const r = await post('/api/platform', {enabled: e.target.checked});
-    toast(r.ok ? 'Auto-apply on job platforms is ' + (r.enabled ? 'ON' : 'OFF') + ' from the next run.' : 'Failed: ' + r.error, !r.ok);
-    if (r.ok) S.platform_apply = r.enabled;
+  $('platform-list').addEventListener('change', async e => {
+    const box = e.target.closest('input[data-platform]'); if (!box) return;
+    const p = {}; p[box.dataset.platform] = box.checked;
+    const r = await post('/api/platform', {platforms: p});
+    toast(r.ok ? box.parentElement.textContent.trim() + ' auto-apply is ' + (box.checked ? 'ON' : 'OFF') + ' from the next run.' : 'Failed: ' + r.error, !r.ok);
+    if (r.ok) { S.platforms = r.platforms; S.platform_apply = r.enabled; }
   });
   async function load() { S = await (await fetch('/api/state')).json(); bank = S.bank.slice(); skills = Object.assign({}, S.answers.skill_years); render(); }
 
@@ -481,7 +488,10 @@ __KIT_HEAD__
         '<details><summary>questions, answers and replies</summary>' + qa + blocked + mails + manual + '</details></div>';
     }).join('');
   }
-  function renderSettings() { $('platform-apply').checked = !!S.platform_apply; $('gm-email').value = S.gmail.email || ''; $('gm-days').value = S.gmail.days || 30; $('gm-state').textContent = S.gmail.configured ? 'configured for ' + S.gmail.email : 'not configured'; }
+  function renderPlatforms() {
+    $('platform-list').innerHTML = (S.platform_labels || []).map(kl => '<label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" data-platform="' + kl[0] + '"' + ((S.platforms || {})[kl[0]] ? ' checked' : '') + '> ' + esc(kl[1]) + '</label>').join('');
+  }
+  function renderSettings() { renderPlatforms(); $('gm-email').value = S.gmail.email || ''; $('gm-days').value = S.gmail.days || 30; $('gm-state').textContent = S.gmail.configured ? 'configured for ' + S.gmail.email : 'not configured'; }
 
   document.addEventListener('click', async e => {
     const t = e.target;

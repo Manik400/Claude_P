@@ -1,9 +1,11 @@
-"""Platform auto-apply is off by default: only company career pages are applied to.
+"""Per-platform auto-apply switches: Naukri and LinkedIn off by default, every other platform on;
+a platform's switch never touches applications on the employer's own site.
 
 Run: python -m pytest tests/ -q
 """
 from __future__ import annotations
 
+import json
 import sys
 from pathlib import Path
 
@@ -20,17 +22,54 @@ def switch(tmp_path, monkeypatch):
     return platform_switch
 
 
-def test_off_until_switched_on(switch):
+def test_defaults_naukri_and_linkedin_off_rest_on(switch):
     assert switch.stored() is None
+    assert not switch.allowed("naukri", {}) and not switch.allowed("linkedin", {})
+    assert switch.allowed("instahyre", {}) and switch.allowed("https://www.hirist.tech/j/2", {})
+    assert switch.allowed("https://careers.acme.com/jobs/1", {})     # "other"
+    assert switch.enabled({})                                          # some platform is on
+
+
+def test_one_platform_at_a_time(switch):
+    switch.set_enabled({"instahyre": False})
+    assert not switch.allowed("https://www.instahyre.com/job-1/")
+    assert switch.allowed("wellfound") and not switch.allowed("naukri")
+    switch.set_enabled({"naukri": True})
+    assert switch.allowed("https://www.naukri.com/job-listings-x-1") and not switch.allowed("instahyre")
+    saved = json.loads(switch.PATH.read_text(encoding="utf-8"))["platforms"]
+    assert saved["naukri"] is True and saved["instahyre"] is False and saved["linkedin"] is False
+
+
+def test_all_on_or_all_off(switch):
+    assert all(switch.set_enabled(True).values())
+    assert switch.allowed("linkedin")
+    assert not any(switch.set_enabled(False).values())
     assert not switch.enabled({})
-    assert switch.set_enabled(True) and switch.enabled({})
-    assert not switch.set_enabled(False) and not switch.enabled({})
+    assert "off everywhere" in switch.summary()
 
 
-def test_the_ui_switch_wins_over_jobs_yaml(switch):
-    assert switch.enabled({"platform_apply": True})       # jobs.yaml, while the switch was never set
-    switch.set_enabled(False)
-    assert not switch.enabled({"platform_apply": True})
+def test_old_one_switch_file_is_read(switch):
+    switch.PATH.write_text(json.dumps({"enabled": True}), encoding="utf-8")
+    assert switch.allowed("linkedin")
+    switch.PATH.write_text(json.dumps({"enabled": False}), encoding="utf-8")
+    assert not switch.allowed("naukri") and switch.allowed("instahyre")   # the defaults, not "everything off"
+
+
+def test_jobs_yaml_only_while_the_file_does_not_exist(switch):
+    assert switch.allowed("linkedin", {"platform_apply": True})
+    switch.set_enabled({"linkedin": False})
+    assert not switch.allowed("linkedin", {"platform_apply": True})
+
+
+def test_platform_of_urls():
+    assert platform_switch.platform_of("https://www.seek.com.au/job/4") == "seek"
+    assert platform_switch.platform_of("https://th.jobsdb.com/job/5") == "seek"
+    assert platform_switch.platform_of("https://in.indeed.com/viewjob?jk=5") == "indeed"
+    assert platform_switch.platform_of("https://boards.greenhouse.io/acme/jobs/1") == "other"
+
+
+def test_off_note_names_the_platform():
+    assert "LinkedIn" in platform_switch.off_note("https://www.linkedin.com/jobs/view/1/")
 
 
 @pytest.mark.parametrize("url", [
