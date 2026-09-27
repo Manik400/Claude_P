@@ -19,9 +19,9 @@ from naukri.jobs import answers  # noqa: E402
 
 PROFILE = {
     "experience": "2 years",
-    "notice_period": "1 Months notice period",
-    "current_salary": "₹ 900000",
-    "location": "India",
+    "notice_period": "1 Month notice period",
+    "current_salary": "₹ 9,00,000",
+    "location": "Gurugram, INDIA",
     "it_skills": [
         "Playwright - 2025 1 Year 3 Months",
         "Python 3.12 2025 2 Years 1 Month",
@@ -41,7 +41,7 @@ ANSWERED = [
     ("What is your expected CTC?", [], "14"),
     ("How many years of total experience do you have?", [], "2"),
     ("What is your total experience in years?", [], "2"),
-    ("What is your current location?", [], "India"),
+    ("What is your current location?", [], "Gurugram"),
     ("Are you willing to relocate to Hyderabad?", ["Yes", "No"], "Yes"),
     # Per-skill duration comes from the IT-skills table, never from the total.
     ("How many years of experience do you have in Playwright?", [], "1.25"),
@@ -50,7 +50,7 @@ ANSWERED = [
 ]
 
 REFUSED = [
-    # Overstating a 1.25-year skill as 6.25 years is the worst thing this
+    # Overstating a 1.25-year skill as the 2-year total is the worst thing this
     # module could do, so an unknown skill must never borrow the total.
     "How many years of experience do you have in Kubernetes?",
     # In the skills list, but with no duration recorded - still a refusal.
@@ -84,12 +84,12 @@ def test_refuses_what_it_cannot_know():
 
 def test_option_mapping_never_guesses_wildly():
     notice = ["Immediate", "15 Days", "1 Month", "2 Months", "3 Months"]
-    assert answers.choose_option("2", notice) == "2 Months"
+    assert answers.choose_option("1", notice) == "1 Month"
     assert answers.choose_option("Immediate", ["Immediate", "30 Days"]) == "Immediate"
     assert answers.choose_option("Yes", ["Yes", "No"]) == "Yes"
     # No close option: refuse rather than snap to the nearest chip.
     assert answers.choose_option("2", ["6 Months", "12 Months"]) is None
-    assert answers.choose_option("Pune", ["Chennai", "Kolkata"]) is None
+    assert answers.choose_option("Gurugram", ["Chennai", "Kolkata"]) is None
 
 
 def test_banded_options_pick_the_tightest_containing_band():
@@ -100,9 +100,9 @@ def test_banded_options_pick_the_tightest_containing_band():
     assert answers.choose_option("6.25", bands) == "6-7 years"
     assert answers.choose_option("12", bands) == ">9 years"
     assert answers.choose_option("0", bands) == "No experience"
-    # Bands must not swallow a mismatched unit: 2 months is not 2 years.
+    # Bands must not swallow a mismatched unit: 1 month is not 1 year.
     notice = ["Immediate", "15 days or less", "1 month", "2 months", "3 months"]
-    assert answers.choose_option("2", notice) == "2 months"
+    assert answers.choose_option("1", notice) == "1 month"
 
 
 def test_your_own_rules_win():
@@ -219,10 +219,30 @@ def test_the_traps_still_win_over_the_catch_all():
     facts = answers.build_facts(PROFILE, dict(CONFIG, answer_rules=_shipped_rules()))
     for question in (
         "Are you willing to take a pay cut for this role?",
-        "Can you join immediately?",
+        "Is there any gap in your education?",
     ):
         answer, why = answers.resolve(question, ["Yes", "No"], facts)
         assert answer == "No", (question, answer, why)
+
+
+def test_serving_notice_and_joining_immediately_but_notice_period_stays_one_month():
+    """Serving notice and able to join now - yet asked for the notice period
+    itself, the answer is still the profile's 1 month."""
+    facts = answers.build_facts(PROFILE, dict(CONFIG, answer_rules=_shipped_rules()))
+    for question in (
+        "Can you join immediately?",
+        "Are you an immediate joiner?",
+        "Are you currently serving notice period?",
+        "Are you serving your notice period?",
+        "Currently serving notice period?",
+    ):
+        answer, why = answers.resolve(question, ["Yes", "No"], facts)
+        assert answer == "Yes", (question, answer, why)
+    assert answers.resolve("What is your notice period?", [], facts)[0] == "1 month"
+    assert answers.resolve("Notice period (in days)", [], facts)[0] == "30"
+    assert answers.resolve("When are you available to join?", [], facts)[0] == "1 month"
+    # Asks for a date, not a yes/no - never answered "Yes".
+    assert answers.resolve("If serving notice period, mention your last working day", [], facts)[0] != "Yes"
 
 
 if __name__ == "__main__":
@@ -255,7 +275,7 @@ def _with_fake_ai(monkeypatch, reply):
 
 def test_facts_sheet_lists_facts_only():
     sheet = answers.facts_sheet(FACTS)
-    assert "notice_period_months: 2" in sheet
+    assert "notice_period_months: 1" in sheet
     assert "skill_years.playwright: 1.25" in sheet
     assert "_rules" not in sheet and "_bank" not in sheet
 
@@ -268,18 +288,18 @@ def test_without_model_fallthrough_is_unchanged(monkeypatch):
 
 
 def test_model_answer_is_used_when_grounded(monkeypatch):
-    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.95, "basis": "notice_period_months: 2"})
-    answer, why = answers.resolve("When could you start with us?", ["Immediately", "2 Months", "6 Months"], FACTS)
-    assert answer == "2 Months" and why.startswith("local-ai:")
+    _with_fake_ai(monkeypatch, {"answer": "1 Month", "confidence": 0.95, "basis": "notice_period_months: 1"})
+    answer, why = answers.resolve("When could you start with us?", ["Immediately", "1 Month", "6 Months"], FACTS)
+    assert answer == "1 Month" and why.startswith("local-ai:")
 
 
 def test_model_answer_rejected_when_unsure_or_ungrounded(monkeypatch):
-    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.4, "basis": "notice_period_months: 2"})
-    assert answers.resolve("When could you start?", ["2 Months"], FACTS)[0] is None
-    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.95, "basis": "it seems reasonable"})
-    assert answers.resolve("When could you start?", ["2 Months"], FACTS)[0] is None
+    _with_fake_ai(monkeypatch, {"answer": "1 Month", "confidence": 0.4, "basis": "notice_period_months: 1"})
+    assert answers.resolve("When could you start?", ["1 Month"], FACTS)[0] is None
+    _with_fake_ai(monkeypatch, {"answer": "1 Month", "confidence": 0.95, "basis": "it seems reasonable"})
+    assert answers.resolve("When could you start?", ["1 Month"], FACTS)[0] is None
     _with_fake_ai(monkeypatch, {"answer": "UNKNOWN", "confidence": 0.99, "basis": "notice_period_months"})
-    assert answers.resolve("When could you start?", ["2 Months"], FACTS)[0] is None
+    assert answers.resolve("When could you start?", ["1 Month"], FACTS)[0] is None
 
 
 def test_model_may_not_invent_numbers(monkeypatch):
@@ -288,20 +308,20 @@ def test_model_may_not_invent_numbers(monkeypatch):
 
 
 def test_model_answer_must_map_to_an_option(monkeypatch):
-    _with_fake_ai(monkeypatch, {"answer": "Pune", "confidence": 0.99, "basis": "current_location: Pune"})
+    _with_fake_ai(monkeypatch, {"answer": "Gurugram", "confidence": 0.99, "basis": "current_location: Gurugram"})
     assert answers.resolve("Which office do you prefer?", ["Mumbai", "Delhi"], FACTS)[0] is None
-    answer, _ = answers.resolve("Which office do you prefer?", ["Mumbai", "Pune"], FACTS)
-    assert answer == "Pune"
+    answer, _ = answers.resolve("Which office do you prefer?", ["Mumbai", "Gurugram"], FACTS)
+    assert answer == "Gurugram"
 
 
 def test_model_can_be_switched_off_in_config(monkeypatch):
-    _with_fake_ai(monkeypatch, {"answer": "2 Months", "confidence": 0.99, "basis": "notice_period_months: 2"})
+    _with_fake_ai(monkeypatch, {"answer": "1 Month", "confidence": 0.99, "basis": "notice_period_months: 1"})
     facts = answers.build_facts(PROFILE, dict(CONFIG, local_ai_answers=False))
-    assert answers.resolve("When could you start?", ["2 Months"], facts) == (None, "no rule matches this question")
+    assert answers.resolve("When could you start?", ["1 Month"], facts) == (None, "no rule matches this question")
 
 
 def test_rules_and_refusals_still_win_over_the_model(monkeypatch):
-    _with_fake_ai(monkeypatch, {"answer": "6.25", "confidence": 0.99, "basis": "total_experience_years: 6.25"})
+    _with_fake_ai(monkeypatch, {"answer": "2", "confidence": 0.99, "basis": "total_experience_years: 2"})
     # An unknown skill's years are an explicit refusal, never handed to the model.
     answer, why = answers.resolve("How many years of experience do you have in Kubernetes?", [], FACTS)
     assert answer is None and "local-ai" not in why
@@ -333,8 +353,8 @@ def test_place_names_are_split_and_cleaned():
 
 
 def test_availability_to_join_is_the_notice_period_in_words():
-    assert answers.resolve("When are you available to join?", [], FACTS)[0] == "2 months"
-    assert answers.resolve("Notice period (in days)", [], FACTS)[0] == "60"
+    assert answers.resolve("When are you available to join?", [], FACTS)[0] == "1 month"
+    assert answers.resolve("Notice period (in days)", [], FACTS)[0] == "30"
 
 
 def test_yes_leads_an_option_sentence():
@@ -365,3 +385,57 @@ def test_written_answers_need_the_model_and_stay_off_money_and_identity(monkeypa
     monkeypatch.setattr(localai, "write_answer", lambda q, ctx, ex, max_words=120:
                         {"answer": "I cut latency by 73 percent for our payments service.", "confidence": 0.9})
     assert answers.resolve("Describe a challenge you solved", [], FACTS)[0] is None
+
+
+# ------------------------------------------------ salary units, relocation, visa, work permit
+
+def _facts(**answers_extra):
+    return answers.build_facts(PROFILE, dict(CONFIG, answers=dict(CONFIG["answers"], current_inhand_monthly="68000", **answers_extra)))
+
+
+def test_salary_is_given_in_the_unit_asked():
+    facts = _facts()
+    assert answers.resolve("Current CTC ( in-hand per month )", [], facts)[0] == "68000"
+    assert answers.resolve("What is your current in-hand salary?", [], facts)[0] == "68000"
+    assert answers.resolve("What is your Current Annual Salary?", [], facts)[0] == "900000"
+    assert answers.resolve("Current CTC in INR", [], facts)[0] == "900000"
+    assert answers.resolve("What is your current CTC in lakhs?", [], facts)[0] == "9"
+    assert answers.resolve("Current annual CTC (LPA)", [], facts)[0] == "9"
+    # without a stated monthly figure the yearly CTC is never passed off as monthly
+    answer, why = answers.resolve("Current CTC ( in-hand per month )", [], FACTS)
+    assert answer is None and "current_inhand_monthly" in why
+
+
+def test_notice_in_days_with_options_is_days():
+    answer, _ = answers.resolve("Notice period (in days)", ["0", "15", "30", "60", "90"], FACTS)
+    assert answers.choose_option(answer, ["0", "15", "30", "60", "90"]) == "30"
+
+
+def test_relocation_is_always_yes():
+    for question in ("Are you willing to relocate to Berlin?", "Would you relocate for this role?",
+                     "Are you open to relocation?"):
+        assert answers.resolve(question, ["Yes", "No"], FACTS)[0] == "Yes", question
+    # money for relocating is a different question
+    assert answers.resolve("Do you need relocation assistance?", ["Yes", "No"], FACTS)[0] != "Yes"
+
+
+def test_visa_sponsorship_and_work_permit_follow_the_job_location():
+    india = {"location": "Bengaluru, Karnataka, India", "description": ""}
+    abroad = {"location": "Berlin, Germany", "description": "Great team."}
+    sponsored = {"location": "Amsterdam, Netherlands", "description": "We offer visa sponsorship and relocation."}
+    sponsor_q = "Will you now or in the future require visa sponsorship?"
+    permit_q = "Do you have a valid work permit for this country?"
+    yn = ["Yes", "No"]
+    assert answers.resolve(sponsor_q, yn, FACTS, job=india)[0] == "No"
+    assert answers.resolve(sponsor_q, yn, FACTS, job=abroad)[0] == "No"
+    assert answers.resolve(sponsor_q, yn, FACTS, job=sponsored)[0] == "Yes"
+    assert answers.resolve("Visa sponsorship", [], FACTS, job=abroad)[0] == "Not required"
+    assert answers.resolve(permit_q, yn, FACTS, job=india)[0] == "Yes"
+    assert answers.resolve(permit_q, yn, FACTS, job=abroad)[0] == "No"
+    assert answers.resolve(permit_q, yn, FACTS, job=sponsored)[0] == "No"
+    assert answers.resolve("Are you legally authorized to work in the Netherlands without sponsorship?",
+                           yn, FACTS, job=sponsored)[0] == "No"
+    # Naukri / LinkedIn pass the location on the facts instead
+    assert answers.resolve(permit_q, yn, dict(FACTS, _job_location="Pune"))[0] == "Yes"
+    # nowhere to tell where the job is: a permit question waits for you
+    assert answers.resolve(permit_q, yn, FACTS, job={"location": "Remote"})[0] is None

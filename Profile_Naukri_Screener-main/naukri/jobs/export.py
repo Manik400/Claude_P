@@ -27,7 +27,7 @@ from datetime import date
 from pathlib import Path
 from urllib.parse import quote_plus
 
-from . import score as score_mod
+from . import linkedin_daily, score as score_mod
 from .ledger import Ledger
 from .page import age_days as label_age_days, linkedin_posted, load_seen
 
@@ -457,6 +457,9 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
     summarize_top(kept, config)
 
     cards = []
+    if include_linkedin and not linkedin_daily.take("search"):
+        log.info("LinkedIn search skipped: %s", linkedin_daily.label("search"))
+        include_linkedin = False
     if include_linkedin:
         try:
             cards = gather_linkedin(config, locations, top=top, headless=headless,

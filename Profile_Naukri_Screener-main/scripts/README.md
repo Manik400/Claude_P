@@ -33,7 +33,7 @@ mistake stops before a browser opens rather than halfway through a dialog.
 | `fix_worksample.py` | `work_sample` | Fixes a Work Sample's URL and fills its description |
 | `repair_skills.py` | `key_skills` | Keeps an allowlist, **deletes everything else**, adds targets in order |
 | `career_profile.py` | `career_profile` | Sets the role you want to be found for, and expected salary |
-| `set_total_experience.py` | — argv | `python scripts/set_total_experience.py "6 Years" "3 Months"` |
+| `set_total_experience.py` | — argv | `python scripts/set_total_experience.py "1 Year" "11 Months"` |
 | `trim_personal.py` | — | Clears doorstep-level address fields from Personal details |
 | `apply_summary.py` | — reads `changes.yaml` | Applies the profile summary alone, verifying the dialog first |
 | `schedule_jobs_agent.ps1` | — | Registers the scan runs in Windows Task Scheduler |
@@ -69,5 +69,5 @@ hardcoded, and it asserted on the author's old numbers — it could not run for
 anyone else. `set_total_experience.py` does the same job properly:
 
 ```bash
-python scripts/set_total_experience.py "6 Years" "3 Months"
+python scripts/set_total_experience.py "1 Year" "11 Months"
 ```

@@ -194,6 +194,11 @@ def main() -> int:
 
     _setup_logging(args.verbose)
 
+    # Scheduled runs keep the disk tidy: reports older than 30 days are deleted.
+    if args.jobs_export or args.jobs or args.interview_prep:
+        from naukri import retention
+        retention.prune()
+
     try:
         if args.roles:
             active = roles_mod.active_name()

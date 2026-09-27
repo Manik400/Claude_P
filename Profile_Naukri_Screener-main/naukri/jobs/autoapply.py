@@ -41,7 +41,7 @@ from pathlib import Path
 
 from . import answers as answers_mod
 from . import career_apply as career_mod
-from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, linkedin_limit, questions
+from . import applications, applier, config as config_mod, linkedin as linkedin_mod, linkedin_apply, linkedin_daily, linkedin_limit, platform_switch, questions
 from .ledger import Ledger
 from .model import Job
 
@@ -58,7 +58,7 @@ LINKEDIN_PAUSE = (50.0, 110.0)
 # took five hours and outlived its scheduled task.
 SHORT_PAUSE = (6.0, 14.0)
 NOTHING_SENT = {"offsite", "no-button", "already", "would-apply", "limit-reached", "limit-cooldown",
-                "login-required", "captcha", "no-form", "career-error", "career-incomplete"}
+                "login-required", "captcha", "no-form", "career-error", "career-incomplete", "platform-off"}
 # A run stops starting new applications after this many minutes
 # (APPLY_MAX_MINUTES overrides; 0 = no limit) so it always ends before the
 # scheduler's time limit and never leaves a browser running behind it.
@@ -172,7 +172,7 @@ def _record(ledger: Ledger, job, status: str, note: str, board: str, capture: di
     """Map an apply outcome onto the ledger, saving any blocking question."""
     if status == "applied":
         ledger.record(job, "applied", note)
-    elif status in ("would-apply", "limit-reached", "limit-cooldown"):
+    elif status in ("would-apply", "limit-reached", "limit-cooldown", "platform-off"):
         return              # nothing happened to this job; it stays as it was
     elif status == "already" and ledger.status(job.job_id) == "unconfirmed":
         # Our own earlier click, confirmed on the revisit. Counts as ours, and
@@ -226,8 +226,11 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     site", LinkedIn's plain Apply) and `web_jobs` ({url, title, company,
     score, job_id?} from other boards) go to career_apply: skipped when the
     site wants a login or shows a CAPTCHA, otherwise filled and submitted.
-    `career_apply: false` in jobs.yaml turns that off; at most `per_run`
-    (else `career_max_per_run`, 5) company-site submissions per run.
+    `career_apply: false` in jobs.yaml turns that off. Limits are per platform:
+    `per_run` and the daily caps hold Naukri and LinkedIn each on their own,
+    and company sites have no limit unless jobs.yaml sets career_max_per_run /
+    career_max_per_day. A board whose cap is spent still has its company-site
+    postings applied to.
     """
     from playwright.sync_api import sync_playwright
 
@@ -247,6 +250,14 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     summary = {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "questions_saved": 0,
                "retried": 0, "pending_questions": 0, "per_run": per_run, "backlog": 0}
 
+    # Platform auto-apply (Naukri's own apply, LinkedIn Easy Apply, Instahyre,
+    # Hirist, ...) is off unless switched on (platform_switch.py): only company
+    # career pages are applied to then.
+    platform_on = platform_switch.enabled(config)
+    if not platform_on:
+        log.info("Platform auto-apply is off: applying on company career pages only")
+    summary["platform_apply"] = platform_on
+
     # ---------------------------------------------------------- company sites
     career_on = bool(config.get("career_apply", True))
     who = career_mod.applicant(profile, config) if career_on else {}
@@ -257,11 +268,17 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     career_today = sum(1 for e in ledger.entries.values()
                        if e.get("status") == "applied" and str(e.get("note", "")).startswith(career_mod.TRIED)
                        and str(e.get("at", "")).startswith(date.today().isoformat()))
-    career_left = [min(per_run if per_run is not None else int(config.get("career_max_per_run") or 5),
-                       max(0, int(config.get("career_max_per_day") or 25) - career_today))]
-    if career_on and career_left[0] <= 0:
-        log.info("Company sites: today's cap of %s submissions is reached",
-                 config.get("career_max_per_day") or 25)
+    # Limits are per platform. `per_run` / the daily caps belong to Naukri and LinkedIn;
+    # company career sites have none unless jobs.yaml sets career_max_per_run /
+    # career_max_per_day - every one this run has time for is applied to.
+    career_left = [None]                     # None = no limit
+    if config.get("career_max_per_run"):
+        career_left[0] = int(config["career_max_per_run"])
+    if config.get("career_max_per_day"):
+        left_today = max(0, int(config["career_max_per_day"]) - career_today)
+        career_left[0] = left_today if career_left[0] is None else min(career_left[0], left_today)
+    if career_on and career_left[0] is not None and career_left[0] <= 0:
+        log.info("Company sites: today's cap of %s submissions is reached", config.get("career_max_per_day"))
     # `simplify: true` in jobs.yaml: every browser below is the one with
     # Simplify Copilot loaded, and each company form gets its autofill before
     # fill_form answers the rest (see simplify.py).
@@ -275,7 +292,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     prefill = simplify.autofill if use_simplify else None
 
     def career_ready() -> bool:
-        return career_on and career_left[0] > 0 and not (deadline and time.monotonic() >= deadline)
+        return career_on and (career_left[0] is None or career_left[0] > 0)             and not (deadline and time.monotonic() >= deadline)
 
     def career_untried(job_id: str) -> bool:
         entry = ledger.entries.get(job_id) or {}
@@ -291,9 +308,11 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         capture: dict = {}
         status, note = career_mod.apply_from_page(
             page, {"title": job.title, "company": job.company, "url": job.url,
+                   "location": getattr(job, "location", "") or ("India" if board == "naukri" else ""),
                    "description": getattr(job, "description", "") or ""}, who, facts,
-            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn)
-        if status == "submitted":
+            dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn,
+            platforms=platform_on)
+        if status == "submitted" and career_left[0] is not None:
             career_left[0] -= 1
         if status == "career-incomplete" and not dry_run:
             # the form's unanswerable questions wait for you like any screening question;
@@ -322,6 +341,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     # Waiting questions the facts now settle (no model: fast, and only what is on record),
     # then the answers you gave since the last run, and the jobs they unblock.
     no_model = dict(facts, _local_ai=False)
+    questions.reask_stale()          # saved answers over 3 months old go back on your list
     questions.self_answer(lambda q, o: answers_mod.resolve(q, o, no_model))
     absorbed, retry = questions.absorb()
     retry_naukri = [Job(job_id=j["job_id"], title=j.get("title") or "", company=j.get("company") or "",
@@ -348,6 +368,8 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
     budget = max(0, int(config.get("max_auto_applies") or 0) - _applied_today(ledger, "naukri"))
     if per_run is not None:
         budget = min(budget, max(0, int(per_run)))
+    if not platform_on:
+        budget = 0                  # Naukri's own apply is a platform apply
     naukri_jobs = []
     from naukri import learning
     # Score first, weighted by the learned chance this job's apply route works
@@ -365,12 +387,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             naukri_jobs.append(job)
 
     counts = summary["naukri"]
-    if naukri_jobs and budget <= 0:
-        log.info("Naukri: daily cap of %s already reached; %d job(s) left for tomorrow",
-                 config.get("max_auto_applies"), len(naukri_jobs))
-    if naukri_jobs and budget > 0:
-        log.info("Naukri: applying to up to %d of %d job(s)%s", budget, len(naukri_jobs),
-                 " (dry run)" if dry_run else "")
+    if naukri_jobs and budget <= 0 and platform_on:
+        log.info("Naukri: this run's / today's cap (%s a day) is spent - only its company-site postings are applied to",
+                 config.get("max_auto_applies"))
+    if naukri_jobs and (budget > 0 or career_ready()):
+        log.info("Naukri: applying to up to %d of %d job(s), company-site postings without a limit%s",
+                 budget, len(naukri_jobs), " (dry run)" if dry_run else "")
         with sync_playwright() as p:
             if use_simplify:
                 browser, _ctx, page = simplify.open_naukri(p, headless=headless)
@@ -378,8 +400,17 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                 browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
             try:
                 for n, job in enumerate(naukri_jobs):
-                    if budget <= 0 or _out_of_time(deadline, "Naukri", len(naukri_jobs) - n):
+                    if _out_of_time(deadline, "Naukri", len(naukri_jobs) - n):
                         break
+                    company_site = getattr(job, "company_apply", False) or career_untried(job.job_id)
+                    if budget <= 0 and not company_site:
+                        if not platform_on:
+                            outcomes[f"naukri:{job.job_id}"] = {"status": "platform-off",
+                                                                "note": platform_switch.OFF_NOTE}
+                            counts["platform-off"] = counts.get("platform-off", 0) + 1
+                        if not career_ready():
+                            break
+                        continue            # Naukri's own cap is spent; company-site jobs still go
                     if career_untried(job.job_id) and not career_ready():
                         continue            # already settled as offsite; nothing new to do this run
                     capture: dict = {}
@@ -429,6 +460,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         li_cards = []
         seen_ids = set()
         for card in list(cards) + retry_cards:
+            if not platform_on and card.get("easy_apply"):
+                # Easy Apply is LinkedIn's own apply: left for when the switch is on
+                job = _card_job(card)
+                outcomes[job.job_id] = {"status": "platform-off", "note": platform_switch.OFF_NOTE}
+                counts["platform-off"] = counts.get("platform-off", 0) + 1
+                continue
             # Plain-Apply postings are worth opening too when the career
             # applier is on: apply_to() reports them "offsite" and try_career
             # follows the button to the company's form.
@@ -448,7 +485,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         # said its limit is reached (linkedin_limit.py, 24 h). The postings
         # are still opened when the career applier can use them: a plain
         # Apply leads to the company's site, which no limit touches.
-        paused = [linkedin_limit.active()]
+        paused = [linkedin_limit.active() or not platform_on]
         if li_cards and li_budget <= 0:
             log.info("LinkedIn: daily cap of %s already reached; %d job(s) left for tomorrow",
                      config.get("linkedin_max_applies_per_day"), len(li_cards))
@@ -458,6 +495,15 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                      linkedin_limit.label())
         if li_cards and paused[0] and not career_ready():
             li_cards = []           # nothing this run could do with them
+        # Scheduled runs open LinkedIn for applying once a day (linkedin_daily.py);
+        # the postings stay in line for tomorrow's turn.
+        if li_cards and not linkedin_daily.take("apply"):
+            note = linkedin_daily.label("apply")
+            log.info("LinkedIn applies skipped: %s - %d job(s) left for tomorrow", note, len(li_cards))
+            for _card, job in li_cards:
+                outcomes[job.job_id] = {"status": "limit-cooldown", "note": note}
+            counts["skipped-once-a-day"] = len(li_cards)
+            li_cards = []
         if li_cards:
             log.info("LinkedIn: %s up to %d of %d job(s)%s",
                      "company-site applies from" if paused[0] else "Easy Apply to",
@@ -471,8 +517,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                         browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
                     try:
                         for n, (card, job) in enumerate(li_cards):
-                            if (li_budget <= 0 and not paused[0]) or _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
+                            if _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
                                 break
+                            if li_budget <= 0 and not paused[0]:
+                                paused[0] = True
+                                log.info("LinkedIn: this run's Easy Apply cap is spent - plain-Apply postings "
+                                         "still go to the company site")
                             if paused[0] and not career_ready():
                                 break
                             if career_untried(job.job_id) and not career_ready():
@@ -481,6 +531,8 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                             status, note = linkedin_apply.apply_to(
                                 page, card, facts, dry_run=dry_run, phone=phone, capture=capture,
                                 easy_apply_paused=paused[0])
+                            if status == "limit-cooldown" and not platform_on:
+                                status, note = "platform-off", platform_switch.OFF_NOTE
                             if status == "limit-reached":
                                 end = linkedin_limit.hit()
                                 paused[0] = True
@@ -495,7 +547,7 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
                                 _record(ledger, job, status, note, "linkedin", capture)
                             if status == "questionnaire" and capture.get("question"):
                                 summary["questions_saved"] += 1
-                            if not dry_run and status not in career_mod.STATUSES                                     and status not in ("limit-reached", "limit-cooldown"):
+                            if not dry_run and status not in career_mod.STATUSES                                     and status not in ("limit-reached", "limit-cooldown", "platform-off"):
                                 applications.record("linkedin", job, status, note, capture,
                                                     dry_run=False, per_run=per_run, project=project)
                             counts[status] = counts.get(status, 0) + 1
@@ -524,10 +576,16 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
             continue
         job = Job(job_id=job_id, title=item.get("title") or "", company=item.get("company") or "", url=url, source="web")
         job.score = item.get("score") or 0
+        if not platform_on and career_mod.platform_host(url, career_mod.APPLY_ON_BOARD):
+            # a board that applies on its own site (Instahyre, Hirist, SEEK, ...): not opened
+            outcomes[job_id] = {"status": "platform-off", "note": platform_switch.OFF_NOTE}
+            summary["career"]["platform-off"] = summary["career"].get("platform-off", 0) + 1
+            continue
         web.append(job)
     web.sort(key=lambda j: -(j.score or 0))
     if web and career_ready():
-        log.info("Company sites: up to %d submission(s) from %d posting(s)%s", career_left[0], len(web),
+        log.info("Company sites: %s from %d posting(s)%s",
+                 "no limit" if career_left[0] is None else "up to %d submission(s)" % career_left[0], len(web),
                  " (dry run)" if dry_run else "")
         with sync_playwright() as p:
             if use_simplify:
@@ -600,7 +658,7 @@ def summarise(outcomes: dict) -> str:
         career["applied"] = career.pop("submitted", 0)
         lines.append(line("Company sites", career))
     if summary.get("per_run") is not None:
-        lines.append(f"  Limit this run: {summary['per_run']} per board"
+        lines.append(f"  Limit this run: {summary['per_run']} each on Naukri and LinkedIn, none on company sites"
                      f" (backlog from earlier scans: {summary.get('backlog', 0)} listing(s))")
     if summary.get("applications_page"):
         lines.append(f"  Every attempt, with the answers given: {summary['applications_page']}")

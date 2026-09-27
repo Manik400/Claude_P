@@ -69,6 +69,13 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
   .top.min #hdr-tog svg { transform: rotate(180deg); }
   html.fs .legend { display: none; }
   html.fs .top { padding-right: 60px; }   /* room for the site's exit-full-screen button */
+  /* inside the site, on a wide screen, this header is the page heading: title sized like the
+     site's other pages, and room on the right for the site's full-screen button */
+  @media (min-width: 900px) {
+    html.embedded .top { padding-right: 64px; }
+    html.embedded .top h1 { font-size: 1.5rem; letter-spacing: -.02em; }
+    html.embedded .top.min h1 { font-size: 1.125rem; }
+  }
   html.fs .wrap { padding-top: 10px; }
   /* phones: the toggle sits at the end of the title row, the month row stays below it */
   @media (max-width: 899px) { .top > div:first-child { flex: 1; min-width: 0; } #hdr-tog { order: 1; } .monthnav { order: 2; } }
@@ -466,7 +473,6 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
           <div><div class="flabel">Show</div><div class="chips" id="f-show"></div></div>
           <div><div class="flabel">Phase</div><div class="chips" id="f-phase"></div></div>
         </div></details>
-      <div class="notice" id="notice" hidden></div>
       <div class="legend"><span><i style="background:var(--ok)"></i>Completed</span><span><i style="background:var(--warn)"></i>Partial</span>
         <span><i style="background:var(--bad)"></i>Missed</span><span><i style="background:var(--accent)"></i>Today</span>
         <span><i style="background:var(--rest)"></i>Sunday review</span><span><i style="background:var(--info)"></i>Checkpoint</span>
@@ -575,7 +581,10 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
     $("mkpis").innerHTML = '<div class="kpi"><b>' + t.pct + '%</b><span>overall · ' + t.daysDone + '/75</span></div>' +
       '<div class="kpi"><b>🔥 ' + t.streak + '</b><span>day streak</span></div>' +
       '<div class="kpi"><b>' + t.lc + '<small class="muted" style="font-weight:500">/225</small></b><span>LeetCode</span></div>';
-    $("range").textContent = nice(startISO()) + " – " + nice(dateOf(75), true);
+    // before Day 1 the countdown rides along here (no banner); Today previews Day 1
+    var toGo = diffDays(startISO(), TODAY);
+    $("range").textContent = nice(startISO()) + " – " + nice(dateOf(75), true) +
+      (toGo > 0 ? " · starts in " + toGo + (toGo === 1 ? " day" : " days") : "");
   }
 
   // ------------------------------------------------------------ calendar
@@ -622,16 +631,6 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
       h += cellHtml(c, inMonth);
     }
     $("cal").innerHTML = h;
-    // before Day 1 or after Day 75 the month is mostly blank dates - say why, and offer a way in
-    var nb = $("notice"), toGo = diffDays(startISO(), TODAY), over = diffDays(TODAY, dateOf(75));
-    if (toGo > 0) {
-      nb.innerHTML = "<span>Day 1 is <b>" + esc(nice(startISO(), true)) + "</b> · " + toGo + (toGo === 1 ? " day" : " days") +
-        " to go. The dates before it are not part of the plan.</span>" + '<button class="btn" data-day="1">Preview Day 1 ›</button>';
-      nb.hidden = false;
-    } else if (over > 0) {
-      nb.innerHTML = "<span>The plan finished on <b>" + esc(nice(dateOf(75), true)) + "</b>. Every day is still here to review.</span>";
-      nb.hidden = false;
-    } else nb.hidden = true;
   }
   function monthOf(isoStr) { return isoStr.slice(0, 7) + "-01"; }
   function shiftMonth(n) { var d = parse(UI.month); d.setUTCMonth(d.getUTCMonth() + n); UI.month = iso(d); renderCal(); }
@@ -880,7 +879,17 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
     switch (t.id) {
       case "m-prev": shiftMonth(-1); break;
       case "m-next": shiftMonth(1); break;
-      case "m-today": UI.month = monthOf(TODAY); UI.view = "cal"; renderAll(); break;
+      case "m-today": {
+        // before the plan starts Today previews Day 1; after it ends, Day 75
+        var tdd = dayAt(TODAY), pre = TODAY < startISO();
+        UI.view = "cal";
+        if (tdd) { UI.month = monthOf(TODAY); openDay(tdd.day); }
+        else {
+          UI.month = monthOf(pre ? startISO() : dateOf(75)); openDay(pre ? 1 : 75);
+          toast(pre ? "Previewing Day 1 - it starts " + nice(startISO(), true) : "The plan ended " + nice(dateOf(75), true) + " - showing Day 75");
+        }
+        break;
+      }
       case "d-prev": openDay(n - 1, -1); break;
       case "d-next": openDay(n + 1, 1); break;
       case "d-close": UI.sel = null; UI.qa = null; renderAll(); break;
@@ -1029,6 +1038,14 @@ if(localStorage.getItem('jh:ui')==='v2'){document.documentElement.setAttribute('
   });
 
   // ------------------------------------------------------------ boot
+  // Inside the Job Hunt site this header is the page's heading row: the site hides its own
+  // "Plan" title bar on this tab, so the month bar sits at the very top.
+  try {
+    if (window.parent !== window && window.parent.document.getElementById("plan-frame")) {
+      document.documentElement.classList.add("embedded");
+      document.querySelector(".top h1").textContent = "Plan";
+    }
+  } catch (e) { /* opened on its own */ }
   fetch("plan.json", { cache: "no-cache" }).then(function (r) { return r.json(); }).then(function (plan) {
     PLAN = plan;
     UI.month = monthOf(TODAY < startISO() ? startISO() : TODAY > dateOf(75) ? dateOf(75) : TODAY);

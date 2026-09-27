@@ -10,6 +10,7 @@ published (same path + modification time) are skipped, so this is safe to run af
 every scan or from Task Scheduler.
 """
 import argparse
+import datetime as dt
 import glob
 import json
 import os
@@ -21,6 +22,8 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
 NAUKRI = os.path.join(ROOT, "Profile_Naukri_Screener-main")
 PY = [sys.executable]
+# Reports older than this are deleted on the PC and on the phone (publish.py, retention).
+RETENTION_DAYS = 30
 
 
 def config_dir():
@@ -184,6 +187,37 @@ def page_title(path):
     return "interview", "Interview prep %s" % (name[len("interview-prep-"):-len(".html")])
 
 
+def _day(path):
+    m = re.search(r"(\d{4}-\d{2}-\d{2})", os.path.basename(path))
+    return m.group(1) if m else ""
+
+
+def recent_days(paths, days=RETENTION_DAYS):
+    """Pages from the last `days` days - older ones are deleted everywhere anyway."""
+    cutoff = (dt.date.today() - dt.timedelta(days=days)).isoformat()
+    return [p for p in paths if _day(p) >= cutoff]
+
+
+def linked_openings(paths, newest_n=3):
+    """The openings pages the newest page links to: every run of the newest day (its
+    r1 r2 ... chips) and the last run of each earlier day (its date chips). Publishing
+    only the newest few left most of those chips pointing at nothing on the phone."""
+    paths = recent_days(paths)
+    if not paths:
+        return []
+    by_day = {}
+    for p in paths:                                  # sorted oldest first, so the last one wins
+        by_day.setdefault(_day(p), []).append(p)
+    newest = max(by_day)
+    keep = list(by_day[newest]) + [runs[-1] for d, runs in by_day.items() if d != newest]
+    keep += paths[-newest_n:]
+    seen, out = set(), []
+    for p in paths:                                  # publish in time order
+        if p in keep and p not in seen:
+            seen.add(p); out.append(p)
+    return out
+
+
 def cmd_naukri(a):
     cfg = load_config()
     pages = pages_dir(cfg)
@@ -201,7 +235,7 @@ def cmd_naukri(a):
     # The daily accuracy / self-learning page (naukri/learning.py), one copy.
     accuracy = os.path.join(NAUKRI, "data", "metrics", "accuracy.html")
     extra = [p for p in (applications, accuracy) if os.path.exists(p)]
-    for path in openings[-a.max:] + preps[-a.max:] + extra:
+    for path in linked_openings(openings, a.max) + recent_days(preps) + extra:
         key = _stamp(path)
         kind, title = page_title(path)
         if key in done and (kind, title) in live and not a.force:

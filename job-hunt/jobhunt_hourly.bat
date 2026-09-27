@@ -2,9 +2,10 @@
 rem One round of the job hunt, then the next round is set for -Gap minutes
 rem (default 30) after THIS round finished.
 rem
-rem     1. worldwide search like last time -> LinkedIn Easy Apply + company sites
-rem     2. Naukri scan (Naukri + LinkedIn India, last 24 h, new only) -> Naukri
-rem        apply, LinkedIn Easy Apply + company sites
+rem     worldwide search like last time -> LinkedIn Easy Apply + company sites
+rem
+rem The Naukri scan is NOT part of a round: the day's three Naukri scans run
+rem once a day from the NaukriJobAgent-Scan3 task (scripts\scan3.py).
 rem
 rem Company sites: skipped when they want a login or show a CAPTCHA, otherwise
 rem filled and submitted (..\Profile_Naukri_Screener-main\naukri\jobs\career_apply.py).
@@ -16,10 +17,6 @@ cd /d "%~dp0"
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1 -Rearm -Backstop
 call jobhunt_apply.bat %*
 set "RC=%ERRORLEVEL%"
-echo.
-echo ----- Naukri scan + apply -----
-call ..\Profile_Naukri_Screener-main\jobs_scan.bat
-if errorlevel 1 set "RC=1"
 cd /d "%~dp0"
 powershell -NoProfile -ExecutionPolicy Bypass -File scripts\schedule_jobhunt.ps1 -Rearm
 exit /b %RC%

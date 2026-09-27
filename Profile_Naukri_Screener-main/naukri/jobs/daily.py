@@ -21,7 +21,7 @@ import time
 from datetime import date
 from pathlib import Path
 
-from . import answers, applier, config as config_mod, score as score_mod, search
+from . import answers, applier, config as config_mod, platform_switch, score as score_mod, search
 from .ledger import Ledger
 
 log = logging.getLogger("naukri.jobs.daily")
@@ -41,6 +41,10 @@ def run(headless: bool = False, dry_run: bool = True, config_overrides: dict | N
     config = config_mod.load(profile=profile)
     if config_overrides:
         config.update(config_overrides)
+    # Naukri's own apply is a platform apply: off unless switched on (platform_switch.py).
+    platform_on = platform_switch.enabled(config)
+    if not platform_on:
+        log.info("Platform auto-apply is off: matches are listed, nothing is applied to")
 
     log.info(
         "Profile: %s, %s, %s years",
@@ -130,6 +134,9 @@ def run(headless: bool = False, dry_run: bool = True, config_overrides: dict | N
                     continue
                 if budget <= 0:
                     queue.append(_queue_entry(job, "daily apply cap reached"))
+                    continue
+                if not platform_on:
+                    queue.append(_queue_entry(job, platform_switch.OFF_NOTE))
                     continue
 
                 attempts += 1

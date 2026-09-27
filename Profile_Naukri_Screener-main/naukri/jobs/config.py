@@ -71,8 +71,14 @@ DEFAULTS = {
     # Copilot browser (naukri/jobs/simplify.py). These used to be missing
     # here, so jobs.yaml's career_* and applicant: were dropped as "unknown".
     "career_apply": True,
-    "career_max_per_run": 5,
-    "career_max_per_day": 25,
+    # Auto-apply on the job platforms themselves (Naukri, LinkedIn Easy Apply,
+    # Instahyre, Hirist, ...). Off: only company career pages are applied to.
+    # The dashboard / phone switch (platform_switch.py) wins over this.
+    "platform_apply": False,
+    # None = no limit: company career sites are applied to as many as a run has time
+    # for. Naukri and LinkedIn keep their own per-platform caps.
+    "career_max_per_run": None,
+    "career_max_per_day": None,
     "applicant": {},
     "simplify": False,
     # The local model (naukri/localai.py) may answer screening questions no

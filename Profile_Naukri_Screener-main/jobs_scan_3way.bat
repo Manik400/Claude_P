@@ -1,5 +1,7 @@
 @echo off
-rem Three scans in a row, then publish all three pages to the phone site:
+rem The day's three scans, then publish the pages to the phone site. Each runs
+rem ONCE a day, between 10:00 and 23:00 - a run that finds them done exits
+rem (scripts\scan3.py). "jobs_scan_3way.bat --force" runs all three now.
 rem
 rem     1. Last 24h   --posted-days 1 --new-only   postings from the last day
 rem                                                 not listed on an earlier day
@@ -14,9 +16,8 @@ rem
 rem They run one after another, never at the same time: every run drives the
 rem same saved browser profile, and two at once crash each other. The work
 rem is done by scripts\scan3.py, which also holds a lock against overlap.
-rem jobs_catchup.bat runs only the scans the current slot is missing.
 rem
-rem Scheduled at 10:00 and 16:00 by:
+rem Checked every 30 min 10:00-23:00 and on wake/logon/unlock/reconnect by:
 rem     powershell -ExecutionPolicy Bypass -File scripts\schedule_jobs_agent.ps1 -Mode scan3
 cd /d "%~dp0"
 

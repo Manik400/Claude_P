@@ -278,20 +278,20 @@ __KIT_HEAD__
   </div>
 
   <div class="bar">
-    <details class="fgrp" data-acc="apps.status" open><summary>Status</summary><span class="fbody">
+    <span class="fgrp" data-grp="apps.status"><span class="flabel">Status</span><span class="fbody">
       <button class="chip" data-status="all" aria-pressed="true">All</button>
       <button class="chip" data-status="applied" aria-pressed="false">Applied</button>
       <button class="chip" data-status="questionnaire" aria-pressed="false">Needs your answer</button>
       <button class="chip" data-status="other" aria-pressed="false">Other outcomes</button>
-    </span></details>
-    <details class="fgrp" data-acc="apps.board" open><summary>Board</summary><span class="fbody">
+    </span></span>
+    <span class="fgrp" data-grp="apps.board"><span class="flabel">Board</span><span class="fbody">
       <button class="chip" data-board="all" aria-pressed="true">Both boards</button>
       <button class="chip" data-board="naukri" aria-pressed="false">Naukri</button>
       <button class="chip" data-board="linkedin" aria-pressed="false">LinkedIn</button>
-    </span></details>
-    <details class="fgrp" data-acc="apps.search" open><summary>Search</summary><span class="fbody">
+    </span></span>
+    <span class="fgrp" data-grp="apps.search"><span class="flabel">Search</span><span class="fbody">
       <input class="search" id="q" type="search" placeholder="Filter by title, company or question" aria-label="Filter">
-    </span></details>
+    </span></span>
   </div>
 
   <div id="list"></div>

@@ -39,7 +39,8 @@ import re
 # to your current pay.
 RULES: list[tuple[str, str, str]] = [
     ("expected_ctc", r"expect\w*\s+(ctc|salary|compensation|package)", "expected_ctc_lpa"),
-    ("current_ctc", r"(current|present)\s+(ctc|salary|compensation|package)|current\s+fixed", "current_ctc_lpa"),
+    ("current_ctc", r"(current|present)\s+(in.?hand\s+|annual\s+|monthly\s+)?(ctc|salary|compensation|package)|"
+                    r"current\s+fixed|in.?hand\s+(salary|ctc|pay)", "current_ctc_lpa"),
     ("notice_period", r"notice\s*period|when\s+can\s+you\s+join|how\s+soon.*join|availab\w*\s+to\s+join|"
                       r"earliest\s+(joining|start)\s+date", "notice_period_months"),
     ("total_experience", r"total\s+(work\s+)?experience|years\s+of\s+experience(?!\s+in)|overall\s+experience", "total_experience_years"),
@@ -109,6 +110,12 @@ def _parse_lpa(text: str | None) -> float | None:
         return None
     # Anything above 1000 is rupees, not lakhs.
     return round(value / 100000, 2) if value > 1000 else value
+
+
+def _rupees(text) -> int | None:
+    """'68000' or '₹ 68,000 INR' -> 68000."""
+    digits = re.sub(r"[^\d]", "", str(text or ""))
+    return int(digits) if digits else None
 
 
 def _parse_months(text: str | None) -> int | None:
@@ -206,6 +213,9 @@ def build_facts(profile: dict, config: dict) -> dict:
         "skills": [s.lower() for s in (config.get("profile_skills") or [])],
         # Not on any profile - only ever what you stated in jobs.yaml.
         "expected_ctc_lpa": _parse_lpa(stated.get("expected_ctc")) if stated.get("expected_ctc") else None,
+        # What reaches your account each month. The yearly CTC cannot be turned
+        # into this (tax, PF), so a per-month question is refused without it.
+        "current_inhand_monthly": _rupees(stated.get("current_inhand_monthly")),
         "willing_to_relocate": stated.get("willing_to_relocate"),
         "notice_buyout": stated.get("notice_buyout"),
         "nationality": stated.get("nationality"),
@@ -411,6 +421,12 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
                           "- the job is queued unanswered")
         return _format("_rule", rule["answer"]), f"your rule {rule['match']!r}"
 
+    # Relocation, visa sponsorship and work permit depend on where the job is,
+    # so they are decided here, ahead of any saved answer from another job.
+    placed = _resolve_by_location(text, options, facts, job or facts.get("_job"))
+    if placed is not None:
+        return placed
+
     # Then the answers you gave to earlier runs' questions. Exact question
     # match only - a saved answer must never be stretched to a different
     # question.
@@ -449,8 +465,13 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
             "from " + " + ".join(name for name, _k, _v in found)
     if found:
         name, key, value = found[0]
-        if key == "notice_period_months" and not options:
-            return _notice_text(text, value), f"from {name}"
+        if key == "notice_period_months":
+            if not options:
+                return _notice_text(text, value), f"from {name}"
+            if re.search(r"\bdays?\b", text):          # "Notice period (in days)" with chips: 30, not 1
+                return f"{float(value) * 30:g}", f"from {name}"
+        if key in ("current_ctc_lpa", "expected_ctc_lpa"):
+            return _salary(text, key, value, options, facts, name)
         return _format(key, value), f"from {name}"
 
     # The same question in other words ("DOB" was answered, "Date of birth" is asked).
@@ -514,6 +535,89 @@ def _notice_text(question: str, months) -> str:
     if months == 0:
         return "Immediate"
     return f"{months:g} month" + ("" if months == 1 else "s")
+
+
+MONTHLY = re.compile(r"per\s*month|monthly|/\s*month|\bp\.?\s?m\.?(?=\W|$)|in.?hand|take.?home")
+IN_RUPEES = re.compile(r"\b(inr|rupees?|rs)\b|₹|per\s*annum|annual|yearly|per\s*year|\bp\.?\s?a\.?(?=\W|$)")
+IN_LAKHS = re.compile(r"lpa|lakh|\blacs?\b")
+
+
+def _salary(question: str, key: str, lpa, options: list[str], facts: dict, name: str) -> tuple[str | None, str]:
+    """A CTC in the unit the question asks for.
+
+    Per month / in-hand -> the monthly in-hand figure you stated (never the
+    yearly CTC divided by 12); rupees per year -> 900000; otherwise lakhs -> 9.
+    """
+    if MONTHLY.search(question):
+        if key != "current_ctc_lpa":
+            return None, "a monthly expected salary is not on record - answer it once and it is saved"
+        monthly = facts.get("current_inhand_monthly")
+        if not monthly:
+            return None, "'current_inhand_monthly' is not on record - set answers.current_inhand_monthly in jobs.yaml"
+        return f"{monthly}", "from current_inhand_monthly"
+    if not options and IN_RUPEES.search(question) and not IN_LAKHS.search(question):
+        return f"{round(float(lpa) * 100000)}", f"from {name}"
+    return _format(key, lpa), f"from {name}"
+
+
+# A job counts as in India when its location names the country or an Indian city.
+INDIA = re.compile(
+    r"\bindia\b|bengaluru|bangalore|mumbai|pune|hyderabad|secunderabad|chennai|delhi|\bncr\b|noida|gurgaon|gurugram|"
+    r"kolkata|ahmedabad|jaipur|kochi|cochin|chandigarh|mohali|indore|coimbatore|thiruvananthapuram|trivandrum|nagpur|"
+    r"lucknow|bhubaneswar|mysuru|mysore|nashik|vadodara|surat|visakhapatnam|vizag|bhopal|\bgoa\b|mangalore|madurai|"
+    r"ghaziabad|faridabad|navi mumbai|thane|kerala|karnataka|maharashtra|tamil nadu|telangana|haryana|uttar pradesh|"
+    r"west bengal|gujarat|rajasthan|punjab|odisha|andhra pradesh")
+WORK_PERMIT = re.compile(
+    r"work\s*permit|authori[sz]ed\s+to\s+work|work\s+authori[sz]ation|right\s+to\s+work|eligible\s+to\s+work|"
+    r"legally\s+(allowed|eligible|able|permitted|authori[sz]ed)|permission\s+to\s+work|"
+    r"(valid|current|existing)\s+(work\s+)?visa|(have|hold|possess)\s+(a\s+)?(valid\s+)?(work\s+)?visa")
+SPONSORSHIP = re.compile(r"sponsor|(require|need)\w*\s+(a\s+)?(work\s+)?visa|visa\s+(support|requirement|required)")
+# The posting itself offering sponsorship - the one case you ask for it.
+OFFERS_SPONSORSHIP = re.compile(
+    r"visa\s+sponsorship\s+(is\s+)?(available|provided|offered|possible|included)|"
+    r"(we|company)\s+(will\s+|can\s+)?(offer|provide|sponsor)\w*\s+(a\s+)?(work\s+)?visa|"
+    r"sponsor(s|ing)?\s+(your\s+|the\s+)?(work\s+)?visas?|(visa|relocation)\s+(and|&)\s+(visa\s+)?(support|sponsorship)|"
+    r"visa\s+support|offers?\s+visa\s+sponsorship", re.I)
+RELOCATION_MONEY = re.compile(r"assist|support|package|allowance|expense|bonus|reimburse|cost|budget")
+
+
+def _job_in_india(job: dict | None, facts: dict) -> bool | None:
+    """True / False from the job's location; None when nothing says where it is."""
+    where = " ".join(str(v) for v in ((job or {}).get("location"), facts.get("_job_location")) if v)
+    if not where.strip():
+        return None
+    if INDIA.search(where.lower()):
+        return True
+    # "Remote" alone says nothing about the country
+    if re.fullmatch(r"[\W_]*(remote|hybrid|on-?site|anywhere|worldwide)?[\W_]*", where.lower()):
+        return None
+    return False
+
+
+def _resolve_by_location(text: str, options: list[str], facts: dict, job: dict | None) -> tuple[str, str] | None:
+    """Relocation: always Yes. Visa sponsorship: not required - unless a job
+    outside India says it sponsors visas. Work permit: Yes in India, No abroad."""
+    if "relocat" in text and not RELOCATION_MONEY.search(text) and facts.get("willing_to_relocate") is not False:
+        return "Yes", "willing to relocate anywhere"
+    permit, sponsor = WORK_PERMIT.search(text), SPONSORSHIP.search(text)
+    if not (permit or sponsor):
+        return None
+    in_india = _job_in_india(job, facts)
+    if permit:                              # "authorized to work ... without sponsorship" is a permit question
+        if in_india is None:
+            return None
+        if in_india:
+            return ("Yes" if options or YES_NO_QUESTION.search(text) else "Yes, I am authorised to work in India"), \
+                "work permit: the job is in India"
+        return ("No" if options or YES_NO_QUESTION.search(text) else "No, I do not currently hold a work permit"), \
+            "work permit: the job is outside India"
+    if in_india:
+        return ("No" if options or YES_NO_QUESTION.search(text) else "Not required"), "visa sponsorship: job in India"
+    posting = " ".join(str((job or {}).get(k) or "") for k in ("description", "title"))
+    if in_india is False and OFFERS_SPONSORSHIP.search(posting):
+        return ("Yes" if options or YES_NO_QUESTION.search(text) else "Yes, I will need visa sponsorship"), \
+            "visa sponsorship: the posting offers it"
+    return ("No" if options or YES_NO_QUESTION.search(text) else "Not required"), "visa sponsorship: not required"
 
 
 YES_NO_QUESTION = re.compile(r"^\W*(are|do|does|did|have|has|had|can|could|will|would|is|was|were|should|shall|may|"

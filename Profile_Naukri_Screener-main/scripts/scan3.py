@@ -1,20 +1,25 @@
-"""The three daily scans - last 24h, early, all jobs - then publish to the phone.
+"""The day's three scans - last 24h, early, all jobs - each ONCE a day, then publish.
 
-    python scripts/scan3.py             run all three, then publish
-    python scripts/scan3.py --catchup   run only the scans the current slot is
-                                        still missing, then publish
+    python scripts/scan3.py             run whichever of the three has not run
+                                        today, if it is between 10:00 and 23:00
+    python scripts/scan3.py --force     run all three now, whatever the time
 
-Slots are 10:00 and 16:00. A scan counts as done for a slot when an openings
-page of its kind (read from the page <title>, see naukri/jobs/page.py
-scan_kind) was written today after the slot started. So opening the laptop at
-13:00 after sleeping through 10:00 runs the 10:00 scans; opening it again at
-14:00 finds them done and only re-publishes; at 17:00 it runs the 16:00 ones.
-Before 10:00 there is no slot due and --catchup does nothing.
+These three are the only scans of the day. Task Scheduler checks every 30
+minutes from 10:00 to 23:00 and on wake / logon / unlock / network reconnect
+(scripts/schedule_jobs_agent.ps1 -Mode scan3); a check that finds all three
+done today exits at once, so nothing runs twice in a day. A sleeping laptop
+is not woken - the first check after it wakes up runs what is missing.
 
-A lock file keeps two runs (the scheduled one and a wake-up catch-up) from
-driving the same browser profile at once - that crashes both.
+A scan counts as done once it has finished (data/jobs/scan3_done.json), or
+when today already has an openings page of its kind (read from the page
+<title>, see naukri/jobs/page.py scan_kind). A scan that fails is retried at
+the next check, at most MAX_TRIES times a day.
+
+A lock file keeps two runs (a scheduled check and a wake-up one) from driving
+the same browser profile at once - that crashes both.
 """
 import argparse
+import json
 import os
 import re
 import socket
@@ -27,7 +32,9 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 JOBS = ROOT / "data" / "jobs"
 LOCK = ROOT / "data" / "scan3.lock"
-SLOTS = ("10:00", "16:00")
+STATE = JOBS / "scan3_done.json"
+WINDOW = ("10:00", "23:00")
+MAX_TRIES = 3
 STALE_LOCK_S = 4 * 3600
 
 SCANS = [
@@ -44,20 +51,33 @@ def python():
     return sys.executable
 
 
-def current_slot(now):
-    """Start of the latest slot at or before `now`, or None before the first."""
-    due = [now.replace(hour=int(h), minute=int(m), second=0, microsecond=0)
-           for h, m in (s.split(":") for s in SLOTS)]
-    due = [d for d in due if d <= now]
-    return due[-1] if due else None
+def in_window(now):
+    start, end = ([int(x) for x in t.split(":")] for t in WINDOW)
+    return now.replace(hour=start[0], minute=start[1], second=0, microsecond=0) <= now         < now.replace(hour=end[0], minute=end[1], second=0, microsecond=0)
 
 
-def done_kinds(since):
-    day = since.date().isoformat()
+def load_state(day):
+    """{"date", "done": {kind: time}, "tries": {kind: n}} for `day`; empty on a new day."""
+    try:
+        state = json.loads(STATE.read_text(encoding="utf-8"))
+        if state.get("date") == day:
+            state.setdefault("done", {})
+            state.setdefault("tries", {})
+            return state
+    except (OSError, ValueError, AttributeError):
+        pass
+    return {"date": day, "done": {}, "tries": {}}
+
+
+def save_state(state):
+    STATE.parent.mkdir(parents=True, exist_ok=True)
+    STATE.write_text(json.dumps(state, indent=1), encoding="utf-8")
+
+
+def page_kinds(day):
+    """Kinds that already have an openings page today."""
     kinds = set()
     for page in JOBS.glob(f"openings-{day}-r*.html"):
-        if datetime.fromtimestamp(page.stat().st_mtime) < since:
-            continue
         head = page.read_text(encoding="utf-8", errors="ignore")[:4096]
         m = re.search(r"<title>[^<]*? - ([^<]+)</title>", head)
         if m:
@@ -92,21 +112,26 @@ def take_lock():
 
 def main():
     ap = argparse.ArgumentParser()
-    ap.add_argument("--catchup", action="store_true")
+    ap.add_argument("--force", action="store_true", help="run all three now, whatever the time")
+    ap.add_argument("--catchup", action="store_true", help=argparse.SUPPRESS)   # old task arg; same as no flag
     args = ap.parse_args()
 
     now = datetime.now()
+    day = now.date().isoformat()
+    state = load_state(day)
     todo = SCANS
-    if args.catchup:
-        slot = current_slot(now)
-        if slot is None:
-            print("scan3: no slot due yet today (first is %s)" % SLOTS[0])
+    if not args.force:
+        if not in_window(now):
+            print("scan3: %s is outside %s-%s - nothing to do" % (now.strftime("%H:%M"), *WINDOW))
             return 0
-        have = done_kinds(slot)
-        todo = [s for s in SCANS if s[0] not in have]
-        print("scan3: slot %s - done: %s - missing: %s" % (
-            slot.strftime("%H:%M"), ", ".join(sorted(have)) or "none",
-            ", ".join(k for k, _ in todo) or "none"))
+        have = set(state["done"]) | page_kinds(day)
+        gave_up = {k for k, n in state["tries"].items() if n >= MAX_TRIES and k not in have}
+        todo = [s for s in SCANS if s[0] not in have and s[0] not in gave_up]
+        print("scan3: today done: %s - to run: %s%s" % (
+            ", ".join(sorted(have)) or "none", ", ".join(k for k, _ in todo) or "none",
+            " - given up after %d tries: %s" % (MAX_TRIES, ", ".join(sorted(gave_up))) if gave_up else ""))
+        if not todo:
+            return 0
 
     if not take_lock():
         print("scan3: another scan run is in progress - leaving it to finish")
@@ -126,8 +151,12 @@ def main():
                 if not wait_for_network():
                     print("scan3: no network - skipping %s; the next reconnect catches it up" % kind)
                     break
+                state["tries"][kind] = state["tries"].get(kind, 0) + 1
+                save_state(state)
                 rc = subprocess.call(cmd, cwd=ROOT)
                 if rc == 0:
+                    state["done"][kind] = datetime.now().isoformat(timespec="seconds")
+                    save_state(state)
                     break
                 if attempt == 1:
                     print("scan3: %s failed (exit %d) - retrying in 2 minutes" % (kind, rc), flush=True)

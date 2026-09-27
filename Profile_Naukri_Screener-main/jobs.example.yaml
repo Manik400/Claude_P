@@ -44,21 +44,17 @@ role: developer
 # come back and tune it once you have seen a scan or two.
 searches:
   - keyword: Backend Developer
-    location: Pune
+    location: null
   - keyword: Python Developer
-    location: Pune
+    location: null
   - keyword: Software Engineer
-    location: remote
+    location: null
   - keyword: Full Stack Developer
-    location: Bengaluru
+    location: null
   - keyword: Django Developer
     location: null          # null = search all of India
 
 preferred_locations:
-  - Pune
-  - Remote
-  - Hybrid
-  - Mumbai
 
 # ---------------------------------------------------------------------------
 # FILTERS
@@ -128,6 +124,7 @@ answer_questionnaires: false
 # needs it is queued rather than guessed.
 answers:
   expected_ctc: ""          # e.g. "18 LPA"
+  current_inhand_monthly: ""   # in-hand pay per month in rupees, e.g. 68000
   willing_to_relocate: true
   notice_buyout: false
   phone: ""                 # LinkedIn Easy Apply asks for it; e.g. "9876543210"
@@ -166,8 +163,11 @@ career_apply: true
 # Open questions on those forms ("tell us about something you built") are
 # written by the local model from your resume; false leaves them for you.
 ai_written_answers: true
-career_max_per_run: 5
-career_max_per_day: 25
+# Company career sites have no limit: every one a run has time for is applied to.
+# Limits are per platform - Naukri and LinkedIn keep their own caps above.
+# Set a number here only if you want to cap company sites too.
+career_max_per_run:          # blank = no limit
+career_max_per_day:          # blank = no limit
 
 # Simplify Copilot (https://simplify.jobs): when true, every company-site
 # form is opened in a browser that has the Simplify Chrome extension loaded

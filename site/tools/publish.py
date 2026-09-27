@@ -22,7 +22,19 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 SITE_DIR = os.path.dirname(HERE)
-KEEP = {"jobhunt": 40, "careers": 30, "naukri": 40, "interview": 20, "applications": 1, "accuracy": 1}
+KEEP = {"jobhunt": 40, "careers": 30, "naukri": 60, "interview": 31, "applications": 1, "accuracy": 1}
+# Reports older than this are deleted from the site, whatever KEEP allows. The one-copy
+# pages (applications log, accuracy) are rewritten every run and never age out.
+RETENTION_DAYS = 30
+
+
+def prune_old(pages, idx, now):
+    cutoff = (now - dt.timedelta(days=RETENTION_DAYS)).strftime("%Y-%m-%dT%H:%M:%SZ")
+    old = [i for i in idx["items"] if KEEP.get(i["kind"], 30) > 1 and str(i.get("when") or "") < cutoff]
+    for item in old:
+        idx["items"].remove(item)
+        _remove_files(pages, item)
+    return len(old)
 EXT = {"careers": "json"}   # everything else is an HTML page
 
 
@@ -88,6 +100,9 @@ def publish_report(a):
     for old in same[KEEP.get(a.kind, 30):]:
         idx["items"].remove(old)
         _remove_files(a.pages, old)
+    aged = prune_old(a.pages, idx, now)
+    if aged:
+        print("publish: deleted %d report(s) older than %d days" % (aged, RETENTION_DAYS))
     save_index(a.pages, idx)
     print('publish: %s (%d bytes) as "%s"' % (rel, len(raw), a.title))
 
@@ -215,6 +230,12 @@ def publish_site(a):
         f.write("")
     if not os.path.exists(os.path.join(a.pages, "data", "index.json")):
         save_index(a.pages, {"updated": None, "items": []})
+    else:
+        idx = load_index(a.pages)
+        aged = prune_old(a.pages, idx, dt.datetime.now(dt.timezone.utc))
+        if aged:
+            save_index(a.pages, idx)
+            print("publish: deleted %d report(s) older than %d days" % (aged, RETENTION_DAYS))
     migrate_plain(a.pages)
     print("publish: site files copied")
 

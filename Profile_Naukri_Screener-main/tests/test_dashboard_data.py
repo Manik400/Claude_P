@@ -55,11 +55,11 @@ def test_saved_form_wins_over_jobs_yaml_and_policies_become_rules(store):
 
 def test_form_state_shows_saved_values_and_profile_fallbacks(store):
     my_answers.save({"facts": {"expected_ctc": "12"}, "skill_years": {}, "policies": {"bond": "no"}})
-    state = my_answers.form_state({"notice_period": "2 Months notice period"},
+    state = my_answers.form_state({"notice_period": "1 Month notice period"},
                                   {"answers": {"phone": "111"}, "skill_years": {"sql": 3}, "profile_skills": ["SQL"]})
     assert state["facts"]["expected_ctc"]["value"] == "12"
     assert state["facts"]["phone"]["from_jobs_yaml"] == "111"
-    assert state["facts"]["notice_period_months"]["from_profile"] == "2 Months notice period"
+    assert state["facts"]["notice_period_months"]["from_profile"] == "1 Month notice period"
     assert state["skill_years"] == {"sql": 3}
     assert next(p for p in state["policies"] if p["id"] == "bond")["choice"] == "no"
     assert next(p for p in state["policies"] if p["id"] == "pay_cut")["choice"] == "no"   # default

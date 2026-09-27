@@ -479,27 +479,27 @@ __KIT_HEAD__
       question carried into tomorrow&rsquo;s set stays marked.</p>
 
     <div class="bar-tools">
-      <details class="fgrp" data-acc="prep.level" open><summary>Level</summary><span class="fbody">
+      <span class="fgrp" data-grp="prep.level"><span class="flabel">Level</span><span class="fbody">
         <button class="chip" data-level="all" aria-pressed="true">All <small id="n-all">0</small></button>
         <button class="chip" data-level="basic" aria-pressed="false">Basic <small id="n-basic">0</small></button>
         <button class="chip" data-level="intermediate" aria-pressed="false">Intermediate <small id="n-intermediate">0</small></button>
         <button class="chip" data-level="advanced" aria-pressed="false">Advanced <small id="n-advanced">0</small></button>
-      </span></details>
+      </span></span>
       <span class="spacer"></span>
-      <details class="fgrp" data-acc="prep.skill" open><summary>Skill</summary><span class="fbody">
+      <span class="fgrp" data-grp="prep.skill"><span class="flabel">Skill</span><span class="fbody">
         <select class="picker" id="skillpick" aria-label="Filter by skill">__SKILL_OPTIONS__</select>
-      </span></details>
-      <details class="fgrp" data-acc="prep.progress" open><summary>Progress</summary><span class="fbody">
+      </span></span>
+      <span class="fgrp" data-grp="prep.progress"><span class="flabel">Progress</span><span class="fbody">
         <select class="picker" id="statuspick" aria-label="Filter by progress">
           <option value="all">Any status</option>
           <option value="todo">Not marked</option>
           <option value="learned">Learned</option>
           <option value="revise">Needs revision</option>
         </select>
-      </span></details>
-      <details class="fgrp" data-acc="prep.search" open><summary>Search</summary><span class="fbody">
+      </span></span>
+      <span class="fgrp" data-grp="prep.search"><span class="flabel">Search</span><span class="fbody">
         <input class="search" id="q" type="search" placeholder="Search questions and answers" aria-label="Search questions and answers">
-      </span></details>
+      </span></span>
       <button class="ghost" id="expand-all">Expand all</button>
       <button class="ghost" id="collapse-all">Collapse all</button>
     </div>

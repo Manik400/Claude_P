@@ -41,6 +41,8 @@ import re
 import time
 from pathlib import Path
 
+from . import platform_switch
+
 log = logging.getLogger("naukri.jobs.career_apply")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -48,7 +50,7 @@ SHOTS = ROOT / "data" / "jobs" / "career_shots"
 
 # Every status apply_from_page() returns (callers record these themselves).
 STATUSES = {"submitted", "login-required", "captcha", "no-form", "career-incomplete",
-            "career-unconfirmed", "career-error", "closed"}
+            "career-unconfirmed", "career-error", "closed", "platform-off"}
 
 # A listing that no longer takes applications. Before this was checked, a closed
 # LinkedIn / Naukri posting showed up as "no application form found - apply by hand".
@@ -139,6 +141,29 @@ TRIED = "company site: "
 LOGIN_HOSTS = ("wellfound.com", "angel.co", "xing.com", "seek.com", "jobsdb.com", "jobstreet.com",
                "indeed.", "glassdoor.", "infojobs.net", "instahyre.com", "monster.", "foundit.in",
                "naukri.com/mnjuser", "linkedin.com/login", "simplyhired.")
+
+# Job platforms: a form on one of these is the platform's own apply, not the
+# employer's. Left alone while platform auto-apply is off (platform_switch.py),
+# saved login or not.
+# APPLY_ON_BOARD always apply on the board itself, so their postings are not
+# even opened; the others often link out to the employer and are followed.
+APPLY_ON_BOARD = ("naukri.com", "linkedin.com", "indeed.", "glassdoor.", "wellfound.com", "angel.co", "xing.com",
+                  "seek.com", "jobsdb.com", "jobstreet.com", "instahyre.com", "hirist.", "cutshort.io", "relocate.me",
+                  "monster.", "foundit.in", "simplyhired.", "stepstone.", "iimjobs.com", "shine.com", "timesjobs.com",
+                  "apna.co", "internshala.com")
+PLATFORM_HOSTS = APPLY_ON_BOARD + ("infojobs.net", "tecnoempleo.com", "duunitori.fi", "jobthai.com", "daijob.com",
+                                   "wantedly.com")
+
+
+def _host(url: str) -> str:
+    return re.sub(r"^https?://(www\.)?", "", (url or "").lower()).split("/")[0]
+
+
+def platform_host(url: str, hosts: tuple = PLATFORM_HOSTS) -> str | None:
+    """The host, when `url` is on a job platform rather than the employer's own site."""
+    host = _host(url)
+    return host if any(h in host for h in hosts) else None
+
 
 # Button texts, in the languages of the boards the search covers. Loose on
 # purpose ("Apply for this job at Acme", "Jetzt bewerben", "応募する"), with the
@@ -873,7 +898,8 @@ def _follow_click(page, click) -> object:
 
 
 def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = True,
-                    capture: dict | None = None, offsite_click=None, prefill=None, tailor=None) -> tuple[str, str]:
+                    capture: dict | None = None, offsite_click=None, prefill=None, tailor=None,
+                    platforms: bool = True) -> tuple[str, str]:
     """Apply starting from `page`, which shows the posting.
 
     `offsite_click` is a callable that presses the board's own offsite button
@@ -881,7 +907,8 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
     the form is not on the page yet. `prefill(page) -> int` gets the form
     first when given (Simplify's autofill, see simplify.py); fill_form then
     only answers what it left empty. Returns (status, note); extra tabs opened
-    here are closed before returning.
+    here are closed before returning. `platforms=False` (platform auto-apply
+    off) stops before filling any form that is on a job platform.
     """
     capture = capture if capture is not None else {}
     lacking = missing_details(who)
@@ -930,6 +957,8 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 return "captcha", "the form has a CAPTCHA - apply by hand"
             frame, fields = _form_frame(current)
             fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
+            if len(fillable) >= 2 and not platforms and platform_host(current.url):
+                return "platform-off", f"the form is on {platform_host(current.url)} - {platform_switch.OFF_NOTE}"
             if len(fillable) < 2:
                 if total_filled:
                     break               # submitted a page and no further form: check for a thank-you
@@ -1022,6 +1051,8 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
 
 def transient(status: str, note: str) -> bool:
     """A failure worth another go next run (network down, a timeout) - not recorded as tried."""
+    if status == "platform-off":
+        return True     # nothing was tried; the switch turned on picks it up
     return status == "career-error" and bool(re.search(r"net::ERR|Timeout|timed out|Target closed|has been closed", note or "", re.I))
 
 
@@ -1033,7 +1064,8 @@ def ledger_status(status: str) -> str:
 
 
 def queue_status(status: str) -> str:
-    return {"submitted": "submitted", "would-apply": "queued", "closed": "skipped"}.get(status, "manual")
+    return {"submitted": "submitted", "would-apply": "queued", "platform-off": "queued",
+            "closed": "skipped"}.get(status, "manual")
 
 
 def main(argv=None) -> int:

@@ -57,6 +57,22 @@ class ApplierUnavailable(RuntimeError):
     """The sibling project or its browser stack cannot be loaded."""
 
 
+def linkedin_gate():
+    """The screener's once-a-day LinkedIn gate for scheduled runs
+    (naukri/jobs/linkedin_daily.py), or None when that project is not next door.
+    Needs no Playwright, so a search-only Python can use it."""
+    root = sibling_dir()
+    if not root:
+        return None
+    if root not in sys.path:
+        sys.path.insert(0, root)
+    try:
+        from naukri.jobs import linkedin_daily  # noqa: E402
+    except ImportError:
+        return None
+    return linkedin_daily
+
+
 def load_naukri():
     """Import the sibling project's modules. Raises ApplierUnavailable with
     the reason and the fix."""

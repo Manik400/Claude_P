@@ -72,9 +72,9 @@
   .chip.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
   .range { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.8125rem; }
   .range input { width: 120px; }
-  details.fgrp[data-acc="report.search"] { flex: 1 1 280px; }
-  details.fgrp[data-acc="report.search"] > .fbody { width: calc(100% - 80px); }
-  details.fgrp[data-acc="report.search"] input[type=search] { width: 100%; min-width: 0; }
+  .fgrp[data-grp="report.search"] { flex: 1 1 280px; }
+  .fgrp[data-grp="report.search"] > .fbody { flex: 1 1 auto; min-width: 0; }
+  .fgrp[data-grp="report.search"] input[type=search] { width: 100%; min-width: 0; }
   details.srcs { margin: 0 0 6px; }
   details.srcs summary { cursor: pointer; color: var(--muted); font-size: 0.8125rem; }
   .srcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; padding: 8px 0 4px; font-size: 0.7812rem; }
@@ -145,32 +145,32 @@
 <nav class="tabs"><div class="wrap" id="tabs"></div></nav>
 
 <section class="controls"><div class="wrap">
-  <details class="fgrp" data-acc="report.search" open><summary>Search</summary><span class="fbody">
+  <span class="fgrp" data-grp="report.search"><span class="flabel">Search</span><span class="fbody">
     <input type="search" id="q" placeholder="Search title, company, skills…">
-  </span></details>
-  <details class="fgrp" data-acc="report.score" open><summary>Score</summary><span class="fbody">
+  </span></span>
+  <span class="fgrp" data-grp="report.score"><span class="flabel">Score</span><span class="fbody">
     <span class="range" id="scoreRange"><label for="minScore">Min score</label><input type="range" id="minScore" min="0" max="100" step="5" value="0"><b id="minScoreV">0</b></span>
-  </span></details>
-  <details class="fgrp" data-acc="report.fit" open><summary>Experience fit</summary><span class="fbody">
+  </span></span>
+  <span class="fgrp" data-grp="report.fit"><span class="flabel">Experience fit</span><span class="fbody">
     <span class="chips" id="fitChips"></span>
-  </span></details>
-  <details class="fgrp" data-acc="report.remote" open><summary>Remote</summary><span class="fbody">
+  </span></span>
+  <span class="fgrp" data-grp="report.remote"><span class="flabel">Remote</span><span class="fbody">
     <select id="remote"><option value="any">Remote: any</option><option value="only">Remote only</option><option value="no">On-site / hybrid only</option></select>
-  </span></details>
-  <details class="fgrp" data-acc="report.sort" open><summary>Sort</summary><span class="fbody">
+  </span></span>
+  <span class="fgrp" data-grp="report.sort"><span class="flabel">Sort</span><span class="fbody">
     <select id="sort"></select>
-  </span></details>
-  <details class="fgrp" data-acc="report.source" open><summary>Source</summary><span class="fbody">
+  </span></span>
+  <span class="fgrp" data-grp="report.source"><span class="flabel">Source</span><span class="fbody">
     <select id="srcSel"><option value="">All sources</option></select>
-  </span></details>
-  <details class="fgrp" data-acc="report.show" open><summary>Show</summary><span class="fbody">
+  </span></span>
+  <span class="fgrp" data-grp="report.show"><span class="flabel">Show</span><span class="fbody">
     <span class="chips">
       <button class="chip" id="onlySaved">★ Saved</button>
       <button class="chip" id="hideApplied">Hide applied</button>
       <button class="chip" id="showHidden">Show removed</button>
       <button class="chip" id="titleOnly">Title match only</button>
     </span>
-  </span></details>
+  </span></span>
   <button class="iconbtn" id="csv">Export CSV</button>
   <button class="iconbtn" id="reset">Reset</button>
 </div></section>
@@ -400,6 +400,12 @@
   details.fgrp > summary:hover { opacity: 1; }
   details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
   details.fgrp:not([open]) { opacity: .9; }
+  /* a filter field: a labelled group, always open - only the whole toolbar collapses */
+  span.fgrp { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; vertical-align: middle;
+    border: 1px solid rgba(127,127,127,.28); border-radius: 12px; padding: 3px 8px; }
+  span.fgrp > .flabel { font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .7; padding: 4px 2px; white-space: nowrap; }
+  span.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
   /* the whole filter toolbar can be hidden: only its Filters button stays */
   .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
@@ -434,11 +440,11 @@
     font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
   :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
-  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] span.fgrp > .flabel, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
     font-family: var(--v2-mono); letter-spacing: .02em; }
   :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
   :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
-  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp, :root[data-ui="v2"] span.fgrp { border: 2px solid var(--line) !important; }
   :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
   :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
   :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,

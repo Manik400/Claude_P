@@ -4,7 +4,7 @@ Recruiter search filters on this field, not on the sum of the employment
 entries - so adding past roles does nothing for visibility until this is
 updated to match them.
 
-Usage: python set_total_experience.py "6 Years" "3 Months"
+Usage: python set_total_experience.py "1 Year" "11 Months"
 """
 import sys
 
@@ -13,8 +13,11 @@ import _bootstrap  # noqa: F401  (puts the repo root on sys.path)
 from playwright.sync_api import sync_playwright
 from naukri.session import open_profile
 
-YEARS = sys.argv[1] if len(sys.argv) > 1 else "6 Years"
-MONTHS = sys.argv[2] if len(sys.argv) > 2 else "3 Months"
+# No default: this writes to your live profile, and a stale default would
+# quietly overwrite your real experience with someone else's.
+if len(sys.argv) < 3:
+    sys.exit('Usage: python set_total_experience.py "1 Year" "11 Months"')
+YEARS, MONTHS = sys.argv[1], sys.argv[2]
 
 with sync_playwright() as p:
     browser, _c, page = open_profile(p, headless=False)

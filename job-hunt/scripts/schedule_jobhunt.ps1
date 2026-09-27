@@ -16,7 +16,9 @@
 # applies to at most -Limit postings per board (Naukri, LinkedIn Easy Apply,
 # company sites that need no login), each apply pass stopping new applications
 # after -ApplyMinutes. The LinkedIn daily cap in
-# ..\Profile_Naukri_Screener-main\jobs.yaml still bounds the day. Nothing
+# ..\Profile_Naukri_Screener-main\jobs.yaml still bounds the day. LinkedIn is
+# searched once and applied to once a day across all scheduled runs; later
+# rounds skip it (naukri\jobs\linkedin_daily.py). Nothing
 # appears on screen (run_hidden.vbs, headless browser); output goes to
 # ..\Profile_Naukri_Screener-main\logs\scheduled.log. Runs only while you are
 # logged on and the PC is awake.

@@ -8,12 +8,14 @@ reads the same keys.
 
 SNIPPET goes at the end of the body:
 
-  - collapsible filter groups: each group in a toolbar is written as
-        <details class="fgrp" data-acc="<page>.<group>" open><summary>Posted</summary>
-          <span class="fbody"> ...chips / selects... </span></details>
-    and remembers its open / closed state;
+  - labelled filter groups: each field in a toolbar is written as
+        <span class="fgrp" data-grp="<page>.<group>"><span class="flabel">Posted</span>
+          <span class="fbody"> ...chips / selects... </span></span>
+    and is always open - a single field never collapses on its own;
   - a "Filters" button on every filter toolbar that hides or shows the whole
-    toolbar (remembered per page type);
+    toolbar (remembered per page type) - the one accordion a filter section has;
+  - collapsible content sections (details.fgrp with a <div class="body">, the
+    accuracy page), open / closed remembered;
   - the V2 skin as one generic layer over the pages' own colour variables;
   - thin scrollbars that follow the theme, and live updates when the site's
     theme or skin changes while the page is open.
@@ -49,6 +51,12 @@ SNIPPET = r"""
   details.fgrp > summary:hover { opacity: 1; }
   details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
   details.fgrp:not([open]) { opacity: .9; }
+  /* a filter field: a labelled group, always open - only the whole toolbar collapses */
+  span.fgrp { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; vertical-align: middle;
+    border: 1px solid rgba(127,127,127,.28); border-radius: 12px; padding: 3px 8px; }
+  span.fgrp > .flabel { font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .7; padding: 4px 2px; white-space: nowrap; }
+  span.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
 
   /* the whole filter toolbar can be hidden: only its Filters button stays */
   .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
@@ -83,11 +91,11 @@ SNIPPET = r"""
     font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
   :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
   :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
-  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] span.fgrp > .flabel, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
     font-family: var(--v2-mono); letter-spacing: .02em; }
   :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
   :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
-  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp, :root[data-ui="v2"] span.fgrp { border: 2px solid var(--line) !important; }
   :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
   :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
   :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,

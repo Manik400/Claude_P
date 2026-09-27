@@ -42,15 +42,21 @@ param(
     #          where the Top 10 has barely moved and questions carry over.
     # scanpublish scan, then push the new openings page to the phone site
     #          (jobs_scan_and_publish.bat; set up once with site\setup_phone.bat).
-    # scan3    at 10:00 and 16:00, three scans back to back - last 24h, early
-    #          applicant, all jobs - then publish all three to the phone site
-    #          (jobs_scan_3way.bat). Ignores -Times/-NightTimes.
+    # scan3    the day's three scans - last 24h, early applicant, all jobs -
+    #          each ONCE a day, then publish to the phone site
+    #          (jobs_scan_3way.bat -> scripts\scan3.py). One task checks every
+    #          30 min from 10:00 to 23:00 and on wake / logon / unlock / network
+    #          reconnect; a check that finds today's three done exits at once.
+    #          Ignores -Times/-NightTimes.
     # apply    submit real applications. Read jobs_agent.bat before using it.
     [ValidateSet("scan", "scanprep", "scanpublish", "scan3", "apply")]
     [string]$Mode = "scan",
     [switch]$Remove,
     [string[]]$Times = @("08:52=5", "13:23=5", "18:11=10"),
-    [string[]]$NightTimes = @("23:07=10", "04:23=10")
+    [string[]]$NightTimes = @("23:07=10", "04:23=10"),
+    # Daily interview preparation (interview_daily.bat) from that day's newest scan,
+    # published to the phone. After the afternoon scan; "" leaves it out. Costs tokens.
+    [string]$PrepTime = "18:37"
 )
 
 $ErrorActionPreference = "Stop"
@@ -116,11 +122,40 @@ $settings = New-ScheduledTaskSettingsSet `
     -ExecutionTimeLimit (New-TimeSpan -Hours 2) `
     -MultipleInstances IgnoreNew
 
-# Three scans plus publishing take far longer than one scan.
+# scan3: ONE task, and scan3.py decides what is due - each of the three scans
+# once a day, only between 10:00 and 23:00. The task just asks often: every 30
+# min in that window, and 1-2 min after the laptop wakes, you log on or unlock,
+# or the network comes back. It never wakes a sleeping laptop.
 if ($Mode -eq "scan3") {
-    $Times = @("10:00=5", "16:00=5")
-    $NightTimes = @()
     $settings.ExecutionTimeLimit = "PT4H"
+    $scanAction = New-ScheduledTaskAction `
+        -Execute "$env:SystemRoot\System32\wscript.exe" `
+        -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=5" `
+        -WorkingDirectory $root
+    $daily = New-ScheduledTaskTrigger -Daily -At "10:00"
+    $daily.Repetition = (New-ScheduledTaskTrigger -Once -At "10:00" `
+        -RepetitionInterval (New-TimeSpan -Minutes 30) -RepetitionDuration (New-TimeSpan -Hours 13)).Repetition
+    $logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
+    $logon.Delay = "PT2M"
+    $unlockClass = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskSessionStateChangeTrigger
+    $unlock = New-CimInstance -CimClass $unlockClass -ClientOnly -Property @{
+        StateChange = 8; UserId = "$env:USERDOMAIN\$env:USERNAME"; Delay = "PT2M"; Enabled = $true }
+    $eventClass = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskEventTrigger
+    $wake = New-CimInstance -CimClass $eventClass -ClientOnly -Property @{
+        Enabled = $true; Delay = "PT2M"
+        Subscription = '<QueryList><Query Id="0" Path="System"><Select Path="System">*[System[Provider[@Name=''Microsoft-Windows-Power-Troubleshooter''] and EventID=1]]</Select></Query></QueryList>' }
+    $net = New-CimInstance -CimClass $eventClass -ClientOnly -Property @{
+        Enabled = $true; Delay = "PT1M"
+        Subscription = '<QueryList><Query Id="0" Path="Microsoft-Windows-NetworkProfile/Operational"><Select Path="Microsoft-Windows-NetworkProfile/Operational">*[System[EventID=10000]]</Select></Query></QueryList>' }
+    Register-ScheduledTask `
+        -TaskName "$prefix-Scan3" `
+        -Action $scanAction `
+        -Trigger @($daily, $logon, $unlock, $wake, $net) `
+        -Settings $settings `
+        -Description "Naukri job agent: the day's 3 scans (last 24h, early, all jobs), each once a day, checked every 30 min 10:00-23:00 and on wake/logon/unlock/reconnect." | Out-Null
+    Write-Host "Scheduled $prefix-Scan3: 3 scans once a day, checked every 30 min 10:00-23:00 and on wake/logon/unlock/reconnect"
+    $Times = @()
+    $NightTimes = @()
 }
 
 $scanOnly = Join-Path $root "jobs_scan.bat"
@@ -151,43 +186,26 @@ foreach ($slot in $slots) {
     Write-Host "Scheduled $name at $time  ($($slot.mode), $capText)"
 }
 
-# scan3 also gets a catch-up task: whenever the laptop wakes from sleep, you
-# log on, or you unlock it, jobs_catchup.bat runs whichever of the current
-# slot's three scans are missing (none before 10:00; nothing if all are there).
-# The 2-minute delay lets Wi-Fi come back first; scan3.py also waits for it.
-if ($Mode -eq "scan3") {
-    $catchup = Join-Path $root "jobs_catchup.bat"
-    $catchAction = New-ScheduledTaskAction `
+# One interview-prep run a day, whatever the mode: that day's Top 10 into a study page.
+if ($PrepTime) {
+    $prepBatch = Join-Path $root "interview_daily.bat"
+    $prepAction = New-ScheduledTaskAction `
         -Execute "$env:SystemRoot\System32\wscript.exe" `
-        -Argument "//B //Nologo `"$launcher`" `"$catchup`" NAUKRI_APPLY_LIMIT=5" `
+        -Argument "//B //Nologo `"$launcher`" `"$prepBatch`"" `
         -WorkingDirectory $root
-    $logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
-    $logon.Delay = "PT2M"
-    $unlockClass = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskSessionStateChangeTrigger
-    $unlock = New-CimInstance -CimClass $unlockClass -ClientOnly -Property @{
-        StateChange = 8; UserId = "$env:USERDOMAIN\$env:USERNAME"; Delay = "PT2M"; Enabled = $true }
-    $eventClass = Get-CimClass -Namespace Root/Microsoft/Windows/TaskScheduler -ClassName MSFT_TaskEventTrigger
-    $wake = New-CimInstance -CimClass $eventClass -ClientOnly -Property @{
-        Enabled = $true; Delay = "PT2M"
-        Subscription = '<QueryList><Query Id="0" Path="System"><Select Path="System">*[System[Provider[@Name=''Microsoft-Windows-Power-Troubleshooter''] and EventID=1]]</Select></Query></QueryList>' }
-    # ...and when a network connects (NetworkProfile 10000): a run that lost
-    # Wi-Fi half-way fills in its missing scans as soon as it is back.
-    $net = New-CimInstance -CimClass $eventClass -ClientOnly -Property @{
-        Enabled = $true; Delay = "PT1M"
-        Subscription = '<QueryList><Query Id="0" Path="Microsoft-Windows-NetworkProfile/Operational"><Select Path="Microsoft-Windows-NetworkProfile/Operational">*[System[EventID=10000]]</Select></Query></QueryList>' }
     Register-ScheduledTask `
-        -TaskName "$prefix-Catchup" `
-        -Action $catchAction `
-        -Trigger @($logon, $unlock, $wake, $net) `
+        -TaskName "$prefix-InterviewPrep" `
+        -Action $prepAction `
+        -Trigger (New-ScheduledTaskTrigger -Daily -At $PrepTime) `
         -Settings $settings `
-        -Description "Naukri job agent catch-up: after wake/logon/unlock, run the 10:00/16:00 scans that are missing today, then publish." | Out-Null
-    Write-Host "Scheduled $prefix-Catchup on wake from sleep, logon, unlock and network reconnect"
+        -Description "Daily interview preparation from today's scan, published to the phone." | Out-Null
+    Write-Host "Scheduled $prefix-InterviewPrep daily at $PrepTime (interview_daily.bat)"
 }
 
 Write-Host ""
-Write-Host "Mode: $Mode  ->  $(Split-Path -Leaf $batch)   night runs -> jobs_scan.bat"
+Write-Host "Mode: $Mode  ->  $(Split-Path -Leaf $batch)$(if ($NightTimes.Count) { '   night runs -> jobs_scan.bat' })"
 Write-Host "Check them with:   Get-ScheduledTask -TaskName '$prefix*'"
-Write-Host "Run one now with:  Start-ScheduledTask -TaskName '$prefix-1'"
+Write-Host "Run one now with:  Start-ScheduledTask -TaskName '$prefix-$(if ($Mode -eq "scan3") { "Scan3" } else { "1" })'"
 Write-Host "Stop them with:    ...\schedule_jobs_agent.ps1 -Remove"
 Write-Host ""
 Write-Host "Each run rewrites data\jobs\openings-<date>.html - your tracker page."

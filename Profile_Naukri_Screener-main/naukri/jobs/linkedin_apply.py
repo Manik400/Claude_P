@@ -361,6 +361,15 @@ def apply_to(page, card: dict, facts: dict, dry_run: bool = True,
     if _already_applied(page):
         return "already", "job page says you applied before"
 
+    # visa / work-permit answers depend on where the job is and on whether the
+    # posting offers sponsorship
+    try:
+        posting = page.locator("body").inner_text(timeout=3000)[:6000]
+    except Exception:
+        posting = ""
+    facts = dict(facts, _job_location=card.get("location") or "",
+                 _job={"location": card.get("location") or "", "title": card.get("title") or "", "description": posting})
+
     button = page.locator(EASY_APPLY_BUTTON).first
     try:
         has_easy = button.count() > 0 and button.is_visible(timeout=4000)

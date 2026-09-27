@@ -185,6 +185,9 @@ def parse_platforms(text):
     return picked, unknown
 
 
+LINKEDIN_SOURCES = {"linkedin", "apify-linkedin"}
+
+
 def do_search(args, run_dir, log):
     countries = parse_countries(args.countries)
     if not args.no_remote and REMOTE not in countries:
@@ -195,6 +198,13 @@ def do_search(args, run_dir, log):
     for name in unknown_in + unknown_ex:
         log(f"platform {name!r} is not one this bot searches - `job_bot sources` lists them")
     sources = select_sources(include or None, exclude or None, remote=not args.no_remote)
+    # Scheduled rounds search LinkedIn once a day; a search you start yourself always does.
+    if any(s.key in LINKEDIN_SOURCES for s in sources):
+        from jobbot import autoapply
+        gate = autoapply.linkedin_gate()
+        if gate and not gate.take("search"):
+            log(f"LinkedIn skipped: {gate.label('search')}")
+            sources = [s for s in sources if s.key not in LINKEDIN_SOURCES]
     skipped = [s.key for s in ALL_SOURCES if s.needs_env and not s.enabled()]
     asked_off = [k for k in include if k not in {s.key for s in sources}]
     if asked_off:

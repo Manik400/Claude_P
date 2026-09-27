@@ -40,6 +40,10 @@ PENDING_PATH = JOBS_DIR / "questions.yaml"
 BANK_PATH = JOBS_DIR / "answer_bank.yaml"
 
 SKIP = "skip"
+# A saved answer is trusted for this long, then asked again: salaries, notice periods and
+# skill years drift, and an answer from last year goes to recruiters in your name.
+REASK_DAYS = 90
+KEEP_WORDS = ("keep", "same")          # answer a re-asked question with the previous answer
 
 PENDING_HEADER = """\
 # Questions the job agent could not answer from your profile.
@@ -52,6 +56,8 @@ PENDING_HEADER = """\
 #   - for a "how many years" question, type a number
 #   - leave `answer: ""` to keep it waiting
 #   - `answer: skip` means never answer this one; those jobs stay unapplied
+#   - a question with `previous_answer:` is one you answered over 3 months ago,
+#     asked again; `answer: keep` keeps what you said before
 #
 # Or run:  python main.py --answer-questions
 #
@@ -125,15 +131,56 @@ def save_pending(entries: list[dict]) -> None:
     _write_list(PENDING_PATH, PENDING_HEADER, entries)
 
 
-def load_bank() -> dict[str, dict]:
-    """Saved answers keyed by the normalised question."""
+def stale(entry: dict, today: date | None = None, days: int = REASK_DAYS) -> bool:
+    """Answered more than `days` ago (entries with no date count as fresh)."""
+    stamp = str(entry.get("answered_at") or "")[:10]
+    try:
+        answered = date.fromisoformat(stamp)
+    except ValueError:
+        return False
+    return ((today or date.today()) - answered).days > days
+
+
+def load_bank(today: date | None = None) -> dict[str, dict]:
+    """Saved answers keyed by the normalised question - those answered in the
+    last REASK_DAYS only; older ones wait in questions.yaml to be answered again."""
     bank: dict[str, dict] = {}
     for entry in _read_list(BANK_PATH):
         question = entry.get("question")
         if not question:
             continue
+        if stale(entry, today) and str(entry.get("answer", "")).strip().lower() != SKIP:
+            continue                                   # a "skip" is a standing decision, it does not expire
         bank[key(question)] = entry
     return bank
+
+
+def reask_stale(today: date | None = None) -> int:
+    """Put every saved answer older than REASK_DAYS back on the waiting list, showing
+    what you said before. Until you answer (or type `keep`) it is not used."""
+    old = [e for e in _read_list(BANK_PATH) if e.get("question") and stale(e, today)]
+    if not old:
+        return 0
+    entries = load_pending()
+    waiting = {key(e.get("question", "")) for e in entries}
+    added = 0
+    for entry in old:
+        if key(entry["question"]) in waiting or str(entry.get("answer", "")).strip().lower() == SKIP:
+            continue
+        entries.append({
+            "question": entry["question"],
+            "options": list(entry.get("options") or []),
+            "answer": "",
+            "previous_answer": str(entry.get("answer", "")),
+            "board": "saved answer",
+            "first_asked": (today or date.today()).isoformat(),
+            "jobs": [],
+        })
+        added += 1
+    if added:
+        save_pending(entries)
+        log.info("%d saved answer(s) are over %d days old - asked again in %s", added, REASK_DAYS, PENDING_PATH.name)
+    return added
 
 
 def save_bank(entries: list[dict]) -> None:
@@ -209,6 +256,8 @@ def absorb() -> tuple[list[dict], list[dict]]:
         k = key(entry.get("question", ""))
         bank = [b for b in bank if key(b.get("question", "")) != k]
         answer = str(entry["answer"]).strip()
+        if answer.lower() in KEEP_WORDS and str(entry.get("previous_answer") or "").strip():
+            answer = str(entry["previous_answer"]).strip()
         item = {"question": entry["question"], "answer": answer,
                 "options": entry.get("options") or [], "answered_at": stamp}
         if answer.lower() == SKIP:
@@ -466,6 +515,8 @@ def answer_interactively() -> int:
     for index, entry in enumerate(waiting, 1):
         jobs = entry.get("jobs") or []
         print(f"  [{index}/{len(waiting)}] {entry.get('question')}")
+        if entry.get("previous_answer"):
+            print(f"        asked again - over 3 months ago you said: {entry['previous_answer']}  (type keep to keep it)")
         for option in entry.get("options") or []:
             print(f"        - {option}")
         for job in jobs[:3]:

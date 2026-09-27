@@ -11,6 +11,7 @@
 ' which makes main.py run its browser headless (naukri\session.py) - so no
 ' Chrome window either. Everything the batch would have printed goes to
 ' logs\scheduled.log instead, since there is no console to show it in.
+' JOBS_SCHEDULED=1 is set too: scheduled runs touch LinkedIn once a day at most.
 '
 ' An argument written NAME=VALUE (upper-case name) is set as an environment
 ' variable for the batch instead of being passed to it. The scheduler uses
@@ -55,6 +56,9 @@ logFile = root & "\logs\scheduled.log"
 If Not CanAppend(logFile) Then logFile = root & "\logs\" & fso.GetBaseName(batch) & ".log"
 
 sh.Environment("PROCESS")("NAUKRI_BACKGROUND") = "1"
+' Marks the run as scheduled: LinkedIn is searched and applied to at most
+' once a day by scheduled runs (naukri\jobs\linkedin_daily.py).
+sh.Environment("PROCESS")("JOBS_SCHEDULED") = "1"
 sh.CurrentDirectory = fso.GetParentFolderName(batch)
 
 ' cmd /S /C strips the outer pair of quotes and runs the rest verbatim.

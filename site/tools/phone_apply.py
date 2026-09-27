@@ -312,6 +312,10 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                         s.setdefault("auto", {}).update(v)
                     elif k in ("limit", "offsite"):
                         s[k] = v
+                    elif k == "platform_apply":
+                        # lives on the PC, so scheduled scans obey it too (naukri/jobs/platform_switch.py)
+                        from naukri.jobs import platform_switch
+                        log("platform auto-apply switched %s" % ("ON" if platform_switch.set_enabled(bool(v)) else "OFF"))
             elif kind == "answers":
                 pending = questions.load_pending()
                 given = {questions.key(k): v for k, v in (req.get("answers") or payload).items()}
@@ -484,7 +488,7 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
     # nothing happened to these, so they stay queued and the try is not counted.
     for it in todo:
         hit = outcomes.get(it["key"]) if it["board"] == "linkedin" else None
-        if hit and hit["status"] in ("limit-reached", "limit-cooldown"):
+        if hit and hit["status"] in ("limit-reached", "limit-cooldown", "platform-off"):
             it["attempts"] = max(0, it.get("attempts", 0) - 1)
             it["note"] = "waiting: " + hit["note"]
     # Company-site postings: the career applier's outcomes, or Simplify / by hand.
@@ -638,11 +642,13 @@ def main(argv=None) -> int:
         "linkedin": sum(1 for k, e in ledger.entries.items() if k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
         "naukri": sum(1 for k, e in ledger.entries.items() if not k.startswith("linkedin:") and e.get("status") == "applied" and str(e.get("at", "")).startswith(today)),
     }
-    caps, simplify_default, linkedin_paused = {}, False, ""
+    caps, simplify_default, linkedin_paused, platform_apply = {}, False, "", False
     try:
         c = config_mod.load()
         caps = {"linkedin": c.get("linkedin_max_applies_per_day"), "naukri": c.get("max_auto_applies")}
         simplify_default = bool(c.get("simplify"))
+        from naukri.jobs import platform_switch
+        platform_apply = platform_switch.enabled(c)
     except Exception:
         pass
     try:
@@ -661,11 +667,13 @@ def main(argv=None) -> int:
                "offsite": settings.get("offsite", "career"),
                "simplify_ready": os.path.exists(os.path.join(config_dir(), "simplify-profile")),
                "simplify_default": simplify_default,
+               "platform_apply": platform_apply,
                "linkedin_easy_apply_paused": linkedin_paused},
         "settings": settings,
         "progress": progress_of(queue),
         "pending_questions": [
             {"question": e.get("question"), "options": e.get("options") or [], "board": e.get("board"),
+             "previous_answer": e.get("previous_answer") or "",
              "jobs": [{"title": j.get("title"), "company": j.get("company")} for j in (e.get("jobs") or [])[:5]]}
             for e in questions.load_pending() if not str(e.get("answer") or "").strip()
         ],

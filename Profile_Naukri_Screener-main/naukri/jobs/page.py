@@ -425,23 +425,23 @@ __KIT_HEAD__
   </div>
 
   <div class="bar">
-    <details class="fgrp" data-acc="openings.show" open><summary>Show</summary><span class="fbody">
+    <span class="fgrp" data-grp="openings.show"><span class="flabel">Show</span><span class="fbody">
       <button class="chip" data-filter="all" aria-pressed="true">All</button>
       <button class="chip" data-filter="new" aria-pressed="false">New today</button>
       <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
       <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
       <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
-    </span></details>
-    <details class="fgrp" data-acc="openings.posted" open><summary>Posted</summary><span class="fbody">
+    </span></span>
+    <span class="fgrp" data-grp="openings.posted"><span class="flabel">Posted</span><span class="fbody">
       <button class="chip" data-posted="any" aria-pressed="true">Any</button>
       <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
       <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
       <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
-    </span></details>
+    </span></span>
     <span class="spacer"></span>
-    <details class="fgrp" data-acc="openings.search" open><summary>Search</summary><span class="fbody">
+    <span class="fgrp" data-grp="openings.search"><span class="flabel">Search</span><span class="fbody">
       <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
-    </span></details>
+    </span></span>
   </div>
 
   <div id="list"></div>

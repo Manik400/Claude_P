@@ -264,6 +264,9 @@ def apply_to(page, job, dry_run: bool = True, facts: dict | None = None,
     any questionnaire is closed unanswered and queued for you. `capture`, if
     given, receives the question that stopped a questionnaire.
     """
+    if facts is not None:
+        # visa / work-permit answers depend on where the job is; Naukri lists Indian jobs
+        facts = dict(facts, _job_location=getattr(job, "location", None) or "India")
     try:
         page.goto(job.url, wait_until="domcontentloaded", timeout=60000)
         page.wait_for_timeout(random.uniform(2200, 4200))

@@ -68,6 +68,7 @@ POLICIES: list[dict] = [
 
 FACT_FIELDS: list[dict] = [
     {"id": "expected_ctc", "label": "Expected CTC (LPA)", "hint": "e.g. 12 or 12.5", "kind": "text"},
+    {"id": "current_inhand_monthly", "label": "Current in-hand per month (₹)", "hint": "e.g. 68000", "kind": "text"},
     {"id": "phone", "label": "Mobile number", "hint": "LinkedIn Easy Apply asks for it", "kind": "text"},
     {"id": "willing_to_relocate", "label": "Willing to relocate", "kind": "bool"},
     {"id": "notice_buyout", "label": "Can buy out notice period", "kind": "bool"},
@@ -79,7 +80,7 @@ FACT_FIELDS: list[dict] = [
 ]
 
 OVERRIDE_KEYS = ("notice_period_months", "current_ctc_lpa", "total_experience_years", "current_location")
-ANSWER_KEYS = ("expected_ctc", "phone", "willing_to_relocate", "notice_buyout", "nationality")
+ANSWER_KEYS = ("expected_ctc", "current_inhand_monthly", "phone", "willing_to_relocate", "notice_buyout", "nationality")
 
 
 def load() -> dict:

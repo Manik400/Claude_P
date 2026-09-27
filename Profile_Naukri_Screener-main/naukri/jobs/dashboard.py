@@ -16,7 +16,9 @@ library only, bound to 127.0.0.1) with four tabs:
     Applications    every application sent, its questions and answers, and
                     what came back - recruiter replies pulled from Gmail
                     (responses.py), plus your own status and notes.
-    Settings        the Gmail app password used to read replies.
+    Settings        the Gmail app password used to read replies, and the
+                    switch for auto-applying on job platforms (off: company
+                    career pages only - platform_switch.py).
 
 Nothing here talks to Naukri or LinkedIn; it edits the files the scheduled
 runs read.
@@ -32,7 +34,7 @@ from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
 
-from . import applications, config as config_mod, my_answers, questions, responses
+from . import applications, config as config_mod, my_answers, platform_switch, questions, responses
 
 log = logging.getLogger("naukri.jobs.dashboard")
 
@@ -91,6 +93,7 @@ def state() -> dict:
         "applications": list(reversed(apps)),
         "counts": applications.counts(apps),
         "gmail": gmail,
+        "platform_apply": platform_switch.enabled(config),
         "manual_statuses": MANUAL_STATUSES,
         "kind_labels": responses.KIND_LABELS,
         "generated": datetime.now().isoformat(timespec="seconds"),
@@ -149,6 +152,10 @@ def sync_gmail() -> dict:
             "matched": sum(1 for m in store["emails"] if m.get("jobs")), "synced_at": store["synced_at"]}
 
 
+def save_platform(payload: dict) -> dict:
+    return {"ok": True, "enabled": platform_switch.set_enabled(bool(payload.get("enabled")))}
+
+
 def save_note(payload: dict) -> dict:
     job_id = str(payload.get("job_id") or "")
     if not job_id:
@@ -173,6 +180,7 @@ ACTIONS = {
     "/api/gmail": save_gmail,
     "/api/gmail/sync": lambda payload: sync_gmail(),
     "/api/note": save_note,
+    "/api/platform": save_platform,
 }
 
 
@@ -360,6 +368,11 @@ __KIT_HEAD__
 
   <section id="tab-settings">
     <div class="card">
+      <h2 style="margin-top:0">Auto-apply on job platforms</h2>
+      <p class="sub">Off: runs apply only on company career pages and the employer's own job pages. Nothing goes through Naukri's apply, LinkedIn Easy Apply, or Instahyre / Hirist / Wellfound / SEEK forms &mdash; those jobs wait untouched and are picked up when you switch this on. The phone's Queue &rarr; Rules has the same switch.</p>
+      <label style="display:flex;gap:8px;align-items:center;font-weight:600"><input type="checkbox" id="platform-apply"> Auto-apply on job platforms (Naukri, LinkedIn Easy Apply, ...)</label>
+    </div>
+    <div class="card">
       <h2 style="margin-top:0">Gmail, for reading recruiter replies</h2>
       <p class="sub">Uses an <b>app password</b>, not your Google password. Create one at <a href="https://myaccount.google.com/apppasswords" target="_blank" rel="noopener">myaccount.google.com/apppasswords</a> (needs 2-Step Verification on), paste it here, and revoke it there whenever you like. The mailbox is opened read-only; nothing is sent, moved or deleted. Saved to <code>data/gmail.yaml</code> on this PC only.</p>
       <div class="grid">
@@ -379,6 +392,11 @@ __KIT_HEAD__
   const $ = id => document.getElementById(id);
   function toast(msg, bad) { const t = $('status'); t.textContent = msg; t.style.background = bad ? 'var(--bad)' : 'var(--ink)'; t.classList.add('show'); setTimeout(() => t.classList.remove('show'), 2600); }
   async function post(path, body) { const r = await fetch(path, {method:'POST', headers:{'Content-Type':'application/json'}, body: JSON.stringify(body || {})}); return r.json(); }
+  $('platform-apply').addEventListener('change', async e => {
+    const r = await post('/api/platform', {enabled: e.target.checked});
+    toast(r.ok ? 'Auto-apply on job platforms is ' + (r.enabled ? 'ON' : 'OFF') + ' from the next run.' : 'Failed: ' + r.error, !r.ok);
+    if (r.ok) S.platform_apply = r.enabled;
+  });
   async function load() { S = await (await fetch('/api/state')).json(); bank = S.bank.slice(); skills = Object.assign({}, S.answers.skill_years); render(); }
 
   document.querySelectorAll('nav button').forEach(b => b.addEventListener('click', () => {
@@ -431,9 +449,10 @@ __KIT_HEAD__
     $('pending').innerHTML = waiting.map((p, i) => {
       const jobs = (p.jobs || []).map(j => '<a href="' + esc(j.url) + '" target="_blank" rel="noopener">' + esc(j.title) + '</a> - ' + esc(j.company) + ' <span class="tag board">' + esc(j.board) + '</span>').join('<br>');
       const input = (p.options && p.options.length)
-        ? '<select data-pending="' + i + '"><option value="">choose</option>' + p.options.map(o => '<option>' + esc(o) + '</option>').join('') + '<option value="skip">skip - never answer</option></select>'
-        : '<input type="text" data-pending="' + i + '" placeholder="your answer (or skip)">';
-      return '<div class="card"><b>' + esc(p.question) + '</b><div class="hint">first asked ' + esc(p.first_asked) + ' on ' + esc(p.board) + '</div><div style="margin:8px 0">' + input + '</div><div class="hint">asked by:<br>' + jobs + '</div></div>';
+        ? '<select data-pending="' + i + '"><option value="">choose</option>' + (p.previous_answer ? '<option value="keep">keep: ' + esc(p.previous_answer) + '</option>' : '') + p.options.map(o => '<option>' + esc(o) + '</option>').join('') + '<option value="skip">skip - never answer</option></select>'
+        : '<input type="text" data-pending="' + i + '" placeholder="' + (p.previous_answer ? 'new answer, or keep' : 'your answer (or skip)') + '">';
+      const prev = p.previous_answer ? '<div class="hint">asked again - over 3 months since you answered <b>' + esc(p.previous_answer) + '</b>; type <b>keep</b> to keep it</div>' : '';
+      return '<div class="card"><b>' + esc(p.question) + '</b>' + prev + '<div class="hint">first asked ' + esc(p.first_asked) + ' on ' + esc(p.board) + '</div><div style="margin:8px 0">' + input + '</div><div class="hint">asked by:<br>' + jobs + '</div></div>';
     }).join('');
     $('pending').dataset.map = JSON.stringify(waiting.map(p => p.question));
   }
@@ -462,7 +481,7 @@ __KIT_HEAD__
         '<details><summary>questions, answers and replies</summary>' + qa + blocked + mails + manual + '</details></div>';
     }).join('');
   }
-  function renderSettings() { $('gm-email').value = S.gmail.email || ''; $('gm-days').value = S.gmail.days || 30; $('gm-state').textContent = S.gmail.configured ? 'configured for ' + S.gmail.email : 'not configured'; }
+  function renderSettings() { $('platform-apply').checked = !!S.platform_apply; $('gm-email').value = S.gmail.email || ''; $('gm-days').value = S.gmail.days || 30; $('gm-state').textContent = S.gmail.configured ? 'configured for ' + S.gmail.email : 'not configured'; }
 
   document.addEventListener('click', async e => {
     const t = e.target;
