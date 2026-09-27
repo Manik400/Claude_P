@@ -25,10 +25,10 @@ log = logging.getLogger("naukri.jobs.mailcode")
 SUBJECT_HINT = re.compile(r"verif|confirm|code|one.?time|otp|security", re.I)
 # "Your verification code is ABCD1234" / "code: 482913" - 6 to 8 characters, not a year or a phone
 CODE_PATTERNS = [
-    re.compile(r"(?:code|otp)\W{0,40}?\b([A-Z0-9]{8})\b"),
-    re.compile(r"(?:code|otp)\W{0,40}?\b(\d{6})\b", re.I),
-    re.compile(r"\b([A-Z0-9]{8})\b(?=\W{0,40}(?:is your|to (?:verify|confirm|complete)))"),
-    re.compile(r"(?:code|otp)\W{0,40}?\b([A-Za-z0-9]{6,8})\b", re.I),
+    re.compile(r"(?:code|otp)(?:[^A-Z0-9]|[a-z]){0,40}?\b([A-Z0-9]{8})\b"),
+    re.compile(r"(?:code|otp)[\s\S]{0,40}?\b(\d{6})\b", re.I),
+    re.compile(r"\b([A-Z0-9]{8})\b(?=[\s\S]{0,40}(?:is your|to (?:verify|confirm|complete)))"),
+    re.compile(r"(?:code|otp)[\s\S]{0,40}?\b(?![a-z]+\b)([A-Za-z0-9]{6,8})\b", re.I),
 ]
 
 
