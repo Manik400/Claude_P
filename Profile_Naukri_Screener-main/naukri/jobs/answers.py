@@ -41,8 +41,9 @@ RULES: list[tuple[str, str, str]] = [
     ("expected_ctc", r"expect\w*\s+(ctc|salary|compensation|package)", "expected_ctc_lpa"),
     ("current_ctc", r"(current|present)\s+(in.?hand\s+|annual\s+|monthly\s+)?(ctc|salary|compensation|package)|"
                     r"current\s+fixed|in.?hand\s+(salary|ctc|pay)", "current_ctc_lpa"),
-    ("notice_period", r"notice\s*period|when\s+can\s+you\s+join|how\s+soon.*join|availab\w*\s+to\s+join|"
-                      r"earliest\s+(joining|start)\s+date", "notice_period_months"),
+    ("notice_period", r"notice\s*period|when\s+can\s+you\s+(join|start)|how\s+soon.*(join|start)|availab\w*\s+to\s+(join|start)|"
+                      r"earliest\s+(joining|start)\s+date|how\s+long.*(before|until).*(start|join)|time\s+to\s+(join|start)|"
+                      r"start\s+date|joining\s+time", "notice_period_months"),
     ("total_experience", r"total\s+(work\s+)?experience|years\s+of\s+experience(?!\s+in)|overall\s+experience", "total_experience_years"),
     ("current_location", r"current\s+(location|city)|where\s+are\s+you\s+(currently\s+)?(based|located)|^\W*city\W*$|city or location|^\W*location(\s*\(city\))?\W*$", "current_location"),
     ("current_state", r"^\W*(current\s+|home\s+)?(state|state\s*/\s*(province|region|ut)|province)\W*$|which\s+state\s+(are|do)\s+you|"
@@ -534,8 +535,12 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
         if key == "notice_period_months":
             if not options:
                 return _notice_text(text, value), f"from {name}"
-            if re.search(r"\bdays?\b", text):          # "Notice period (in days)" with chips: 30, not 1
+            option_text = " ".join(options).lower()
+            if re.search(r"\bdays?\b", text) or re.search(r"\bdays?\b", option_text):
+                # "Notice period (in days)", or chips in days ("1-15 days", "16-30 days"): 30, not 1
                 return f"{float(value) * 30:g}", f"from {name}"
+            if re.search(r"\bweeks?\b", option_text) and not re.search(r"\bmonths?\b", option_text):
+                return f"{round(float(value) * 4.33):g}", f"from {name}"
         if key in ("current_ctc_lpa", "expected_ctc_lpa"):
             return _salary(text, key, value, options, facts, name)
         return _format(key, value), f"from {name}"

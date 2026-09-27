@@ -353,6 +353,8 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                     summary["questions_saved"] += 1
         if not dry_run and status != "would-apply" and not career_mod.transient(status, note):
             ledger.record(job, career_mod.ledger_status(status), career_mod.TRIED + note)
+            if status == "submitted":
+                ledger.save()       # at once: a run killed later must never forget an application it sent
             applications.record(board, job, {"submitted": "applied", "closed": "skipped"}.get(status, "offsite"),
                                 career_mod.TRIED + note, capture, dry_run=False, per_run=per_run, project=project)
         summary["career"][status] = summary["career"].get(status, 0) + 1
