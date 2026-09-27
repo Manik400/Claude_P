@@ -693,6 +693,21 @@ def _cover(who: dict, job: dict) -> str:
             f"and my profile is at {who.get('linkedin') or who.get('github') or ''}.\n\nKind regards,\n{who.get('name')}")
 
 
+MOTIVATION_Q = re.compile(r"why (do you want|are you interested|us|this (role|job|company))|interest(s|ed)? (you )?(in|about)|motivat|"
+                          r"about (you|yourself)|tell us|introduce yourself|(cover|application) (letter|note|message)|"
+                          r"^\W*(message|note|additional (information|comments?))\W*$", re.I)
+
+
+def _motivation(who: dict, job: dict) -> str:
+    title, company = job.get("title") or "this role", job.get("company") or "your team"
+    me = who.get("current_title") or "software engineer"
+    at = f" at {who['current_company']}" if who.get("current_company") else ""
+    return (f"I'm interested in the {title} role at {company} because it is close to the work I do today as a {me}{at}: "
+            f"building and running production backend systems and the data pipelines behind them. I'd like to bring that "
+            f"experience to your product and grow with the team. My resume has the details, and I'm available to talk "
+            f"whenever convenient.")
+
+
 MONTHS = {m: i for i, m in enumerate("jan feb mar apr may jun jul aug sep oct nov dec".split(), 1)}
 
 
@@ -1020,6 +1035,10 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
 
             if value is None:
                 answer, why = ask(q, [], long_text=f["tag"] == "textarea") if q else (None, "")
+                if answer is None and f["tag"] == "textarea" and MOTIVATION_Q.search(q or ""):
+                    # "what interests you about working here?": never sent blank - a plain paragraph
+                    # from your details when the written answer is not available (model budget spent)
+                    answer, why = _motivation(who, job), "template (no written answer available)"
                 if answer is None:
                     if f["required"]:
                         blocked.append(q or f["name"] or "a required field")
