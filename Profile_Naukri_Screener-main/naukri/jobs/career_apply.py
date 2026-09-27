@@ -1209,7 +1209,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             return "login-required", f"{host} needs its own account (sign in once with: python main.py --platform-login)"
 
         total_filled = 0
-        ats_tried = outbound_tried = waited = False
+        ats_tried = outbound_tried = waited = blank_waited = False
         submitted_pages = 0
         for step in range(8):
             if CLOSED.search(_body(current)):
@@ -1250,6 +1250,15 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 if not waited and not aggregator_host(current.url):
                     waited = True       # a slow single-page app: its form may still be rendering
                     current.wait_for_timeout(4000)
+                    continue
+                if not blank_waited and len(_body(current).strip()) < 200:
+                    # still a blank page (Accenture's careers app took 10+ s): give it a real chance
+                    blank_waited = True
+                    try:
+                        current.wait_for_load_state("networkidle", timeout=15000)
+                    except Exception:
+                        pass
+                    current.wait_for_timeout(5000)
                     continue
                 if on_board and on_board not in _host(page.url) and not platform_ok(current.url) \
                         and not aggregator_host(current.url):
