@@ -1,0 +1,1909 @@
+[
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Civil Site Engineer",
+  "company": "Ranson Civil Technologies",
+  "url": "https://www.naukri.com/job-listings-civil-site-engineer-ranson-civil-technologies-visakhapatnam-0-to-5-years-270926000851",
+  "country": "IN",
+  "location": "Visakhapatnam",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T04:22:52.218000+00:00",
+  "posted_raw": 1790482972218,
+  "salary": "1.44-4.8 Lacs",
+  "snippet": "Diploma/B.Tech Civil with 1-10 years experience in Retrofitting & Structural Strengthening|Oversee civil site activities including site planning, supervision, execution, and labour management",
+  "description": "<p> </p><p>We are hiring a <strong>Civil Site Engineer</strong> with experience in <strong>Retrofitting & Structural Strengthening</strong> works.</p><br /><p><strong>Qualification:</strong> Diploma/B.Tech Civil<br /><strong>Experience:</strong> 110 Years<br /></p>",
+  "skills": [
+   "English",
+   "Hindi",
+   "Labour Control",
+   "Labour Management",
+   "Site Execution",
+   "Site Planning",
+   "Site Supervision"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 61.1,
+  "matched_skills": [
+   "english",
+   "hindi"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926000851",
+  "extra": {
+   "naukri_id": "270926000851",
+   "company_apply": false,
+   "applicants": 19,
+   "rating": "1.7",
+   "semantic": 0.0,
+   "score_confidence": "medium",
+   "ai_summary": {
+    "why": "Candidate has extensive experience with .NET, C#, and Azure cloud services, which are irrelevant for a Civil Site Engineer role focused on retrofitting and structural strengthening.",
+    "gaps": "No significant gap; candidate lacks civil engineering qualifications and practical experience in structural retrofitting."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Ranson%20Civil%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Visakhapatnam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Ranson%20Civil%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Visakhapatnam%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Ranson%20Civil%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Visakhapatnam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Ranson%20Civil%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Visakhapatnam%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Ranson%20Civil%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Visakhapatnam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Ranson%20Civil%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Visakhapatnam%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Ranson%20Civil%20Technologies%22%20%28%22Senior%20developer%22%29%20%22Visakhapatnam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Ranson%20Civil%20Technologies%22%20%28%22Senior%20developer%22%29%20%22Visakhapatnam%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "District Admissions & Outreach Executive ( Engineering College )",
+  "company": "Consult Asia",
+  "url": "https://www.naukri.com/job-listings-district-admissions-outreach-executive-engineering-college-consult-asia-kharagpur-kolkata-diamond-harbour-1-to-5-years-260926009543",
+  "country": "IN",
+  "location": "Kharagpur, Kolkata, Diamond Harbour",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T17:11:46.107000+00:00",
+  "posted_raw": 1790442706107,
+  "salary": "1.25-1.75 Lacs",
+  "snippet": "Graduate with 1–5 years in education admissions/marketing, strong local network and counselling skills|Drive student admissions via outreach, lead generation, counselling, seminars, and channel partner development",
+  "description": "Graduate with 1 5 years in education admissions / marketing<br><br>Bengali,English and Hindi preferred<br><br>Extensive travel required",
+  "skills": [
+   "Admission Conversion",
+   "Admission Counselling",
+   "Admissions",
+   "B.Tech Admissions",
+   "Business Development",
+   "Education Consultants",
+   "Education Marketing",
+   "Field Marketing",
+   "Field Sales",
+   "Lead Generation",
+   "Presales",
+   "Sales",
+   "School Outreach",
+   "Student Admissions",
+   "Territory Management"
+  ],
+  "employment_type": "Part Time, Temporary/Contractual",
+  "exp_min": 1.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 60.9,
+  "matched_skills": [
+   "english",
+   "hindi"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk260926009543",
+  "extra": {
+   "naukri_id": "260926009543",
+   "company_apply": false,
+   "applicants": 0,
+   "rating": null,
+   "semantic": 0.0,
+   "score_confidence": "medium",
+   "ai_summary": {
+    "why": "The candidate has no relevant experience in education admissions, marketing, or student outreach. Their background is entirely in software engineering and backend development.",
+    "gaps": "Complete lack of experience in education admissions, marketing, or student outreach."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consult%20Asia%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Kharagpur%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consult%20Asia%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Kharagpur%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consult%20Asia%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Kharagpur%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consult%20Asia%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Kharagpur%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consult%20Asia%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Kharagpur%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consult%20Asia%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Kharagpur%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consult%20Asia%22%20%28%22Senior%20developer%22%29%20%22Kharagpur%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consult%20Asia%22%20%28%22Senior%20developer%22%29%20%22Kharagpur%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Frontend Web Developer",
+  "company": "Meroxio It Solutions",
+  "url": "https://www.naukri.com/job-listings-frontend-web-developer-meroxio-it-solutions-noida-0-to-1-years-270926001642",
+  "country": "IN",
+  "location": "Noida",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T08:10:36.638000+00:00",
+  "posted_raw": 1790496636638,
+  "salary": "1.75-2.5 Lacs",
+  "snippet": "0-1 year experience in Shopify development with skills in Liquid, HTML, CSS, JavaScript, and prompt engineering|Design and develop responsive Shopify websites, customize themes, convert Figma designs, implement UI/UX improvements, troubleshoot issues, and use AI-assisted coding tools|Salary ₹1.8 LPA – ₹2.4 LPA based on skills and performance",
+  "description": "<p> </p><p><strong>Company:</strong> MeroxIO IT Solutions Pvt. Ltd.<br /><strong>Experience:</strong> 01 Year<br /><strong>Salary:</strong> 1.8 LPA 2.4 LPA<br /><strong>Location:</strong> Noida, Uttar Pradesh<br /><strong>Employment Type:</strong> Full-Time</p><p>About the Role</p><p>We are looking for a motivated <strong>Shopify Web Designer & Front-End Developer</strong> who is passionate about website development, eCommerce, and modern AI-assisted development.</p><p>This is an entry-level role where you will work on Shopify stores, customize themes, implement designs, build front-end features, and use modern AI coding tools to improve development speed and efficiency.</p><p>Key Responsibilities</p><ul><li>Design and develop responsive Shopify websites and storefronts.</li><li>Customize Shopify themes using <strong>Liquid, HTML, CSS, and JavaScript</strong>.</li><li>Convert Figma/design layouts into responsive Shopify pages.</li><li>Develop and customize sections, templates, landing pages, product pages, collection pages, and other storefront components.</li><li>Implement UI/UX improvements and CRO-focused features.</li><li>Troubleshoot and fix front-end and Shopify theme issues.</li><li>Optimize websites for performance, responsiveness, and usability.</li><li>Work with senior developers and project managers to deliver Shopify projects.</li><li>Use AI tools to assist with coding, debugging, research, documentation, and problem-solving.</li><li>Maintain clean, organized, reusable, and maintainable code.</li></ul><p>Required Skills</p><ul><li><strong>0–1 year of experience</strong> in web development or Shopify development.</li><li>Basic to good knowledge of <strong>Shopify</strong> and Shopify themes.</li><li>Good understanding of:<br /></li><ul><li>HTML</li><li>CSS</li><li>JavaScript</li><li>Shopify Liquid</li></ul><li>Understanding of responsive web design.</li><li>Ability to understand and implement designs accurately.</li><li>Good problem-solving and debugging skills.</li><li>Good knowledge of <strong>prompt writing / prompt engineering</strong>.</li><li>Comfortable working with AI-assisted development tools.</li></ul><p>AI & Modern Development Skills — Must Have</p><p>The candidate should be comfortable using AI as part of their daily development workflow.</p><p><strong>Must have working knowledge or willingness to work with:</strong></p><ul><li><strong>OpenAI Codex</strong></li><li><strong>Claude Code</strong></li><li>AI-assisted coding and debugging</li><li>Writing effective development prompts</li><li>Using AI to understand existing code</li><li>Using AI for troubleshooting and optimization</li><li>Reviewing and improving AI-generated code rather than blindly accepting it</li></ul><p>We are looking for someone who understands that <strong>AI is a development assistant, not a replacement for understanding code.</strong></p><p>Good to Have</p><ul><li>Experience with Shopify Online Store 2.0.</li><li>Knowledge of Shopify JSON templates and sections.</li><li>Basic knowledge of Git/GitHub.</li><li>Basic understanding of SEO and website performance.</li><li>Experience working with Figma.</li><li>Knowledge of Shopify apps and third-party integrations.</li><li>Basic understanding of CRO and eCommerce best practices.</li></ul><p>Who We Are Looking For</p><p>This role is suitable for a fresher or someone with up to 1 year of experience who:</p><ul><li>Loves building websites and experimenting with new technologies.</li><li>Is curious about AI and modern development workflows.</li><li>Can learn quickly and solve problems independently.</li><li>Has a strong eye for design and attention to detail.</li><li>Can write clear prompts and communicate effectively with AI coding tools.</li><li>Is willing to continuously learn Shopify and front-end development.</li></ul><p>Salary</p><p><strong>1.8 LPA – 2.4 LPA</strong>, depending on skills, technical ability, and interview performance.</p><p>Why Join MeroxIO?</p><ul><li>Work on real-world Shopify and eCommerce projects.</li><li>Opportunity to work with established brands and growing D2C businesses.</li><li>Hands-on experience with Shopify development, CRO, SEO, and performance optimization.</li><li>Learn and work with modern AI development tools such as Codex and Claude Code.</li><li>Opportunity to grow into a full-fledged Shopify Developer / Front-End Developer.</li></ul><p><strong>If you are a fresher who loves coding, Shopify, design, and AI, we'd love to hear from you.</strong></p><br /><br />",
+  "skills": [
+   "Claude Code",
+   "CSS",
+   "Frontend Development",
+   "HTML",
+   "Javascript",
+   "jQuery",
+   "Prompt Engineering"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 1.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 44.2,
+  "matched_skills": [
+   "javascript",
+   "performance optimization"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "html",
+   "css",
+   "prompt engineering",
+   "figma",
+   "ui/ux",
+   "jquery",
+   "openai"
+  ],
+  "also_on": [],
+  "query": "developer",
+  "id": "nk270926001642",
+  "extra": {
+   "naukri_id": "270926001642",
+   "company_apply": false,
+   "applicants": 127,
+   "rating": "4.3",
+   "semantic": 0.328,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend background in performance optimization and streaming, but lacks specific Shopify/Liquid experience and AI tool proficiency.",
+    "gaps": "Missing Shopify/Liquid skills and AI tool proficiency."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Meroxio%20It%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Meroxio%20It%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Meroxio%20It%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Meroxio%20It%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Meroxio%20It%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Meroxio%20It%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Meroxio%20It%20Solutions%22%20%28%22Senior%20developer%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Meroxio%20It%20Solutions%22%20%28%22Senior%20developer%22%29%20%22Noida%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Maintenance Manager",
+  "company": "Lalmati Hospitals",
+  "url": "https://www.naukri.com/job-listings-maintenance-manager-lalmati-hospitals-private-limited-deoria-0-to-6-years-260926009535",
+  "country": "IN",
+  "location": "Deoria",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T17:09:09.514000+00:00",
+  "posted_raw": 1790442549514,
+  "salary": "2.4-6 Lacs",
+  "snippet": "Experience in hospital infrastructure and biomedical systems management|Oversee hospital infrastructure, manage vendor AMCs, audits, and maintenance operations",
+  "description": "<p>Oversee hospital infrastructure (electrical, HVAC, RO/STP), MGPS, and fire safety systems. Manage biomedical coordination, vendor AMCs, NABH/statutory audits, and overall operation and maintenance support for hospital</p>",
+  "skills": [
+   "Hospital Operations",
+   "Hospital Project",
+   "Maintenance Engineering",
+   "Maintenance Management",
+   "Maintenance Operations",
+   "Maintenance Planning"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 6.0,
+  "seniority": "lead",
+  "fit": "fit",
+  "relevance": 0.0,
+  "score": 38.2,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk260926009535",
+  "extra": {
+   "naukri_id": "260926009535",
+   "company_apply": false,
+   "applicants": 19,
+   "rating": null,
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has extensive experience with cloud infrastructure, database optimization, and system design, aligning with the need for technical oversight and operational efficiency in hospital infrastructure.",
+    "gaps": "Lacks direct experience in hospital operations, biomedical coordination, or NABH compliance."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Lalmati%20Hospitals%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Deoria%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Lalmati%20Hospitals%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Deoria%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Lalmati%20Hospitals%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Deoria%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Lalmati%20Hospitals%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Deoria%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Lalmati%20Hospitals%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Deoria%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Lalmati%20Hospitals%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Deoria%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Lalmati%20Hospitals%22%20%28%22Senior%20developer%22%29%20%22Deoria%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Lalmati%20Hospitals%22%20%28%22Senior%20developer%22%29%20%22Deoria%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Engineer -Execution For Water Supply Projects (Yadgir/Bagalkot-KA)",
+  "company": "Megha Engineering And Infrastructure",
+  "url": "https://www.naukri.com/job-listings-engineer-execution-for-water-supply-projects-yadgir-bagalkot-ka-megha-engineering-and-infrastructures-ltd-karnataka-1-to-6-years-270926001450",
+  "country": "IN",
+  "location": "Karnataka",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T07:19:07.015000+00:00",
+  "posted_raw": 1790493547015,
+  "salary": "Not Disclosed",
+  "snippet": "BE/B Tech in Civil/Mechanical Engineering with 1-6 years experience in Water Supply Projects, knowledge of CPHEEO guidelines and IS standards|Manage large EPC Water Supply Projects, handle multiple stakeholders and site teams, ensure compliance with contractual conditions, work across Karnataka",
+  "description": ". Education: BE / B Tech in Civil / Mechanical Engineering<br><br>Experience: 1to 6 years (must have exp in Water Supply Projects only). <br><br>Preferred Candidate Profile <br><br>Experience in large EPC Water Supply Projects<br><br>Willingness to work at project locations across Karnataka",
+  "skills": [
+   "civil",
+   "Execution",
+   "Mechanical",
+   "pipeline",
+   "Water",
+   "Water Supply",
+   "WTP"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 6.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 35.9,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001450",
+  "extra": {
+   "naukri_id": "270926001450",
+   "company_apply": false,
+   "applicants": 13,
+   "rating": "3.9",
+   "semantic": 0.084,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong .NET and C# backend experience with high-throughput event processing, database optimization, and cloud deployment aligns well with engineering execution roles requiring technical precision.",
+    "gaps": "Lacks direct experience in water supply infrastructure, EPC projects, or civil engineering background."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Karnataka%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Karnataka%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Karnataka%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Senior%20developer%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Senior%20developer%22%29%20%22Karnataka%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Mechanical Design Engineer Trainee",
+  "company": "Crystal Industries",
+  "url": "https://www.naukri.com/job-listings-mechanical-design-engineer-trainee-crystal-industries-nashik-0-to-1-years-270926001491",
+  "country": "IN",
+  "location": "Nashik",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T07:27:28.491000+00:00",
+  "posted_raw": 1790494048491,
+  "salary": "2-3 Lacs",
+  "snippet": "Proficient in AutoCAD 2D and engineering drawings|Prepare general arrangement and detailed manufacturing drawings, costing, quotations, and assist in prototype preparation",
+  "description": "Preferred candidate profile . Well versatile with MS Word,MS Excel & Autocad 2D. Well versatile with Engineering drawings. .",
+  "skills": [
+   "AutoCAD 2D",
+   "Excel Sheet",
+   "Mechanical Engineering",
+   "MS Office Word"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 1.0,
+  "seniority": "intern",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 34.0,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001491",
+  "extra": {
+   "naukri_id": "270926001491",
+   "company_apply": false,
+   "applicants": 9,
+   "rating": "3.7",
+   "semantic": 0.072,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "The candidate has no relevant experience in mechanical design, CAD, or engineering drawings, making them unsuitable for this role.",
+    "gaps": "Lacks fundamental skills in MS Word, Excel, and AutoCAD 2D required for mechanical design."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Crystal%20Industries%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Nashik%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Crystal%20Industries%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Nashik%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Crystal%20Industries%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Nashik%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Crystal%20Industries%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Nashik%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Crystal%20Industries%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Nashik%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Crystal%20Industries%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Nashik%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Crystal%20Industries%22%20%28%22Senior%20developer%22%29%20%22Nashik%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Crystal%20Industries%22%20%28%22Senior%20developer%22%29%20%22Nashik%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Multiple Openings - Java",
+  "company": "Orcapod Consulting Services",
+  "url": "https://www.naukri.com/job-listings-multiple-openings-java-orcapod-consulting-services-hyderabad-0-to-5-years-260926009177",
+  "country": "IN",
+  "location": "Hyderabad",
+  "remote": true,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T15:15:24.626000+00:00",
+  "posted_raw": 1790435724626,
+  "salary": "3-6 Lacs",
+  "snippet": "Experience in Java Fullstack development with expertise in Spring Boot, Kafka, and Microservices|Develop, configure, support, and operate technology solutions based on assigned areas",
+  "description": "Preferred candidate profile . Work on development,configuration,support,or operations tasks based on the assigned technology area",
+  "skills": [
+   "Angular",
+   "AWS",
+   "Core Java Development",
+   "Full Stack",
+   "Fullstack Development",
+   "HTML",
+   "Java",
+   "Java Development",
+   "Java Fullstack",
+   "Javascript",
+   "Kafka",
+   "Microservices",
+   "MySQL",
+   "NoSQL",
+   "Oracle",
+   "Postgresql",
+   "Python",
+   "RDBMS",
+   "React.js",
+   "Software Engineering",
+   "Spring Boot",
+   "SQL"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 0.0,
+  "score": 33.0,
+  "matched_skills": [
+   "microservices",
+   "angular",
+   "javascript",
+   "postgresql",
+   "sql"
+  ],
+  "missing_skills": [
+   "java",
+   "spring",
+   "kafka",
+   "aws",
+   "html",
+   "mysql",
+   "oracle",
+   "python"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk260926009177",
+  "extra": {
+   "naukri_id": "260926009177",
+   "company_apply": false,
+   "applicants": 190,
+   "rating": null,
+   "semantic": 0.072,
+   "score_confidence": "medium",
+   "ai_summary": {
+    "why": "Candidate has strong experience with microservices, PostgreSQL, and Java-like ecosystems, aligning well with the core technical requirements.",
+    "gaps": "Lacks direct Java/Spring experience and lacks cloud-native AWS/MySQL knowledge."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Orcapod%20Consulting%20Services%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Orcapod%20Consulting%20Services%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Orcapod%20Consulting%20Services%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Orcapod%20Consulting%20Services%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Orcapod%20Consulting%20Services%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Orcapod%20Consulting%20Services%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Orcapod%20Consulting%20Services%22%20%28%22Senior%20developer%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Orcapod%20Consulting%20Services%22%20%28%22Senior%20developer%22%29%20%22Hyderabad%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "L3 & L4 Mobile Repair Technician (Gurugram)",
+  "company": "Dealsdray Online",
+  "url": "https://www.naukri.com/job-listings-l3-l4-mobile-repair-technician-gurugram-dealsdray-online-gurugram-1-to-6-years-240424008439",
+  "country": "IN",
+  "location": "Gurugram",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T17:06:03.672000+00:00",
+  "posted_raw": 1790442363672,
+  "salary": "2-4 Lacs",
+  "snippet": "Hands-on mobile repairing experience with expertise in hardware, software, IC and motherboard repair|Repair mobile hardware, software, motherboard and IC issues; diagnose faults and replace damaged parts; complete quality repairs on time|Performance-based incentives for achieving repair targets",
+  "description": "Good knowledge of hardware,software,IC and motherboard repair<br><br>Hands-on mobile repairing experience",
+  "skills": [
+   "Apple",
+   "Chip Level Repairing",
+   "IPhone",
+   "L1",
+   "L2",
+   "L3",
+   "L4",
+   "Mobile Phones",
+   "mobile repair",
+   "Mobile Repairing",
+   "mobile software repair",
+   "mobile test engineer",
+   "Motherboard",
+   "Repair",
+   "Software"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 6.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 0.0,
+  "score": 31.5,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk240424008439",
+  "extra": {
+   "naukri_id": "240424008439",
+   "company_apply": false,
+   "applicants": 1,
+   "rating": "2.1",
+   "semantic": 0.165,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has no relevant experience in mobile hardware repair, software installation, or motherboard diagnostics.",
+    "gaps": "Lacks hands-on mobile repair experience and knowledge of hardware/IC repair."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Dealsdray%20Online%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Dealsdray%20Online%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurugram%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Dealsdray%20Online%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Dealsdray%20Online%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurugram%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Dealsdray%20Online%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Dealsdray%20Online%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurugram%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Dealsdray%20Online%22%20%28%22Senior%20developer%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Dealsdray%20Online%22%20%28%22Senior%20developer%22%29%20%22Gurugram%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "FMS IT Engineer - Desktop Support Engineer",
+  "company": "Talent Corner Hr Services",
+  "url": "https://www.naukri.com/job-listings-fms-it-engineer-desktop-support-engineer-talent-corner-hr-services-chennai-1-to-2-years-270926000974",
+  "country": "IN",
+  "location": "Chennai",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T05:31:16.778000+00:00",
+  "posted_raw": 1790487076778,
+  "salary": "2-2.5 Lacs",
+  "snippet": "Bachelor's or Diploma in Computer Science with 1.5+ years in desktop support, expertise in LAN/wireless networks and troubleshooting complex hardware/software issues|Manage and support on-site IT environment independently, install/configure hardware and software, troubleshoot network/software issues, train staff, maintain security updates, coordinate with vendors, and prepare monthly reports",
+  "description": "<p><strong>Role & responsibilities</strong> </p><p>We are seeking skilled FMS IT Engineers to join our team in Chennai. The ideal candidates will be responsible for ensuring the smooth operation of our IT infrastructure by designing, installing, and maintaining computer hardware and software systems, troubleshooting issues, and implementing robust security measures. Should handle the site independently. Immediate joiners are preferred.</p><br /><ul><li>Independently manage and support the entire on-site desktop and IT environment for the client, with minimal dependency on additional support.</li><li>Install, configure, and maintain desktop hardware, peripherals, and software across the site.</li><li>Set up and configure new software and computer systems as required.</li><li>Troubleshoot and resolve network and software issues promptly to minimize downtime.</li><li>Train staff on new hardware and software systems.</li><li>Address and resolve hardware, software, and networking issues end-to-end, escalating only when necessary.</li><li>Respond to general IT requests and provide timely, self-sufficient support.</li><li>Ensure security software and patches are up to date across all systems.</li><li>Coordinate with vendors for repairs, replacements, and procurement of IT equipment.</li><li>Manage IT asset and inventory records, ensuring accurate tracking of hardware and software.</li><li>Prepare and submit monthly reports to the IT Manager.</li></ul><br /><p><strong>Preferred candidate profile</strong> </p><br /><ul><li>Education: Bachelors degree in computer science, Diploma in Computer, or a related field. Experience:</li><li>Extensive knowledge of computer hardware systems.</li><li>Familiarity with general OS systems, enterprise software, programming languages, and office software. Skills:</li><li>Proficiency in LAN and wireless networks.</li><li>Strong project management abilities.</li><li>Excellent communication skills.</li><li>Expertise in troubleshooting complex software and hardware issues.</li><li>Knowledge of database and networking security systems. </li><li>Certifications: Not mandatory </li><li>Minimum Experience Required: 1.5 Year(s) - similar role (Desktop Support)</li></ul>",
+  "skills": [
+   "Desktop Support",
+   "Desktop Troubleshooting",
+   "Network Support",
+   "System Support"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 30.4,
+  "matched_skills": [],
+  "missing_skills": [
+   "project management"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926000974",
+  "extra": {
+   "naukri_id": "270926000974",
+   "company_apply": false,
+   "applicants": 15,
+   "rating": null,
+   "semantic": 0.289,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong .NET and cloud experience aligns with FMS IT requirements for hardware/software support and network troubleshooting.",
+    "gaps": "Lacks direct experience in on-site hardware installation, physical troubleshooting, and desktop support."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chennai%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chennai%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chennai%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Senior%20developer%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Senior%20developer%22%29%20%22Chennai%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Walk-in || React Developer",
+  "company": "MI infotech",
+  "url": "https://www.naukri.com/job-listings-react-developer-mi-infotech-chennai-0-to-5-years-260926007637",
+  "country": "IN",
+  "location": "Chennai",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T11:54:20.259000+00:00",
+  "posted_raw": 1790423660259,
+  "salary": "4-9 Lacs",
+  "snippet": "Experience with React.js and knowledge of Java, .NET, or Python preferred|Develop and maintain React.js web applications, create reusable UI components, connect frontend with APIs, fix bugs, and ensure cross-device functionality",
+  "description": "As per our clients hiring requirements,candidates who graduated in 2025,or 2026 are not eligible to apply. *Skills Required:* <br><br>Candidates with knowledge of Java,.NET,or Python will be preferred",
+  "skills": [
+   "CSS",
+   "HTML",
+   "Javascript",
+   "React.js"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 29.4,
+  "matched_skills": [
+   ".net",
+   "javascript"
+  ],
+  "missing_skills": [
+   "react",
+   "java",
+   "python",
+   "css",
+   "html"
+  ],
+  "also_on": [],
+  "query": "developer",
+  "id": "nk260926007637",
+  "extra": {
+   "naukri_id": "260926007637",
+   "company_apply": false,
+   "applicants": 28,
+   "rating": "4.5",
+   "semantic": 0.021,
+   "score_confidence": "medium",
+   "ai_summary": {
+    "why": "Manik has 2 years of production experience with strong .NET and JavaScript skills, matching the preferred tech stack. His background in video analytics and high-throughput systems aligns well with the React developer role's focus on fronten",
+    "gaps": "Lacks direct experience with React, Java, or Python, which are preferred skills for this role."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MI%20infotech%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MI%20infotech%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chennai%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MI%20infotech%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MI%20infotech%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chennai%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MI%20infotech%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MI%20infotech%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chennai%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MI%20infotech%22%20%28%22Senior%20developer%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MI%20infotech%22%20%28%22Senior%20developer%22%29%20%22Chennai%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Engineer - Execution/QC/Planning For Water Supply Project (AP)",
+  "company": "Megha Engineering And Infrastructure",
+  "url": "https://www.naukri.com/job-listings-engineer-execution-qc-planning-for-water-supply-project-ap-megha-engineering-and-infrastructures-ltd-andhra-pradesh-1-to-6-years-270926001395",
+  "country": "IN",
+  "location": "Andhra Pradesh",
+  "remote": true,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T07:09:59.420000+00:00",
+  "posted_raw": 1790492999420,
+  "salary": "Not Disclosed",
+  "snippet": "B.Tech in Civil/Mechanical with experience in Water Supply Projects|Work in Execution, QA & QC, and Planning departments for water supply projects",
+  "description": ". BTech - Civil / Mechanical having experience in Water Supply Projects only",
+  "skills": [
+   "civil",
+   "Civil Engineering",
+   "Client Billing",
+   "ETP",
+   "Mechanical",
+   "Planning",
+   "QA/QC",
+   "RWS",
+   "Waste Water",
+   "Waste Water Treatment",
+   "Water Supply Project",
+   "Water Treatment Plant"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 6.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 27.7,
+  "matched_skills": [
+   "qa"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001395",
+  "extra": {
+   "naukri_id": "270926001395",
+   "company_apply": false,
+   "applicants": 42,
+   "rating": "3.9",
+   "semantic": 0.06,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has strong backend skills in .NET and Azure, but lacks direct experience in water supply project execution, planning, or quality control.",
+    "gaps": "Missing critical domain knowledge in water supply project management, execution, and quality control."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Karnataka%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Karnataka%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Karnataka%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Senior%20developer%22%29%20%22Karnataka%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Megha%20Engineering%20And%20Infrastructure%22%20%28%22Senior%20developer%22%29%20%22Karnataka%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "AI ML + Robotics",
+  "company": "Infosys",
+  "url": "https://www.naukri.com/job-listings-ai-ml-robotics-infosys-hyderabad-bengaluru-mumbai-all-areas-1-to-6-years-220926041204",
+  "country": "IN",
+  "location": "Hyderabad, Bengaluru, Mumbai (All Areas)",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T17:06:07.488000+00:00",
+  "posted_raw": 1790442367488,
+  "salary": "Not Disclosed",
+  "snippet": "Bachelor's/Master's in CS, AI, Robotics or related field with expertise in AI, ML, DL, Python, ROS/ROS2, and Autonomous Mobile Robots|Design and develop AI/ML robotics applications including navigation, perception, SLAM, path planning, and sensor integration",
+  "description": "<p>Job Description AI/ML Robotics Engineer (AMR, ROS, Autonomous Systems)</p><p><strong>Experience:</strong> 1 to 15 Years</p><br /><p>Role Overview</p><p>We are looking for passionate <strong>AI/ML Robotics Engineers</strong> with expertise in <strong>Artificial Intelligence (AI), Machine Learning (ML), Deep Learning (DL), Python, Robotics, Autonomous Mobile Robots (AMR), ROS/ROS2, and Autonomous Systems</strong>. The ideal candidate will design and develop intelligent robotic solutions for navigation, perception, decision-making, and automation across industrial, logistics, warehouse, and autonomous mobility domains.</p><p>Key Responsibilities</p><ul><li>Design and develop AI/ML-powered robotics applications.</li><li>Build computer vision, perception, and autonomous navigation solutions.</li><li>Develop and deploy Machine Learning and Deep Learning models for robotic systems.</li><li>Implement robotic software using ROS/ROS2 frameworks.</li><li>Develop localization, mapping (SLAM), path planning, and obstacle avoidance algorithms.</li><li>Integrate sensors including LiDAR, Camera, IMU, GPS, Radar, and Ultrasonic Sensors.</li><li>Develop autonomous decision-making and control systems for AMRs and AGVs.</li><li>Optimize AI models for edge devices and real-time robotic applications.</li><li>Conduct simulations, field testing, debugging, and deployment.</li><li>Collaborate with multidisciplinary teams across software, hardware, and AI engineering.</li></ul><br /><p>Required Skills</p><ul><li>Strong programming experience in <strong>Python</strong>.</li><li>Good understanding of <strong>Artificial Intelligence, Machine Learning, and Deep Learning</strong>.</li><li>Experience with <strong>PyTorch, TensorFlow, Keras, Scikit-Learn</strong>.</li><li>Hands-on experience with <strong>ROS/ROS2</strong>.</li><li>Knowledge of Robotics Fundamentals, Kinematics, and Motion Planning.</li><li>Understanding of Autonomous Mobile Robots (AMR) and Autonomous Systems.</li><li>Experience with Computer Vision and OpenCV.</li><li>Knowledge of Sensor Fusion, Localization, and SLAM.</li><li>Familiarity with Linux/Ubuntu environments.</li><li>Understanding of cloud and edge deployment concepts.</li></ul><p>Preferred Skills</p><ul><li>Experience in Warehouse Automation, Industrial Robotics, or Autonomous Vehicles.</li><li>Exposure to Gazebo, RViz, MoveIt, Isaac Sim, or Webots.</li><li>Experience with NVIDIA Jetson, Edge AI devices.</li><li>Knowledge of Docker, Git, CI/CD, and MLOps.</li><li>Understanding of Reinforcement Learning and Agentic AI concepts.</li></ul><p>Educational Qualifications</p><ul><li>Bachelor's or Master's degree in Computer Science, Artificial Intelligence, Robotics, Electronics, Mechatronics, or related field.</li></ul>",
+  "skills": [
+   "Aiml",
+   "Autonomous",
+   "Python"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 6.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 0.0,
+  "score": 26.2,
+  "matched_skills": [
+   "data structures",
+   "linux",
+   "docker",
+   "ci/cd"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "robotics",
+   "ros",
+   "python",
+   "deep learning",
+   "computer vision",
+   "pytorch"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk220926041204",
+  "extra": {
+   "naukri_id": "220926041204",
+   "company_apply": false,
+   "applicants": 0,
+   "rating": "3.5",
+   "semantic": 0.283,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong .NET and C# background with cloud/observability experience, but lacks core AI/ML, Python, and robotics expertise required for AMR/ROS roles.",
+    "gaps": "Missing critical skills: AI/ML, Python, ROS, and computer vision."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Infosys%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Infosys%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Infosys%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Infosys%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Infosys%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Infosys%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Infosys%22%20%28%22Senior%20developer%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Infosys%22%20%28%22Senior%20developer%22%29%20%22Hyderabad%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Software Engineer || Work From Home & Office Both",
+  "company": "Anu Graphics - IT",
+  "url": "https://www.naukri.com/job-listings-software-engineer-work-from-home-office-both-anu-graphics-it-bengaluru-0-to-5-years-260926008163",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": true,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T12:37:27.160000+00:00",
+  "posted_raw": 1790426247160,
+  "salary": "5-15 Lacs",
+  "snippet": "Preferred candidate profile |Good logical thinking and problem-solving skills|Strong learning ability and willingness to work in a team",
+  "description": "Preferred candidate profile <br><br>Good logical thinking and problem-solving skills<br><br>Strong learning ability and willingness to work in a team",
+  "skills": [
+   "Android Application Development",
+   "Application Development",
+   "Backend Development",
+   "Database Handling",
+   "Distribution System",
+   "HL7",
+   "PHP",
+   "Product Development",
+   "Ruby Rails",
+   "Sde",
+   "SDET",
+   "Software",
+   "Software Design",
+   "Software Development",
+   "Software Development Life Cycle",
+   "Software Engineering",
+   "Sse"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 25.9,
+  "matched_skills": [],
+  "missing_skills": [
+   "android",
+   "php",
+   "ruby",
+   "rails"
+  ],
+  "also_on": [],
+  "query": "developer",
+  "id": "nk260926008163",
+  "extra": {
+   "naukri_id": "260926008163",
+   "company_apply": false,
+   "applicants": 19,
+   "rating": null,
+   "semantic": 0.112,
+   "score_confidence": "medium",
+   "ai_summary": {
+    "why": "Strong .NET and C# experience with 2 years of production backend work, including high-throughput messaging and database optimization.",
+    "gaps": "Limited frontend skills and no direct experience with PHP, Ruby, or Rails."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anu%20Graphics%20-%20IT%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anu%20Graphics%20-%20IT%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anu%20Graphics%20-%20IT%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anu%20Graphics%20-%20IT%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anu%20Graphics%20-%20IT%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anu%20Graphics%20-%20IT%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anu%20Graphics%20-%20IT%22%20%28%22Senior%20developer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anu%20Graphics%20-%20IT%22%20%28%22Senior%20developer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Fire Engineer at GAIL Gas Bangalore",
+  "company": "YLC Infrastructure",
+  "url": "https://www.naukri.com/job-listings-fire-engineer-at-gail-gas-bangalore-ylc-infrastructure-bengaluru-0-to-5-years-120726001943",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T07:07:30.783000+00:00",
+  "posted_raw": 1790492850783,
+  "salary": "4.75-5 Lacs",
+  "snippet": "B.Tech in Fire & Safety or B.Tech with Diploma in Fire & Safety, basic fire and safety knowledge|Monitor fire and safety activities, conduct inspections, ensure PPE use, report hazards, conduct safety sessions, assist in drills, maintain records",
+  "description": "Freshers and candidates with up to 5 years of experience can apply<br><br>Preferred candidate profile <br><br>Good communication and teamwork skills",
+  "skills": [
+   "Emergency Response",
+   "Fire Alarm System",
+   "Fire Detection",
+   "Fire Fighting",
+   "Fire Prevention",
+   "Fire Safety",
+   "Fire Safety Management"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.3,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk120726001943",
+  "extra": {
+   "naukri_id": "120726001943",
+   "company_apply": false,
+   "applicants": 0,
+   "rating": "3.5",
+   "semantic": 0.088,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "The candidate's extensive experience in high-throughput backend systems, microservices architecture, and cloud infrastructure aligns well with the technical demands of a Fire Engineer role requiring robust system design and communication sk",
+    "gaps": "Significant gap in domain-specific knowledge of fire safety regulations, gas infrastructure operations, and practical firefighting techniques."
+   },
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22YLC%20Infrastructure%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22YLC%20Infrastructure%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22YLC%20Infrastructure%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22YLC%20Infrastructure%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22YLC%20Infrastructure%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22YLC%20Infrastructure%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22YLC%20Infrastructure%22%20%28%22Senior%20developer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22YLC%20Infrastructure%22%20%28%22Senior%20developer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Sales Engineer",
+  "company": "Zenorbit Recruitment And Placement Service",
+  "url": "https://www.naukri.com/job-listings-sales-engineer-zenorbit-recruitment-and-placement-service-pune-0-to-3-years-260926008170",
+  "country": "IN",
+  "location": "Pune",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T19:00:16.512000+00:00",
+  "posted_raw": 1790449216512,
+  "salary": "3-5 Lacs",
+  "snippet": "Technical and commercial understanding with ERP knowledge; AutoCAD preferred|Provide internal sales support, handle tender inquiries, prepare technical-commercial offers, coordinate departments, and manage payment follow-ups",
+  "description": "Required Skills <br><br>Immediate joiner required",
+  "skills": [
+   "Business Development",
+   "Field Sales",
+   "Industrial Equipment",
+   "Sales",
+   "Sales Engineering",
+   "Sales Support",
+   "Sales Support / Presales",
+   "Technical / Service Sales",
+   "Technical Sales",
+   "Tele / Inside Sales"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.1,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk260926008170",
+  "extra": {
+   "naukri_id": "260926008170",
+   "company_apply": false,
+   "applicants": 0,
+   "rating": null,
+   "semantic": 0.07,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Senior%20developer%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenorbit%20Recruitment%20And%20Placement%20Service%22%20%28%22Senior%20developer%22%29%20%22Pune%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Mechanical Engineer",
+  "company": "Anup Mandal",
+  "url": "https://www.naukri.com/job-listings-mechanical-engineer-anup-mandal-bhubaneswar-kolkata-patna-0-to-5-years-270926001885",
+  "country": "IN",
+  "location": "Bhubaneswar, Kolkata, Patna",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T09:31:20.094000+00:00",
+  "posted_raw": 1790501480094,
+  "salary": "3-5 Lacs",
+  "snippet": "Diploma or Bachelor's in Mechanical or Electrical Engineering with knowledge of industrial machinery and troubleshooting|Design, install, maintain mechanical and electrical systems; perform preventive and breakdown maintenance; analyze faults and implement corrective actions; coordinate with teams to minimize downtime; ensure compliance with safety and quality standards",
+  "description": "Diploma or Bachelors degree in Mechanical,Electrical,or related Engineering<br><br>Practical industrial experience will be an advantage. Work Location: As per company requirement",
+  "skills": [
+   "Maintenance Operations",
+   "Manpower Handling",
+   "Production Engineering",
+   "Production Management",
+   "Quality Assurance",
+   "Sheet Metal"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 22.4,
+  "matched_skills": [
+   "qa"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001885",
+  "extra": {
+   "naukri_id": "270926001885",
+   "company_apply": false,
+   "applicants": 53,
+   "rating": null,
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anup%20Mandal%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bhubaneswar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anup%20Mandal%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bhubaneswar%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anup%20Mandal%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bhubaneswar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anup%20Mandal%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bhubaneswar%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anup%20Mandal%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bhubaneswar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anup%20Mandal%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bhubaneswar%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Anup%20Mandal%22%20%28%22Senior%20developer%22%29%20%22Bhubaneswar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Anup%20Mandal%22%20%28%22Senior%20developer%22%29%20%22Bhubaneswar%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Structural Engineer",
+  "company": "Jay Panchal",
+  "url": "https://www.naukri.com/job-listings-structural-engineer-jay-panchal-vadodara-0-to-2-years-270926000956",
+  "country": "IN",
+  "location": "Vadodara",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T05:20:44.214000+00:00",
+  "posted_raw": 1790486444214,
+  "salary": "2-2.25 Lacs",
+  "snippet": "B.E./B.Tech/Diploma in Civil Engineering with 2 years experience in structural design and proficiency in STAAD.Pro, ETABS, RCDC, SAFE|Perform structural analysis and design of steel, RCC and PEB structures; prepare and review calculations, reports and drawings; coordinate with stakeholders; ensure compliance with IS Codes and international standards",
+  "description": "<p> </p><p>Role & Responsibilities:</p><ul><li>Perform structural analysis and design of <strong>steel, RCC and PEB structures</strong> for industrial and commercial projects. </li><li>Prepare and review structural calculations, design reports and engineering drawings. </li><li>Develop structural models using <strong>STAAD.Pro, ETABS, SAFE and RCDC</strong>. </li><li>Design structural members, foundations, connections and equipment support structures as per relevant <strong>IS Codes and international standards</strong>. </li><li>Coordinate with architects, clients, consultants and site teams for design and technical requirements. </li><li>Review structural drawings and provide technical solutions for site-related issues. </li><li>Prepare <strong>GA, fabrication and structural detailing drawings</strong> in coordination with the detailing team. </li><li>Ensure designs comply with safety, serviceability and project requirements. </li><li>Participate in project discussions, design reviews and site inspections. </li></ul><p>Preferred Candidate Profile:</p><ul><li><strong>B.E./B.Tech/Diploma in Civil Engineering</strong> with specialisation or experience in Structural Engineering. </li><li><strong>02 years of experience</strong> in structural design; freshers with relevant technical knowledge may also apply. </li><li>Good knowledge of <strong>STAAD.Pro, ETABS, RCDC, SAFE and AutoCAD</strong>. </li><li>Basic understanding of <strong>IS 800, IS 456, IS 875 and IS 1893</strong>. </li><li>Knowledge of <strong>steel structures, RCC structures, PEB and connection design</strong> will be an advantage. </li><li>Good analytical, problem-solving and communication skills. </li><li>Candidates interested in working on <strong>industrial structural engineering projects</strong> are preferred.</li></ul><br /><br />",
+  "skills": [
+   "PEB Design",
+   "Staad Pro",
+   "Steel Structure Design",
+   "Structural Design"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 22.4,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926000956",
+  "extra": {
+   "naukri_id": "270926000956",
+   "company_apply": false,
+   "applicants": 1,
+   "rating": null,
+   "semantic": 0.012,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jay%20Panchal%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Vadodara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jay%20Panchal%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Vadodara%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jay%20Panchal%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Vadodara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jay%20Panchal%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Vadodara%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jay%20Panchal%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Vadodara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jay%20Panchal%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Vadodara%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jay%20Panchal%22%20%28%22Senior%20developer%22%29%20%22Vadodara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jay%20Panchal%22%20%28%22Senior%20developer%22%29%20%22Vadodara%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Data Scientist",
+  "company": "Jobaaj Com",
+  "url": "https://www.naukri.com/job-listings-data-scientist-jobaaj-com-noida-hyderabad-gurugram-1-to-2-years-260926009348",
+  "country": "IN",
+  "location": "Noida, Hyderabad, Gurugram",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T16:12:31.919000+00:00",
+  "posted_raw": 1790439151919,
+  "salary": "3-6 Lacs",
+  "snippet": "1-2 years experience in data science or analytics with proficiency in Python/R, SQL, and ML libraries|Clean and analyze data, build dashboards, develop ML models, design A/B tests, and collaborate with teams to support data-driven decisions",
+  "description": "1 - 2 years of experience in a data science,analytics,or related role (internships count) <br><br>Bachelors degree in Computer Science,Statistics,Mathematics,Engineering,or related field <br><br>Preferred candidate profile <br><br>We are hiring a Data Scientist with 1 - 2 years of experience on behalf of our client",
+  "skills": [
+   "A/B Testing",
+   "Classification",
+   "Clustering",
+   "Data Cleaning",
+   "Data Visualization",
+   "Data Wrangling",
+   "Excel",
+   "Exploratory Data Analysis (EDA)",
+   "Hypothesis Testing",
+   "Machine Learning",
+   "Matplotlib",
+   "NumPy",
+   "Pandas",
+   "Power BI",
+   "Probability",
+   "Python",
+   "R",
+   "Regression",
+   "Seaborn",
+   "SQL",
+   "Statistics",
+   "Tableau"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 0.0,
+  "score": 21.9,
+  "matched_skills": [
+   "sql"
+  ],
+  "missing_skills": [
+   "machine learning",
+   "python",
+   "statistics",
+   "data science",
+   "a/b testing",
+   "data analysis",
+   "numpy",
+   "pandas"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk260926009348",
+  "extra": {
+   "naukri_id": "260926009348",
+   "company_apply": false,
+   "applicants": 22,
+   "rating": null,
+   "semantic": 0.054,
+   "score_confidence": "medium",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jobaaj%20Com%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jobaaj%20Com%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jobaaj%20Com%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jobaaj%20Com%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jobaaj%20Com%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jobaaj%20Com%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jobaaj%20Com%22%20%28%22Senior%20developer%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jobaaj%20Com%22%20%28%22Senior%20developer%22%29%20%22Noida%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Engineer Civil Engineer",
+  "company": "Nagarjuna Construction Company (NCC)",
+  "url": "https://www.naukri.com/job-listings-engineer-civil-engineer-nagarjuna-construction-company-ncc-vijayawada-visakhapatnam-narasaraopet-0-to-10-years-270926001201",
+  "country": "IN",
+  "location": "Vijayawada, Visakhapatnam, Narasaraopet",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T06:05:08.986000+00:00",
+  "posted_raw": 1790489108986,
+  "salary": "Not Disclosed",
+  "snippet": "Diploma or BE in Civil Engineering with expertise in QA/QC for water distribution and quantity surveying|Design and implement water treatment and waste management systems, conduct site visits, collaborate on design optimization, and prepare project reports",
+  "description": "Diploma or BE in Civil Engineering from a recognized institution<br><br>Proficiency in quantity surveying principles for estimating costs and managing budgets<br><br>10 years of experience in civil engineering or related field (water supply & waste management)",
+  "skills": [
+   "Constructions of Intake well",
+   "DI",
+   "Over Head Tanks",
+   "Pump House",
+   "Qa/Qc",
+   "QS",
+   "Safety",
+   "Sumps",
+   "Water Distribution",
+   "Water Supply",
+   "Water System"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 10.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 21.7,
+  "matched_skills": [
+   "qa"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001201",
+  "extra": {
+   "naukri_id": "270926001201",
+   "company_apply": false,
+   "applicants": 144,
+   "rating": "4.0",
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Vijayawada%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Vijayawada%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Vijayawada%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Vijayawada%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Vijayawada%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Vijayawada%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Senior%20developer%22%29%20%22Vijayawada%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarjuna%20Construction%20Company%20%28NCC%29%22%20%28%22Senior%20developer%22%29%20%22Vijayawada%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "IT Infrastructure Engineer / Technical Support Engineer L2",
+  "company": "Talent Corner Hr Services",
+  "url": "https://www.naukri.com/job-listings-it-infrastructure-engineer-technical-support-engineer-l2-talent-corner-hr-services-chennai-1-to-3-years-270926001152",
+  "country": "IN",
+  "location": "Chennai",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T05:44:12.093000+00:00",
+  "posted_raw": 1790487852093,
+  "salary": "2-3.5 Lacs",
+  "snippet": "2-4 years experience in IT Infrastructure support with expertise in Windows Server, Active Directory, firewalls, VPNs, and NAS solutions|Install, configure, and troubleshoot IT hardware and software including servers, firewalls, NAS, and networking devices; provide remote and on-site customer support; maintain technical documentation",
+  "description": "Preferred candidate profile . Technical Expertise<br><br>Immediate joiners preferred<br><br>Must have a 2-wheeler and require visiting customer places regardless of locations<br><br>Experience with firewalls,VPNs,and network security policies<br><br>Hands-on experience with network devices (switches,routers,",
+  "skills": [
+   "Customer Support",
+   "Documentation",
+   "Hardware Support",
+   "IT Support",
+   "Network Support",
+   "Software Support",
+   "System Support",
+   "Technical Support"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 21.5,
+  "matched_skills": [],
+  "missing_skills": [
+   "windows server",
+   "technical documentation"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001152",
+  "extra": {
+   "naukri_id": "270926001152",
+   "company_apply": false,
+   "applicants": 6,
+   "rating": null,
+   "semantic": 0.073,
+   "score_confidence": "medium",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chennai%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chennai%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chennai%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Talent%20Corner%20Hr%20Services%22%20%28%22Senior%20developer%22%29%20%22Chennai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Talent%20Corner%20Hr%20Services%22%20%28%22Senior%20developer%22%29%20%22Chennai%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "NPI Engineer - Mechanical",
+  "company": "Exicom",
+  "url": "https://www.naukri.com/job-listings-npi-engineer-mechanical-exicom-hyderabad-gurugram-1-to-3-years-270926001359",
+  "country": "IN",
+  "location": "Hyderabad, Gurugram",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T06:59:16.890000+00:00",
+  "posted_raw": 1790492356890,
+  "salary": "Not Disclosed",
+  "snippet": "1–3 years experience in mechanical engineering with expertise in NPI, sheet metal fabrication, CNC machining, die casting, plastic injection molding, GD&T, DFM/DFA, PFMEA, and 3D CAD software like Creo or SolidWorks|Support NPI activities from prototype to mass production, coordinate with cross-functional teams, review engineering drawings and BOMs, manage prototype and pilot builds, support tooli",
+  "description": "Good knowledge of mechanical engineering and manufacturing processes<br><br>Good understanding of BOM and engineering change management<br><br>Good MS Excel and documentation skills<br><br>Required Technical Skills <br><br>Experience: 1 3 Years<br><br>Good understanding of GD&T,engineering drawings and dimensional tolerances",
+  "skills": [
+   "AutoCAD",
+   "Mechanical Engineering",
+   "New Product Introduction",
+   "NPI"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 21.4,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926001359",
+  "extra": {
+   "naukri_id": "270926001359",
+   "company_apply": false,
+   "applicants": 7,
+   "rating": "3.9",
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Exicom%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Exicom%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Exicom%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Exicom%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Exicom%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Exicom%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Exicom%22%20%28%22Senior%20developer%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Exicom%22%20%28%22Senior%20developer%22%29%20%22Hyderabad%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Recording Engineer",
+  "company": "Invox Studio",
+  "url": "https://www.naukri.com/job-listings-recording-engineer-invox-studio-hubballi-0-to-3-years-270926000618",
+  "country": "IN",
+  "location": "Hubballi",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T03:03:40.461000+00:00",
+  "posted_raw": 1790478220461,
+  "salary": "1.2-1.8 Lacs",
+  "snippet": "Experience with audio recording and editing software|Set up recording equipment, edit audio files, collaborate with artists, maintain sound quality, deliver final mixes on time",
+  "description": "<p>Responsibilities:</p><ul><li>Set up recording equipment</li><li>Edit audio files using software</li><li>Collaborate with artists/producers</li><li>Maintain high-quality sound standards</li><li>Deliver final mixes on time</li></ul>",
+  "skills": [
+   "Audio Editing",
+   "Recording",
+   "Sound Editing"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 20.8,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926000618",
+  "extra": {
+   "naukri_id": "270926000618",
+   "company_apply": false,
+   "applicants": 0,
+   "rating": null,
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Invox%20Studio%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hubballi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Invox%20Studio%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hubballi%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Invox%20Studio%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hubballi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Invox%20Studio%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hubballi%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Invox%20Studio%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hubballi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Invox%20Studio%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hubballi%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Invox%20Studio%22%20%28%22Senior%20developer%22%29%20%22Hubballi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Invox%20Studio%22%20%28%22Senior%20developer%22%29%20%22Hubballi%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Medical device-Sales",
+  "company": "Cyrix Health Care",
+  "url": "https://www.naukri.com/job-listings-medical-device-sales-cyrix-health-care-kasaragod-kollam-0-to-2-years-280726004010",
+  "country": "IN",
+  "location": "Kasaragod, Kollam",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T18:39:09.744000+00:00",
+  "posted_raw": 1790447949744,
+  "salary": "2.25 Lacs",
+  "snippet": "Minimum 1 year experience in medical equipment sales with exposure to capital medical equipment|Promote and sell CT, MRI, Cathlab, ventilators; acquire customers; manage relationships; support contracts and sales proposals; conduct market visits; coordinate installations; maintain reports and CRM",
+  "description": "Education: Bachelors degree in Business Administration,Marketing,Life Sciences,or a related field. <br><br>Experience: Minimum 1 year of experience in healthcare,medical fields or medical equipment sales<br><br>Product Exposure: Experience or exposure to selling capital medical equipment or healthcare technology is preferred<br><br>Experience & Qualifications: .",
+  "skills": [
+   "Biomedical Engineering",
+   "Direct Sales",
+   "Medical Devices",
+   "Medical Equipment Sales",
+   "Sales",
+   "Sales and Marketing",
+   "Sales Promotion"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 0.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 20.5,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk280726004010",
+  "extra": {
+   "naukri_id": "280726004010",
+   "company_apply": false,
+   "applicants": 2,
+   "rating": "4.2",
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Cyrix%20Health%20Care%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Kasaragod%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Cyrix%20Health%20Care%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Kasaragod%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Cyrix%20Health%20Care%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Kasaragod%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Cyrix%20Health%20Care%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Kasaragod%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Cyrix%20Health%20Care%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Kasaragod%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Cyrix%20Health%20Care%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Kasaragod%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Cyrix%20Health%20Care%22%20%28%22Senior%20developer%22%29%20%22Kasaragod%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Cyrix%20Health%20Care%22%20%28%22Senior%20developer%22%29%20%22Kasaragod%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Flutter Application Developer",
+  "company": "Comzent Technologies",
+  "url": "https://www.naukri.com/job-listings-flutter-application-developer-comzent-technologies-chhatrapati-sambhajinagar-1-to-3-years-260926007964",
+  "country": "IN",
+  "location": "Chhatrapati Sambhajinagar",
+  "remote": null,
+  "posted": "2026-09-26",
+  "posted_at": "2026-09-26T12:21:12.956000+00:00",
+  "posted_raw": 1790425272956,
+  "salary": "3.6-5.4 Lacs",
+  "snippet": "Experience in Flutter app development|Design, develop, test, and maintain Flutter applications; collaborate with cross-functional teams",
+  "description": "<p>Responsibilities:</p><p>* Design, develop, test & maintain Flutter apps using latest technologies</p><p>* Collaborate with cross-functional teams on project requirements & deliverables</p>",
+  "skills": [
+   "Flutter Development",
+   "Mobile Application Development",
+   "Mobile Development"
+  ],
+  "employment_type": "Full Time, Permanent",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 16.9,
+  "matched_skills": [],
+  "missing_skills": [
+   "flutter",
+   "mobile development"
+  ],
+  "also_on": [],
+  "query": "developer",
+  "id": "nk260926007964",
+  "extra": {
+   "naukri_id": "260926007964",
+   "company_apply": false,
+   "applicants": 4,
+   "rating": "4.7",
+   "semantic": 0.08,
+   "score_confidence": "medium",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Comzent%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chhatrapati%20Sambhajinagar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Comzent%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Chhatrapati%20Sambhajinagar%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Comzent%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chhatrapati%20Sambhajinagar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Comzent%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Chhatrapati%20Sambhajinagar%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Comzent%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chhatrapati%20Sambhajinagar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Comzent%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Chhatrapati%20Sambhajinagar%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Comzent%20Technologies%22%20%28%22Senior%20developer%22%29%20%22Chhatrapati%20Sambhajinagar%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Comzent%20Technologies%22%20%28%22Senior%20developer%22%29%20%22Chhatrapati%20Sambhajinagar%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "apify-naukri",
+  "source_name": "Naukri (Apify)",
+  "title": "Program Engineer",
+  "company": "Blue Star",
+  "url": "https://www.naukri.com/job-listings-program-engineer-blue-star-dadra-nagar-haveli-0-to-3-years-270926000678",
+  "country": "IN",
+  "location": "Dadra & Nagar Haveli",
+  "remote": null,
+  "posted": "2026-09-27",
+  "posted_at": "2026-09-27T03:55:45.008000+00:00",
+  "posted_raw": 1790481345008,
+  "salary": "2.5-3 Lacs",
+  "snippet": "Experience in Programme/NPI/Project Management with strong coordination and problem-solving skills|Coordinate and track NPI/project activities, collaborate with cross-functional teams, support production builds, and ensure quality adherence",
+  "description": "Required Skills: . <br><br>Prior experience in Programme / NPI/Project Management<br><br>Good understanding of manufacturing,SCM,quality,and production processes<br><br>Good oral and written communication skills",
+  "skills": [
+   "MS Office",
+   "New Product Development",
+   "Project Management",
+   "Stakeholder Management"
+  ],
+  "employment_type": "Full Time, Temporary/Contractual",
+  "exp_min": 0.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 15.8,
+  "matched_skills": [],
+  "missing_skills": [
+   "project management",
+   "stakeholder management"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "nk270926000678",
+  "extra": {
+   "naukri_id": "270926000678",
+   "company_apply": false,
+   "applicants": 16,
+   "rating": "4.0",
+   "semantic": 0.0,
+   "score_confidence": "medium",
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blue%20Star%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blue%20Star%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blue%20Star%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blue%20Star%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blue%20Star%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blue%20Star%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22"
+     },
+     "Senior developer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blue%20Star%22%20%28%22Senior%20developer%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blue%20Star%22%20%28%22Senior%20developer%22%29%20%22Dadra%20%26%20Nagar%20Haveli%22"
+     }
+    }
+   }
+  }
+ }
+]

@@ -1,6 +1,25 @@
 {
- "updated": "2026-09-27T10:48:45Z",
+ "updated": "2026-09-27T11:39:53Z",
  "items": [
+  {
+   "id": "jobhunt-20260927-113953-developer-engineer",
+   "kind": "jobhunt",
+   "title": "developer, engineer",
+   "when": "2026-09-27T11:39:53Z",
+   "file": "data/jobhunt/jobhunt-20260927-113953-developer-engineer.html",
+   "bytes": 135029,
+   "meta": {
+    "jobs": "25",
+    "countries": "IN",
+    "experience": "1",
+    "days": "1",
+    "hours": "",
+    "window_hours": "24",
+    "platforms_asked": "apify-naukri",
+    "platforms": "apify-naukri",
+    "jobs_file": "data/jobhunt/jobhunt-20260927-113953-developer-engineer.jobs.json"
+   }
+  },
   {
    "id": "applications-20260927-104845-applications-sent",
    "kind": "applications",
