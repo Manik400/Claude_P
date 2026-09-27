@@ -88,6 +88,20 @@ LOGINS_FILE = ROOT / "data" / "platform_logins.json"
 MAILCODE_HOSTS_FILE = ROOT / "data" / "jobs" / "needs_mailcode.json"
 
 
+SHARED_ATS = ("greenhouse.io", "lever.co", "ashbyhq.com", "workable.com", "smartrecruiters.com", "myworkdayjobs.com",
+              "breezy.hr", "recruitee.com", "teamtailor.com", "bamboohr.com", "jobvite.com")
+
+
+def _mailcode_key(url: str) -> str:
+    """The site a verification-code prompt belongs to: the host - or, on a shared application
+    system, host + company (job-boards.greenhouse.io/stockx), never the whole system."""
+    host = _host(url)
+    if any(a in host for a in SHARED_ATS):
+        path = re.sub(r"^https?://[^/]+", "", url or "").split("?")[0].strip("/").split("/")
+        return host + "/" + (path[0] if path and path[0] else "")
+    return host
+
+
 def _mailcode_hosts() -> set[str]:
     try:
         return set(json.loads(MAILCODE_HOSTS_FILE.read_text(encoding="utf-8")).get("hosts") or [])
@@ -96,7 +110,7 @@ def _mailcode_hosts() -> set[str]:
 
 
 def _remember_mailcode_host(url: str) -> None:
-    hosts = _mailcode_hosts() | {_host(url)}
+    hosts = _mailcode_hosts() | {_mailcode_key(url)}
     try:
         MAILCODE_HOSTS_FILE.parent.mkdir(parents=True, exist_ok=True)
         MAILCODE_HOSTS_FILE.write_text(json.dumps({"hosts": sorted(hosts)}, indent=1), encoding="utf-8")
@@ -1739,7 +1753,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                     return "login-required", f"the Apply button leads to {host}, which needs its own account"
                 continue
 
-            if _host(current.url) in _mailcode_hosts():
+            if _mailcode_key(current.url) in _mailcode_hosts():
                 from . import mailcode
                 if not mailcode.configured():
                     return "career-incomplete", ("this site ends with an e-mail verification code - set up Gmail under "
@@ -1873,7 +1887,7 @@ def _apply_words(page) -> str:
 RELEASABLE = re.compile(r"no application form or Apply button|found no Submit button|no confirmation seen|"
                         r"page did not open|could not press the company-site Apply|needs its own account|"
                         r"platform auto-apply is off|the form rejected some answers|Target (page|closed)|"
-                        r"the form has a CAPTCHA|"
+                        r"the form has a CAPTCHA|ends with an e-mail verification code|the e-mail verification code|"
                         r"Timeout \d+ms|net::ERR", re.I)
 
 
