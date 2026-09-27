@@ -1106,41 +1106,68 @@ ERROR_WORDS = re.compile(r"\b(error|invalid|required|fail|missing|please (fill|e
 OK_WORDS = re.compile(r"success|sent|received|submitted|thank|erfolgreich|gesendet|verzonden|enviad|envoyé|lähetetty|完了", re.I)
 
 
-def _after_submit(current, frame, wait_s: float = 10.0) -> str:
+def page_state(current, frame) -> dict:
+    """What the page shows in the way of complaints right now: the count of invalid fields,
+    the feedback texts, and the page's error phrases. Taken before Submit and compared
+    after, so a static "* indicates a required field" note is never read as a rejection."""
+    try:
+        invalid = frame.locator(INVALID).count()
+    except Exception:
+        invalid = 0
+    try:
+        said = {t.strip() for f in _frames(current)[:3] for t in f.locator(FEEDBACK).all_inner_texts()[:12] if t.strip()}
+    except Exception:
+        said = set()
+    body = _body(current)
+    return {"invalid": invalid, "said": said, "page_errors": set(m.group(0).lower() for m in PAGE_ERROR.finditer(body)), "body": body}
+
+
+def _after_submit(current, frame, before: dict | None = None, why: dict | None = None, wait_s: float = 12.0) -> str:
     """What the page says after Submit was pressed, polled for `wait_s`:
-    "submitted" (a thank-you text, or a success toast), "errors" (a field complaint),
-    "captcha", "gone" (the form vanished, nothing said), or "" (the form is still there)."""
+    "submitted" (a thank-you text, or a success toast), "errors" (a NEW field complaint -
+    one that was not on the page before Submit), "captcha", "gone" (the form vanished,
+    nothing said), or "" (the form is still there). `why` receives the evidence."""
+    before = before or {"invalid": 0, "said": set(), "page_errors": set()}
+    why = why if why is not None else {}
     end = time.monotonic() + wait_s
+    complaint = ""
     while True:
         if captcha(current):
             return "captcha"
-        body = _body(current)
+        now = page_state(current, frame)
+        body = now["body"]
         if THANKS.search(body) or re.search(r"thank|confirm|success|submitted", current.url or "", re.I):
             return "submitted"
-        try:
-            said = " ".join(t for f in _frames(current)[:3] for t in f.locator(FEEDBACK).all_inner_texts()[:8])
-        except Exception:
-            said = ""
+        said = " ".join(sorted(now["said"]))
+        new_said = " ".join(sorted(now["said"] - before["said"]))
         if said and THANKS.search(said):
             return "submitted"
         # a toast that says the application went ("Application sent!") - not a static
         # "our success stories" block that happens to carry a success-ish class
-        if said and OK_WORDS.search(said) and not ERROR_WORDS.search(said) \
-                and re.search(r"applic|apply|applied|submission|form|resume|candidat|bewerbung|sollicitatie|hakemus", said, re.I):
+        if new_said and OK_WORDS.search(new_said) and not ERROR_WORDS.search(new_said) \
+                and re.search(r"applic|apply|applied|submission|form|resume|candidat|bewerbung|sollicitatie|hakemus", new_said, re.I):
             return "submitted"
-        try:
-            invalid = frame.locator(INVALID).count()
-        except Exception:
-            invalid = 0
-        if invalid or (said and ERROR_WORDS.search(said)) or PAGE_ERROR.search(body):
+        new_errors = now["page_errors"] - before["page_errors"]
+        if now["invalid"] > before["invalid"]:
+            complaint = complaint or f"{now['invalid'] - before['invalid']} field(s) marked invalid"
+        elif new_said and ERROR_WORDS.search(new_said):
+            complaint = complaint or "the page said: " + new_said[:120]
+        elif new_errors:
+            complaint = complaint or "the page said: " + "; ".join(sorted(new_errors))[:120]
+        if complaint and time.monotonic() >= end - wait_s / 2:
+            # a complaint, and half the wait spent with no thank-you after it: a rejection
+            why["complaint"] = complaint
             return "errors"
         try:
             gone = frame.locator("[data-ca]").count() and frame.locator("[data-ca]:visible").count() == 0
         except Exception:
             gone = False
-        if gone:
+        if gone and not complaint:
             return "gone"
         if time.monotonic() >= end:
+            if complaint:
+                why["complaint"] = complaint
+                return "errors"
             return ""
         current.wait_for_timeout(1000)
 
@@ -1467,18 +1494,20 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             if dry_run:
                 return "would-apply", f"{total_filled} field(s) filled; dry run ({_shot(current, job, '-dry')})"
 
+            before = page_state(current, frame)
             pressed = _press_submit(frame, current)
             if pressed is None:
                 return "career-incomplete", f"filled {total_filled} field(s) but found no Submit button ({_shot(current, job, '-nosubmit', full=True)})"
             submitted_pages += 1
-            result = _after_submit(current, frame)
+            why: dict = {}
+            result = _after_submit(current, frame, before, why)
             if result == "captcha":
                 _shot(current, job, "-captcha")
                 return "captcha", "a CAPTCHA appeared on submit - apply by hand"
             if result == "submitted":
                 return "submitted", f"{total_filled} field(s) filled and submitted{tailored_note} ({_shot(current, job, '-done')})"
             if result == "errors":
-                return "career-incomplete", f"the form rejected some answers ({_shot(current, job, '-errors', full=True)})"
+                return "career-incomplete", f"the form rejected some answers - {why.get('complaint', 'unclear')} ({_shot(current, job, '-errors', full=True)})"
             if result == "gone" and pressed == "submit":
                 # the form closed and nothing complained: the next scan finds no form and settles below
                 current.wait_for_timeout(2500)
