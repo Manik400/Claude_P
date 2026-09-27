@@ -316,7 +316,7 @@ SCAN_JS = r"""
   // the box a field sits in (form / dialog / section): job-alert and search boxes are not the application
   const ctxOf = e => {
     // no form / dialog around it: the field's own small wrapper (a "create alert" box is often a bare div)
-    const c = e.closest('form, [role=dialog], dialog, [role=search], aside, section') ||
+    const c = e.closest('form, [role=dialog], dialog, [aria-modal=true], [class*=modal i], [class*=dialog i], [class*=popup i], [role=search], aside, section') ||
       (e.parentElement && e.parentElement.parentElement !== document.body ? e.parentElement.parentElement : e.parentElement);
     if (!c) return { ctx: '', ctxFields: 99 };
     return { ctx: [c.tagName, c.id || '', String(c.getAttribute('class') || ''), c.getAttribute('role') || '',
@@ -1266,12 +1266,15 @@ SUBMIT_JS = r"""
   const forms = new Map();
   marked.forEach(e => { const f = e.closest('form'); if (f) forms.set(f, (forms.get(f) || 0) + 1); });
   let form = null, best = 0; forms.forEach((n, f) => { if (n > best) { best = n; form = f; } });
-  const scope = form || (marked.length ? (marked[0].closest('[role=dialog], dialog, section, main, article') || document) : document);
+  const scope = form || (marked.length ? (marked[0].closest('[role=dialog], dialog, [aria-modal=true], [class*=modal i], [class*=dialog i], [class*=popup i], section, main, article') || document) : document);
+  const last = marked[marked.length - 1];
   const out = []; let k = 0;
   scope.querySelectorAll('button, input[type=submit], input[type=button], [role=button], a').forEach(b => {
     if (!vis(b)) return;
     b.setAttribute('data-ca-s', String(k));
     out.push({ k: String(k++), t: txt(b).slice(0, 60), type: (b.getAttribute('type') || '').toLowerCase(), inForm: !!form,
+      // a Submit sits after the fields; the page's own "Apply now" above them is not it
+      after: !!(last && (last.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING)),
       disabled: !!(b.disabled || b.getAttribute('aria-disabled') === 'true') });
   });
   return out;
@@ -1292,10 +1295,16 @@ def _press_submit(frame, page) -> str | None:
     except Exception:
         found = []
     scoped = [b for b in found if b["inForm"]]
+    below = [b for b in found if b.get("after")]
+    strong = re.compile(r"^\W*(submit|send|finish|complete)", re.I)     # over a plain "Apply" further up the page
     order = [
         ("submit", [b for b in scoped if b["type"] == "submit" and (not b["t"] or SUBMIT_TEXT.match(b["t"]) or not NOT_ACTION.search(b["t"]))]),
         ("submit", [b for b in scoped if SUBMIT_TEXT.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
         ("next", [b for b in scoped if NEXT_TEXT.match(b["t"])]),
+        ("submit", [b for b in below if strong.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
+        ("submit", [b for b in below if SUBMIT_TEXT.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
+        ("next", [b for b in below if NEXT_TEXT.match(b["t"])]),
+        ("submit", [b for b in found if strong.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
         ("submit", [b for b in found if SUBMIT_TEXT.match(b["t"]) and not NOT_ACTION.search(b["t"])]),
         ("next", [b for b in found if NEXT_TEXT.match(b["t"])]),
         ("submit", [b for b in scoped if b["type"] == "submit"]),
@@ -1593,6 +1602,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
         total_filled = 0
         ats_tried = outbound_tried = waited = blank_waited = scrolled = pressed_apply = False
         submitted_pages = 0
+        pre_apply: set = set()
         for step in range(12):
             if CLOSED.search(_body(current)):
                 return "closed", "the listing no longer accepts applications"
@@ -1621,13 +1631,15 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             frame, fields = _form_frame(current)
             if aggregator_host(current.url):
                 fields = []                      # an aggregator's page is never the application
-            # A dialog that opened from the Apply button (Wellfound's "Send application" box: one
-            # message field) is the form even with a single field.
-            in_dialog = any(re.search(r"dialog|modal", f.get("ctx") or "", re.I) for f in fields)
+            # A box that opened from the Apply button (Wellfound's "Send application" dialog: one
+            # message field) is the form even with a single field: the fields that were not on
+            # the page before Apply was pressed are it, whatever container they sit in.
             fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
-            if in_dialog and pressed_apply and len(fillable) == 1:
+            new_fields = [f for f in fillable if (f["label"], f["type"], f["name"]) not in pre_apply] if pressed_apply else []
+            dialog_form = pressed_apply and 1 <= len(new_fields) <= 6 and len(fillable) <= 6
+            if dialog_form and len(fillable) == 1:
                 fillable = fillable * 2          # counts as a form below
-            if len(fillable) >= 2 and not looks_like_application(fields, _form_buttons(frame)):
+            if len(fillable) >= 2 and not dialog_form and not looks_like_application(fields, _form_buttons(frame)):
                 fillable = []                    # a search box and an alert e-mail, or a contact form - not the application
             if len(fillable) >= 2 and on_board and not platform_ok(current.url):
                 return "platform-off", f"the form is on {on_board} - {platform_switch.off_note(current.url)}"
@@ -1668,6 +1680,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                         nxt = current
                 if nxt is None:
                     human.wander(current)
+                    pre_apply = {(f["label"], f["type"], f["name"]) for f in fields}   # what was there before Apply
                     nxt = _follow_click(current, lambda: _click_apply(page_now))
                     pressed_apply = pressed_apply or nxt is not None
                 if nxt is None and not outbound_tried:
