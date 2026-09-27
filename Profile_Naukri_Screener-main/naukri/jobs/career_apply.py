@@ -1617,6 +1617,10 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 current.goto(form_url, wait_until="domcontentloaded", timeout=45000)
                 current.wait_for_timeout(2500)
             dismiss_overlays(current)
+            if work_rights_wall(current, facts, job) == "verify":
+                _shot(current, job, "-workrights")
+                return "career-incomplete", ("the board asks you to verify your right to work (SEEK Pass) - do it once by hand, "
+                                             "then retry")
             wall = login_wall(current, text=False)
             if wall:
                 _shot(current, job, "-login")
@@ -1799,6 +1803,24 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
 
 OFFSITE_TEXT = re.compile(r"^\W*(apply (on|via|at) (the )?(company|employer)('s)? ?(site|website|page)?|"
                           r"apply on company|company site|apply externally|apply on website)", re.I)
+
+
+WORK_RIGHTS = re.compile(r"verify your work rights|verify your right to work|right to work in [A-Z][\w ]+", re.I)
+SPONSOR_LINK = re.compile(r"^\W*i (require|need|will need|would need) (visa |work )?sponsorship", re.I)
+
+
+def work_rights_wall(page, facts: dict, job: dict) -> str | None:
+    """SEEK's "Verify your work rights to continue applying" box. When your facts say the job
+    needs sponsorship (a foreign posting), its "I require sponsorship" link is the honest way
+    on and is pressed; otherwise the SEEK Pass verification is yours to do once -> "verify"."""
+    if not WORK_RIGHTS.search(_body(page)[:6000]):
+        return None
+    from . import answers as answers_mod
+    answer, _why = answers_mod.resolve("Will you now or in the future require visa sponsorship?", ["Yes", "No"], facts, job=job)
+    if str(answer or "").lower().startswith("y") and _click_text(page, SPONSOR_LINK):
+        page.wait_for_timeout(1500)
+        return "continued"
+    return "verify"
 
 
 def _page_location(page) -> str:
