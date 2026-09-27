@@ -723,7 +723,12 @@ def _meaning(field: dict) -> str | None:
     if field["type"] == "file":
         if re.search(r"image/", field.get("accept") or "") or re.search(r"photo|avatar|picture|headshot|\bimage\b|logo", text, re.I):
             return "photo"          # SEEK's profile-photo input took the resume once ("Unable to upload photo")
-        return "cover_letter" if re.search(r"cover|motivation", text, re.I) else "resume"
+        if re.search(r"cover|motivation", text, re.I):
+            return "cover_letter"
+        if re.search(r"\bother\b|additional|certificate|transcript|portfolio|reference|zeugnis|sonstige|weitere", text, re.I) \
+                and not re.search(r"resume|\bcv\b|curriculum|lebenslauf", text, re.I):
+            return "other_file"     # "Other (Optional)", "Certificates": not the place for a second copy of the resume
+        return "resume"
     label = field["label"] or ""
     question_like = len(label) > 60 or label.rstrip().endswith("?") or bool(re.match(r"\s*(do|are|will|have|can|would|which)\b", label, re.I))
     for meaning, pattern in FIELD_RULES:
@@ -1091,9 +1096,9 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
 
             # ---- files
             if f["type"] == "file":
-                if meaning == "photo":
+                if meaning == "photo" or (meaning == "other_file" and not f["required"]):
                     continue
-                if meaning == "resume" and who.get("resume"):
+                if meaning in ("resume", "other_file") and who.get("resume"):
                     human.hover(pg, loc(f))
                     loc(f).set_input_files(who["resume"], timeout=8000)
                     filled += 1
