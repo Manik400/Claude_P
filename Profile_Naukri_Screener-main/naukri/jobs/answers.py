@@ -43,8 +43,8 @@ RULES: list[tuple[str, str, str]] = [
     ("current_ctc", r"(current|present)\s+(in.?hand\s+|annual\s+|monthly\s+)?(ctc|salary|compensation|package)|"
                     r"current\s+fixed|in.?hand\s+(salary|ctc|pay)", "current_ctc_lpa"),
     ("notice_period", r"notice\s*period|when\s+can\s+you\s+(join|start)|how\s+soon.*(join|start)|availab\w*\s+to\s+(join|start)|"
-                      r"earliest\s+(joining|start)\s+date|how\s+long.*(before|until).*(start|join)|time\s+to\s+(join|start)|"
-                      r"start\s+date|joining\s+time", "notice_period_months"),
+                      r"earliest\s+(possible\s+)?(joining|start\w*)(\s+date)?|how\s+long.*(before|until).*(start|join)|time\s+to\s+(join|start)|"
+                      r"start\w*\s+date|joining\s+time|available\s+from|verfügbar ab|eintrittsdatum|beschikbaar vanaf", "notice_period_months"),
     ("total_experience", r"total\s+(work\s+)?experience|years\s+of\s+experience(?!\s+in)|overall\s+experience", "total_experience_years"),
     ("current_location", r"current\s+(location|city)|where\s+are\s+you\s+(currently\s+)?(based|located)|^\W*city\W*$|city or location|^\W*location(\s*\(city\))?\W*$", "current_location"),
     ("current_state", r"^\W*(current\s+|home\s+)?(state|state\s*/\s*(province|region|ut)|province)\W*$|which\s+state\s+(are|do)\s+you|"
