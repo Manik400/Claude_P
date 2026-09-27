@@ -240,6 +240,10 @@ APPLIED_TEXT = re.compile(r"^\W*(applied|application (sent|submitted)|you('ve| h
                           r"bereits beworben|ya aplicaste|応募済み)\b", re.I)
 NEXT_TEXT = re.compile(r"^\s*(next|next step|continue|save (and|&) continue|proceed|review|weiter|nächster schritt|siguiente|"
                        r"continuar|suivant|continuer|seuraava|jatka|volgende|次へ|次に進む|ถัดไป)\s*[›>→]?\s*$", re.I)
+# A thank-you page by its address: a path segment, not a query parameter or a word inside another
+# ("...&prefill=success" on Tabcorp's step-1 page once read as done).
+THANKS_URL = re.compile(r"/(thank[-_]?you|thanks|confirmation|application[-_]?(complete|submitted|received|success)|"
+                        r"apply[-_]?(complete|success|done)|submitted)(?:[/?#.]|$)", re.I)
 THANKS = re.compile(r"thank(s| you) for (applying|your (application|interest|submission))|application (has been |was )?"
                     r"(received|submitted|sent|complete|successful)|we('ve| have) received your application|"
                     r"successfully (applied|submitted|sent)|your application is on its way|"
@@ -1427,7 +1431,7 @@ def _after_submit(current, frame, before: dict | None = None, why: dict | None =
             return "captcha"
         now = page_state(current, frame)
         body = now["body"]
-        if THANKS.search(body) or re.search(r"thank|confirm|success|submitted", current.url or "", re.I):
+        if THANKS.search(body) or THANKS_URL.search(current.url or ""):
             return "submitted"
         said = " ".join(sorted(now["said"]))
         new_said = " ".join(sorted(now["said"] - before["said"]))
