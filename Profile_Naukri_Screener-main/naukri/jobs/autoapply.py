@@ -258,6 +258,12 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
 def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,
          sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify) -> dict:
     deadline = _deadline()
+    # With company-site postings waiting, the boards' passes get 40% of the run and the
+    # company sites the rest: a run of 95 Naukri re-checks once used the whole window and
+    # the 137 company forms behind them never came up.
+    board_deadline = deadline
+    if web_jobs and deadline:
+        board_deadline = time.monotonic() + (deadline - time.monotonic()) * 0.4
     # Applying runs on your PC, not a 45-minute runner: give the local model room for the
     # written answers (about a minute each on the CPU). LOCAL_AI_BUDGET_SECONDS still wins.
     os.environ.setdefault("LOCAL_AI_BUDGET_SECONDS", "2400")
@@ -422,7 +428,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                 browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
             try:
                 for n, job in enumerate(naukri_jobs):
-                    if _out_of_time(deadline, "Naukri", len(naukri_jobs) - n):
+                    if _out_of_time(board_deadline, "Naukri", len(naukri_jobs) - n):
                         break
                     company_site = getattr(job, "company_apply", False) or career_untried(job.job_id)
                     if budget <= 0 and not company_site:
@@ -539,7 +545,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                         browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
                     try:
                         for n, (card, job) in enumerate(li_cards):
-                            if _out_of_time(deadline, "LinkedIn", len(li_cards) - n):
+                            if _out_of_time(board_deadline, "LinkedIn", len(li_cards) - n):
                                 break
                             if li_budget <= 0 and not paused[0]:
                                 paused[0] = True
