@@ -1176,20 +1176,32 @@ def upload_via_picker(page, resume: str) -> int:
     return done
 
 
+APPLIED_JS = r"""
+(() => {
+  // The posting's own Apply control now says "Applied": a button (or a disabled control)
+  // in the page's main content. Not a link - Wellfound's sidebar has a link called
+  // "Applied" (your applications list), which is how 10 postings were wrongly recorded.
+  const vis = e => { const r = e.getBoundingClientRect(); return r.width > 1 && r.height > 1 && getComputedStyle(e).visibility !== 'hidden'; };
+  const txt = e => (e.innerText || e.value || e.getAttribute('aria-label') || '').replace(/\s+/g, ' ').trim();
+  const re = /^\W*(applied|application (sent|submitted)|you('ve| have) applied|already applied|bereits beworben|ya aplicaste|応募済み)\b/i;
+  for (const e of document.querySelectorAll('button, [role=button], input[type=submit], input[type=button], [aria-disabled=true], [disabled]')) {
+    if (!vis(e) || !re.test(txt(e))) continue;
+    if (e.tagName === 'A' || e.closest('a[href], nav, aside, header, footer, [role=navigation], [role=menu], [class*=sidebar i], [class*=nav i]')) continue;
+    return txt(e).slice(0, 40);
+  }
+  return '';
+})()
+"""
+
+
 def board_applied(page) -> bool:
     """The board itself says the application is in (one-click applies on Instahyre,
-    Hirist, Cutshort, Wellfound ...): the Apply button now reads "Applied", or a
-    thank-you line appeared."""
+    Hirist, Cutshort, Wellfound ...): the posting's Apply button now reads "Applied",
+    or a thank-you line appeared. Links and navigation never count."""
     for frame in _frames(page)[:3]:
         try:
-            items = frame.locator("button, [role=button], a, span, div[class*=appl i]")
-            for i in range(min(items.count(), 120)):
-                el = items.nth(i)
-                try:
-                    if el.is_visible(timeout=150) and APPLIED_TEXT.match((el.inner_text(timeout=200) or "").strip()):
-                        return True
-                except Exception:
-                    continue
+            if frame.evaluate(APPLIED_JS):
+                return True
         except Exception:
             continue
     return bool(THANKS.search(_body(page)))
@@ -1310,7 +1322,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
             return "login-required", f"{host} needs its own account (sign in once with: python main.py --platform-login)"
 
         total_filled = 0
-        ats_tried = outbound_tried = waited = blank_waited = scrolled = False
+        ats_tried = outbound_tried = waited = blank_waited = scrolled = pressed_apply = False
         submitted_pages = 0
         for step in range(12):
             if CLOSED.search(_body(current)):
@@ -1330,13 +1342,21 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 _shot(current, job, "-captcha")
                 return "captcha", "the form has a CAPTCHA - apply by hand"
             on_board = platform_host(current.url)
-            if step and on_board and board_applied(current):
+            if on_board and offsite_click is None and board_applied(current):
+                if step == 0 or total_filled == 0 and not pressed_apply:
+                    # the posting already shows "Applied" before anything was pressed: applied earlier
+                    return "closed", f"the posting on {on_board} already shows Applied ({_shot(current, job, '-already')})"
                 # a one-click apply on the board itself went through
                 return "submitted", f"applied on {on_board} with your saved login ({_shot(current, job, '-done')})"
             frame, fields = _form_frame(current)
             if aggregator_host(current.url):
                 fields = []                      # an aggregator's page is never the application
+            # A dialog that opened from the Apply button (Wellfound's "Send application" box: one
+            # message field) is the form even with a single field.
+            in_dialog = any(re.search(r"dialog|modal", f.get("ctx") or "", re.I) for f in fields)
             fillable = [f for f in fields if f["type"] not in ("checkbox", "radio")]
+            if in_dialog and pressed_apply and len(fillable) == 1:
+                fillable = fillable * 2          # counts as a form below
             if len(fillable) >= 2 and not looks_like_application(fields, _form_buttons(frame)):
                 fillable = []                    # a search box and an alert e-mail, or a contact form - not the application
             if len(fillable) >= 2 and on_board and not platform_ok(current.url):
@@ -1379,6 +1399,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 if nxt is None:
                     human.wander(current)
                     nxt = _follow_click(current, lambda: _click_apply(page_now))
+                    pressed_apply = pressed_apply or nxt is not None
                 if nxt is None and not outbound_tried:
                     outbound_tried = True
                     target = _outbound_apply(current)

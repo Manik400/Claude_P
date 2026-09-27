@@ -59,6 +59,9 @@ LINKEDIN_PAUSE = (50.0, 110.0)
 # already applied) a long pause only burns the run: a run of 198 such postings
 # took five hours and outlived its scheduled task.
 SHORT_PAUSE = (6.0, 14.0)
+# After a one-click apply on a board (Wellfound, Instahyre, ...) - the time a person spends
+# reading the next posting before applying again.
+BOARD_PAUSE = (45.0, 120.0)
 NOTHING_SENT = {"offsite", "no-button", "already", "would-apply", "limit-reached", "limit-cooldown",
                 "login-required", "captcha", "no-form", "career-error", "career-incomplete", "platform-off"}
 # A run stops starting new applications after this many minutes
@@ -654,7 +657,9 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                                 pass
                     outcomes[job.job_id] = {"status": status, "note": note}
                     if status == "submitted" and not dry_run:
-                        time.sleep(random.uniform(*SHORT_PAUSE))
+                        # a one-click apply on a board took seconds; a person reads the next posting
+                        # before applying again - ten Wellfound applies a minute apart read as a bot
+                        time.sleep(random.uniform(*(BOARD_PAUSE if "with your saved login" in note else SHORT_PAUSE)))
             finally:
                 browser.close()
         if not dry_run:
