@@ -24,12 +24,21 @@ LOCK_PATH = ROOT / "data" / "jobs" / "apply.lock"
 DEFAULT_WAIT_S = int(os.environ.get("APPLY_LOCK_WAIT") or 1500)     # 25 min
 
 
+_HELD: dict = {}         # path -> depth, for the process that holds it (re-entrant within one process)
+
+
 class RunLock:
     def __init__(self, path: Path = LOCK_PATH):
         self.path = path
         self._fh = None
+        self._nested = False
 
     def try_acquire(self) -> bool:
+        if _HELD.get(self.path):
+            # this process already holds it (phone_apply around autoapply.run): count, don't lock twice
+            _HELD[self.path] += 1
+            self._nested = True
+            return True
         self.path.parent.mkdir(parents=True, exist_ok=True)
         fh = open(self.path, "a+")
         try:
@@ -51,6 +60,11 @@ class RunLock:
         except OSError:
             pass
         self._fh = fh
+        _HELD[self.path] = 1
+        try:    # who holds it, readable by others (the locked file itself cannot be read while locked)
+            self.path.with_suffix(".holder").write_text("%d %s\n" % (os.getpid(), time.strftime("%Y-%m-%d %H:%M:%S")), encoding="utf-8")
+        except OSError:
+            pass
         return True
 
     def acquire(self, wait_s: int = DEFAULT_WAIT_S, poll_s: int = 20) -> bool:
@@ -69,14 +83,19 @@ class RunLock:
 
     def holder(self) -> str:
         try:
-            return self.path.read_text(encoding="utf-8").strip() or "unknown"
+            return self.path.with_suffix(".holder").read_text(encoding="utf-8").strip() or "unknown"
         except OSError:
             return "unknown"
 
     def release(self) -> None:
+        if self._nested:
+            self._nested = False
+            _HELD[self.path] = max(0, _HELD.get(self.path, 1) - 1)
+            return
         fh, self._fh = self._fh, None
         if fh is None:
             return
+        _HELD.pop(self.path, None)
         try:
             if os.name == "nt":
                 import msvcrt

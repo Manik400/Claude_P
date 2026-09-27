@@ -567,6 +567,20 @@ def main(argv=None) -> int:
                     help="after a fix to the career applier: put every company-site posting it gave up on back in line "
                          "(the queue's 'by hand' items and the screener's ledger), then exit")
     args = ap.parse_args(argv)
+    # One run at a time, maintenance commands included: --release / --retry-by-hand refresh
+    # the gh-pages clone (reset --hard), which threw away a finishing run's queue once.
+    from naukri.jobs.runlock import RunLock
+    lock = RunLock()
+    if not lock.acquire():
+        log("another run (%s) is still going after a long wait - this run steps aside" % lock.holder())
+        return 0
+    try:
+        return _main(args)
+    finally:
+        lock.release()
+
+
+def _main(args) -> int:
     if args.release:
         from naukri.jobs import career_apply as career_mod
         counts = career_mod.release_failed()

@@ -70,9 +70,13 @@ def push(target, message):
     target = os.path.abspath(target)
     sh(["git", "add", "-A"], cwd=target)
     if sh(["git", "diff", "--cached", "--quiet"], cwd=target, check=False).returncode == 0:
-        print("pages_git: nothing to publish")
-        return
-    sh(["git", "commit", "-q", "-m", message], cwd=target)
+        # nothing new to commit - but a commit made earlier and never pushed still goes
+        ahead = sh(["git", "rev-list", "--count", "FETCH_HEAD..HEAD"], cwd=target, check=False, capture=True)
+        if (ahead.stdout or "").strip() in ("", "0"):
+            print("pages_git: nothing to publish")
+            return
+    else:
+        sh(["git", "commit", "-q", "-m", message], cwd=target)
     for attempt in range(5):
         r = sh(["git", "push", "-q", "origin", "HEAD:" + BRANCH], cwd=target, check=False, capture=True)
         if r.returncode == 0:
