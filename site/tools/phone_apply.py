@@ -256,6 +256,15 @@ def retry_by_hand(include_captcha: bool = False) -> int:
     queue = load_queue(path, cfg.get("passphrase") or "")
     items = [i for i in queue["items"] if i["status"] in ("manual", "offsite", "failed")
              and (include_captcha or "captcha" not in (i.get("note") or "").lower())]
+    # Company-site items the queue calls applied but the ledger has since sent back for a
+    # re-check (a board dialog that closed without the board showing Applied) go too.
+    from naukri.jobs.ledger import Ledger
+    entries = Ledger().entries
+    for it in queue["items"]:
+        if it["board"] == "web" and it["status"] in ("submitted", "applied"):
+            entry = entries.get(it["key"]) or {}
+            if entry.get("status") == "offsite" and str(entry.get("note", "")).startswith("retry requested"):
+                items.append(it)
     n = release_for_retry(items)
     with open(path, "w", encoding="utf-8") as f:
         json.dump(queue, f, ensure_ascii=False, indent=1)
