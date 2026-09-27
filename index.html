@@ -1146,7 +1146,7 @@
     skipped: ["", "applied earlier / closed"], offsite: ["man", "company site - apply by hand"], manual: ["man", "company site - apply by hand"],
     prefilled: ["man", "form pre-filled - finish on PC"], unconfirmed: ["bad", "unconfirmed"], error: ["bad", "error"],
     "questionnaire-failed": ["bad", "form failed"], "offsite-error": ["bad", "company site failed"], failed: ["bad", "failed - tap retry"],
-    removed: ["", "removed"], "would-apply": ["", "would apply (dry run)"], "platform-off": ["warn", "waits - platform auto-apply off"],
+    removed: ["", "removed"], "would-apply": ["", "would apply (dry run)"], "platform-off": ["warn", "waits - that platform's auto-apply is off"],
     closed: ["", "closed / no longer open"], "no-form": ["man", "no form found - apply by hand"], captcha: ["man", "CAPTCHA - apply by hand"],
     "career-unconfirmed": ["warn", "submitted, no confirmation seen"]
   };
@@ -1196,7 +1196,7 @@
     if (st.h > 1.25) s += '<div class="msg warn">The PC has not checked in for ' + (st.h < 48 ? Math.round(st.h) + " h" : Math.round(st.h / 24) + " days") + '. Everything you queue waits safely and is applied when it is on again (lock screen is fine; sleep is not).</div>';
     var a = pc.applied_today || {}, caps = pc.caps || {};
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
-      " · up to " + (pc.limit || 5) + " each on Naukri / LinkedIn per run, company sites unlimited" + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
+      " · up to " + (pc.limit || 5) + " each on Naukri / LinkedIn per run, company sites unlimited" + (pc.platform_summary ? " · " + esc(pc.platform_summary) : "") + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
     return s;
   }
 
@@ -1289,6 +1289,14 @@
       return latest(a, b);
     });
   }
+  var PLATFORM_FALLBACK = [["naukri", "Naukri"], ["linkedin", "LinkedIn Easy Apply"], ["instahyre", "Instahyre"], ["hirist", "Hirist"], ["cutshort", "Cutshort"], ["foundit", "foundit"], ["wellfound", "Wellfound"], ["indeed", "Indeed"], ["glassdoor", "Glassdoor"], ["seek", "SEEK / JobsDB / Jobstreet"], ["xing", "XING"], ["stepstone", "StepStone"], ["relocateme", "Relocate.me"], ["other", "Other boards"]];
+  function platformLabels(q) { var l = ((q || {}).pc || {}).platform_labels; return l && l.length ? l : PLATFORM_FALLBACK; }
+  function platformsOn(q) {
+    var pc = (q || {}).pc || {}, p = pc.platforms;
+    if (p && typeof p === "object") return Object.keys(p).filter(function (k) { return p[k]; });
+    // a PC from before the per-platform switches: one switch for all
+    return pc.platform_apply ? platformLabels(q).map(function (kl) { return kl[0]; }) : platformLabels(q).map(function (kl) { return kl[0]; }).filter(function (k) { return k !== "naukri" && k !== "linkedin"; });
+  }
   function renderQueue() {
     var q = queue || { items: [] }, st = q.settings || {}, auto = st.auto || {}, pend = q.pending_questions || [];
     var items = itemsLive();
@@ -1301,12 +1309,12 @@
     if (pend.length) h += '<div class="card"><h2>' + pend.length + " question" + (pend.length > 1 ? "s" : "") + " waiting for you</h2>" + questionsHtml(pend, "qq") + "</div>";
     var rsum = (auto.enabled ? "auto-queue " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") : "auto-queue off") +
       " · company sites: " + ({ career: "PC fills and submits", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) +
-      " · " + ((q.pc || {}).platform_apply ? (st.limit || 5) + " each on Naukri / LinkedIn per run" : "platform auto-apply OFF (company sites only)") + " · company sites: no limit";
+      " · " + ((q.pc || {}).platform_summary || ((q.pc || {}).platform_apply ? (st.limit || 5) + " each on Naukri / LinkedIn per run" : "platform auto-apply OFF (company sites only)")) + " · company sites: no limit";
     h += acc("qr", "Rules", rsum,
       '<div class="muted">' + (auto.enabled ? "Auto: every new report's jobs scoring " + (auto.min_score || 0) + "%+ on " + ((auto.boards || []).join(" + ") || "any board") + " are queued by themselves." : "Auto-queue is off: you pick jobs under Jobs.") +
       " Company-site postings: " + ({ career: "PC fills and submits (skips sites that need a login)", manual: "left for you", simplify: "Simplify fills, PC submits", "simplify-submit": "Simplify fills, PC submits" }[st.offsite || "career"] || st.offsite) + ". Limit " + (st.limit || 5) + " each on Naukri and LinkedIn per run; company sites have no limit.</div>" +
-      '<label class="check"><input type="checkbox" id="r-platform"' + ((q.pc || {}).platform_apply ? " checked" : "") + '> Auto-apply on job platforms (Naukri, LinkedIn Easy Apply, Instahyre, Hirist, ...)</label>' +
-      '<div class="hint">Off: the PC applies only on company career pages and the employer job page itself. Platform jobs wait untouched until you switch this on.</div>' +
+      '<label>Auto-apply through these platforms</label><div class="chips small" id="r-platforms">' + platformLabels(q).map(function (kl) { var on = (dirty["r-platforms"] || platformsOn(q)).indexOf(kl[0]) >= 0; return '<button type="button" data-p="' + kl[0] + '"' + (on ? ' class="on"' : "") + ">" + esc(kl[1]) + "</button>"; }).join("") + "</div>" +
+      '<div class="hint">A lit platform lets the PC use that platform\'s <b>own</b> apply (Naukri one-click / questionnaire, LinkedIn Easy Apply, an Instahyre / Hirist / SEEK form). Unlit: those postings wait untouched. Postings that lead to the <b>employer\'s site</b> - Naukri "Apply on company site", LinkedIn\'s plain Apply, a board\'s link out - are always followed and their career form filled and submitted.</div>' +
       '<label class="check"><input type="checkbox" id="r-auto"' + (auto.enabled ? " checked" : "") + '> Auto-queue jobs from every new report</label>' +
       '<div class="row"><div><label>Only if resume match is at least</label><select id="r-min">' + [0, 40, 50, 60, 70, 80].map(function (v) { return '<option value="' + v + '"' + (+auto.min_score === v ? " selected" : "") + ">" + (v ? v + "%" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Naukri / LinkedIn, each, per run</label><select id="r-limit">' + [2, 3, 5, 8, 10].map(function (v) { return '<option value="' + v + '"' + (+st.limit === v ? " selected" : "") + ">" + v + "</option>"; }).join("") + "</select></div></div>" +
@@ -1337,13 +1345,19 @@
       var b = e.target.closest("button"); if (!b) return; b.classList.toggle("on");
       dirty["r-boards"] = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (x) { return x.dataset.b; });
     });
+    $("r-platforms").addEventListener("click", function (e) {
+      var b = e.target.closest("button"); if (!b) return; b.classList.toggle("on");
+      dirty["r-platforms"] = Array.prototype.map.call(document.querySelectorAll("#r-platforms button.on"), function (x) { return x.dataset.p; });
+    });
     $("r-save").addEventListener("click", function () {
       var boards = Array.prototype.map.call(document.querySelectorAll("#r-boards button.on"), function (b) { return b.dataset.b; });
       $("r-save").disabled = true;
       var rules = { auto: { enabled: $("r-auto").checked, min_score: +$("r-min").value, boards: boards }, limit: +$("r-limit").value, offsite: $("r-offsite").value };
-      if ($("r-platform").checked !== !!(q.pc || {}).platform_apply) rules.platform_apply = $("r-platform").checked;
+      var pOn = Array.prototype.map.call(document.querySelectorAll("#r-platforms button.on"), function (b) { return b.dataset.p; }), pWas = platformsOn(q), pChange = {};
+      platformLabels(q).forEach(function (kl) { var now = pOn.indexOf(kl[0]) >= 0; if (now !== (pWas.indexOf(kl[0]) >= 0)) pChange[kl[0]] = now; });
+      if (Object.keys(pChange).length) rules.platform_apply = pChange;
       request("settings", rules,
-        "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("qr")); delete dirty["r-boards"]; } });
+        "Rules sent. The PC applies them on its next run.").then(function (ok) { $("r-save").disabled = false; if (ok) { clearDirty($("qr")); delete dirty["r-boards"]; delete dirty["r-platforms"]; } });
     });
     $("q-filters").addEventListener("click", function (e) { var b = e.target.closest("button[data-f]"); if (!b) return; qFilter = b.dataset.f; store.set("q.filter", qFilter); renderQueue(); });
     $("q-sort").addEventListener("change", function () { qSort = $("q-sort").value; store.set("q.sort", qSort); renderQueue(); });
