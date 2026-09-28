@@ -1,6 +1,39 @@
 {
- "updated": "2026-09-28T05:58:03Z",
+ "updated": "2026-09-28T06:22:49Z",
  "items": [
+  {
+   "id": "naukri-20260928-062249-naukri-openings-2026-09-28-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-28 run 1 - Last 24h",
+   "when": "2026-09-28T06:22:49Z",
+   "file": "data/naukri/naukri-20260928-062249-naukri-openings-2026-09-28-run-1-last-24.html",
+   "bytes": 46491,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260928-062249-naukri-openings-2026-09-28-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20260928-062249-naukri-openings-2026-09-28-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-28 run 2 - Early",
+   "when": "2026-09-28T06:22:49Z",
+   "file": "data/naukri/naukri-20260928-062249-naukri-openings-2026-09-28-run-2-early.html",
+   "bytes": 34379,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260928-062249-naukri-openings-2026-09-28-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20260928-062249-naukri-openings-2026-09-28-run-3-all-job",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-09-28 run 3 - All jobs",
+   "when": "2026-09-28T06:22:49Z",
+   "file": "data/naukri/naukri-20260928-062249-naukri-openings-2026-09-28-run-3-all-job.html",
+   "bytes": 68523,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20260928-062249-naukri-openings-2026-09-28-run-3-all-job.jobs.json"
+   }
+  },
   {
    "id": "careers-20260928-055803-software-developer-engineer",
    "kind": "careers",
