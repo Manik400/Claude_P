@@ -50,7 +50,7 @@ concurrency:
 jobs:
   search:
     runs-on: ubuntu-latest
-    timeout-minutes: 60   # thousands of company boards since build_companies.py
+    timeout-minutes: 90   # thousands of company boards; run_careers.py stops reading them at 38 min
     steps:
       - uses: actions/checkout@v4
 

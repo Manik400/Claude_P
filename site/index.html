@@ -2373,7 +2373,7 @@
       return '<div class="job"><h3>' + esc(c.name) + '</h3><div class="sub">' + esc(c.note || c.ats) + "</div><div class=\"tags\">" + chip("", count[c.name] + " shown · " + c.role_matches + " match the role · " + c.open + " open") + share + "</div>" +
         '<div class="contacts">' + contactsHtml(c.name, (c.cities || [])[0] || "", "") + "</div></div>";
     }).join("") + "</div>";
-    var rest = cos.filter(function (c) { return !count[c.name] && c.status !== "link"; });
+    var rest = cos.filter(function (c) { return !count[c.name] && c.status !== "link" && c.status !== "skipped"; });
     if (rest.length) h += '<div class="card muted">Nothing with these filters at: ' + esc(rest.map(function (c) { return c.name + (c.status === "error" ? " (could not read: " + c.error + ")" : ""); }).join(", ")) + "</div>";
     // No job-board API to read: the report still carries the company and where to apply.
     var links = cos.filter(function (c) { return c.status === "link" && c.careers; });

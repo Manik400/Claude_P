@@ -39,7 +39,10 @@ def main():
             "--countries", env("INPUT_COUNTRIES", "worldwide"), "--relocation", env("INPUT_RELOCATION", "any"),
             "--fit", env("INPUT_FIT", "default"), "--days", env("INPUT_DAYS") or "0",
             # ~10k boards on many hosts; each host is still throttled on its own
-            "--workers", env("INPUT_WORKERS", "32")]
+            "--workers", env("INPUT_WORKERS", "32"),
+            # The job is killed at 90 min (careers.yml) and a killed run publishes nothing: stop
+            # reading boards in time for scoring, the local AI (up to 7 min) and the publish.
+            "--max-minutes", env("INPUT_MAX_MINUTES", "38")]
     if env("INPUT_EXPERIENCE"):
         argv += ["--experience", env("INPUT_EXPERIENCE")]
     if env("INPUT_COMPANIES"):

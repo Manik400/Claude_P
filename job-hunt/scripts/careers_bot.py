@@ -258,7 +258,10 @@ class _NullLock:
 _NOLOCK = _NullLock()
 
 
-def search_companies(companies, keep, roles, details, workers, place=None, use_ai=True, cache=None):
+def search_companies(companies, keep, roles, details, workers, place=None, use_ai=True, cache=None, max_minutes=0):
+    """Read every company's board. With max_minutes, companies not started by then are skipped
+    (status "skipped"): the list holds thousands of boards, and a run the CI kills at its time
+    limit publishes nothing, while one that stops early still publishes what it read."""
     http = Http(log=log, min_interval=0.12)   # per job-board host; boards run in parallel
     statuses, jobs, recruiters = {}, [], {}
     cache = load_cache() if cache is None else cache
@@ -277,8 +280,17 @@ def search_companies(companies, keep, roles, details, workers, place=None, use_a
             return c, [], dict(status="error", total=0, kept=0, seconds=round(time.time() - t0, 1),
                                resolved=c.resolved, error=f"{type(e).__name__}: {str(e)[:160]}"), []
 
+    deadline = time.time() + max_minutes * 60 if max_minutes else None
+    stopped = False
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        for fut in as_completed([ex.submit(work, c) for c in companies]):
+        futs = [ex.submit(work, c) for c in companies]
+        for fut in as_completed(futs):
+            if deadline and not stopped and time.time() > deadline:
+                stopped = True
+                left = sum(f.cancel() for f in futs)
+                log(f"time limit ({max_minutes:g} min): {left} companies not started are skipped this run")
+            if fut.cancelled():
+                continue
             c, found, st, people = fut.result()
             statuses[c.name] = st
             recruiters[c.name] = people
@@ -326,7 +338,7 @@ def cmd_run(a):
     log(f"careers_bot v{__version__} | roles={roles} | experience={a.experience or '-'} ({lo}-{hi}) | "
         f"countries={'worldwide' if want is None else sorted(want)} | relocation={a.relocation} | {len(companies)} companies")
     found, statuses, recruiters, requests = search_companies(companies, keep, roles, a.details, a.workers, place,
-                                                             use_ai=not a.no_ai_boards)
+                                                             use_ai=not a.no_ai_boards, max_minutes=a.max_minutes)
 
     # Postings that only say "Hybrid" fall back to the company's hub when its note names exactly one country.
     hubs = {c.name: geo.codes(c.note) for c in companies}
@@ -418,6 +430,7 @@ def cmd_run(a):
             "requests": requests, "companies": len(companies),
             "companies_ok": sum(1 for s in statuses.values() if s["status"] == "ok"),
             "companies_link_only": sum(1 for s in statuses.values() if s["status"] == "link"),
+            "companies_skipped": len(companies) - len(statuses),
             "boards_fixed": sorted(n for n, s in statuses.items() if s.get("resolved") and s["status"] == "ok"),
             "role_matches": len(relevant), "dropped": dict(drops),
             "scored": any(j.score is not None for j in jobs), "resume_skills": resume_skills,
@@ -578,6 +591,8 @@ def main(argv=None):
     p.add_argument("--resume", help="resume (.pdf/.docx/.txt) for the match score")
     p.add_argument("--details", type=int, default=120, help="full descriptions fetched per SmartRecruiters/Workday company")
     p.add_argument("--workers", type=int, default=16)
+    p.add_argument("--max-minutes", type=float, default=0,
+                   help="stop starting new companies after this many minutes and report what was read (0 = no limit)")
     p.add_argument("--no-ai-boards", action="store_true",
                    help="do not ask the local model (Ollama) for a board when one cannot be found")
     p.add_argument("--out", help="output JSON path")
