@@ -2455,8 +2455,7 @@ MORSE Corp                                                   | greenhouse      |
 Mosaic                                                       | workday         | mosaic.wd5.myworkdayjobs.com/mosaic/mosaic | new-grad / 0-2 YOE list · 129 open job(s) when added
 Moss                                                         | ashby           | moss | new-grad / 0-2 YOE list · 27 open job(s) when added
 Motia                                                        | workable        | motia | new-grad / 0-2 YOE list · 2 open job(s) when added
-Motorola                                                     | workday         | motorolasolutions.wd5.myworkdayjobs.com/motorolasolutions/Careers | new-grad / 0-2 YOE list · 899 open job(s) when added
-Motorola Solutions                                           | workday         | motorolasolutions.wd5.myworkdayjobs.com/motorolasolutions/careers | new-grad / 0-2 YOE list · 899 open job(s) when added
+
 Motorway                                                     | ashby           | motorway | new-grad / 0-2 YOE list · 19 open job(s) when added
 Mozilla                                                      | greenhouse      | mozilla | new-grad / 0-2 YOE list · 74 open job(s) when added
 MRI Software                                                 | workday         | mrisoftware.wd501.myworkdayjobs.com/mrisoftware/External_CareerSite | new-grad / 0-2 YOE list · 92 open job(s) when added
