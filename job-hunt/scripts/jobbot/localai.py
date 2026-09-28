@@ -59,6 +59,7 @@ import math
 import os
 import re
 import sys
+import threading
 import time
 
 if not __package__:
@@ -318,6 +319,10 @@ def status_line() -> str:
 
 _llm_instance = None
 _embedder_instance = None
+# llama.cpp and the ONNX embedder are not thread-safe: careers_bot resolves boards from a
+# thread pool, and two threads loading or running the model at once segfault the process.
+# Every load and every call goes through this one lock.
+_model_lock = threading.RLock()
 
 
 def model_path(download: bool = True) -> str | None:
@@ -339,17 +344,18 @@ def model_path(download: bool = True) -> str | None:
 
 def _llm():
     global _llm_instance
-    if _llm_instance is not None:
+    with _model_lock:
+        if _llm_instance is not None:
+            return _llm_instance
+        if not available("llm"):
+            return None
+        path = model_path(download=True)
+        if not path:
+            return None
+        _llm_instance = _llama_cpp.Llama(
+            model_path=path, n_ctx=_int_env("LOCAL_AI_CTX", 4096), n_threads=threads(),
+            n_batch=512, verbose=False)
         return _llm_instance
-    if not available("llm"):
-        return None
-    path = model_path(download=True)
-    if not path:
-        return None
-    _llm_instance = _llama_cpp.Llama(
-        model_path=path, n_ctx=_int_env("LOCAL_AI_CTX", 4096), n_threads=threads(),
-        n_batch=512, verbose=False)
-    return _llm_instance
 
 
 def _embedder():
@@ -358,9 +364,11 @@ def _embedder():
         return _embedder_instance
     if not available("embed"):
         return None
-    os.makedirs(cache_dir(), exist_ok=True)
-    _embedder_instance = _fastembed.TextEmbedding(
-        model_name=embed_model_name(), cache_dir=cache_dir(), threads=threads())
+    with _model_lock:
+        if _embedder_instance is None:
+            os.makedirs(cache_dir(), exist_ok=True)
+            _embedder_instance = _fastembed.TextEmbedding(
+                model_name=embed_model_name(), cache_dir=cache_dir(), threads=threads())
     return _embedder_instance
 
 
@@ -390,7 +398,8 @@ def embed(texts, *, batch_size: int = 32, max_chars: int = 1500):
         return None
     clipped = [(t or "")[:max_chars] for t in texts]
     try:
-        return [[float(x) for x in v] for v in model.embed(clipped, batch_size=batch_size)]
+        with _model_lock:
+            return [[float(x) for x in v] for v in model.embed(clipped, batch_size=batch_size)]
     except Exception:  # noqa: BLE001 - a bad batch costs the term, not the run
         return None
 
@@ -487,6 +496,16 @@ def ask(prompt: str, *, system: str = "", max_tokens: int = 200, json: bool = Fa
     if ollama_ready():
         return _ask_ollama(prompt, sys_text, max_tokens, json, temperature, limit,
                            model=personal_model() if personal else None)
+    # One call at a time (see _model_lock); a thread that waits past its time limit gives up.
+    if not _model_lock.acquire(timeout=limit):
+        return None
+    try:
+        return _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, limit)
+    finally:
+        _model_lock.release()
+
+
+def _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, limit):
     llm = _llm()
     if llm is None:
         return None
