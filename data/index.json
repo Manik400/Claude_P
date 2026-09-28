@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-28T04:49:44Z",
+ "updated": "2026-09-28T05:58:03Z",
  "items": [
+  {
+   "id": "careers-20260928-055803-software-developer-engineer",
+   "kind": "careers",
+   "title": "software, developer, engineer",
+   "when": "2026-09-28T05:58:03Z",
+   "file": "data/careers/careers-20260928-055803-software-developer-engineer.json",
+   "bytes": 4140069,
+   "meta": {
+    "jobs": "1929",
+    "relocation": "1546",
+    "countries": "worldwide",
+    "experience": "1",
+    "reloc_mode": "visa"
+   }
+  },
   {
    "id": "applications-20260928-044944-applications-sent",
    "kind": "applications",
