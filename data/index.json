@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-28T06:22:49Z",
+ "updated": "2026-09-28T07:55:30Z",
  "items": [
+  {
+   "id": "careers-20260928-075530-software-developer-engineer",
+   "kind": "careers",
+   "title": "software, developer, engineer",
+   "when": "2026-09-28T07:55:30Z",
+   "file": "data/careers/careers-20260928-075530-software-developer-engineer.json",
+   "bytes": 2711397,
+   "meta": {
+    "jobs": "71",
+    "relocation": "63",
+    "countries": "IN",
+    "experience": "1",
+    "reloc_mode": "visa"
+   }
+  },
   {
    "id": "naukri-20260928-062249-naukri-openings-2026-09-28-run-1-last-24",
    "kind": "naukri",
