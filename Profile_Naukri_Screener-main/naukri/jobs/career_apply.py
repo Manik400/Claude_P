@@ -350,7 +350,7 @@ SCAN_JS = r"""
   const out = []; let n = 0, g = 0;
   document.querySelectorAll('input, textarea, select').forEach(e => {
     const type = (e.type || e.tagName).toLowerCase();
-    if (['hidden', 'submit', 'button', 'image', 'reset', 'search'].includes(type)) return;
+    if (['hidden', 'submit', 'button', 'image', 'reset'].includes(type)) return;   // type=search stays: Ashby's location box is one; real search boxes are dropped later by their name / placeholder
     if (type !== 'file' && !vis(e)) return;
     if (e.disabled || e.readOnly) return;
     const idx = String(n++); e.setAttribute('data-ca', idx);
@@ -809,6 +809,21 @@ def _iso_date(text: str) -> str | None:
         return None
 
 
+DATE_PICKER = re.compile(r"pick (a )?date|select (a )?date|choose (a )?date|dd[/.-]mm|mm[/.-]dd|yyyy|tt\.mm\.jjjj|datum|\bdate\b", re.I)
+
+
+def _picker_date(iso: str, placeholder: str) -> str:
+    """2026-10-28 in the format a text date box shows: dd/mm/yyyy, mm/dd/yyyy, tt.mm.jjjj; US order by default."""
+    y, m, d = iso.split("-")
+    hint = (placeholder or "").lower()
+    if re.search(r"dd[/.-]mm|tt\.mm", hint):
+        sep = "." if "." in hint else ("-" if "-" in hint else "/")
+        return f"{d}{sep}{m}{sep}{y}"
+    if re.search(r"yyyy[/.-]mm", hint):
+        return iso
+    return f"{m}/{d}/{y}"
+
+
 def _shaped(field: dict, value) -> str | None:
     """The value as the input takes it: an ISO date for a date box, a bare number for a number box."""
     text = str(value)
@@ -1207,10 +1222,17 @@ def fill_form(frame, fields: list[dict], who: dict, facts: dict, job: dict, capt
                 if f["required"]:
                     blocked.append(q or "a required field")
                 continue
+            picker = f["type"] == "text" and DATE_PICKER.search(" ".join([f["placeholder"], f["label"], f["name"], f["id"]])) \
+                and re.fullmatch(r"\d{4}-\d{2}-\d{2}", str(value))
             try:
                 if f["type"] in ("date", "number", "time", "month", "week", "color", "range"):
                     human.click(pg, loc(f), timeout=5000)
                     loc(f).fill(value, timeout=5000)          # typed digits do not land in a date box
+                elif picker:
+                    # a text box with a calendar (Ashby's "Pick date..."): typed in the format the
+                    # placeholder shows, then the calendar closed - the typed date stays
+                    human.type_into(pg, loc(f), _picker_date(str(value), f["placeholder"]), timeout=5000)
+                    pg.keyboard.press("Escape")
                 else:
                     human.type_into(pg, loc(f), value, timeout=5000)
             except Exception:
@@ -1408,9 +1430,10 @@ PAGE_ERROR = re.compile(r"failed to submit|please try again|something went wrong
 
 
 def _form_buttons(frame) -> str:
-    """The texts of the buttons in the form the fields sit in ("Send Message" tells a contact form)."""
+    """The texts of the buttons around the fields ("Send Message" tells a contact form, "Hae
+    työpaikkoja" a search panel) - the form's own when there is a <form>, else the box's."""
     try:
-        return " ".join(b["t"] for b in frame.evaluate(SUBMIT_JS) if b.get("inForm"))[:300]
+        return " ".join(b["t"] for b in frame.evaluate(SUBMIT_JS))[:300]
     except Exception:
         return ""
 INVALID = "[aria-invalid=true]:visible, .error:visible, .field-error:visible, [class*=error-message i]:visible, [class*=invalid-feedback i]:visible, [class*=has-error i]:visible"
@@ -1956,14 +1979,19 @@ def work_rights_wall(page, facts: dict, job: dict) -> str | None:
     return "verify"
 
 
+RESULTS_COUNT = re.compile(r"\b\d+\s*(-|–|to)\s*\d+\s*(of|/)\s*\d+|\b\d+ (jobs?|results?|vacancies|openings|positions) (found|available)|"
+                           r"showing \d+|tulokset \d|hakutulokset|\d+ ergebnisse|\d+ resultaten|\d+ resultados", re.I)
+
+
 def _looks_like_listing(page) -> bool:
-    """A job listing / search-results page: many links to postings, a results count."""
+    """A job listing / search-results page: a results count with links to postings, or a
+    great many posting links. A job page with a few "other vacancies" and a menu is not one."""
     try:
         n = page.evaluate("""() => Array.from(document.querySelectorAll('a[href]')).filter(a =>
             /\\/(job|jobs|career|careers|vacanc|stelle|position|opening)[s]?[/?-]|jobid=|job_id=|reqid=/i.test(a.href) && a.innerText.trim().length > 6).length""")
     except Exception:
         n = 0
-    return n >= 8
+    return n >= 15 or (n >= 6 and bool(RESULTS_COUNT.search(_body(page)[:6000])))
 
 
 def _follow_listing(page, job: dict) -> bool:
@@ -2040,6 +2068,7 @@ RELEASABLE = re.compile(r"no application form or Apply button|found no Submit bu
                         r"page did not open|could not press the company-site Apply|needs its own account|"
                         r"platform auto-apply is off|the form rejected some answers|Target (page|closed)|"
                         r"the form has a CAPTCHA|ends with an e-mail verification code|the e-mail verification code|verify your right to work|"
+                        r"led to a job listing|had no name / e-mail / resume box|"
                         r"Timeout \d+ms|net::ERR", re.I)
 
 

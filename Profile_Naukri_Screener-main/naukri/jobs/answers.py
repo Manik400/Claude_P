@@ -492,6 +492,13 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
     if placed is not None:
         return placed
 
+    # A salary question on a form abroad is settled before any saved answer: the "14" saved
+    # from an Indian form (lakhs) must never travel to a German or Dutch one.
+    if re.search(RULES[0][1], text) or re.search(RULES[1][1], text):
+        if _job_in_india(job or facts.get("_job"), facts) is False:
+            return (None if options else "Negotiable / as per your standard range for this role"), \
+                "salary: the job is outside India, lakhs would mislead"
+
     # Then the answers you gave to earlier runs' questions. Exact question
     # match only - a saved answer must never be stretched to a different
     # question.
