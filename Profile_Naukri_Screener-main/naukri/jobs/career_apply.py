@@ -679,6 +679,10 @@ def _not_the_form(field: dict) -> bool:
 
 # A "Get in touch" / "Request a quote" box on a company's home page: name, e-mail, phone,
 # "tell us about your project", Send Message. Not an application, however many fields.
+# A job-search / filter panel on a careers site: keyword box, location, function, "Search jobs".
+SEARCH_FORM = re.compile(r"search (jobs|for jobs|results|openings|positions)|job search|hae ty|hakusana|hakutulokset|"
+                         r"stellensuche|jobsuche|zoek (vacatures|banen)|buscar (empleo|ofertas)|results \d|\d+ (jobs?|results?) found|"
+                         r"filter(s| by)|sort by|show more options|keywords?\b", re.I)
 CONTACT_FORM = re.compile(r"get in touch|contact (us|form)|send (us )?(a )?message|your project|project ?type|"
                           r"request a (quote|demo|call)|book a (call|demo)|enquir|inquir|how can we help|"
                           r"subject|newsletter|subscribe|kontakt(formular)?|neem contact|contáct|contactez", re.I)
@@ -699,12 +703,14 @@ def looks_like_application(fields: list[dict], buttons: str = "") -> bool:
                       for f in fillable)
     if CONTACT_FORM.search(around + " " + buttons) and not re.search(r"resume|\bcv\b|curriculum|cover letter|applicant|candidat|position|vacancy|job", around, re.I):
         return False
+    if SEARCH_FORM.search(around + " " + buttons):
+        return False                          # a careers search / filter panel (Outokumpu's SuccessFactors page)
     meanings = {_meaning(f) for f in fillable}
     if "email" in meanings and (meanings & {"first_name", "last_name", "full_name", "phone", "linkedin", "resume"}):
         return True
-    if any(f["tag"] in ("textarea", "select") or f["type"] == "aria-select" for f in fillable) and len(fillable) >= 3:
-        return True
-    return len(fillable) >= 5
+    # a set of selects / text boxes with no name, e-mail or phone among them is a filter panel or a
+    # survey, never an application - whatever its size
+    return bool(meanings & {"email", "phone"}) and bool(meanings & {"first_name", "last_name", "full_name"})
 
 
 # ------------------------------------------------------------------ filling
@@ -1666,6 +1672,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
 
         total_filled = 0
         ats_tried = outbound_tried = waited = blank_waited = scrolled = pressed_apply = False
+        listing_followed = application_shaped = False
         submitted_pages = 0
         pre_apply: set = set()
         for step in range(12):
@@ -1760,6 +1767,12 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                         current.wait_for_timeout(2500)
                         _leave_linkedin(current)
                         nxt = current
+                if nxt is None and not listing_followed:
+                    # an apply link that landed on the company's job listing: open the posting
+                    # whose title matches, then look for its Apply button
+                    listing_followed = True
+                    if _follow_listing(current, job):
+                        continue
                 if nxt is None and not scrolled:
                     # a form or an Apply button further down that only renders once scrolled to
                     scrolled = True
@@ -1806,6 +1819,7 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                 except Exception as exc:  # noqa: BLE001 - Simplify is a helper, not a requirement
                     log.debug("prefill failed: %s", exc)
                 frame, fields = _form_frame(current)     # rescan: values and pages may have changed
+            application_shaped = application_shaped or looks_like_application(fields, _form_buttons(frame))
             filled, blocked = fill_form(frame, fields, who, facts, job, capture)
             total_filled += filled + prefilled
             if who.get("resume") and not any(f["type"] == "file" for f in fields):
@@ -1868,7 +1882,14 @@ def apply_from_page(page, job: dict, who: dict, facts: dict, dry_run: bool = Tru
                                              f" ({_shot(current, job, '-after', full=True)})")
             # Submit was pressed, the form itself is gone and no error appeared: the site
             # just has no thank-you text (Designoweb, several Indian career pages). A form
-            # still standing there - filled or not - is NOT that.
+            # still standing there - filled or not - is NOT that; nor is a page that turned
+            # into a job listing / search result (a filter panel was "submitted").
+            if SEARCH_FORM.search(body[:3000]) or _looks_like_listing(current):
+                return "career-unconfirmed", (f"Submit led to a job listing, not a confirmation - the form may have been a search panel"
+                                             f" ({_shot(current, job, '-after', full=True)})")
+            if not application_shaped:
+                return "career-unconfirmed", (f"the form closed after Submit but it had no name / e-mail / resume box"
+                                             f" ({_shot(current, job, '-after', full=True)})")
             return "submitted", (f"{total_filled} field(s) filled and submitted - form closed, no thank-you text"
                                  f"{tailored_note} ({_shot(current, job, '-done', full=True)})")
         return "career-unconfirmed", f"pressed Submit, no confirmation seen{tailored_note} ({_shot(current, job, '-after', full=True)})"
@@ -1933,6 +1954,45 @@ def work_rights_wall(page, facts: dict, job: dict) -> str | None:
         page.wait_for_timeout(1500)          # no work permit there: "I require sponsorship" is the truth
         return "continued"
     return "verify"
+
+
+def _looks_like_listing(page) -> bool:
+    """A job listing / search-results page: many links to postings, a results count."""
+    try:
+        n = page.evaluate("""() => Array.from(document.querySelectorAll('a[href]')).filter(a =>
+            /\\/(job|jobs|career|careers|vacanc|stelle|position|opening)[s]?[/?-]|jobid=|job_id=|reqid=/i.test(a.href) && a.innerText.trim().length > 6).length""")
+    except Exception:
+        n = 0
+    return n >= 8
+
+
+def _follow_listing(page, job: dict) -> bool:
+    """On a listing, click the posting whose title matches ours (most shared words, at least
+    two thirds of them). Returns whether a link was followed."""
+    title = re.sub(r"[^a-z0-9 ]+", " ", (job.get("title") or "").lower())
+    want = {w for w in title.split() if len(w) > 2 and w not in ("and", "the", "for", "with")}
+    if len(want) < 2:
+        return False
+    try:
+        links = page.evaluate("""() => Array.from(document.querySelectorAll('a[href]')).map((a, i) => {
+            a.setAttribute('data-ca-l', String(i)); return { i: String(i), t: (a.innerText || '').replace(/\\s+/g, ' ').trim().slice(0, 120) }; })""")
+    except Exception:
+        return False
+    best, best_score = None, 0.0
+    for link in links:
+        words = set(re.sub(r"[^a-z0-9 ]+", " ", link["t"].lower()).split())
+        score = len(want & words) / len(want)
+        if score > best_score:
+            best, best_score = link, score
+    if best is None or best_score < 0.66:
+        return False
+    try:
+        human.click(page, page.locator(f'[data-ca-l="{best["i"]}"]').first, timeout=6000)
+        page.wait_for_load_state("domcontentloaded", timeout=30000)
+        page.wait_for_timeout(2500)
+        return True
+    except Exception:
+        return False
 
 
 def _wall_note(page, wall: str) -> str:
