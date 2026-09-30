@@ -1,32 +1,13 @@
 {
- "updated": "2026-09-30T12:27:33Z",
+ "updated": "2026-09-30T12:27:30Z",
  "items": [
   {
-   "id": "jobhunt-20260930-122733-software-engineer-developer",
-   "kind": "jobhunt",
-   "title": "software, engineer, developer",
-   "when": "2026-09-30T12:27:33Z",
-   "file": "data/jobhunt/jobhunt-20260930-122733-software-engineer-developer.html",
-   "bytes": 260071,
-   "meta": {
-    "jobs": "62",
-    "countries": "IN,DE,NL,ES,FI,AU,JP,TH,KR,SG,AE,NO,NZ,MY,CH,GB,IE,AT,HK,PT,IT,CA,US,PL,BE,SE,DK,FR",
-    "experience": "1",
-    "days": "1",
-    "hours": "",
-    "window_hours": "24",
-    "platforms_asked": "apify-naukri",
-    "platforms": "apify-naukri",
-    "jobs_file": "data/jobhunt/jobhunt-20260930-122733-software-engineer-developer.jobs.json"
-   }
-  },
-  {
-   "id": "applications-20260930-114644-applications-sent",
+   "id": "applications-20260930-122730-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-09-30T11:46:44Z",
-   "file": "data/applications/applications-20260930-114644-applications-sent.html",
-   "bytes": 4528720,
+   "when": "2026-09-30T12:27:30Z",
+   "file": "data/applications/applications-20260930-122730-applications-sent.html",
+   "bytes": 4555263,
    "meta": {}
   },
   {
