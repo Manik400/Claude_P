@@ -20,7 +20,6 @@ label: Common technical vocabulary
 # hire. Role packs add their own on top.
 exclude_title_keywords:
   - intern
-  - fresher
   - trainee
 
 # Terms whose bare form is too common to trust a loose match on.

@@ -45,14 +45,26 @@ role: developer
 searches:
   - keyword: Backend Developer
     location: null
-  - keyword: Python Developer
+  - keyword: Frontend Developer
+    location: null
+  - keyword: Backend Engineer
+    location: null
+  - keyword: Frontend Engineer
     location: null
   - keyword: Software Engineer
     location: null
   - keyword: Full Stack Developer
     location: null
-  - keyword: Django Developer
+  - keyword: Software Developer
     location: null          # null = search all of India
+  - keyword: SWE
+    location: null  
+  - keyword: SDE
+    location: null 
+  - keyword: Engineer
+    location: null 
+  - keyword: Developer
+    location: null  
 
 preferred_locations:
 
@@ -82,7 +94,7 @@ preferred_locations:
 # Companies you never want to hear from. Substring match, case-insensitive.
 # Your current employer belongs here - applying to your own company's listing
 # through Naukri is a conversation you would rather not have.
-exclude_companies: []
+exclude_companies: [accenture , EY]
 
 # ---------------------------------------------------------------------------
 # THRESHOLDS
@@ -92,10 +104,10 @@ exclude_companies: []
 #
 # Start conservative. Run a few days of `--jobs` dry runs, read the report, and
 # only lower auto_apply_min_score once you agree with what it wanted to send.
-auto_apply_min_score: 75    # apply without asking at or above this
+auto_apply_min_score: 55    # apply without asking at or above this
 review_min_score: 55        # queue for you to read at or above this
-daily_target: 50            # how many jobs to shortlist per run
-max_auto_applies: 15        # hard cap on applications sent per day
+daily_target: 500           # how many jobs to shortlist per run
+max_auto_applies: 500       # hard cap on applications sent per day
 
 # Drop jobs asking for more than this many years beyond your experience.
 max_experience_gap_years: 2.0
@@ -124,10 +136,10 @@ answer_questionnaires: false
 # needs it is queued rather than guessed.
 answers:
   expected_ctc: ""          # e.g. "18 LPA"
-  current_inhand_monthly: ""   # in-hand pay per month in rupees, e.g. 68000
+  current_inhand_monthly: "68000"   # in-hand pay per month in rupees, e.g. 68000
   willing_to_relocate: true
   notice_buyout: false
-  phone: ""                 # LinkedIn Easy Apply asks for it; e.g. "9876543210"
+  phone: "9315605606"                 # LinkedIn Easy Apply asks for it; e.g. "9876543210"
 
 # ---------------------------------------------------------------------------
 # APPLYING FROM THE SCAN
@@ -179,7 +191,7 @@ career_max_per_day:          # blank = no limit
 # Naukri one-click applies stay with their own walkers. Postings whose form
 # wants a login / account or shows a CAPTCHA are still left for you.
 # One-time setup:  python -m naukri.jobs.simplify --setup
-simplify: false
+simplify: true
 
 # Your details for those forms. Left out, each is read from your resume's
 # header and data/profile.json.
@@ -219,7 +231,7 @@ answer_rules:
   # your notice period. Without this it falls through to the "willing to ...
   # join" rule below and answers Yes, which is a promise you cannot keep.
   - match: "join immediately|immediate join(ing|er)?|joining immediately|zero days notice"
-    answer: "No"
+    answer: "yes"
 
   # `skip: true` means "do not answer this one" - the question is abandoned and
   # the job goes to your queue, exactly as if no rule existed. That is NOT the
@@ -280,4 +292,45 @@ skill_years:
   sql: 3
   git: 4
   docker: 2
-  linux: 3
+  linux: 2
+  Java : 2
+  spring boot : 2
+  .net : 2
+  c# : 2
+  rabbitmq : 2
+  angular : 2
+  react : 2
+  html : 2
+  css : 2
+  rabbitmq : 2
+  kubernetes : 2
+  prometheus : 2
+  grafana : 2
+  kafka : 2
+  jenkins : 2
+  junit : 2
+  aws : 2
+  azure : 2
+  s3 : 2
+  ec2 : 2
+  postgresql : 2
+  nosql : 2
+  c++ : 2
+  hibernate : 2
+  ef core : 2
+  entity framework : 2
+  asp.net : 2
+  rest api : 2
+  microservices : 2
+  distributed systems : 2
+  agile : 1
+  scrum : 1
+  webrtc : 1
+  partitioning : 1
+  milvus : 1
+  ci/cd : 1
+  github : 3
+  flutter : 2
+  dart : 2
+  
+
