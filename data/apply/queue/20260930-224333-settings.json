@@ -1,0 +1,1 @@
+{"type": "settings", "requested_at": "2026-09-30T22:43:33Z", "note": "auto rule on all boards", "payload": {"auto": {"enabled": true, "min_score": 50, "boards": ["linkedin", "naukri", "web"]}, "limit": 10, "offsite": "career"}}
