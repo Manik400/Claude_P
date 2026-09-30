@@ -1,6 +1,21 @@
 {
- "updated": "2026-09-30T12:34:30Z",
+ "updated": "2026-09-30T13:16:23Z",
  "items": [
+  {
+   "id": "careers-20260930-131623-software-engineer-developer-sde-swe",
+   "kind": "careers",
+   "title": "software, engineer, developer, sde, swe",
+   "when": "2026-09-30T13:16:23Z",
+   "file": "data/careers/careers-20260930-131623-software-engineer-developer-sde-swe.json",
+   "bytes": 4072260,
+   "meta": {
+    "jobs": "1848",
+    "relocation": "1465",
+    "countries": "worldwide",
+    "experience": "1",
+    "reloc_mode": "visa"
+   }
+  },
   {
    "id": "applications-20260930-123430-applications-sent",
    "kind": "applications",
