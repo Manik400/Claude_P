@@ -9,6 +9,11 @@ it against your resume.
   python careers_bot.py run --role "software engineer" --experience 3-5 --countries worldwide --relocation strict --resume cv.pdf
   python careers_bot.py check                  is every company in the list still answering?
   python careers_bot.py find agoda "booking"   which job board does a company use? (prints lines to paste into the list)
+
+The whole list does not fit in one CI job, so careers.yml reads it in parts that run side by side and
+merges them into one report:
+  python careers_bot.py run ... --shard 2/4 --out part2.json      (one part each)
+  python careers_bot.py merge careers.json part1.json part2.json ...
 """
 import argparse
 import json
@@ -52,7 +57,34 @@ _EMAIL_SKIP = re.compile(r"privacy|gdpr|dpo|data|protect|accommodat|accessib|leg
 NOT_THE_ROLE = ["support", "sales", r"solutions?\s+(?:engineer|architect|consultant)", "customer", "success", r"accounts?",
                 r"recruit\w*", "talent", "marketing",
                 r"partner\w*", "field", "pre-?sales", "consultant", "manager", "director", "head of", "vp", "vice president",
-                "intern", "internship", "working student", "werkstudent", "trainee", "apprentice"]
+                "intern", "internship", "working student", "werkstudent", "trainee", "apprentice",
+                # "engineer" / "developer" alone would also keep other professions' engineers
+                "business", "mechanical", "civil", "electrical", "chemical", "structural", "process", "manufacturing",
+                "industrial", "hardware", "asic", "fpga", "analog", "rf", "optical", "facilities", "construction",
+                "maintenance", "mining", "environmental", "biomedical"]
+# Titles boards use for the same job: a role on the left also matches titles with the short forms.
+ROLE_ALIASES = {"software engineer": ["swe"], "software developer": ["sde"], "software development engineer": ["sde"]}
+
+
+def with_aliases(roles):
+    out = list(roles)
+    for r in roles:
+        for alias in ROLE_ALIASES.get(r.lower(), []):
+            if alias not in (x.lower() for x in out):
+                out.append(alias)
+    return out
+
+
+def interleave(companies):
+    """Spread each job board evenly over the run. The list is alphabetical with newer boards appended
+    at the end, so a run stopped by --max-minutes skipped whole boards (BambooHR, Personio, Breezy);
+    interleaved, a cut takes the same share of each, and the one-host boards (Greenhouse, Ashby, Lever)
+    no longer queue on their host's throttle while the other workers wait."""
+    groups = {}
+    for c in companies:
+        groups.setdefault(c.ats, []).append(c)
+    rank = {id(c): (i + 0.5) / len(g) for g in groups.values() for i, c in enumerate(g)}
+    return sorted(companies, key=lambda c: rank[id(c)])
 
 
 HEADER = """# Companies whose career pages the careers bot reads (phone page -> Careers tab, or careers_bot.py).
@@ -258,11 +290,13 @@ class _NullLock:
 _NOLOCK = _NullLock()
 
 
-def search_companies(companies, keep, roles, details, workers, place=None, use_ai=True, cache=None, max_minutes=0):
+def search_companies(companies, keep, roles, details, workers, place=None, use_ai=True, cache=None, max_minutes=0,
+                     fresh=None):
     """Read every company's board. With max_minutes, companies not started by then are skipped
     (status "skipped"): the list holds thousands of boards, and a run the CI kills at its time
     limit publishes nothing, while one that stops early still publishes what it read."""
-    http = Http(log=log, min_interval=0.12)   # per job-board host; boards run in parallel
+    # per job-board host; boards run in parallel. Workable answers 429 to 8 requests a second.
+    http = Http(log=log, min_interval=0.12, intervals={"apply.workable.com": 1.0}, pool=max(10, workers))
     statuses, jobs, recruiters = {}, [], {}
     cache = load_cache() if cache is None else cache
     fix = make_resolver(http, cache, use_ai=use_ai, lock=threading.Lock())
@@ -270,7 +304,7 @@ def search_companies(companies, keep, roles, details, workers, place=None, use_a
     def work(c):
         t0 = time.time()
         try:
-            found, total, people = fetch(http, c, keep, roles, details, place, resolver=fix)
+            found, total, people = fetch(http, c, keep, roles, details, place, resolver=fix, fresh=fresh)
             return c, found, dict(status="ok", total=total, kept=len(found), seconds=round(time.time() - t0, 1),
                                   resolved=c.resolved), people
         except Unresolved as e:
@@ -283,7 +317,7 @@ def search_companies(companies, keep, roles, details, workers, place=None, use_a
     deadline = time.time() + max_minutes * 60 if max_minutes else None
     stopped = False
     with ThreadPoolExecutor(max_workers=workers) as ex:
-        futs = [ex.submit(work, c) for c in companies]
+        futs = [ex.submit(work, c) for c in interleave(companies)]
         for fut in as_completed(futs):
             if deadline and not stopped and time.time() > deadline:
                 stopped = True
@@ -317,7 +351,12 @@ def cmd_run(a):
     companies = select(load(a.companies_file, log=log), a.companies)
     if not companies:
         raise SystemExit(f"no companies match '{a.companies}' in {a.companies_file or DEFAULT_PATH}")
-    ctx = SearchContext(roles, [], days=a.days,
+    companies_total = len(companies)
+    if a.shard:
+        part, parts = shard_of(a.shard)
+        companies = interleave(companies)[part - 1::parts]   # every part gets the same mix of boards
+        log(f"part {part}/{parts}: {len(companies)} of {companies_total} companies")
+    ctx = SearchContext(with_aliases(roles), [], days=a.days,
                         exclude_terms=[t.strip() for t in (a.exclude or "").split(",") if t.strip()],
                         must_terms=[t.strip() for t in (a.must or "").split(",") if t.strip()])
 
@@ -338,7 +377,8 @@ def cmd_run(a):
     log(f"careers_bot v{__version__} | roles={roles} | experience={a.experience or '-'} ({lo}-{hi}) | "
         f"countries={'worldwide' if want is None else sorted(want)} | relocation={a.relocation} | {len(companies)} companies")
     found, statuses, recruiters, requests = search_companies(companies, keep, roles, a.details, a.workers, place,
-                                                             use_ai=not a.no_ai_boards, max_minutes=a.max_minutes)
+                                                             use_ai=not a.no_ai_boards, max_minutes=a.max_minutes,
+                                                             fresh=ctx.fresh)
 
     # Postings that only say "Hybrid" fall back to the company's hub when its note names exactly one country.
     hubs = {c.name: geo.codes(c.note) for c in companies}
@@ -427,7 +467,8 @@ def cmd_run(a):
             "version": __version__, "roles": roles, "experience": a.experience or "", "exp_range": [lo, hi],
             "countries": ["*"] if want is None else sorted(want), "relocation": a.relocation, "fit": a.fit, "days": a.days,
             "generated": datetime.now().strftime("%Y-%m-%d %H:%M"), "seconds": round(time.time() - t0, 1),
-            "requests": requests, "companies": len(companies),
+            "requests": requests, "companies": len(companies), "companies_total": companies_total,
+            "shard": a.shard or "",
             "companies_ok": sum(1 for s in statuses.values() if s["status"] == "ok"),
             "companies_link_only": sum(1 for s in statuses.values() if s["status"] == "link"),
             "companies_skipped": len(companies) - len(statuses),
@@ -460,6 +501,61 @@ def cmd_run(a):
         log(f"  {j.extra['chance']:>3}  {j.extra['reloc']['label']:<7} {j.fit:<8} {'/'.join(j.extra['countries'][:2]):<6} "
             f"{j.title[:52]:<52} @ {j.company}")
     print(json.dumps({"out": out, "jobs": len(jobs), "relocation": n_reloc, "companies": result["meta"]["companies_ok"]}))
+
+
+def shard_of(text):
+    m = re.fullmatch(r"\s*(\d+)\s*/\s*(\d+)\s*", text or "")
+    if not m or not 1 <= int(m.group(1)) <= int(m.group(2)):
+        raise SystemExit(f"--shard wants PART/PARTS like 2/4, not '{text}'")
+    return int(m.group(1)), int(m.group(2))
+
+
+def cmd_merge(a):
+    """One report from the parts careers.yml read side by side.
+
+    A part that is missing (its job failed) is not fatal: its companies are simply not in the
+    report, and "companies" still counts the whole list, so the phone shows how many were read.
+    """
+    parts = []
+    for path in a.parts:
+        try:
+            with open(path, encoding="utf-8") as f:
+                parts.append(json.load(f))
+        except (OSError, ValueError) as e:
+            log(f"merge: {path} left out ({type(e).__name__}: {e})")
+    if not parts:
+        raise SystemExit("merge: no part could be read")
+    metas = [x["meta"] for x in parts]
+    total = max(m.get("companies_total") or m["companies"] for m in metas)
+    companies = sorted((c for x in parts for c in x["companies"]), key=lambda c: c["name"].lower())
+    jobs = sorted((j for x in parts for j in x["jobs"]), key=lambda j: (-(j.get("chance") or 0), -(j.get("score") or 0)))
+    dropped = Counter()
+    for m in metas:
+        dropped.update(m.get("dropped") or {})
+    meta = dict(metas[0])
+    meta.update({
+        "generated": max(m["generated"] for m in metas), "seconds": max(m["seconds"] for m in metas),
+        "requests": sum(m["requests"] for m in metas), "companies": total, "companies_total": total,
+        "companies_ok": sum(m["companies_ok"] for m in metas),
+        "companies_link_only": sum(m["companies_link_only"] for m in metas),
+        "companies_skipped": total - sum(1 for c in companies if c["status"] != "skipped"),
+        "boards_fixed": sorted({n for m in metas for n in m.get("boards_fixed") or []}),
+        "role_matches": sum(m["role_matches"] for m in metas), "dropped": dict(dropped),
+        "scored": any(m.get("scored") for m in metas),
+        "resume_skills": next((m["resume_skills"] for m in metas if m.get("resume_skills")), []),
+        "shard": "", "parts": len(parts),
+    })
+    names = {}
+    for x in parts:
+        names.update(x.get("names") or {})
+    out = os.path.abspath(a.out)
+    os.makedirs(os.path.dirname(out), exist_ok=True)
+    with open(out, "w", encoding="utf-8") as f:
+        json.dump({"meta": meta, "names": names, "companies": companies, "jobs": jobs}, f,
+                  ensure_ascii=False, separators=(",", ":"))
+    n_reloc = sum(1 for j in jobs if j.get("reloc") == "yes")
+    log(f"merge: {len(parts)} part(s), {meta['companies_ok']}/{total} companies read, {len(jobs)} jobs")
+    print(json.dumps({"out": out, "jobs": len(jobs), "relocation": n_reloc, "companies": meta["companies_ok"]}))
 
 
 def cmd_check(a):
@@ -595,8 +691,14 @@ def main(argv=None):
                    help="stop starting new companies after this many minutes and report what was read (0 = no limit)")
     p.add_argument("--no-ai-boards", action="store_true",
                    help="do not ask the local model (Ollama) for a board when one cannot be found")
+    p.add_argument("--shard", help="read only part PART of PARTS of the list, e.g. 2/4 (merge the parts with `merge`)")
     p.add_argument("--out", help="output JSON path")
     p.set_defaults(fn=cmd_run)
+
+    p = sub.add_parser("merge", help="merge the parts of a --shard search into one report")
+    p.add_argument("out", help="merged JSON path")
+    p.add_argument("parts", nargs="+", help="the parts' JSON files")
+    p.set_defaults(fn=cmd_merge)
 
     p = sub.add_parser("check", help="check every company in the list answers")
     p.add_argument("--companies")

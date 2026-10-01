@@ -5,6 +5,10 @@ run-name: "Careers: ${{ inputs.role }} · ${{ inputs.countries || 'worldwide' }}
 # `gh workflow run careers.yml -f role="software engineer" -f experience=3-5 -f relocation=strict`.
 # Reads the career pages of the companies in job-hunt/assets/companies.txt and publishes the
 # result to the gh-pages branch, where the phone page's Careers tab shows it.
+#
+# The list (~9k companies) is read in 4 parts that run side by side - one job could not read it
+# all in time and always left the end of the list unread - and the `publish` job merges the parts
+# into one report. More parts: add numbers to `shard` and change PARTS to match.
 
 on:
   workflow_dispatch:
@@ -47,10 +51,18 @@ concurrency:
   group: gh-pages
   cancel-in-progress: false
 
+env:
+  PARTS: 4
+
 jobs:
   search:
+    name: "Search part ${{ matrix.shard }}"
+    strategy:
+      fail-fast: false        # a failed part costs only its companies, not the report
+      matrix:
+        shard: [1, 2, 3, 4]
     runs-on: ubuntu-latest
-    timeout-minutes: 90   # thousands of company boards; run_careers.py stops reading them at 38 min
+    timeout-minutes: 90   # a part takes ~10 min; run_careers.py stops reading at 65 min as a safety net
     steps:
       - uses: actions/checkout@v4
 
@@ -88,8 +100,10 @@ jobs:
           LOCAL_AI_EMBED_MODEL: ${{ vars.LOCAL_AI_EMBED_MODEL }}
         run: cd job-hunt/scripts && python -m jobbot.localai --download
 
-      - name: Search and publish
+      - name: Search this part
         env:
+          SHARD: ${{ matrix.shard }}/${{ env.PARTS }}
+          CAREERS_PARTS: ${{ runner.temp }}/parts
           INPUT_ROLE: ${{ inputs.role }}
           INPUT_EXPERIENCE: ${{ inputs.experience }}
           INPUT_COUNTRIES: ${{ inputs.countries }}
@@ -103,5 +117,45 @@ jobs:
           LOCAL_AI_MODEL: ${{ vars.LOCAL_AI_MODEL }}
           LOCAL_AI_EMBED_MODEL: ${{ vars.LOCAL_AI_EMBED_MODEL }}
           LOCAL_AI_BUDGET_SECONDS: ${{ vars.LOCAL_AI_BUDGET_SECONDS || '420' }}
+        run: python site/tools/run_careers.py search
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: careers-part-${{ matrix.shard }}
+          path: ${{ runner.temp }}/parts/
+          if-no-files-found: warn
+          retention-days: 3
+
+  publish:
+    needs: search
+    if: ${{ !cancelled() }}   # publish what the parts that finished found, even if one failed
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+          cache: pip
+          cache-dependency-path: job-hunt/requirements*.txt
+
+      - name: Install
+        run: python -m pip install -q -r job-hunt/requirements.txt cryptography
+
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: careers-part-*
+          path: ${{ runner.temp }}/parts
+          merge-multiple: true
+
+      - name: Merge and publish
+        env:
+          INPUT_ROLE: ${{ inputs.role }}
+          INPUT_EXPERIENCE: ${{ inputs.experience }}
+          INPUT_COUNTRIES: ${{ inputs.countries }}
+          INPUT_RELOCATION: ${{ inputs.relocation }}
+          CAREERS_PARTS: ${{ runner.temp }}/parts
           PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
-        run: python site/tools/run_careers.py
+        run: python site/tools/run_careers.py publish

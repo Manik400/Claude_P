@@ -22,11 +22,18 @@ class Blocked(Exception):
 
 
 class Http:
-    def __init__(self, log=None, min_interval=0.8, timeout=25):
+    def __init__(self, log=None, min_interval=0.8, timeout=25, intervals=None, pool=10):
+        """intervals: {host: seconds} for hosts that want more room than min_interval.
+        pool: connections kept per host - raise it when many threads share one host."""
         self.session = requests.Session()
         self.session.headers.update(DEFAULT_HEADERS)
+        if pool > 10:
+            adapter = requests.adapters.HTTPAdapter(pool_connections=pool, pool_maxsize=pool)
+            self.session.mount("https://", adapter)
+            self.session.mount("http://", adapter)
         self.log = log or (lambda *a, **k: None)
         self.min_interval = min_interval
+        self.intervals = dict(intervals or {})
         self.timeout = timeout
         self._last = {}
         self._lock = threading.Lock()
@@ -39,7 +46,7 @@ class Http:
         host = urlparse(url).netloc
         with self._lock:
             now = time.time()
-            start = max(now, self._last.get(host, 0) + self.min_interval)
+            start = max(now, self._last.get(host, 0) + self.intervals.get(host, self.min_interval))
             self._last[host] = start
         wait = start - time.time()
         if wait > 0:

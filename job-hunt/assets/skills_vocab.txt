@@ -67,8 +67,8 @@ vue | vue.js | vuejs
 next.js | nextjs
 nuxt | nuxt.js
 svelte
-html
-css
+html | html5
+css | css3
 sass | scss
 tailwind | tailwind css | tailwindcss
 bootstrap

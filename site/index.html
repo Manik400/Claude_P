@@ -497,6 +497,7 @@
         <div class="muted">Reads the career pages of the companies in your list directly, so you see jobs the moment the company posts them — including ones that never reach LinkedIn.</div>
         <label>Job title(s) <span class="muted">(comma-separate several)</span></label>
         <input id="c-role" placeholder="software engineer, backend engineer" autocapitalize="none">
+        <div class="chips" style="margin-top:6px"><button type="button" id="c-preset">Entry-level software titles (0–2 yrs)</button></div>
         <div class="row">
           <div><label>Your experience (years)</label><input id="c-exp" placeholder="4 or 3-5" autocapitalize="none"></div>
           <div><label>Experience filter</label>
@@ -2189,6 +2190,11 @@
     el.addEventListener("change", function () { store.set("c." + k, el.checked ? "1" : ""); $("c-visa").disabled = !$("c-reloc").checked; });
   });
   $("c-visa").disabled = !$("c-reloc").checked;
+  $("c-preset").addEventListener("click", function () {
+    $("c-role").value = "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE";
+    $("c-exp").value = "0-2";
+    store.set("c.role", $("c-role").value); store.set("c.exp", $("c-exp").value);
+  });
   $("btn-careers").addEventListener("click", function () {
     var s = settings();
     if (!s.token || !s.repo) { showTab("settings"); return; }
@@ -2202,7 +2208,7 @@
                    fit: $("c-fit").value, days: $("c-days").value.trim(), companies: $("c-companies").value.trim() };
     $("btn-careers").disabled = true; msg("careers-msg", "Starting…");
     gh("/actions/workflows/careers.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
-      .then(function () { msg("careers-msg", "Started. 3–8 minutes; the result appears under Jobs → Career-page searches.", "ok"); setTimeout(function () { loadRuns("careers.yml", "c-runs"); }, 4000); })
+      .then(function () { msg("careers-msg", "Started. About 15–25 minutes (the whole list, read in 4 parts); the result appears under Jobs → Career-page searches.", "ok"); setTimeout(function () { loadRuns("careers.yml", "c-runs"); }, 4000); })
       .catch(function (e) { msg("careers-msg", "Could not start: " + e.message, "bad"); })
       .then(function () { $("btn-careers").disabled = false; });
   });

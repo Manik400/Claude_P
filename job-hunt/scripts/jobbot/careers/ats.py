@@ -1,14 +1,18 @@
 """Readers for the public job-board APIs that company career pages are built on.
 
-fetch(http, company, keep, roles, details, place) -> (jobs, total, recruiters)
+fetch(http, company, keep, roles, details, place, fresh=fresh) -> (jobs, total, recruiters)
     keep(title) -> bool   decides which postings are worth keeping (and, for SmartRecruiters / Workday,
                           worth the extra request for the full description)
     place(codes) -> bool  SmartRecruiters / Workday only: skip postings in countries nobody asked for
                           before spending a request on their description (other boards return everything at once)
+    fresh(iso) -> bool    boards whose descriptions cost a request each: a posting already older than the
+                          search window is kept (so it is counted) but its description is not fetched
     total                 how many postings the company has open in all
     recruiters            names of the people who posted the kept jobs, when the board says so
 """
 import html as htmlmod
+import re
+from concurrent.futures import ThreadPoolExecutor
 
 from ..config import REMOTE
 from ..models import Job
@@ -34,7 +38,17 @@ def _job(c, title, url, locations, iso, text, posted, remote=None, department=""
     return job.finalize()
 
 
-def _greenhouse(http, c, keep, roles, details, place):
+def _each(fn, items, workers=4):
+    """fn(item) for each item, a few at a time. Descriptions are one request each, and one big
+    board read them one after another for minutes; the per-host throttle in Http still applies."""
+    items = list(items)
+    if len(items) < 2:
+        return [fn(x) for x in items]
+    with ThreadPoolExecutor(max_workers=min(workers, len(items))) as ex:
+        return list(ex.map(fn, items))
+
+
+def _greenhouse(http, c, keep, roles, details, place, fresh):
     d = http.get_json(f"https://boards-api.greenhouse.io/v1/boards/{c.board}/jobs", params={"content": "true"})
     rows = d.get("jobs") or []
     out = []
@@ -50,7 +64,7 @@ def _greenhouse(http, c, keep, roles, details, place):
     return out, len(rows), []
 
 
-def _lever(http, c, keep, roles, details, place):
+def _lever(http, c, keep, roles, details, place, fresh):
     rows = http.get_json(f"https://api.lever.co/v0/postings/{c.board}", params={"mode": "json"})
     rows = rows if isinstance(rows, list) else []
     out = []
@@ -69,7 +83,7 @@ def _lever(http, c, keep, roles, details, place):
     return out, len(rows), []
 
 
-def _ashby(http, c, keep, roles, details, place):
+def _ashby(http, c, keep, roles, details, place, fresh):
     d = http.get_json(f"https://api.ashbyhq.com/posting-api/job-board/{c.board}")
     rows = [p for p in d.get("jobs") or [] if p.get("isListed") is not False]
     out = []
@@ -88,7 +102,7 @@ def _ashby(http, c, keep, roles, details, place):
     return out, len(rows), []
 
 
-def _smartrecruiters(http, c, keep, roles, details, place):
+def _smartrecruiters(http, c, keep, roles, details, place, fresh):
     base = f"https://api.smartrecruiters.com/v1/companies/{c.board}/postings"
     rows, offset, total = [], 0, 0
     while offset < 3000:
@@ -105,19 +119,22 @@ def _smartrecruiters(http, c, keep, roles, details, place):
         where = geo.codes(loc.get("fullLocation")) + [x for x in [geo.from_iso(loc.get("country"))] if x]
         if keep(q.get("name", "")) and place(where):
             wanted.append(q)
+    def detail(p):
+        try:
+            det = http.get_json(p["ref"])
+        except Exception:  # noqa: BLE001 - keep the posting without its description
+            return "", "", ""
+        sections = ((det.get("jobAd") or {}).get("sections")) or {}
+        text = " ".join(html_to_text(s.get("text") or "") for s in sections.values() if isinstance(s, dict))
+        return text, det.get("postingUrl") or "", ((det.get("creator") or {}).get("name")) or ""
+
+    todo = [p for p in wanted if p.get("ref") and fresh(parse_date(p.get("releasedDate")))][:details]
+    info = dict(zip([p["ref"] for p in todo], _each(detail, todo)))
     out, recruiters = [], []
-    for i, p in enumerate(wanted):
+    for p in wanted:
         loc = p.get("location") or {}
-        text, url, recruiter = "", f"https://jobs.smartrecruiters.com/{c.board}/{p.get('id')}", ""
-        if i < details:
-            try:
-                det = http.get_json(p["ref"])
-                sections = ((det.get("jobAd") or {}).get("sections")) or {}
-                text = " ".join(html_to_text(s.get("text") or "") for s in sections.values() if isinstance(s, dict))
-                url = det.get("postingUrl") or url
-                recruiter = ((det.get("creator") or {}).get("name")) or ""
-            except Exception:  # noqa: BLE001 - keep the posting without its description
-                pass
+        text, url, recruiter = info.get(p.get("ref"), ("", "", ""))
+        url = url or f"https://jobs.smartrecruiters.com/{c.board}/{p.get('id')}"
         if recruiter and recruiter not in recruiters:
             recruiters.append(recruiter)
         out.append(_job(c, p.get("name"), url, [loc.get("fullLocation"), loc.get("city")], [loc.get("country")], text,
@@ -127,7 +144,7 @@ def _smartrecruiters(http, c, keep, roles, details, place):
     return out, total or len(rows), recruiters
 
 
-def _workable(http, c, keep, roles, details, place):
+def _workable(http, c, keep, roles, details, place, fresh):
     """Workable's public widget API: the whole board in one call, descriptions included."""
     d = http.get_json(f"https://apply.workable.com/api/v1/widget/accounts/{c.board}", params={"details": "true"})
     rows = d.get("jobs") or []
@@ -146,7 +163,7 @@ def _workable(http, c, keep, roles, details, place):
 
 
 
-def _recruitee(http, c, keep, roles, details, place):
+def _recruitee(http, c, keep, roles, details, place, fresh):
     d = http.get_json(f"https://{c.board}.recruitee.com/api/offers/")
     rows = d.get("offers") or []
     out = []
@@ -164,43 +181,73 @@ def _recruitee(http, c, keep, roles, details, place):
     return out, len(rows), []
 
 
-def _workday(http, c, keep, roles, details, place):
+# Workday has no "whole board" call: it is searched once per query, 20 postings a page. A long role
+# list multiplied that into hundreds of requests per company, so queries are deduplicated and share
+# a page budget (4 roles keep the old 10 pages each; 12 roles get 3 each).
+WORKDAY_PAGES = 40
+
+
+def workday_queries(roles):
+    out = []
+    for r in roles or [""]:
+        q = re.sub(r"\bback[\s-]+end\b", "backend", r.lower().strip())
+        q = re.sub(r"\bfull[\s-]*stack\b", "full stack", re.sub(r"\bfront[\s-]+end\b", "frontend", q))
+        if q not in out:
+            out.append(q)
+    return out
+
+
+def _workday(http, c, keep, roles, details, place, fresh):
     host, tenant, site = c.board.split("/", 2)
     base = f"https://{host}/wday/cxs/{tenant}/{site}"
-    found, total = {}, 0
-    for role in roles or [""]:
-        offset = 0
-        while offset < 200:
-            r = http.post(base + "/jobs", json={"appliedFacets": {}, "limit": 20, "offset": offset, "searchText": role})
+    queries = workday_queries(roles)
+    pages = max(2, min(10, WORKDAY_PAGES // len(queries)))
+
+    def search(query):
+        rows, total, offset = [], 0, 0
+        while offset < pages * 20:
+            r = http.post(base + "/jobs", json={"appliedFacets": {}, "limit": 20, "offset": offset, "searchText": query})
             r.raise_for_status()
             d = r.json()
             page = d.get("jobPostings") or []
             total = max(total, d.get("total") or 0)
-            for p in page:
-                if p.get("externalPath") and keep(p.get("title", "")) and place(geo.codes(p.get("locationsText"))):
-                    found.setdefault(p["externalPath"], p)
+            rows.extend(page)
             offset += 20
             if len(page) < 20:
                 break
+        return rows, total
+
+    found, total = {}, 0
+    for rows, n in _each(search, queries):
+        total = max(total, n)
+        for p in rows:
+            if p.get("externalPath") and keep(p.get("title", "")) and place(geo.codes(p.get("locationsText"))):
+                found.setdefault(p["externalPath"], p)
+
+    def detail(path):
+        try:
+            return (http.get_json(base + path) or {}).get("jobPostingInfo") or {}
+        except Exception:  # noqa: BLE001
+            return {}
+
+    todo = [path for path, p in found.items() if fresh(parse_date(p.get("postedOn")))][:details]
+    infos = dict(zip(todo, _each(detail, todo)))
     out = []
-    for i, (path, p) in enumerate(found.items()):
+    for path, p in found.items():
         locs, iso, text, posted = [p.get("locationsText")], [], "", parse_date(p.get("postedOn"))
         url = f"https://{host}/{site}{path}"
-        if i < details:
-            try:
-                info = (http.get_json(base + path) or {}).get("jobPostingInfo") or {}
-                text = html_to_text(info.get("jobDescription") or "")
-                locs = [info.get("location")] + list(info.get("additionalLocations") or [])
-                iso = [(info.get("country") or {}).get("descriptor")]
-                url = info.get("externalUrl") or url
-                posted = info.get("startDate") or posted
-            except Exception:  # noqa: BLE001
-                pass
+        info = infos.get(path)
+        if info:
+            text = html_to_text(info.get("jobDescription") or "")
+            locs = [info.get("location")] + list(info.get("additionalLocations") or [])
+            iso = [(info.get("country") or {}).get("descriptor")]
+            url = info.get("externalUrl") or url
+            posted = info.get("startDate") or posted
         out.append(_job(c, p.get("title"), url, locs, iso, text, posted))
     return out, total, []
 
 
-def _personio(http, c, keep, roles, details, place):
+def _personio(http, c, keep, roles, details, place, fresh):
     # Personio's public feed is XML; the board is the subdomain of {board}.jobs.personio.de
     # (some tenants live on .com - that answers on the same path).
     import xml.etree.ElementTree as ET
@@ -226,7 +273,7 @@ def _personio(http, c, keep, roles, details, place):
     return out, len(rows), []
 
 
-def _breezy(http, c, keep, roles, details, place):
+def _breezy(http, c, keep, roles, details, place, fresh):
     rows = http.get_json(f"https://{c.board}.breezy.hr/json")
     rows = rows if isinstance(rows, list) else []
     out = []
@@ -242,7 +289,7 @@ def _breezy(http, c, keep, roles, details, place):
     return out, len(rows), []
 
 
-def _bamboohr(http, c, keep, roles, details, place):
+def _bamboohr(http, c, keep, roles, details, place, fresh):
     # {board}.bamboohr.com/careers/list answers JSON to an Accept: application/json request
     # (an unknown board redirects to bamboohr.com's home page instead).
     r = http.get(f"https://{c.board}.bamboohr.com/careers/list", headers={"Accept": "application/json"},
@@ -251,24 +298,25 @@ def _bamboohr(http, c, keep, roles, details, place):
     if r.status_code != 200 or "json" not in r.headers.get("content-type", ""):
         raise ValueError(f"no BambooHR board at {c.board}")
     rows = r.json().get("result") or []
+    kept = [p for p in rows if keep((p.get("jobOpeningName") or "").strip())]
+
+    def detail(p):
+        try:
+            d = http.get_json(f"https://{c.board}.bamboohr.com/careers/{p.get('id')}/detail",
+                              headers={"Accept": "application/json"})
+            return html_to_text(((d.get("result") or {}).get("jobOpening") or {}).get("description") or "")
+        except Exception:  # noqa: BLE001 - the list entry is still worth keeping
+            return ""
+
+    texts = _each(detail, kept[:details])
     out = []
-    for i, p in enumerate(rows):
-        title = (p.get("jobOpeningName") or "").strip()
-        if not keep(title):
-            continue
+    for i, p in enumerate(kept):
         loc, ats_loc = p.get("location") or {}, p.get("atsLocation") or {}
         locs = [", ".join(x for x in (loc.get("city"), loc.get("state")) if x),
                 ", ".join(x for x in (ats_loc.get("city"), ats_loc.get("state") or ats_loc.get("province"),
                                       ats_loc.get("country")) if x)]
-        url = f"https://{c.board}.bamboohr.com/careers/{p.get('id')}"
-        text = ""
-        if len(out) < details:
-            try:
-                d = http.get_json(url + "/detail", headers={"Accept": "application/json"})
-                text = html_to_text(((d.get("result") or {}).get("jobOpening") or {}).get("description") or "")
-            except Exception:  # noqa: BLE001 - the list entry is still worth keeping
-                pass
-        out.append(_job(c, title, url, locs, [ats_loc.get("country")], text, "",
+        out.append(_job(c, (p.get("jobOpeningName") or "").strip(), f"https://{c.board}.bamboohr.com/careers/{p.get('id')}",
+                        locs, [ats_loc.get("country")], texts[i] if i < len(texts) else "", "",
                         remote=bool(p.get("isRemote")) or p.get("locationType") == "1" or None,
                         department=p.get("departmentLabel") or "", employment=p.get("employmentStatusLabel") or ""))
     return out, len(rows), []
@@ -288,16 +336,18 @@ class Unresolved(Exception):
         self.via = via
 
 
-def fetch(http, company, keep, roles, details=40, place=None, resolver=None):
+def fetch(http, company, keep, roles, details=40, place=None, resolver=None, fresh=None):
     """Read a company's board, re-resolving it when the board in companies.txt does not answer.
 
     `resolver(company, why) -> Company | None` is what turns a dead slug into a live one
     (careers_bot passes jobbot.careers.resolve through it). Without it, behaviour is the
     old one: whatever the row says, and an error when that is wrong.
     """
+    place = place or (lambda codes: True)
+    fresh = fresh or (lambda iso: True)
     if company.readable:
         try:
-            return READERS[company.ats](http, company, keep, roles, details, place or (lambda codes: True))
+            return READERS[company.ats](http, company, keep, roles, details, place, fresh)
         except Exception as e:  # noqa: BLE001 - a 404 is a stale slug, not the end of this company
             if resolver is None:
                 raise
@@ -310,7 +360,7 @@ def fetch(http, company, keep, roles, details=40, place=None, resolver=None):
         raise Unresolved(company.careers, "unreadable row")
     if fixed is None or not fixed.readable:
         raise Unresolved((fixed or company).careers, (fixed or company).resolved or "unresolved")
-    return READERS[fixed.ats](http, fixed, keep, roles, details, place or (lambda codes: True))
+    return READERS[fixed.ats](http, fixed, keep, roles, details, place, fresh)
 
 
 def probe(http, slug):

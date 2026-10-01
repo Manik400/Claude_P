@@ -151,9 +151,10 @@ def parse_date(value):
     if m and m.group(2) in _MONTHS:
         return iso(datetime(int(m.group(3)), _MONTHS[m.group(2)], int(m.group(1))))
     # relative: "2d ago", "Hace 3d", "3 days ago", "vor 2 Tagen", "1w ago", "5h", "Hace 6h", "30+ days ago"
-    m = re.search(r"(\d+)\+?\s*(h|hour|hours|d|day|days|w|week|weeks|mo|month|months|tag|tagen|día|dias|días|dag|dagen|päivä|päivää)\b", s_low)
+    m = re.search(r"(\d+)(\+?)\s*(h|hour|hours|d|day|days|w|week|weeks|mo|month|months|tag|tagen|día|dias|días|dag|dagen|päivä|päivää)\b", s_low)
     if m:
-        n = int(m.group(1)); u = m.group(2)
+        # "30+ days ago" is more than 30 days: one past the number, so a 30-day window drops it
+        n = int(m.group(1)) + (1 if m.group(2) else 0); u = m.group(3)
         if u.startswith("h"):
             delta = timedelta(hours=n)
         elif u in ("w", "week", "weeks"):
