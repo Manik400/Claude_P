@@ -1,6 +1,21 @@
 {
- "updated": "2026-10-01T09:01:49Z",
+ "updated": "2026-10-01T09:20:56Z",
  "items": [
+  {
+   "id": "careers-20261001-092056-software-engineer-backend-engineer-java-",
+   "kind": "careers",
+   "title": "software engineer, backend engineer, java developer, software developer",
+   "when": "2026-10-01T09:20:56Z",
+   "file": "data/careers/careers-20261001-092056-software-engineer-backend-engineer-java-.json",
+   "bytes": 3268790,
+   "meta": {
+    "jobs": "800",
+    "relocation": "661",
+    "countries": "worldwide",
+    "experience": "2",
+    "reloc_mode": "visa"
+   }
+  },
   {
    "id": "naukri-20261001-090149-naukri-openings-2026-10-01-run-1-last-24",
    "kind": "naukri",
