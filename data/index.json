@@ -1,6 +1,17 @@
 {
- "updated": "2026-09-30T13:16:23Z",
+ "updated": "2026-10-01T05:50:39Z",
  "items": [
+  {
+   "id": "jobhunt-20261001-055039-2026-10-01-0342-software-developer",
+   "kind": "jobhunt",
+   "title": "2026-10-01_0342_software-developer",
+   "when": "2026-10-01T05:50:39Z",
+   "file": "data/jobhunt/jobhunt-20261001-055039-2026-10-01-0342-software-developer.html",
+   "bytes": 803858,
+   "meta": {
+    "jobs_file": "data/jobhunt/jobhunt-20261001-055039-2026-10-01-0342-software-developer.jobs.json"
+   }
+  },
   {
    "id": "careers-20260930-131623-software-engineer-developer-sde-swe",
    "kind": "careers",
