@@ -1,6 +1,21 @@
 {
- "updated": "2026-10-01T06:32:33Z",
+ "updated": "2026-10-01T08:35:57Z",
  "items": [
+  {
+   "id": "careers-20261001-083557-software-engineer-backend-engineer-java-",
+   "kind": "careers",
+   "title": "software engineer, backend engineer, java developer, software developer",
+   "when": "2026-10-01T08:35:57Z",
+   "file": "data/careers/careers-20261001-083557-software-engineer-backend-engineer-java-.json",
+   "bytes": 3525307,
+   "meta": {
+    "jobs": "1412",
+    "relocation": "45",
+    "countries": "India",
+    "experience": "2",
+    "reloc_mode": "any"
+   }
+  },
   {
    "id": "jobhunt-20261001-055039-2026-10-01-0342-software-developer",
    "kind": "jobhunt",
