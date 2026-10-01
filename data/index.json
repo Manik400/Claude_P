@@ -1,6 +1,57 @@
 {
- "updated": "2026-10-01T08:35:57Z",
+ "updated": "2026-10-01T09:01:49Z",
  "items": [
+  {
+   "id": "naukri-20261001-090149-naukri-openings-2026-10-01-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-01 run 1 - Last 24h",
+   "when": "2026-10-01T09:01:49Z",
+   "file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-1-last-24.html",
+   "bytes": 66834,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261001-090149-naukri-openings-2026-10-01-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-01 run 2 - Early",
+   "when": "2026-10-01T09:01:49Z",
+   "file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-2-early.html",
+   "bytes": 33459,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261001-090149-naukri-openings-2026-10-01-run-3-all-job",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-01 run 3 - All jobs",
+   "when": "2026-10-01T09:01:49Z",
+   "file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-3-all-job.html",
+   "bytes": 70651,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-3-all-job.jobs.json"
+   }
+  },
+  {
+   "id": "applications-20261001-090149-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-01T09:01:49Z",
+   "file": "data/applications/applications-20261001-090149-applications-sent.html",
+   "bytes": 125387,
+   "meta": {}
+  },
+  {
+   "id": "accuracy-20261001-090149-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-01T09:01:49Z",
+   "file": "data/accuracy/accuracy-20261001-090149-accuracy-learning.html",
+   "bytes": 14462,
+   "meta": {}
+  },
   {
    "id": "careers-20261001-083557-software-engineer-backend-engineer-java-",
    "kind": "careers",
@@ -41,24 +92,6 @@
     "experience": "1",
     "reloc_mode": "visa"
    }
-  },
-  {
-   "id": "applications-20260930-123430-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-09-30T12:34:30Z",
-   "file": "data/applications/applications-20260930-123430-applications-sent.html",
-   "bytes": 4555263,
-   "meta": {}
-  },
-  {
-   "id": "accuracy-20260930-082253-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-09-30T08:22:53Z",
-   "file": "data/accuracy/accuracy-20260930-082253-accuracy-learning.html",
-   "bytes": 19410,
-   "meta": {}
   },
   {
    "id": "naukri-20260930-082252-naukri-openings-2026-09-30-run-1-last-24",

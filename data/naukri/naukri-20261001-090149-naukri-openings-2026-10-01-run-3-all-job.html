@@ -1,0 +1,524 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function () {
+  try {
+    var r = document.documentElement, t = localStorage.getItem('jh:theme') || 'auto';
+    if (t === 'light' || t === 'dark') r.setAttribute('data-theme', t);
+    if (localStorage.getItem('jh:ui') === 'v2') {
+      r.setAttribute('data-ui', 'v2');
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'; document.head.appendChild(l);
+    }
+  } catch (e) { /* private window: follow the device */ }
+})();</script>
+
+<title>Job Openings 2026-10-01 r3 - All jobs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
+  :root {
+    --bg: #f2f4f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --line: #dde2e9;
+    --ink: #161b22;
+    --muted: #5b6675;
+    --accent: #1f5c8b;
+    --accent-soft: #e8f0f7;
+    --accent-on: #ffffff;
+    --new: #a15c07;
+    --new-soft: #fdf3e3;
+    --good: #166534;
+    --good-soft: #e6f4ea;
+    --shadow: 0 1px 2px rgba(22, 27, 34, .06), 0 4px 12px rgba(22, 27, 34, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1218;
+      --surface: #161c25;
+      --surface-2: #1b222c;
+      --line: #2a3441;
+      --ink: #e7ecf3;
+      --muted: #8d99a9;
+      --accent: #6aa9d8;
+      --accent-soft: #17293a;
+      --accent-on: #0e1218;
+      --new: #e0a54a;
+      --new-soft: #2e2413;
+      --good: #6ec48c;
+      --good-soft: #14291c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1218;
+    --surface: #161c25;
+    --surface-2: #1b222c;
+    --line: #2a3441;
+    --ink: #e7ecf3;
+    --muted: #8d99a9;
+    --accent: #6aa9d8;
+    --accent-soft: #17293a;
+    --accent-on: #0e1218;
+    --new: #e0a54a;
+    --new-soft: #2e2413;
+    --good: #6ec48c;
+    --good-soft: #14291c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
+
+  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.75rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; font-size: clamp(26px, 4vw, 36px);
+    margin: 0; letter-spacing: -.02em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 116px; box-shadow: var(--shadow);
+  }
+  .stat b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.5rem; font-weight: 500; line-height: 1.15;
+  }
+  .stat span {
+    font-size: 0.6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .stat.is-applied b { color: var(--good); }
+  .stat.is-new b { color: var(--new); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--bg); padding: 6px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .chip {
+    font: 500 0.8125rem/1 Archivo, sans-serif;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  @media (max-height: 760px) { .bar { position: static; } }
+  .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1 1 auto; }
+  .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+  .bar-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6875rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding-right: 2px;
+  }
+  .search {
+    font: 400 0.875rem "Source Sans 3", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 10px; min-width: 180px; flex: 1 1 200px;
+  }
+
+  .group-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
+  }
+  .group-head h2 {
+    font-family: Archivo, sans-serif; font-size: 0.9375rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin: 0;
+  }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.8125rem; color: var(--muted); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px 1fr 172px 120px 92px;
+    gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px; margin-bottom: 7px; box-shadow: var(--shadow);
+  }
+  .row.done { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--line)); }
+  .row.done .title a { text-decoration: line-through; opacity: .62; }
+  .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 0.9688rem; line-height: 1.3; }
+  .title a { color: var(--ink); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .company { color: var(--muted); font-size: 0.8438rem; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6562rem; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
+  .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
+  .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+  .note { color: var(--muted); font-size: 0.7812rem; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
+
+  .meta { font-size: 0.8125rem; color: var(--muted); }
+  .meta div + div { margin-top: 3px; }
+  .rank {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.0625rem; text-align: right; color: var(--accent);
+  }
+  .rank small { display: block; font-size: 0.5938rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  .empty { color: var(--muted); padding: 26px 0; text-align: center; }
+
+  /* Shared with the interview-prep page, which links back here. */
+  nav.top {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  }
+  nav.top a, nav.top span.here {
+    font: 600 0.8438rem/1 Archivo, sans-serif; text-decoration: none;
+    padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
+    border-radius: 6px 6px 0 0;
+  }
+  nav.top a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.top span.here { color: var(--ink); border-bottom-color: var(--accent); }
+  nav.top a.disabled { opacity: .45; pointer-events: none; }
+
+  /* Each scan of the day keeps its own page, so this is how you get back to
+     the 08:52 list from the 18:11 one. */
+  nav.runs {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+    margin: -14px 0 20px; font: 400 0.7812rem/1.6 "Source Sans 3", sans-serif;
+  }
+  nav.runs .label { color: var(--muted); margin-right: 2px; }
+  nav.runs a, nav.runs span.here {
+    padding: 3px 9px; border-radius: 999px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted);
+    font: 500 0.7812rem/1.6 "IBM Plex Mono", monospace;
+  }
+  nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
+  nav.runs .sep { color: var(--line); padding: 0 4px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8125rem; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 30px 1fr; }
+    .meta, .rank { grid-column: 2; text-align: left; }
+    .rank { font-size: 0.9375rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="top">
+    <span class="here">Job Scanner</span>
+    <a href="#" class="disabled">Top 10 Jobs</a>
+    <a href="#" class="disabled">Interview Preparation (not generated)</a>
+    <a href="applications.html">Applications sent</a>
+  </nav>
+
+  <nav class="runs">
+    <span class="label">Today&rsquo;s scans</span>
+    <a href="openings-2026-10-01-r1.html">r1</a>
+    <a href="openings-2026-10-01-r2.html">r2</a>
+    <span class="here">r3</span>
+  </nav>
+
+  <header>
+    <div class="eyebrow">2026-10-01 &middot; scan 3 &middot; All locations</div>
+    <h1>60 openings, 60 new today</h1>
+    <p class="sub">Every opening this scan found, remote first. Tick a row when you have applied &mdash; ticks are saved in this browser and carry across every day&rsquo;s page.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="s-total">0</b><span>Openings</span></div>
+    <div class="stat is-new"><b id="s-new">0</b><span>New today</span></div>
+    <div class="stat"><b id="s-remote">0</b><span>Remote</span></div>
+    <div class="stat is-applied"><b id="s-applied">0</b><span>Applied</span></div>
+    <div class="stat"><b id="s-left">0</b><span>Still to do</span></div>
+  </div>
+
+  <div class="bar">
+    <span class="fgrp" data-grp="openings.show"><span class="flabel">Show</span><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+    </span></span>
+    <span class="fgrp" data-grp="openings.posted"><span class="flabel">Posted</span><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></span>
+    <span class="spacer"></span>
+    <span class="fgrp" data-grp="openings.search"><span class="flabel">Search</span><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></span>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Generated 2026-10-01 from 60 Naukri and 0 LinkedIn listings.
+    Naukri scores are 0&ndash;100 across skills, title, experience, location and freshness.
+    LinkedIn shows title match only &mdash; its cards carry no skills or experience range, so the two are not the same measure.</p>
+    <p>Ticks are stored in this browser under <code>jobtracker.applied</code>. Clearing site data clears them.</p>
+    <p>Every listing carries a posted date.</p>
+  </footer>
+</div>
+
+<script id="data" type="application/json">[{"id": "naukri:250926504215", "board": "Naukri", "title": "Full Stack Developer", "company": "Softoasis Technologies", "location": "Remote", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "5 Days Ago", "age": 6, "rank": 74.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-softoasis-technologies-remote-2-to-7-years-250926504215", "remote": true, "easy": false, "note": "Backend, GIT, Architecture, Postgresql, Javascript", "ai": "Fit: Candidate has 2 years of experience with Java, Spring Boot, and React, matching the core stack. Strong production experience with microservices, event-driven architecture, and cloud infrastructure (AWS) aligns well with the role's requireme  Gap: Candidate lacks explicit Node.js and TypeScript experience, which are required skills for this specific job posting.", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1355-softoasis-technologies-full-stack-developer-noform.png)"}, {"id": "naukri:270625500126", "board": "Naukri", "title": "SDE I - Full Stack", "company": "Viralme", "location": "Remote", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "30+ Days Ago", "age": 461, "rank": 66.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-i-full-stack-viralme-remote-2-to-5-years-270625500126", "remote": true, "easy": false, "note": "server, css, redis, sql", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:180926500439", "board": "Naukri", "title": "Backend Engineer", "company": "Iconicweb Creator", "location": "Remote", "salary": "Not disclosed", "experience": "0-3 Yrs", "posted": "12 Days Ago", "age": 13, "rank": 66.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-engineer-iconicweb-creator-remote-0-to-3-years-180926500439", "remote": true, "easy": false, "note": "python, software development, java, api design", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:280926500432", "board": "Naukri", "title": "Software Developer", "company": "Gramian Consulting", "location": "Remote", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 65.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-gramian-consulting-remote-2-to-5-years-280926500432", "remote": true, "easy": false, "note": "automation, git, software development, Software", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:280926009163", "board": "Naukri", "title": "Kong Developer", "company": "Robotico Digital Llp", "location": "Remote", "salary": "Not disclosed", "experience": "2-4 Yrs", "posted": "3 Days Ago", "age": 3, "rank": 64.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-kong-developer-robotico-digital-llp-bengaluru-2-to-4-years-280926009163", "remote": true, "easy": false, "note": "Docker, API, Rest API Design, GIT, Rest", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:110926501315", "board": "Naukri", "title": "Software Developer", "company": "Rupstech", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "19 Days Ago", "age": 20, "rank": 85.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-rupstech-private-limited-bengaluru-1-to-5-years-110926501315", "remote": false, "easy": false, "note": "kubernetes, ci/cd pipelines, css, js, react, docker", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "career-incomplete", "status_note": "cannot answer: Age (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1353-rupstech-software-developer-incomplete.png)"}, {"id": "naukri:011026000089", "board": "Naukri", "title": "Software Engineer", "company": "Jobaaj Com", "location": "Hybrid - Hyderabad, Pune, Bengaluru", "salary": "3.5-7 Lacs PA", "experience": "0-2 Yrs", "posted": "Today", "age": 0, "rank": 83.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-jobaaj-com-hyderabad-pune-bengaluru-0-to-2-years-011026000089", "remote": false, "easy": true, "note": "JavaScript, Python, Java, PostgreSQL, Spring Boot, Angular", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:300926500437", "board": "Naukri", "title": "Software Engineer", "company": "Aucourant Technologies", "location": "Dehradun", "salary": "Not disclosed", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 83.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-aucourant-technologies-pvt-ltd-dehradun-1-to-4-years-300926500437", "remote": false, "easy": false, "note": "python, c++, css, software development, engineering, hibernate", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "closed", "status_note": "the listing no longer accepts applications"}, {"id": "naukri:290926028131", "board": "Naukri", "title": "Software Developer", "company": "Ample Softech System", "location": "Nagpur, Pune, Mumbai (All Areas)", "salary": "4.5-9.5 Lacs PA", "experience": "0-4 Yrs", "posted": "1 Day Ago", "age": 2, "rank": 82.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-ample-softech-system-nagpur-pune-mumbai-all-areas-0-to-4-years-290926028131", "remote": false, "easy": true, "note": "Java, C++, Javascript, Database, C#, Git", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:280926503156", "board": "Naukri", "title": "Developer", "company": "Webtoils Development Llp", "location": "New Delhi", "salary": "Not disclosed", "experience": "0-4 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 81.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-developer-webtoils-development-llp-new-delhi-0-to-4-years-280926503156", "remote": false, "easy": false, "note": "c#, css, c++, python, software development, c", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "captcha", "status_note": "the form has a CAPTCHA (recaptcha checkbox) - apply by hand"}, {"id": "naukri:290926917171", "board": "Naukri", "title": "Software Development Engineer", "company": "Luxoft", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "2 Days Ago", "age": 2, "rank": 80.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-luxoft-india-llp-bengaluru-1-to-6-years-290926917171", "remote": false, "easy": true, "note": "Software Development, C#, Java, Css, Hibernate, C++", "ai": "Fit: Strong Java/Spring Boot experience, event-driven microservices, and cloud (AWS) skills align perfectly with the role's focus on code quality and industry trends.  Gap: Lacks specific C# proficiency and C++ knowledge, which are explicitly mentioned as required skills.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:280926023134", "board": "Naukri", "title": "Java Developer /Senior Java Developer", "company": "Agiliad", "location": "Pune(Pune Station)", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 79.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-java-developer-senior-java-developer-agiliad-pune-2-to-6-years-280926023134", "remote": false, "easy": false, "note": "Java, Backend, Hibernate, Spring Boot, Microservices, cloud", "ai": "Fit: Strong 2+ years of experience with Java, Spring Boot, and microservices aligns well with the role. Candidate has built production-grade systems using AWS, Docker, and Kafka, matching the required tech stack.  Gap: Lacks hands-on experience with Hibernate/JPA and RESTful web services, which are core requirements for this specific role.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:300926006148", "board": "Naukri", "title": "Java Developer", "company": "Smart Placement Services", "location": "Hybrid - Mumbai, Nagpur, Pune", "salary": "10-20 Lacs PA", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 78.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-java-developer-smart-placement-services-mumbai-nagpur-pune-3-to-6-years-300926006148", "remote": false, "easy": true, "note": "Spring Boot, Angular, Java, Hibernate, SQL, Angularjs", "ai": "Fit: Strong 2-year experience with Java, Spring Boot, and microservices aligns well with the role. Strong backend skills in PostgreSQL, Redis, and cloud infrastructure (AWS) match the technical requirements.  Gap: Candidate lacks specific experience with Angular, Hibernate, and SQL, which are core to this job.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:160226017620", "board": "Naukri", "title": "Full Stack Developer", "company": "Finarb Analytics Consulting", "location": "Kolkata, Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 76.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-finarb-analytics-consulting-kolkata-hyderabad-2-to-5-years-160226017620", "remote": false, "easy": false, "note": "Javascript, Python, TypeScript, Full Stack, React.js, Angular", "ai": "Fit: Strong Java/Spring Boot background, AWS experience, and event-driven microservices design align well with the candidate's 2 years of production-grade system experience.  Gap: Lacks explicit frontend proficiency in JavaScript/TypeScript and TypeScript, which are core requirements for this role.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:280926008860", "board": "Naukri", "title": "Backend Engineer", "company": "Mclaren Strategic Ventures India", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-2 Yrs", "posted": "3 Days Ago", "age": 3, "rank": 76.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-engineer-mclaren-strategic-ventures-india-bengaluru-1-to-2-years-280926008860", "remote": false, "easy": true, "note": "Postgresql, Microservices, Docker, Python, Github, Kafka", "ai": "Fit: Candidate has 2 years of experience with Java, Spring Boot, Kafka, PostgreSQL, and Docker, matching the core backend stack. Strong focus on microservices, event-driven architecture, and production-grade systems aligns with the role's requir  Gap: Candidate lacks hands-on Python experience and has no direct experience with the specific peer-to-peer marketplace platform.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:220926003774", "board": "Naukri", "title": "Software Developer", "company": "SG Lottery India", "location": "Hybrid - Bengaluru(Whitefield)", "salary": "Not disclosed", "experience": "2-4 Yrs", "posted": "9 Days Ago", "age": 9, "rank": 74.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-sg-india-bengaluru-2-to-4-years-220926003774", "remote": false, "easy": false, "note": "Java, Spring Boot, Microservices, Hibernate, Postgresql, Ci/Cd", "ai": "Fit: Strong Java/Spring Boot and microservices experience with AWS, Kafka, and PostgreSQL aligns perfectly with the candidate's 2 years of production-grade system design.  Gap: Limited on-call support and remote work flexibility compared to the job requirements.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:280926503622", "board": "Naukri", "title": "Developer / Programmer", "company": "LBM Infotech", "location": "Nashik", "salary": "Not disclosed", "experience": "2-7 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 74.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-developer-programmer-lbm-infotech-nashik-2-to-7-years-280926503622", "remote": false, "easy": false, "note": "css, c++, scalability, sql, microservices, spring", "ai": "Fit: Strong Java/Spring Boot and microservices experience aligns with the core backend requirements. Full-stack React/Flutter skills and cloud (AWS) knowledge complement the frontend and infrastructure needs.  Gap: Lacks specific PHP, HTML, CSS, and C++ proficiency; needs to demonstrate proficiency in PHP and basic web development fundamentals.", "new": true, "first_seen": "2026-10-01", "status": "captcha", "status_note": "the form has a CAPTCHA (image captcha) - apply by hand"}, {"id": "naukri:300926504342", "board": "Naukri", "title": "Full Stack Developer", "company": "Propcid Infotech", "location": "Noida", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 74.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-propcid-infotech-private-limited-noida-2-to-5-years-300926504342", "remote": false, "easy": false, "note": "python, software development, full stack developer, js, react", "ai": "Fit: Strong Java/Spring Boot and React experience with cloud-native skills (AWS, Docker) and event-driven architecture aligns well with the Full Stack Developer role.  Gap: Candidate lacks Python and JavaScript (JS) proficiency, which are explicitly required for this position.", "new": true, "first_seen": "2026-10-01", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "naukri:300926500110", "board": "Naukri", "title": "Full Stack Developer", "company": "Softrica", "location": "Surat", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 74.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-softrica-surat-2-to-6-years-300926500110", "remote": false, "easy": false, "note": "css, python, full stack developer, js, react", "ai": "Fit: Strong Java/Spring Boot background, 2 years experience, and full-stack skills (React, Flutter) align well with the candidate's 2 years of experience.  Gap: Missing Python and CSS knowledge not mentioned in resume.", "new": true, "first_seen": "2026-10-01", "status": "career-incomplete", "status_note": "cannot answer: Let’s Build Something Great Together; form_fields[field_1c74443] (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1359-softrica-full-stack-developer-incomplete.png)"}, {"id": "naukri:220926500440", "board": "Naukri", "title": "Frontend Developer", "company": "I2ispecialist Technologies", "location": "Pune", "salary": "Not disclosed", "experience": "0-2 Yrs", "posted": "8 Days Ago", "age": 9, "rank": 73.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-developer-i2ispecialist-technologies-pune-0-to-2-years-220926500440", "remote": false, "easy": false, "note": "css, software development, react, javascript, angular, git", "ai": "Fit: Strong React and Java background with full-stack experience aligns well with the candidate's skills in React, JavaScript, and responsive design.  Gap: Lacks specific Angular and Bootstrap experience mentioned in the job requirements.", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1400-i2ispecialist-technologies-frontend-developer-noform.png)"}, {"id": "naukri:010626501409", "board": "Naukri", "title": "Backend Engineer", "company": "Prajnan Software Com", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-2 Yrs", "posted": "30+ Days Ago", "age": 122, "rank": 73.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-engineer-prajnan-software-bengaluru-1-to-2-years-010626501409", "remote": false, "easy": false, "note": "rest, python, c++, software development, c, scalability", "ai": "Fit: Strong Java/Spring Boot experience, event-driven microservices, and cloud (AWS) skills align well with backend engineering requirements.  Gap: Limited Python and C++ experience; database focus on PostgreSQL/MongoDB vs. current Java/MySQL.", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1400-prajnan-software-com-backend-engineer-noform.png)"}, {"id": "naukri:191124505856", "board": "Naukri", "title": "Backend Developer", "company": "Paul Merchants (PML)", "location": "Chandigarh", "salary": "Not disclosed", "experience": "2-4 Yrs", "posted": "30+ Days Ago", "age": 681, "rank": 72.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-paul-merchants-chandigarh-2-to-4-years-191124505856", "remote": false, "easy": false, "note": "Backend, NoSQL, AWS, SQL, Framework, Spring", "ai": "Fit: Strong Java/Spring Boot experience, AWS skills, and event-driven microservices background align perfectly with the backend requirements.  Gap: Limited Node.js and Python exposure compared to the job's primary tech stack.", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:160426502273", "board": "Naukri", "title": "SDE - 1", "company": "Dzylo", "location": "Gurugram", "salary": "Not disclosed", "experience": "0-3 Yrs", "posted": "30+ Days Ago", "age": 168, "rank": 72.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-1-dzylo-gurugram-0-to-3-years-160426502273", "remote": false, "easy": false, "note": "css, c++, microservices, sql, spring, java", "ai": "Fit: Strong Java/Spring Boot experience, event-driven microservices, and cloud (AWS) skills align perfectly with the SDE role.  Gap: Candidate lacks specific C++ and interior design domain knowledge required for this project.", "new": true, "first_seen": "2026-10-01", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "naukri:301025505940", "board": "Naukri", "title": "Backend Developer", "company": "Yaazh Software Studio", "location": "Chennai", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "30+ Days Ago", "age": 336, "rank": 72.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-yaazh-software-studio-chennai-1-to-3-years-301025505940", "remote": false, "easy": false, "note": "Backend, GIT, Architecture, Agile, Javascript, AWS", "ai": "Fit: Strong AWS and Java experience with event-driven microservices and production-grade systems aligns well with the role's technical requirements.  Gap: Lacks specific Node.js proficiency and Git versioning tool experience.", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1401-yaazh-software-studio-backend-developer-noform.png)"}, {"id": "naukri:050126502298", "board": "Naukri", "title": "SDE - JAVA", "company": "Unify Technologies", "location": "Gurugram", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "30+ Days Ago", "age": 269, "rank": 71.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-java-unify-technologies-gurugram-1-to-5-years-050126502298", "remote": false, "easy": false, "note": "spring boot, microservices, Spring, Boot, Java", "ai": "Fit: Strong 2-year experience with Java, Spring Boot, and microservices aligns perfectly with the core technical requirements. Proven track record of building production-grade systems and optimizing high-throughput pipelines matches the candidat  Gap: Limited to 2 years of experience; candidate may lack deep familiarity with specific Spring Boot nuances or advanced microservices patterns compared to a senior engineer.", "new": true, "first_seen": "2026-10-01", "status": "career-unconfirmed", "status_note": "pressed Submit, no confirmation seen · tailored resume, 83% of the job's skills (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1406-unify-technologies-sde-java-after.png)"}, {"id": "naukri:280926000978", "board": "Naukri", "title": "Software-Java Developer", "company": "Creative Hands HR", "location": "Hyderabad, Chennai, Bengaluru", "salary": "Not disclosed", "experience": "0-5 Yrs", "posted": "3 Days Ago", "age": 3, "rank": 71.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-java-developer-creative-hands-hr-hyderabad-chennai-bengaluru-0-to-5-years-280926000978", "remote": false, "easy": true, "note": "Java, Docker, Spring Boot, AWS, Microservices", "ai": "Fit: Strong Java/Spring Boot experience, event-driven microservices, and production-scale system design align perfectly with the role's core requirements.  Gap: Lacks explicit mention of Docker Compose usage and client-side JavaScript proficiency.", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:110826038581", "board": "Naukri", "title": "SDE-1", "company": "Astranova Mobility", "location": "Hybrid - Gurugram", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "22 Days Ago", "age": 23, "rank": 70.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-1-astranova-mobility-gurugram-1-to-3-years-110826038581", "remote": false, "easy": false, "note": "Java, NoSQL, Development, Backend", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:300926013084", "board": "Naukri", "title": "Senior Software Engineer", "company": "Optum", "location": "Hybrid - Hyderabad", "salary": "Not disclosed", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 70.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-software-engineer-optum-hyderabad-3-to-6-years-300926013084", "remote": false, "easy": false, "note": "Angularjs, .Net Core, Python, Software, Core, .Net", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:080425500095", "board": "Naukri", "title": "Backend Engineer", "company": "Photon", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "30+ Days Ago", "age": 541, "rank": 70.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-engineer-photon-infotech-p-ltd-bengaluru-1-to-5-years-080425500095", "remote": false, "easy": false, "note": "spring boot, Backend, Cloud, jenkins, Infrastructure", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "login-required", "status_note": "fa-ertb-saasfaprod1.fa.ocs.oraclecloud.com needs its own account (sign in once with: python main.py --platform-login)"}, {"id": "naukri:120626008685", "board": "Naukri", "title": "Fullstack Developer", "company": "Deloitte Shared Services India", "location": "Hybrid - Bengaluru", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 69.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-fullstack-developer-deloitte-shared-services-india-bengaluru-2-to-6-years-120626008685", "remote": false, "easy": false, "note": "React.js, Python, SQL, Javascript, Full Stack, Development", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:300926500448", "board": "Naukri", "title": "Full Stack Developer", "company": "Aucourant Technologies", "location": "Dehradun", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 69.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-aucourant-technologies-pvt-ltd-dehradun-2-to-6-years-300926500448", "remote": false, "easy": false, "note": "python, software development, scalability, react.js", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "closed", "status_note": "the listing no longer accepts applications"}, {"id": "naukri:150726015507", "board": "Naukri", "title": "Software Engineer", "company": "NetApp", "location": "Bengaluru", "salary": "Not disclosed", "experience": "3-5 Yrs", "posted": "3 Days Ago", "age": 3, "rank": 69.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-netapp-bengaluru-3-to-5-years-150726015507", "remote": false, "easy": false, "note": "C#, C, Scalability, Ci/Cd, Microservices, TypeScript", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:300926035991", "board": "Naukri", "title": "Senior Full Stack Software Engineer", "company": "Nxtwave Disruptive Technologies (Hiring for a Client)", "location": "Chennai", "salary": "18-20 Lacs PA", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 69.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-full-stack-software-engineer-nxtwave-disruptive-technologies-hiring-for-a-client-chennai-3-to-6-years-300926035991", "remote": false, "easy": false, "note": "Java, GitHub Actions, ReactJS, GitHub, Spring Boot", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:080219500527", "board": "Naukri", "title": "Software Developer / Software Engineer", "company": "Vidya Mantra Edusystems", "location": "Noida", "salary": "Not disclosed", "experience": "2-3 Yrs", "posted": "30+ Days Ago", "age": 2792, "rank": 68.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-software-engineer-vidya-mantra-edusystems-pvt-ltd-noida-2-to-3-years-080219500527", "remote": false, "easy": false, "note": "Javascript, HTTP, Software, Development, Software development", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1407-vidya-mantra-edusystems-software-developer-software-engineer-noform.png)"}, {"id": "naukri:161225500560", "board": "Naukri", "title": "Developer Backend", "company": "Fanplay Iot", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-4 Yrs", "posted": "30+ Days Ago", "age": 289, "rank": 68.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-developer-backend-fanplay-iot-bengaluru-2-to-4-years-161225500560", "remote": false, "easy": false, "note": "kubernetes, ci/cd, microservices, docker, git", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "submitted", "status_note": "11 field(s) filled and submitted · tailored resume, 38% of the job's skills (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1410-fanplay-iot-developer-backend-done.png)"}, {"id": "naukri:290926021914", "board": "Naukri", "title": "Walk-in || Software Engineer", "company": "Indmax It Services", "location": "Coimbatore", "salary": "Not disclosed", "experience": "", "posted": "1 Day Ago", "age": 1, "rank": 68.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-indmax-it-services-coimbatore-1-to-2-years-290926021914", "remote": false, "easy": false, "note": "SQL, Python, Core, Java, Software", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:290926021765", "board": "Naukri", "title": "Walk-in || Software Engineer", "company": "Indmax It Services", "location": "Coimbatore", "salary": "Not disclosed", "experience": "", "posted": "1 Day Ago", "age": 1, "rank": 68.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-indmax-it-services-coimbatore-1-to-2-years-290926021765", "remote": false, "easy": false, "note": "SQL, Python, Software, Java, Core", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "platform-off", "status_note": "Naukri auto-apply is off (turn it on in Settings)"}, {"id": "naukri:290526507418", "board": "Naukri", "title": "SDE -1", "company": "Geeksforgeeks", "location": "Noida", "salary": "Not disclosed", "experience": "0-2 Yrs", "posted": "30+ Days Ago", "age": 125, "rank": 68.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-1-geeksforgeeks-noida-0-to-2-years-290526507418", "remote": false, "easy": false, "note": "css, c++, microservices, spring, java", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "login-required", "status_note": "the site sends you to a login page"}, {"id": "naukri:210926500472", "board": "Naukri", "title": "Frontend Developer", "company": "Magzest Consultancy Services", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "9 Days Ago", "age": 10, "rank": 68.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-developer-magzest-consultancy-services-hyderabad-2-to-5-years-210926500472", "remote": false, "easy": false, "note": "css, react, web applications, javascript, angular", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "career-incomplete", "status_note": "cannot answer: Position; Pick a slot that works for you — we'll confirm by email.; Pick a slot that works for you — we'll confirm by email. (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1416-magzest-consultancy-services-frontend-developer-incomplete.png)"}, {"id": "naukri:300926504385", "board": "Naukri", "title": "Software Engineer", "company": "Unthinkable Solutions", "location": "Gurugram", "salary": "Not disclosed", "experience": "0-2 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 68.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-unthinkable-solutions-gurugram-0-to-2-years-300926504385", "remote": false, "easy": false, "note": "python, software development, js, react", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "career-error", "status_note": "could not press the company-site Apply button (buttons seen: Apply) (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1416-unthinkable-solutions-software-engineer-nobutton.png)"}, {"id": "naukri:090726504952", "board": "Naukri", "title": "Software Developer", "company": "Digi Opera", "location": "Gurugram", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "30+ Days Ago", "age": 84, "rank": 68.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-digi-opera-gurugram-2-to-5-years-090726504952", "remote": false, "easy": false, "note": "rest, python, css, software development, javascript", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "submitted", "status_note": "7 field(s) filled and submitted · tailored resume, 100% of the job's skills (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1422-digi-opera-software-developer-done.png)"}, {"id": "naukri:191224503297", "board": "Naukri", "title": "Frontend Engineer (React & React Native)", "company": "Y2Z Travel", "location": "Bengaluru", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "30+ Days Ago", "age": 651, "rank": 67.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-engineer-react-react-native-y2z-travel-bengaluru-1-to-5-years-191224503297", "remote": false, "easy": false, "note": "react.js, css, git, html, Development", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1423-y2z-travel-frontend-engineer-react-react-native-noform.png)"}, {"id": "naukri:300926501117", "board": "Naukri", "title": "Software Development Engineer - I", "company": "Gokwik Commerce Solutions", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 67.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-i-gokwik-bengaluru-2-to-3-years-300926501117", "remote": false, "easy": false, "note": "Backend, Postgresql, Cloud, Javascript", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "captcha", "status_note": "the form has a CAPTCHA (image captcha) - apply by hand"}, {"id": "naukri:090626502769", "board": "Naukri", "title": "Frontend Engineer", "company": "Accufy", "location": "Hyderabad", "salary": "Not disclosed", "experience": "0-4 Yrs", "posted": "30+ Days Ago", "age": 114, "rank": 67.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-engineer-accufy-hyderabad-0-to-4-years-090626502769", "remote": false, "easy": false, "note": "Backend, github, GIT, Architecture, HTML", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "no-form", "status_note": "no application form or Apply button found on the company page (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1423-accufy-frontend-engineer-noform.png)"}, {"id": "naukri:300926500749", "board": "Naukri", "title": "C++ Software Engineer", "company": "Citadel Securities", "location": "Gurugram", "salary": "Not disclosed", "experience": "1-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 67.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-c-software-engineer-citadel-securities-gurugram-1-to-6-years-300926500749", "remote": false, "easy": false, "note": "c++, hibernate, spring, java", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "career-incomplete", "status_note": "cannot answer: What is your GPA scale?; Are you required to serve a non-competition sit out period with your current employer? (D:\\MANIK\\Projects\\Claude_P\\Profile_Naukri_Screener-main\\data\\jobs\\career_shots\\20261001-1431-citadel-securities-c-software-engineer-incomplete.png)"}, {"id": "naukri:150722502530", "board": "Naukri", "title": "Frontend Engineer", "company": "Alokin Software", "location": "Thiruvananthapuram", "salary": "Not disclosed", "experience": "2-4 Yrs", "posted": "30+ Days Ago", "age": 1539, "rank": 67.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-engineer-alokin-software-pvt-ltd-thiruvananthapuram-2-to-4-years-150722502530", "remote": false, "easy": false, "note": "GIT, Agile, Javascript, Scrum, SDK", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:300926501102", "board": "Naukri", "title": "Developer", "company": "Iflowtech Solutions", "location": "Chennai", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 67.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-developer-iflowtech-solutions-private-limited-chennai-1-to-5-years-300926501102", "remote": false, "easy": false, "note": "Backend, Architecture, Cloud, Management", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:280926919733", "board": "Naukri", "title": "Skywise Developer", "company": "CGI", "location": "Bengaluru", "salary": "Not disclosed", "experience": "2-6 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 66.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-skywise-developer-cgi-information-systems-and-management-consultants-bengaluru-2-to-6-years-280926919733", "remote": false, "easy": true, "note": "Javascript, C#, Java, Css, C++, C", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:280926013540", "board": "Naukri", "title": "Springboot Developer", "company": "Naukri Assist", "location": "Indore", "salary": "22.5-37.5 Lacs PA", "experience": "3-8 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 66.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-springboot-developer-naukri-assist-indore-3-to-8-years-280926013540", "remote": false, "easy": false, "note": "Java, rest api, Spring Boot, Rest, Development, API", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:290926020539", "board": "Naukri", "title": "Full Stack Developer", "company": "Zodiac HR Consultants", "location": "Pune(Hinjewadi)", "salary": "8-18 Lacs PA", "experience": "2-7 Yrs", "posted": "2 Days Ago", "age": 2, "rank": 66.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-zodiac-hr-consultants-pune-2-to-7-years-290926020539", "remote": false, "easy": false, "note": "React.js, Python, TypeScript, Git", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:300926504437", "board": "Naukri", "title": "Frontend Developer", "company": "Vayve Technologies", "location": "Mumbai", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 66.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-developer-vayve-technologies-mumbai-1-to-5-years-300926504437", "remote": false, "easy": false, "note": "css, git, java, html", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:250926500593", "board": "Naukri", "title": "Developer", "company": "Maivin Consulting Services", "location": "New Delhi", "salary": "Not disclosed", "experience": "0-2 Yrs", "posted": "5 Days Ago", "age": 6, "rank": 65.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-developer-maivin-consulting-services-new-delhi-0-to-2-years-250926500593", "remote": false, "easy": false, "note": "python, java, software development, agile", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:040926504281", "board": "Naukri", "title": "Full Stack Developer", "company": "Span Technology Services", "location": "Chennai", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "26 Days Ago", "age": 27, "rank": 65.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-span-technology-services-private-limited-chennai-1-to-3-years-040926504281", "remote": false, "easy": false, "note": "ci/cd pipelines, indexing, full stack developer, js", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:150626005519", "board": "Naukri", "title": "Sr .NET Full Stack Developer - Gurgaon(WFO)", "company": "Amosta", "location": "Gurugram", "salary": "12-16 Lacs PA", "experience": "3-5 Yrs", "posted": "3 Days Ago", "age": 3, "rank": 65.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sr-net-full-stack-developer-gurgaon-wfo-amosta-gurugram-3-to-5-years-150626005519", "remote": false, "easy": true, "note": "Microservices, .NET Core, SQL, React, Angular, Core", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:221124503741", "board": "Naukri", "title": "Python Developer (SDE II)", "company": "Legistify", "location": "Gurugram", "salary": "Not disclosed", "experience": "0-2 Yrs", "posted": "30+ Days Ago", "age": 678, "rank": 64.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-sde-ii-legistify-gurugram-0-to-2-years-221124503741", "remote": false, "easy": false, "note": "c++, docker, java, git, postgresql, linux", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:040725501046", "board": "Naukri", "title": "Backend Developer", "company": "Idea Elan", "location": "Kolkata, Mumbai, New Delhi, Hyderabad, Pune, Chennai, Bengaluru", "salary": "Not disclosed", "experience": "2-4 Yrs", "posted": "30+ Days Ago", "age": 454, "rank": 64.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-idea-elan-kolkata-mumbai-new-delhi-hyderabad-pune-chennai-bengaluru-2-to-4-years-040725501046", "remote": false, "easy": false, "note": "Automation, Backend, GIT, NoSQL", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:090726503711", "board": "Naukri", "title": "Backend Developer", "company": "Digi Opera", "location": "Gurugram", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "30+ Days Ago", "age": 84, "rank": 64.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-digi-opera-gurugram-2-to-5-years-090726503711", "remote": false, "easy": false, "note": "css, microservices, cloud, java", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:100926503316", "board": "Naukri", "title": "SDE - Backend", "company": "Wazirx", "location": "Mumbai", "salary": "Not disclosed", "experience": "1-3 Yrs", "posted": "20 Days Ago", "age": 21, "rank": 64.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-backend-wazirx-mumbai-1-to-3-years-100926503316", "remote": false, "easy": false, "note": "ci/cd pipelines, workflows, relational databases, docker", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:161225500666", "board": "Naukri", "title": "Full Stack Developer", "company": "Align Technology", "location": "Hyderabad", "salary": "Not disclosed", "experience": "2-5 Yrs", "posted": "30+ Days Ago", "age": 289, "rank": 63.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-align-technology-hyderabad-2-to-5-years-161225500666", "remote": false, "easy": false, "note": "cd, kubernetes, ci/cd, javascript", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}, {"id": "naukri:070126503082", "board": "Naukri", "title": "SDE - Prompt Engineering", "company": "Unify Technologies", "location": "Gurugram", "salary": "Not disclosed", "experience": "1-5 Yrs", "posted": "30+ Days Ago", "age": 267, "rank": 63.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-prompt-engineering-unify-technologies-gurugram-1-to-5-years-070126503082", "remote": false, "easy": false, "note": "c++, css, sql, spring, java, git", "ai": "", "new": true, "first_seen": "2026-10-01", "status": "", "status_note": ""}]</script>
+<script>
+  const ROWS = JSON.parse(document.getElementById('data').textContent);
+  const KEY = 'jobtracker.applied';
+  const TODAY = '2026-10-01';
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  let applied = load();
+  let filter = 'all';
+  let postedMax = null;   // null = any age
+  let query = '';
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function visible(r) {
+    if (filter === 'new' && !r.new) return false;
+    if (filter === 'remote' && !r.remote) return false;
+    if (filter === 'easy' && !r.easy) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    // Posted is a separate axis, so "remote" and "2 days" combine rather than
+    // replacing each other. A row with no readable date is excluded whenever a
+    // date filter is on - it cannot be shown to satisfy it.
+    if (postedMax !== null && (r.age === null || r.age > postedMax)) return false;
+    if (query) {
+      const hay = (r.title + ' ' + r.company + ' ' + r.location).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  }
+
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
+  function rowHtml(r) {
+    const done = !!applied[r.id] || r.status === 'applied';
+    const tags = [
+      statusTag(r),
+      r.new ? '<span class="tag new">New</span>' : '',
+      r.remote ? '<span class="tag remote">Remote</span>' : '',
+      r.easy ? '<span class="tag easy">One-click</span>' : '',
+      '<span class="tag">' + esc(r.board) + '</span>',
+      (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
+    ].join('');
+    return '' +
+      '<div class="row' + (done ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<input type="checkbox" ' + (done ? 'checked' : '') +
+          ' aria-label="Mark ' + esc(r.title) + ' as applied">' +
+        '<div>' +
+          '<div class="title"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></div>' +
+          '<div class="company">' + esc(r.company) + '</div>' +
+          '<div class="tags">' + tags + '</div>' +
+          (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
+        '</div>' +
+        '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
+          (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +
+        '<div class="meta">' + (r.experience ? '<div>' + esc(r.experience) + '</div>' : '') +
+          (r.posted ? '<div>' + esc(r.posted) + '</div>' : '') + '</div>' +
+        '<div class="rank">' + (r.rank == null ? '&mdash;' : esc(r.rank)) +
+          '<small>' + esc(r.rank_label) + '</small></div>' +
+      '</div>';
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    const shown = ROWS.filter(visible);
+    const boards = ['Naukri', 'LinkedIn'];
+    let html = '';
+    boards.forEach(board => {
+      const group = shown.filter(r => r.board === board);
+      if (!group.length) return;
+      html += '<div class="group-head"><h2>' + board + '</h2>' +
+              '<span class="count">' + group.length + ' shown</span></div>';
+      html += group.map(rowHtml).join('');
+    });
+    list.innerHTML = html || '<p class="empty">Nothing matches this filter.</p>';
+    stats();
+  }
+
+  function stats() {
+    const n = (id, v) => document.getElementById(id).textContent = v;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
+    n('s-total', ROWS.length);
+    n('s-new', ROWS.filter(r => r.new).length);
+    n('s-remote', ROWS.filter(r => r.remote).length);
+    n('s-applied', doneCount);
+    n('s-left', ROWS.length - doneCount);
+  }
+
+  document.getElementById('list').addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const row = e.target.closest('.row');
+    const id = row.getAttribute('data-id');
+    if (e.target.checked) applied[id] = { date: TODAY };
+    else delete applied[id];
+    save(applied);
+    row.classList.toggle('done', e.target.checked);
+    if (filter === 'todo') render(); else stats();
+  });
+
+  function wire(selector, apply) {
+    document.querySelectorAll(selector).forEach(chip => {
+      chip.addEventListener('click', () => {
+        apply(chip);
+        document.querySelectorAll(selector).forEach(c =>
+          c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      });
+    });
+  }
+  wire('.chip[data-filter]', chip => { filter = chip.dataset.filter; });
+  wire('.chip[data-posted]', chip => {
+    postedMax = chip.dataset.posted === 'any' ? null : Number(chip.dataset.posted);
+  });
+
+  document.getElementById('q').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 0.625rem; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+  /* a filter field: a labelled group, always open - only the whole toolbar collapses */
+  span.fgrp { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; vertical-align: middle;
+    border: 1px solid rgba(127,127,127,.28); border-radius: 12px; padding: 3px 8px; }
+  span.fgrp > .flabel { font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .7; padding: 4px 2px; white-space: nowrap; }
+  span.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+  /* the whole filter toolbar can be hidden: only its Filters button stays */
+  .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(127,127,127,.35);
+    background: transparent; color: inherit; opacity: .85; flex: none; }
+  .tb-toggle:hover { opacity: 1; }
+  .tb-toggle::after { content: "\25B4"; font-size: 0.7rem; }
+  .tb-hidden .tb-toggle::after { content: "\25BE"; }
+  .tb-hidden > :not(.tb-toggle) { display: none !important; }
+  .tb-hidden { padding-top: 4px !important; padding-bottom: 4px !important; }
+
+  /* thin scrollbars that follow the page's light / dark theme */
+  :root { color-scheme: light dark; } :root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+  * { scrollbar-width: thin; }
+
+  /* V2 skin (the site's portfolio look): one layer over each page's own variables */
+  :root[data-ui="v2"] {
+    --bg: #E9EAE4; --surface: #FFFFFF; --surface-2: #F5F6F2; --card: #FFFFFF; --card2: #F5F6F2;
+    --ink: #11151A; --fg: #11151A; --muted: #4E575F; --line: #11151A; --line2: #C9CCC3;
+    --accent: #EE3D28; --accent-on: #FFFFFF; --accent-soft: rgba(238,61,40,.12); --accent-bg: rgba(238,61,40,.12);
+    --v2-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; --v2-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root[data-ui="v2"]:not([data-theme="light"]) {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); } }
+  :root[data-ui="v2"][data-theme="dark"] {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); }
+  :root[data-ui="v2"] body, :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea {
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] span.fgrp > .flabel, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+    font-family: var(--v2-mono); letter-spacing: .02em; }
+  :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp, :root[data-ui="v2"] span.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
+  :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
+  :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,
+  :root[data-ui="v2"] .q, :root[data-ui="v2"] .row, :root[data-ui="v2"] article { border-color: var(--line) !important; box-shadow: 3px 3px 0 var(--line); }
+</style>
+<script>
+(function () {
+  "use strict";
+  // collapsible filter groups, open / closed remembered
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+
+  // a Filters button on every filter toolbar: hides / shows the whole bar
+  var kind = (document.title || "page").split(/\s+/).slice(0, 2).join("-").toLowerCase();
+  var bars = Array.prototype.filter.call(document.querySelectorAll(".bar-tools, section.controls, div.bar"), function (el) {
+    return el.querySelector(".chip, input[type=search], .search, select");   // a real filter bar, not a progress bar
+  });
+  bars.forEach(function (bar, i) {
+    if (bar.querySelector(":scope > .tb-toggle")) return;
+    var key = "tb:" + kind + ":" + i, btn = document.createElement("button");
+    btn.type = "button"; btn.className = "tb-toggle";
+    function paint(hidden) {
+      bar.classList.toggle("tb-hidden", hidden);
+      btn.textContent = hidden ? "Show filters" : "Filters";
+      btn.setAttribute("aria-expanded", hidden ? "false" : "true");
+      btn.title = hidden ? "Show the filters" : "Hide the filters";
+    }
+    var hidden = false;
+    try { hidden = localStorage.getItem(key) === "1"; } catch (e) {}
+    bar.insertBefore(btn, bar.firstChild);
+    paint(hidden);
+    btn.addEventListener("click", function () {
+      var h = !bar.classList.contains("tb-hidden"); paint(h);
+      try { h ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch (e) {}
+    });
+  });
+
+  // the site's theme / skin changed while this page is open: follow it
+  window.addEventListener("storage", function (e) {
+    if (e.key !== "jh:theme" && e.key !== "jh:ui") return;
+    var r = document.documentElement, t = localStorage.getItem("jh:theme") || "auto";
+    if (t === "light" || t === "dark") r.setAttribute("data-theme", t); else r.removeAttribute("data-theme");
+    if (localStorage.getItem("jh:ui") === "v2") r.setAttribute("data-ui", "v2"); else r.removeAttribute("data-ui");
+  });
+})();
+</script>
+
