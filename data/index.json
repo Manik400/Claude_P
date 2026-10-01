@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-01T05:50:39Z",
+ "updated": "2026-10-01T06:32:33Z",
  "items": [
   {
    "id": "jobhunt-20261001-055039-2026-10-01-0342-software-developer",
@@ -632,25 +632,6 @@
    }
   },
   {
-   "id": "jobhunt-20260924-213352-software",
-   "kind": "jobhunt",
-   "title": "software",
-   "when": "2026-09-24T21:33:52Z",
-   "file": "data/jobhunt/jobhunt-20260924-213352-software.html",
-   "bytes": 29649,
-   "meta": {
-    "jobs": "0",
-    "countries": "IN",
-    "experience": "",
-    "days": "1",
-    "hours": "",
-    "window_hours": "24",
-    "platforms_asked": "apify-naukri",
-    "platforms": "",
-    "jobs_file": "data/jobhunt/jobhunt-20260924-213352-software.jobs.json"
-   }
-  },
-  {
    "id": "jobhunt-20260924-204918-software",
    "kind": "jobhunt",
    "title": "software",
@@ -802,5 +783,11 @@
     "jobs_file": "data/jobhunt/jobhunt-20260921-115533-2026-09-21-1702-software-engineer.jobs.json"
    }
   }
+ ],
+ "hidden": [
+  [
+   "jobhunt",
+   "software"
+  ]
  ]
 }
