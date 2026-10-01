@@ -325,6 +325,62 @@ _embedder_instance = None
 _model_lock = threading.RLock()
 
 
+class _MachineLock:
+    """One local-model generation at a time on this PC, across processes.
+
+    The scheduled runs (Naukri scans, the phone queue, job-hunt rounds) each load
+    their own copy of the model, and two generating at once on the same cores
+    turned every form answer into minutes at 100% CPU - the time limit in
+    _ask_llm is only checked between tokens, so a starved prompt never reached
+    it. An OS file lock (released by itself if the process dies) makes the
+    others wait up to their own time limit and then carry on without an answer.
+    """
+
+    def __init__(self):
+        self._fh = None
+
+    def acquire(self, timeout: float) -> bool:
+        os.makedirs(cache_dir(), exist_ok=True)
+        fh = open(os.path.join(cache_dir(), "generate.lock"), "a+")
+        deadline = time.time() + max(0.0, timeout)
+        while True:
+            try:
+                if os.name == "nt":
+                    import msvcrt
+                    fh.seek(0)
+                    msvcrt.locking(fh.fileno(), msvcrt.LK_NBLCK, 1)
+                else:
+                    import fcntl
+                    fcntl.flock(fh.fileno(), fcntl.LOCK_EX | fcntl.LOCK_NB)
+                self._fh = fh
+                return True
+            except OSError:
+                if time.time() >= deadline:
+                    fh.close()
+                    return False
+                time.sleep(0.5)
+
+    def release(self):
+        fh, self._fh = self._fh, None
+        if fh is None:
+            return
+        try:
+            if os.name == "nt":
+                import msvcrt
+                fh.seek(0)
+                msvcrt.locking(fh.fileno(), msvcrt.LK_UNLCK, 1)
+            else:
+                import fcntl
+                fcntl.flock(fh.fileno(), fcntl.LOCK_UN)
+        except OSError:
+            pass
+        finally:
+            fh.close()
+
+
+_machine_lock = _MachineLock()
+
+
 def model_path(download: bool = True) -> str | None:
     """Local path of the GGUF; downloads it when asked and missing."""
     if _hf_download is None:
@@ -497,10 +553,20 @@ def ask(prompt: str, *, system: str = "", max_tokens: int = 200, json: bool = Fa
         return _ask_ollama(prompt, sys_text, max_tokens, json, temperature, limit,
                            model=personal_model() if personal else None)
     # One call at a time (see _model_lock); a thread that waits past its time limit gives up.
+    started = time.time()
     if not _model_lock.acquire(timeout=limit):
         return None
     try:
-        return _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, limit)
+        # ...and one process at a time: the wait comes out of this call's limit.
+        if not _machine_lock.acquire(timeout=limit - (time.time() - started)):
+            return None
+        try:
+            left = limit - (time.time() - started)
+            if left <= 1:
+                return None
+            return _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, left)
+        finally:
+            _machine_lock.release()
     finally:
         _model_lock.release()
 

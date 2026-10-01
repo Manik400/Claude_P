@@ -15,3 +15,4 @@ job-hunt/assets/probe_cache.json
 
 # local browser-preview config (Claude desktop)
 .claude/launch.json
+.gh/

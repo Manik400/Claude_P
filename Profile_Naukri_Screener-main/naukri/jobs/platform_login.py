@@ -16,12 +16,16 @@ Run it again whenever a platform logs you out.
 from __future__ import annotations
 
 import json
+import os
 import time
 
 from .career_apply import LOGINS_FILE, saved_logins
 
 # name, where to sign in, the host substring auto-apply checks
 PLATFORMS = [
+    # Simplify's extension lives in this same browser profile, so its sign-in
+    # belongs here too (same as `python -m naukri.jobs.simplify --setup`).
+    ("Simplify", "https://simplify.jobs/auth/login", "simplify.jobs"),
     ("LinkedIn", "https://www.linkedin.com/login", "linkedin.com"),
     ("Naukri", "https://www.naukri.com/nlogin/login", "naukri.com"),
     ("Instahyre", "https://www.instahyre.com/login/", "instahyre.com"),
@@ -49,6 +53,34 @@ def save(names: list[str]) -> list[str]:
     return [p[0] for p in chosen]
 
 
+def _enter_pressed() -> bool:
+    if os.name == "nt":
+        import msvcrt
+        hit = False
+        while msvcrt.kbhit():
+            hit = msvcrt.getwch() in ("\r", "\n") or hit
+        return hit
+    import select
+    import sys
+    if select.select([sys.stdin], [], [], 0)[0]:
+        sys.stdin.readline()
+        return True
+    return False
+
+
+def _wait_for_enter(ctx) -> None:
+    """Until Enter is pressed here or the browser window is closed."""
+    while True:
+        try:
+            if not ctx.pages:
+                return
+            ctx.pages[0].wait_for_timeout(300)
+        except Exception:
+            return
+        if _enter_pressed():
+            return
+
+
 def run(only: list[str] | None = None, prompt: bool = True) -> int:
     """prompt=False: open the tabs, wait for the automation browser to be free first (a scan may
     be using it), and return when you close the window; record the logins afterwards with save()."""
@@ -64,7 +96,7 @@ def run(only: list[str] | None = None, prompt: bool = True) -> int:
     if not prompt:
         wanted = [p for p in PLATFORMS if not only or any(o.lower() in p[0].lower() for o in only)]
         with sync_playwright() as pw:
-            browser = simplify.launch(pw, headless=False, offscreen=False)
+            browser = simplify.launch(pw, headless=False, offscreen=False, interactive=True)
             ctx = browser.context
             for name, url, _host in wanted:
                 page = ctx.new_page()
@@ -92,7 +124,7 @@ def run(only: list[str] | None = None, prompt: bool = True) -> int:
         return 1
     have = saved_logins()
     with sync_playwright() as pw:
-        browser = simplify.launch(pw, headless=False, offscreen=False)
+        browser = simplify.launch(pw, headless=False, offscreen=False, interactive=True)
         ctx = browser.context
         for name, url, _host in wanted:
             page = ctx.new_page()
@@ -106,11 +138,18 @@ def run(only: list[str] | None = None, prompt: bool = True) -> int:
             print(f"  {i:2d}. {name}{'   (saved before)' if host in have else ''}")
         print("\nSign in on each tab yourself (use 'Continue with Google' where you like).")
         print("Leave the browser open, come back here and press Enter when you are done.")
+        # Not input(): Playwright only lets a new window start (Google's sign-in
+        # popup) while this script is talking to the browser. Blocked in input(),
+        # every popup sat blank at "Paused in debugger". So: service the browser
+        # in short waits and look for Enter in between.
         try:
-            input()
-            picked = input("Which did you sign in to? Numbers separated by spaces, 'all', or Enter for none: ").strip().lower()
+            _wait_for_enter(ctx)
         finally:
-            browser.close()
+            try:
+                browser.close()
+            except Exception:
+                pass
+        picked = input("Which did you sign in to? Numbers separated by spaces, 'all', or Enter for none: ").strip().lower()
     if picked == "all":
         chosen = wanted
     else:

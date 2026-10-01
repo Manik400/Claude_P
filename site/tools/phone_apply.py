@@ -545,13 +545,14 @@ def profile_busy() -> bool:
         return False
 
 
-def check_in(queue: dict, queue_path: str, passphrase: str, pages: str, cfg: dict) -> None:
+def check_in(queue: dict, queue_path: str, passphrase: str, pages: str, cfg: dict,
+             busy: str = "applying from another run") -> None:
     """Push the queue with a fresh pc.last_seen now, when the last push is getting old."""
     last_push = cfg.get("last_heartbeat_push") or ""
     if last_push > (datetime.now() - timedelta(minutes=45)).isoformat():
         return
     queue["pc"] = dict(queue.get("pc") or {}, last_seen=now_iso(), host=os.environ.get("COMPUTERNAME", ""),
-                       busy="applying from another run")
+                       busy=busy)
     queue["updated"] = now_iso()
     try:
         write_enc(queue_path, queue, passphrase)
@@ -660,9 +661,16 @@ def _main(args) -> int:
     # 4. Apply. A scan that is applying holds the browser profile, and this run then waits
     # for it (up to 15 min per browser start) - check in first, so the phone does not
     # call a busy PC "off".
-    if not args.dry_run and profile_busy():
-        log("apply: another run is using the browser; checking in before waiting for it")
-        check_in(queue, queue_path, passphrase, pages, cfg)
+    # Every run checks in before applying, not only a waiting one: a run applies for
+    # up to APPLY_MAX_MINUTES and pushed only at the end, so the phone showed
+    # "PC off" and the old queue/settings for that long. check_in() pushes at most
+    # every 45 min.
+    if not args.dry_run:
+        busy = profile_busy()
+        if busy:
+            log("apply: another run is using the browser; checking in before waiting for it")
+        check_in(queue, queue_path, passphrase, pages, cfg,
+                 busy="applying from another run" if busy else "applying")
     outcomes = run_applies(queue, settings, limit, args.dry_run, autoapply, config_mod, NaukriJob)
     ledger = Ledger()
     sync_from_ledger(queue, ledger)
@@ -793,5 +801,18 @@ def _main(args) -> int:
     return 0
 
 
+def _keep_awake():
+    """Keep the PC from sleeping (the screen may still turn off) until this process
+    exits. Scheduled runs wake the PC (WakeToRun); without this it could doze off
+    again halfway through an application."""
+    if os.name == "nt":
+        try:
+            import ctypes
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
+        except Exception:  # noqa: BLE001 - never worth failing a run over
+            pass
+
+
 if __name__ == "__main__":
+    _keep_awake()
     sys.exit(main())

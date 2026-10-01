@@ -13,6 +13,14 @@ import time
 BRANCH = "gh-pages"
 HERE = os.path.dirname(os.path.abspath(__file__))
 
+# GitHub login for this folder only (`gh auth login` run with GH_CONFIG_DIR set
+# to it, see site/gh.bat). When it exists, pushes from the gh-pages clone use it
+# through a helper set in that clone's own .git/config - the global git
+# credential helper and any other gh login are left alone.
+LOCAL_GH = os.path.join(os.path.dirname(os.path.dirname(HERE)), ".gh")
+if os.path.isfile(os.path.join(LOCAL_GH, "hosts.yml")):
+    os.environ["GH_CONFIG_DIR"] = LOCAL_GH
+
 
 def sh(args, cwd=None, check=True, capture=False):
     r = subprocess.run(args, cwd=cwd, text=True, encoding="utf-8", errors="replace", capture_output=capture)
@@ -44,6 +52,30 @@ def ensure_identity(cwd):
             sh(["git", "config", key, val], cwd=cwd)
 
 
+def gh_exe():
+    """Absolute path to the real gh.exe. Not shutil.which("gh"): run from site\\
+    (the phone queue's working folder) that finds the gh.bat wrapper there as a
+    relative "gh.BAT", which git's credential helper cannot start - every
+    scheduled push then failed with "could not read Username"."""
+    import shutil
+    for path in (os.path.join(os.environ.get("ProgramFiles", r"C:\Program Files"), "GitHub CLI", "gh.exe"),
+                 os.path.join(os.environ.get("LOCALAPPDATA", ""), "Programs", "GitHub CLI", "gh.exe")):
+        if os.path.isfile(path):
+            return path
+    found = shutil.which("gh.exe") or shutil.which("gh") or "gh"
+    return os.path.abspath(found) if os.path.isfile(found) else found
+
+
+def use_local_gh(cwd):
+    if os.environ.get("GH_CONFIG_DIR") != LOCAL_GH:
+        return
+    gh = gh_exe().replace("\\", "/")
+    key = "credential.https://github.com.helper"
+    sh(["git", "config", "--local", "--unset-all", key], cwd=cwd, check=False)
+    sh(["git", "config", "--local", "--add", key, ""], cwd=cwd)  # drop inherited helpers
+    sh(["git", "config", "--local", "--add", key, "!'%s' auth git-credential" % gh], cwd=cwd)
+
+
 def checkout(target, repo_url):
     target = os.path.abspath(target)
     if os.path.isdir(os.path.join(target, ".git")):
@@ -52,6 +84,7 @@ def checkout(target, repo_url):
         if r.returncode == 0:
             sh(["git", "reset", "-q", "--hard", "FETCH_HEAD"], cwd=target)
         ensure_identity(target)
+        use_local_gh(target)
         return
     os.makedirs(target, exist_ok=True)
     r = sh(["git", "clone", "-q", "--depth", "1", "--branch", BRANCH, "--single-branch", repo_url, target],
@@ -64,6 +97,7 @@ def checkout(target, repo_url):
         with open(os.path.join(target, ".nojekyll"), "w") as f:
             f.write("")
     ensure_identity(target)
+    use_local_gh(target)
 
 
 def push(target, message):

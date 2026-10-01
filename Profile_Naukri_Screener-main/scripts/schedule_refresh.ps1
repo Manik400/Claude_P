@@ -110,6 +110,7 @@ $action = New-ScheduledTaskAction `
 # when the next 45 minutes are up, the new one is dropped, not queued.
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
+    -WakeToRun `
     -DontStopOnIdleEnd `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `
@@ -131,7 +132,7 @@ $first.Repetition = New-CimInstance -ClientOnly `
     -Namespace "Root/Microsoft/Windows/TaskScheduler" `
     -ClassName "MSFT_TaskRepetitionPattern" `
     -Property @{ Interval = "PT${Every}M"; StopAtDurationEnd = $false }
-$logon = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
 $logon.Delay = "PT3M"
 
 Register-ScheduledTask `

@@ -116,6 +116,7 @@ $action = New-ScheduledTaskAction `
 # scan is five minutes of browsing, so letting it run on battery is cheap.
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
+    -WakeToRun `
     -DontStopOnIdleEnd `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `

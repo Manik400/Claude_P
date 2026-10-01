@@ -97,10 +97,43 @@ def wait_for_network(limit_s=300):
     return False
 
 
+def _alive(pid: int) -> bool:
+    """Is a process with this id still running?"""
+    if pid <= 0:
+        return False
+    if os.name == "nt":
+        import ctypes
+        k32 = ctypes.windll.kernel32
+        h = k32.OpenProcess(0x1000, False, pid)  # PROCESS_QUERY_LIMITED_INFORMATION
+        if not h:
+            return False
+        try:
+            code = ctypes.c_ulong()
+            return bool(k32.GetExitCodeProcess(h, ctypes.byref(code))) and code.value == 259  # STILL_ACTIVE
+        finally:
+            k32.CloseHandle(h)
+    try:
+        os.kill(pid, 0)
+        return True
+    except OSError:
+        return False
+
+
+def _stale(lock: Path) -> bool:
+    """Older than STALE_LOCK_S, or the run that wrote it is gone (killed, crashed,
+    PC restarted) - a killed run otherwise blocked every check for four hours."""
+    if time.time() - lock.stat().st_mtime > STALE_LOCK_S:
+        return True
+    try:
+        return not _alive(int(lock.read_text().strip() or 0))
+    except (OSError, ValueError):
+        return False
+
+
 def take_lock():
     LOCK.parent.mkdir(parents=True, exist_ok=True)
     try:
-        if LOCK.exists() and time.time() - LOCK.stat().st_mtime > STALE_LOCK_S:
+        if LOCK.exists() and _stale(LOCK):
             LOCK.unlink()
         fd = os.open(LOCK, os.O_CREAT | os.O_EXCL | os.O_WRONLY)
         os.write(fd, str(os.getpid()).encode())

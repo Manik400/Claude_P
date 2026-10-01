@@ -87,6 +87,7 @@ if ($Remove) {
 # laptop on battery silently skips or kills the run.
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
+    -WakeToRun `
     -DontStopOnIdleEnd `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `
@@ -99,7 +100,7 @@ $action = New-ScheduledTaskAction `
     -WorkingDirectory $root
 
 $first = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds(30)
-$logon = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
 $logon.Delay = "PT5M"
 
 Register-ScheduledTask `

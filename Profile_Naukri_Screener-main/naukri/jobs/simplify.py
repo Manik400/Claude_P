@@ -193,7 +193,7 @@ def _profile_busy(exc: Exception | None) -> bool:
 
 
 def launch(p, headless: bool, states: list[Path] | None = None,
-           offscreen: bool = False) -> SimplifyBrowser:
+           offscreen: bool = False, interactive: bool = False) -> SimplifyBrowser:
     """Chromium with Simplify loaded, plus the boards' saved logins.
 
     Extensions need a persistent context; in the background the new headless
@@ -202,6 +202,10 @@ def launch(p, headless: bool, states: list[Path] | None = None,
 
     `offscreen` starts a headed window parked outside every monitor - the
     fallback when Naukri's Akamai refuses the headless browser.
+
+    `interactive` is for the sign-in windows (--setup, platform logins): a
+    person has to see and type into them, so the always-headless background
+    default must not turn them into an invisible browser.
     """
     import time
 
@@ -212,6 +216,8 @@ def launch(p, headless: bool, states: list[Path] | None = None,
         raise RuntimeError(why_not_ready())
     if offscreen:
         headless = False  # headed, but off every screen (session.OFFSCREEN_ARGS)
+    elif interactive:
+        headless = False  # a sign-in window someone has to see
     elif background():
         headless = True   # never a window on screen unless --show (see session.background)
     os.makedirs(PROFILE_DIR, exist_ok=True)
@@ -228,7 +234,11 @@ def launch(p, headless: bool, states: list[Path] | None = None,
         args += [a for a in OFFSCREEN_ARGS if a not in args]
     kwargs = dict(headless=False, args=args, ignore_default_args=["--enable-automation"],
                   viewport={"width": 1366, "height": 900} if headless else None)
-    channels = [os.environ.get("SIMPLIFY_CHANNEL") or "chrome", "msedge", None]
+    # Edge first: Google Chrome 137+ ignores --load-extension, so in Chrome the
+    # browser starts fine but WITHOUT Simplify (measured on Chrome 154: no
+    # extension, no storage; Edge 152 loads it and reads the same profile's
+    # logins). Chrome stays as the fallback for a PC without Edge.
+    channels = [os.environ.get("SIMPLIFY_CHANNEL") or "msedge", "chrome", None]
     context, last = None, None
     deadline = time.time() + PROFILE_BUSY_WAIT_S
     while True:
@@ -246,6 +256,9 @@ def launch(p, headless: bool, states: list[Path] | None = None,
         if context is not None or not _profile_busy(last) or time.time() > deadline:
             break
         log.info("Simplify profile is in use by another run - waiting 30s")
+        if interactive:  # someone is watching a console that has no logging set up
+            print("Simplify's browser profile is in use by a running scan/apply - waiting 30s "
+                  "(it opens as soon as that run finishes; Ctrl+C to try later)", flush=True)
         time.sleep(30)
     if context is None:
         raise RuntimeError(f"could not start a browser for Simplify: {last}")
@@ -332,7 +345,7 @@ def setup() -> int:
     """
     from playwright.sync_api import sync_playwright
     with sync_playwright() as p:
-        browser = launch(p, headless=False)
+        browser = launch(p, headless=False, interactive=True)
         ctx = browser.context
         page = ctx.pages[0] if ctx.pages else ctx.new_page()
         try:

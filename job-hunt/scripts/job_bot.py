@@ -672,5 +672,18 @@ def main(argv=None):
     args.fn(args)
 
 
+def _keep_awake():
+    """Keep the PC from sleeping (the screen may still turn off) until this process
+    exits. Scheduled runs wake the PC (WakeToRun); without this it could doze off
+    again halfway through an application."""
+    if os.name == "nt":
+        try:
+            import ctypes
+            ctypes.windll.kernel32.SetThreadExecutionState(0x80000000 | 0x00000001)  # ES_CONTINUOUS | ES_SYSTEM_REQUIRED
+        except Exception:  # noqa: BLE001 - never worth failing a run over
+            pass
+
+
 if __name__ == "__main__":
+    _keep_awake()
     main()

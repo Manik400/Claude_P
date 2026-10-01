@@ -18,6 +18,8 @@ import sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(os.path.dirname(HERE))
+# This folder's own gh login (site/gh.bat), never the machine-wide one.
+os.environ["GH_CONFIG_DIR"] = os.path.join(ROOT, ".gh")
 sys.path.insert(0, os.path.join(ROOT, "job-hunt", "scripts"))
 
 MAX_SECRET = 45_000  # GitHub secrets are capped at 48 KB
@@ -90,8 +92,8 @@ def main():
             raise SystemExit("%s is not installed. git: https://git-scm.com  gh: https://cli.github.com" % tool)
     if sh(["gh", "auth", "status"], check=False).returncode != 0:
         raise SystemExit("GitHub CLI is not logged in. Run:  gh auth login   (choose HTTPS, then re-run this).")
-    # Let plain `git push` (used to publish to gh-pages) reuse the gh login.
-    sh(["gh", "auth", "setup-git"], check=False)
+    # No `gh auth setup-git`: that rewrites the GLOBAL git credential helper.
+    # pages_git.py points only the gh-pages clone at this folder's login.
     repo = gh_repo()
     owner, name = repo["nameWithOwner"].split("/")
     print("repo:", repo["nameWithOwner"])

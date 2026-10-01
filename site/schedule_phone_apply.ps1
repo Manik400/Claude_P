@@ -43,6 +43,7 @@ if ($Remove) {
 
 $settings = New-ScheduledTaskSettingsSet `
     -StartWhenAvailable `
+    -WakeToRun `
     -DontStopOnIdleEnd `
     -AllowStartIfOnBatteries `
     -DontStopIfGoingOnBatteries `
@@ -61,7 +62,7 @@ $action = New-ScheduledTaskAction `
 # remembers every item's state.
 $repeat  = New-TimeSpan -Minutes $Every
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(3) -RepetitionInterval $repeat
-$logon   = New-ScheduledTaskTrigger -AtLogOn -User $env:USERNAME
+$logon   = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
 $logon.Delay = "PT2M"
 $logon.Repetition = $trigger.Repetition
 
