@@ -1,13 +1,55 @@
 {
- "updated": "2026-10-01T18:20:29Z",
+ "updated": "2026-10-02T09:54:58Z",
  "items": [
   {
-   "id": "applications-20261001-182029-applications-sent",
+   "id": "naukri-20261002-095458-naukri-openings-2026-10-02-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-02 run 1 - Last 24h",
+   "when": "2026-10-02T09:54:58Z",
+   "file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-1-last-24.html",
+   "bytes": 65627,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261002-095458-naukri-openings-2026-10-02-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-02 run 2 - Early",
+   "when": "2026-10-02T09:54:58Z",
+   "file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-2-early.html",
+   "bytes": 29140,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261002-095458-naukri-openings-2026-10-02-run-3-all-job",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-02 run 3 - All jobs",
+   "when": "2026-10-02T09:54:58Z",
+   "file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-3-all-job.html",
+   "bytes": 66559,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-3-all-job.jobs.json"
+   }
+  },
+  {
+   "id": "applications-20261002-095458-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-10-01T18:20:29Z",
-   "file": "data/applications/applications-20261001-182029-applications-sent.html",
-   "bytes": 268961,
+   "when": "2026-10-02T09:54:58Z",
+   "file": "data/applications/applications-20261002-095458-applications-sent.html",
+   "bytes": 377397,
+   "meta": {}
+  },
+  {
+   "id": "accuracy-20261002-095458-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-02T09:54:58Z",
+   "file": "data/accuracy/accuracy-20261002-095458-accuracy-learning.html",
+   "bytes": 15161,
    "meta": {}
   },
   {
@@ -57,15 +99,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261001-090149-naukri-openings-2026-10-01-run-3-all-job.jobs.json"
    }
-  },
-  {
-   "id": "accuracy-20261001-090149-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-10-01T09:01:49Z",
-   "file": "data/accuracy/accuracy-20261001-090149-accuracy-learning.html",
-   "bytes": 14462,
-   "meta": {}
   },
   {
    "id": "careers-20261001-083557-software-engineer-backend-engineer-java-",
