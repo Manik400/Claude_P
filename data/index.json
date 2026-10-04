@@ -1,6 +1,28 @@
 {
- "updated": "2026-10-04T08:01:35Z",
+ "updated": "2026-10-04T10:50:49Z",
  "items": [
+  {
+   "id": "naukri-20261004-105049-naukri-openings-2026-10-04-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-04 run 2 - Early",
+   "when": "2026-10-04T10:50:49Z",
+   "file": "data/naukri/naukri-20261004-105049-naukri-openings-2026-10-04-run-2-early.html",
+   "bytes": 37974,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261004-105049-naukri-openings-2026-10-04-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261004-105048-naukri-openings-2026-10-04-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-04 run 1 - Last 24h",
+   "when": "2026-10-04T10:50:48Z",
+   "file": "data/naukri/naukri-20261004-105048-naukri-openings-2026-10-04-run-1-last-24.html",
+   "bytes": 53841,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261004-105048-naukri-openings-2026-10-04-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "applications-20261004-080135-applications-sent",
    "kind": "applications",
@@ -814,28 +836,6 @@
    "bytes": 42331,
    "meta": {
     "jobs_file": "data/naukri/naukri-20260922-152238-naukri-openings-2026-09-21-run-1.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20260922-152238-naukri-openings-2026-09-21-run-2",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-21 run 2",
-   "when": "2026-09-22T15:22:38Z",
-   "file": "data/naukri/naukri-20260922-152238-naukri-openings-2026-09-21-run-2.html",
-   "bytes": 33385,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260922-152238-naukri-openings-2026-09-21-run-2.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20260922-152238-naukri-openings-2026-09-21-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-09-21 run 3",
-   "when": "2026-09-22T15:22:38Z",
-   "file": "data/naukri/naukri-20260922-152238-naukri-openings-2026-09-21-run-3.html",
-   "bytes": 29542,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260922-152238-naukri-openings-2026-09-21-run-3.jobs.json"
    }
   },
   {
