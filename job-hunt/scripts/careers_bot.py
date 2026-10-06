@@ -37,9 +37,10 @@ from jobbot import __version__  # noqa: E402
 from jobbot.careers import geo  # noqa: E402
 from jobbot.careers import resolve as resolver  # noqa: E402
 from jobbot.careers.ats import Unresolved, fetch, probe  # noqa: E402
-from jobbot.careers.companies import ATS_TYPES, DEFAULT_PATH, Company, load, select  # noqa: E402
+from jobbot.careers.companies import ATS_TYPES, DEFAULT_PATH, Company, fingerprint, load, select  # noqa: E402
 from jobbot.careers.relocation import assess, excerpt_for_model, merge_opinion  # noqa: E402
 from jobbot import localai  # noqa: E402
+from jobbot import salary as salary_mod  # noqa: E402
 from jobbot.config import REMOTE  # noqa: E402
 from jobbot.experience import parse_experience, seniority_from_title  # noqa: E402
 from jobbot.http import Http  # noqa: E402
@@ -348,7 +349,9 @@ def cmd_run(a):
     roles = [r.strip() for r in ",".join(a.role).split(",") if r.strip()]
     lo, hi = parse_range(a.experience)
     want = parse_countries(a.countries)
-    companies = select(load(a.companies_file, log=log), a.companies)
+    whole_list = load(a.companies_file, log=log)
+    list_fp = fingerprint(whole_list)       # which list this report was made from (the phone compares it)
+    companies = select(whole_list, a.companies)
     if not companies:
         raise SystemExit(f"no companies match '{a.companies}' in {a.companies_file or DEFAULT_PATH}")
     companies_total = len(companies)
@@ -356,9 +359,15 @@ def cmd_run(a):
         part, parts = shard_of(a.shard)
         companies = interleave(companies)[part - 1::parts]   # every part gets the same mix of boards
         log(f"part {part}/{parts}: {len(companies)} of {companies_total} companies")
-    ctx = SearchContext(with_aliases(roles), [], days=a.days,
+    floor = salary_mod.parse_floor(a.min_salary) if getattr(a, "min_salary", None) else None
+    if getattr(a, "min_salary", None) and floor is None:
+        raise SystemExit(f'--min-salary: cannot read "{a.min_salary}" (try "10 LPA", "12 lakh" or 1000000)')
+    hours = getattr(a, "hours", None) or None
+    ctx = SearchContext(with_aliases(roles), [], days=a.days, hours=hours,
                         exclude_terms=[t.strip() for t in (a.exclude or "").split(",") if t.strip()],
-                        must_terms=[t.strip() for t in (a.must or "").split(",") if t.strip()])
+                        must_terms=[t.strip() for t in (a.must or "").split(",") if t.strip()],
+                        min_salary_inr=floor)
+    window_label = f"{hours:g} hours" if hours else (f"{a.days} days" if a.days else "")
 
     role_text = " ".join(roles).lower()
     not_role = [w for w in NOT_THE_ROLE if not re.search(r"\b" + w + r"\b", role_text)]
@@ -375,7 +384,9 @@ def cmd_run(a):
 
     log(localai.status_line())
     log(f"careers_bot v{__version__} | roles={roles} | experience={a.experience or '-'} ({lo}-{hi}) | "
-        f"countries={'worldwide' if want is None else sorted(want)} | relocation={a.relocation} | {len(companies)} companies")
+        f"countries={'worldwide' if want is None else sorted(want)} | relocation={a.relocation} | {len(companies)} companies"
+        f" | posted within {window_label or 'any age'}" + (f" | pays at least {salary_mod.label(floor)}" if floor else "")
+        + f" | list {list_fp['sha']} ({list_fp['count']} companies)")
     found, statuses, recruiters, requests = search_companies(companies, keep, roles, a.details, a.workers, place,
                                                              use_ai=not a.no_ai_boards, max_minutes=a.max_minutes,
                                                              fresh=ctx.fresh)
@@ -405,8 +416,14 @@ def cmd_run(a):
     jobs = []
     for j in relevant:
         codes = j.extra["countries"]
-        if not ctx.fresh(j.posted):
-            drops["older than %d days" % a.days] += 1
+        # The exact time when the board gave one (greenhouse / lever / ashby / smartrecruiters /
+        # recruitee / personio timestamps), the date otherwise; a posting with neither is kept and marked.
+        fresh_ok, _why = ctx.fresh_job(j)
+        pay_ok, _pay = salary_mod.annotate(j, floor)
+        if not fresh_ok:
+            drops["older than " + (window_label or "the window")] += 1
+        elif not pay_ok:
+            drops["below the salary floor"] += 1
         elif want is not None and not (set(codes) & want):
             drops["other countries"] += 1
         elif (a.fit == "strict" and j.fit != "fit") or (a.fit == "default" and j.fit == "no"):
@@ -466,6 +483,7 @@ def cmd_run(a):
         "meta": {
             "version": __version__, "roles": roles, "experience": a.experience or "", "exp_range": [lo, hi],
             "countries": ["*"] if want is None else sorted(want), "relocation": a.relocation, "fit": a.fit, "days": a.days,
+            "hours": hours, "window_hours": ctx.window_hours, "min_salary_inr": floor, "list": list_fp,
             "generated": datetime.now().strftime("%Y-%m-%d %H:%M"), "seconds": round(time.time() - t0, 1),
             "requests": requests, "companies": len(companies), "companies_total": companies_total,
             "shard": a.shard or "",
@@ -481,6 +499,8 @@ def cmd_run(a):
         "jobs": [{
             "id": j.id, "title": j.title, "company": j.company, "url": j.url,
             "countries": j.extra["countries"], "location": j.location, "remote": j.remote, "posted": j.posted,
+            "posted_at": j.posted_at, "salary": j.salary, "salary_lpa": j.extra.get("salary_lpa"),
+            "salary_stated": bool(j.extra.get("salary_stated")),
             "department": j.extra.get("department", ""), "type": j.employment_type,
             "exp": [j.exp_min, j.exp_max], "seniority": j.seniority, "fit": j.fit,
             "reloc": j.extra["reloc"]["label"], "visa": j.extra["reloc"]["visa"], "evidence": j.extra["reloc"]["evidence"],
@@ -500,7 +520,8 @@ def cmd_run(a):
     for j in jobs[:8]:
         log(f"  {j.extra['chance']:>3}  {j.extra['reloc']['label']:<7} {j.fit:<8} {'/'.join(j.extra['countries'][:2]):<6} "
             f"{j.title[:52]:<52} @ {j.company}")
-    print(json.dumps({"out": out, "jobs": len(jobs), "relocation": n_reloc, "companies": result["meta"]["companies_ok"]}))
+    print(json.dumps({"out": out, "jobs": len(jobs), "relocation": n_reloc, "companies": result["meta"]["companies_ok"],
+                      "list_sha": list_fp["sha"], "list_count": list_fp["count"]}))
 
 
 def shard_of(text):
@@ -555,7 +576,9 @@ def cmd_merge(a):
                   ensure_ascii=False, separators=(",", ":"))
     n_reloc = sum(1 for j in jobs if j.get("reloc") == "yes")
     log(f"merge: {len(parts)} part(s), {meta['companies_ok']}/{total} companies read, {len(jobs)} jobs")
-    print(json.dumps({"out": out, "jobs": len(jobs), "relocation": n_reloc, "companies": meta["companies_ok"]}))
+    fp = meta.get("list") or {}
+    print(json.dumps({"out": out, "jobs": len(jobs), "relocation": n_reloc, "companies": meta["companies_ok"],
+                      "list_sha": fp.get("sha", ""), "list_count": fp.get("count", "")}))
 
 
 def cmd_check(a):
@@ -680,6 +703,12 @@ def main(argv=None):
     p.add_argument("--fit", choices=["default", "strict", "all"], default="default",
                    help="experience filter: default drops clear mismatches, strict keeps only fits, all keeps everything")
     p.add_argument("--days", type=int, default=0, help="only postings published in the last N days (0 = all open postings)")
+    p.add_argument("--hours", type=float, default=None, metavar="N",
+                   help="only postings published in the last N hours (wins over --days). Boards that give an exact "
+                        "time are cut exactly; a posting with only a date, or none, is kept and marked")
+    p.add_argument("--min-salary", dest="min_salary", metavar="X",
+                   help='keep only postings whose text states at least this a year ("10 LPA", "12 lakh", "$30k", 1000000); '
+                        "postings that state no pay are kept and marked")
     p.add_argument("--companies", help="only companies whose name contains one of these (comma list)")
     p.add_argument("--companies-file", help="company list (default: job-hunt/assets/companies.txt)")
     p.add_argument("--exclude", help="drop titles containing any of these terms (comma list)")

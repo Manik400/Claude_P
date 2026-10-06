@@ -5,6 +5,7 @@
 
 The remote URL defaults to PAGES_REPO_URL, else the "origin" (or first) remote of the repo containing this file.
 """
+import json
 import os
 import subprocess
 import sys
@@ -130,9 +131,116 @@ def push(target, message):
                 "  set \"repo_url\" in %LOCALAPPDATA%\\JobHuntPhone\\config.json to git@github-personal:Manik400/Claude_P.git\n"
                 "  (or remove the wrong github.com entry in Windows Credential Manager)")
         sh(["git", "fetch", "origin", BRANCH], cwd=target, check=False)
-        sh(["git", "rebase", "-X", "theirs", "FETCH_HEAD"], cwd=target, check=False)
+        rebase_keeping_both(target)
         time.sleep(2 + attempt * 3)
     raise SystemExit("pages_git: could not push after 5 attempts")
+
+
+def merge_index_texts(ours_text, theirs_text, root):
+    """Both sides' data/index.json folded into one: the union of their reports.
+
+    Two publishers (the PC's queue run and a GitHub run, say) pushing at once used to
+    settle the conflict with one side's copy of the index - `rebase -X theirs` - and
+    the other side's report, its file safely on the branch, vanished from the phone.
+    Items are kept from both sides by id; an item whose file is gone from the merged
+    tree (a report removed on the phone meanwhile) stays gone; the `hidden` lists are
+    joined; `updated` is the later of the two.
+    """
+    def load(text):
+        try:
+            d = json.loads(text or "{}")
+        except ValueError:
+            d = {}
+        return d if isinstance(d, dict) else {}
+
+    a, b = load(ours_text), load(theirs_text)
+    by_id = {}
+    for item in list(a.get("items") or []) + list(b.get("items") or []):
+        if isinstance(item, dict) and item.get("id") and item["id"] not in by_id:
+            by_id[item["id"]] = item
+    items = [i for i in by_id.values()
+             if not i.get("file") or os.path.exists(os.path.join(root, str(i["file"]).replace("/", os.sep)))]
+    items.sort(key=lambda i: str(i.get("when") or ""), reverse=True)
+    hidden = []
+    for h in list(a.get("hidden") or []) + list(b.get("hidden") or []):
+        if isinstance(h, list) and h not in hidden:
+            hidden.append(h)
+    out = dict(a)
+    out.update({k: v for k, v in b.items() if k not in ("items", "hidden", "updated")})
+    out["items"] = items
+    if hidden:
+        out["hidden"] = hidden[-500:]
+    out["updated"] = max(str(a.get("updated") or ""), str(b.get("updated") or "")) or None
+    return json.dumps(out, ensure_ascii=False, indent=1)
+
+
+def rebase_keeping_both(target):
+    """Replay this clone's commits on the branch's new tip, keeping both sides' work.
+
+    data/index.json conflicts are merged (both sides' reports kept). Any other file in
+    conflict keeps this clone's version: the PC is the only writer of the queue and the
+    Track data, and a report file is never edited once published. Returns True when the
+    rebase finished; on anything unexpected it is aborted and the caller's retry goes on
+    from the state before.
+    """
+    r = sh(["git", "rebase", "FETCH_HEAD"], cwd=target, check=False, capture=True)
+    rounds = 0
+    while r.returncode != 0 and rounds < 50:
+        rounds += 1
+        conflicted = sh(["git", "diff", "--name-only", "--diff-filter=U"], cwd=target, check=False, capture=True).stdout.split()
+        if not conflicted:
+            print("pages_git: rebase stopped without a conflict to resolve:\n" + (r.stderr or r.stdout or ""), file=sys.stderr)
+            sh(["git", "rebase", "--abort"], cwd=target, check=False, capture=True)
+            return False
+        for path in conflicted:
+            if path.replace("\\", "/") == "data/index.json":
+                # in a rebase, stage 2 is the branch as it is now ("ours") and stage 3 the commit being replayed ("theirs")
+                ours = sh(["git", "show", ":2:" + path], cwd=target, check=False, capture=True).stdout
+                theirs = sh(["git", "show", ":3:" + path], cwd=target, check=False, capture=True).stdout
+                with open(os.path.join(target, path), "w", encoding="utf-8") as f:
+                    f.write(merge_index_texts(ours, theirs, target))
+                print("pages_git: data/index.json merged - both sides' reports kept")
+            else:
+                sh(["git", "checkout", "--theirs", "--", path], cwd=target, check=False, capture=True)
+            sh(["git", "add", "--", path], cwd=target, check=False, capture=True)
+        r = sh(["git", "-c", "core.editor=true", "rebase", "--continue"], cwd=target, check=False, capture=True)
+    if r.returncode != 0:
+        sh(["git", "rebase", "--abort"], cwd=target, check=False, capture=True)
+        return False
+    return True
+
+
+def repo_slug(repo_url):
+    """owner/name from https://github.com/o/r.git or git@host:o/r.git."""
+    tail = repo_url.split("github.com/", 1)[-1] if "github.com/" in repo_url else repo_url.split(":", 1)[-1]
+    tail = tail.strip("/")
+    return tail[:-4] if tail.endswith(".git") else tail
+
+
+def put_file(repo_url, path, text, message):
+    """Write one file on gh-pages through the GitHub API - no local clone involved,
+    so it is safe while another run is working in the clone (that run's next push
+    rebases over this commit; it never touches the same file)."""
+    import base64
+    import json
+    gh, slug = gh_exe(), repo_slug(repo_url)
+    api = "repos/%s/contents/%s" % (slug, path)
+    content = base64.b64encode(text.encode("utf-8")).decode("ascii")
+    for _attempt in range(3):
+        r = sh([gh, "api", api + "?ref=" + BRANCH, "--jq", ".sha"], check=False, capture=True)
+        sha = r.stdout.strip() if r.returncode == 0 else ""
+        body = {"message": message, "content": content, "branch": BRANCH}
+        if sha:
+            body["sha"] = sha
+        r = subprocess.run([gh, "api", "-X", "PUT", api, "--input", "-"], input=json.dumps(body), text=True,
+                           encoding="utf-8", errors="replace", capture_output=True)
+        if r.returncode == 0:
+            print("pages_git: %s written" % path)
+            return
+        if "409" not in (r.stderr or "") and "does not match" not in (r.stderr or ""):
+            break   # not a race on the sha: retrying will not help
+        time.sleep(2)
+    raise SystemExit("pages_git: could not write %s: %s" % (path, (r.stderr or "").strip()[:300]))
 
 
 def main(argv):

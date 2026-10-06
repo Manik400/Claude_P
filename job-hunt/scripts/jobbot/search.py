@@ -60,20 +60,31 @@ def _title_verdict(ctx, job, min_rel):
     return False, "unrelated"
 
 
-def run_search(ctx, sources, log=print, workers=6):
-    """Returns (jobs, statuses) where statuses is a list of dicts per (source, country)."""
+WORLD = "WORLD"   # the pseudo-country of a global pass (LinkedIn's "Worldwide" location)
+
+
+def run_search(ctx, sources, log=print, workers=6, max_minutes=0):
+    """Returns (jobs, statuses) where statuses is a list of dicts per (source, country).
+
+    With max_minutes, tasks not started by then are skipped (status "skipped"): a
+    worldwide run has hundreds of source/country pairs, and a run killed by a CI
+    time limit publishes nothing, while one that stops early publishes what it read.
+    """
     tasks = []
     for src in sources:
         for cc in ctx.countries:
             if src.applies_to(cc):
                 tasks.append((src, cc))
-    log(f"search: {len(tasks)} source/country tasks with {workers} workers")
+        if getattr(ctx, "worldwide", False) and hasattr(src, "search_worldwide"):
+            tasks.append((src, WORLD))
+    log(f"search: {len(tasks)} source/country tasks with {workers} workers"
+        + (f", stopping new ones after {max_minutes:g} min" if max_minutes else ""))
     statuses, jobs = [], []
 
     def work(src, cc):
         t0 = time.time()
         try:
-            found = src.search(ctx, cc) or []
+            found = (src.search_worldwide(ctx) if cc == WORLD else src.search(ctx, cc)) or []
             return dict(source=src.key, source_name=src.name, country=cc, status="ok", count=len(found),
                         seconds=round(time.time() - t0, 1)), found
         except Blocked as e:
@@ -84,13 +95,24 @@ def run_search(ctx, sources, log=print, workers=6):
                         seconds=round(time.time() - t0, 1), error=f"{type(e).__name__}: {str(e)[:160]}",
                         trace=traceback.format_exc()[-800:]), []
 
+    deadline = time.time() + max_minutes * 60 if max_minutes else None
+    stopped = False
     with ThreadPoolExecutor(max_workers=workers) as ex:
         futs = {ex.submit(work, src, cc): (src, cc) for src, cc in tasks}
         for fut in as_completed(futs):
+            if deadline and not stopped and time.time() > deadline:
+                stopped = True
+                left = [k for f, k in futs.items() if f.cancel()]
+                for src, cc in left:
+                    statuses.append(dict(source=src.key, source_name=src.name, country=cc, status="skipped", count=0,
+                                         seconds=0, error=f"not started within {max_minutes:g} min"))
+                log(f"time limit ({max_minutes:g} min): {len(left)} source/country pair(s) not started are skipped this run")
+            if fut.cancelled():
+                continue
             st, found = fut.result()
             statuses.append(st)
             jobs.extend(found)
-            flag = {"ok": "ok", "blocked": "BLOCKED", "error": "ERROR"}[st["status"]]
+            flag = {"ok": "ok", "blocked": "BLOCKED", "error": "ERROR", "skipped": "SKIPPED"}[st["status"]]
             log(f"  {st['source_name']:<28} {st['country']:<7} {flag:<8} {st['count']:>4} jobs  {st['seconds']}s"
                 + (f"  ({st.get('error')})" if st.get("error") else ""))
     jobs = dedup(jobs)
@@ -99,6 +121,29 @@ def run_search(ctx, sources, log=print, workers=6):
         annotate(j, ctx.user_years)
         j.relevance = ctx.relevance(j.title, " ".join(j.skills) + " " + j.snippet + " " + j.description[:800])
     return jobs, statuses
+
+
+def salary_filter(ctx, jobs, log=print):
+    """Read every job's pay (its field, else its text) and drop the ones stated below the floor.
+
+    A posting that names no salary cannot be below anything; it stays, marked
+    extra.salary_stated = False, so the phone can filter it out or in.
+    """
+    from . import salary as salary_mod
+    floor = getattr(ctx, "min_salary_inr", None)
+    kept, dropped, stated = [], 0, 0
+    for j in jobs:
+        ok, s = salary_mod.annotate(j, floor)
+        if s is not None:
+            stated += 1
+        if ok:
+            kept.append(j)
+        else:
+            dropped += 1
+    if floor:
+        log(f"salary: floor {salary_mod.label(floor)} - {stated} of {len(jobs)} postings state their pay, "
+            f"{dropped} dropped as below the floor, {len(jobs) - stated} keep an unstated salary")
+    return kept, dropped
 
 
 def dedup(jobs):

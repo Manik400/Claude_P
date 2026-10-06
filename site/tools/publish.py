@@ -35,7 +35,127 @@ def prune_old(pages, idx, now):
         idx["items"].remove(item)
         _remove_files(pages, item)
     return len(old)
+
+
+def prune_keep(pages, idx):
+    """At most KEEP[kind] reports per kind, newest kept. Returns how many went."""
+    gone = 0
+    for kind, keep in KEEP.items():
+        same = sorted([i for i in idx["items"] if i.get("kind") == kind], key=lambda i: str(i.get("when") or ""), reverse=True)
+        for old in same[keep:]:
+            idx["items"].remove(old)
+            _remove_files(pages, old)
+            gone += 1
+    return gone
+
+
 EXT = {"careers": "json"}   # everything else is an HTML page
+STAMP_RX = re.compile(r"^(?P<kind>[a-z]+)-(?P<d>\d{8})-(?P<t>\d{6})-")
+
+
+def _title_from_html(path):
+    try:
+        with open(path, encoding="utf-8", errors="replace") as f:
+            head = f.read(20000)
+    except OSError:
+        return ""
+    m = re.search(r"<title>(.*?)</title>", head, re.S | re.I)
+    if not m:
+        return ""
+    title = re.sub(r"\s+", " ", m.group(1)).strip()
+    title = re.sub(r"^Job Hunt\s*[·-]\s*", "", title)                        # the report's own prefix
+    title = re.sub(r"\s*[·-]\s*\d{1,2} [A-Za-z]{3} \d{4}$", "", title)       # ...and its date suffix
+    return title
+
+
+def _item_from_file(pages, kind, rel, m):
+    """An index entry rebuilt from a published file alone (its name has the time; a careers
+    JSON carries its roles and counts; an HTML page its <title>)."""
+    path = os.path.join(pages, rel.replace("/", os.sep))
+    name = os.path.basename(rel)
+    rid = name.rsplit(".", 1)[0]
+    d, t = m.group("d"), m.group("t")
+    when = "%s-%s-%sT%s:%s:%sZ" % (d[:4], d[4:6], d[6:], t[:2], t[2:4], t[4:])
+    meta, title = {}, ""
+    if kind == "careers" and name.endswith(".json"):
+        try:
+            with open(path, encoding="utf-8") as f:
+                data = json.load(f)
+        except (OSError, ValueError):
+            return None
+        mm = (data.get("meta") or {}) if isinstance(data, dict) else {}
+        jobs = (data.get("jobs") or []) if isinstance(data, dict) else []
+        title = ", ".join(mm.get("roles") or [])
+        lst = mm.get("list") or {}
+        meta = {"jobs": str(len(jobs)), "relocation": str(sum(1 for j in jobs if isinstance(j, dict) and j.get("reloc") == "yes")),
+                "countries": "worldwide" if "*" in (mm.get("countries") or []) else ",".join(mm.get("countries") or []),
+                "experience": mm.get("experience") or "", "reloc_mode": mm.get("relocation") or "",
+                "days": str(mm.get("days") or ""), "hours": str(mm.get("hours") or ""),
+                "list_sha": lst.get("sha", ""), "list_count": str(lst.get("count", ""))}
+    elif name.endswith(".html"):
+        title = _title_from_html(path)
+    if not title:
+        title = rid[len(kind) + 17:].replace("-", " ").strip() or rid
+    jobs_rel = rel.rsplit(".", 1)[0] + ".jobs.json"
+    if os.path.exists(os.path.join(pages, jobs_rel.replace("/", os.sep))):
+        meta["jobs_file"] = jobs_rel
+        if "jobs" not in meta:
+            try:
+                with open(os.path.join(pages, jobs_rel.replace("/", os.sep)), encoding="utf-8") as f:
+                    meta["jobs"] = str(len(json.load(f)))
+            except (OSError, ValueError, TypeError):
+                pass
+    try:
+        size = os.path.getsize(path)
+    except OSError:
+        size = 0
+    return {"id": rid, "kind": kind, "title": title, "when": when, "file": rel, "bytes": size, "meta": meta}
+
+
+def reconcile_index(pages, idx):
+    """List again every report file that is on the branch but missing from the index.
+
+    Two publishers pushing at once used to settle data/index.json with one side's copy,
+    and the other side's report - file safely on the branch - vanished from the phone.
+    Such a file is relisted from what it carries. One-copy kinds (applications, accuracy)
+    are never relisted: a leftover there is deleted instead. Reports removed on the
+    phone (their kind + title on the index's `hidden` list) stay removed.
+    Returns (added, deleted).
+    """
+    listed = set()
+    for i in idx.get("items") or []:
+        for rel in (i.get("file"), (i.get("meta") or {}).get("jobs_file")):
+            if rel:
+                listed.add(str(rel).replace("\\", "/"))
+    hidden = {tuple(h) for h in idx.get("hidden") or [] if isinstance(h, list) and len(h) == 2}
+    added = deleted = 0
+    for kind in KEEP:
+        folder = os.path.join(pages, "data", kind)
+        if not os.path.isdir(folder):
+            continue
+        for name in sorted(os.listdir(folder)):
+            rel = "data/%s/%s" % (kind, name)
+            if rel in listed or name.endswith(".jobs.json") or not name.endswith((".html", ".json")):
+                continue
+            m = STAMP_RX.match(name)
+            if not m or m.group("kind") != kind:
+                continue
+            if KEEP.get(kind, 30) <= 1:
+                try:
+                    os.remove(os.path.join(folder, name))
+                    deleted += 1
+                except OSError:
+                    pass
+                continue
+            item = _item_from_file(pages, kind, rel, m)
+            if item is None or (kind, item["title"]) in hidden:
+                continue
+            idx.setdefault("items", []).append(item)
+            listed.add(rel)
+            added += 1
+    if added or deleted:
+        print("publish: index reconciled - %d report(s) relisted from their files, %d leftover one-copy file(s) deleted" % (added, deleted))
+    return added, deleted
 
 
 def slug(s):
@@ -89,6 +209,7 @@ def publish_report(a):
         shutil.copyfile(a.attach, os.path.join(a.pages, rel_jobs))
         meta["jobs_file"] = rel_jobs
     idx = load_index(a.pages)
+    reconcile_index(a.pages, idx)
     # A re-published file with the same title on the same day replaces the earlier copy (Naukri re-runs).
     if a.replace_same_title:
         for old in [i for i in idx["items"] if i["kind"] == a.kind and i["title"] == a.title]:
@@ -232,9 +353,12 @@ def publish_site(a):
         save_index(a.pages, {"updated": None, "items": []})
     else:
         idx = load_index(a.pages)
+        added, deleted = reconcile_index(a.pages, idx)
+        pruned = prune_keep(a.pages, idx)
         aged = prune_old(a.pages, idx, dt.datetime.now(dt.timezone.utc))
-        if aged:
+        if added or deleted or pruned or aged:
             save_index(a.pages, idx)
+        if aged:
             print("publish: deleted %d report(s) older than %d days" % (aged, RETENTION_DAYS))
     migrate_plain(a.pages)
     print("publish: site files copied")

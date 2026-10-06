@@ -226,6 +226,11 @@
   .job.applied { border-color: var(--ok); }
   .job.removed { opacity: .55; }
   .sect { font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; margin: 20px 4px 10px; }
+  /* a LinkedIn post's text: clamped to a few lines, tap to read it all */
+  .ptext { white-space: pre-wrap; font-size: 0.875rem; margin-top: 8px; line-height: 1.45; word-break: break-word; }
+  .ptext.clip { display: -webkit-box; -webkit-line-clamp: 7; -webkit-box-orient: vertical; overflow: hidden; cursor: pointer; }
+  .job.post .acts { flex-wrap: wrap; }
+  .job.post .acts a, .job.post .acts button { flex: 1 1 110px; }
 
   /* ---------- wide screens: a dense table on the left, the job's detail on the right.
      Below 1100px nothing here applies: the cards stay, and the detail opens as an
@@ -417,6 +422,7 @@
     <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/></svg>Home<span class="dot" id="dot-home" hidden></span></button>
     <button data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
     <button data-tab="jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>Jobs</button>
+    <button data-tab="posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 15h5"/></svg>Posts<span class="dot" id="dot-posts" hidden></span></button>
     <button data-tab="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Queue<span class="dot" id="dot-queue" hidden></span></button>
     <button data-tab="track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Track</button>
     <button data-tab="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 15l2 2 4-4"/></svg>Plan</button>
@@ -454,8 +460,8 @@
             </div>
         <div class="chips small" id="f-win-quick"></div>
         <div id="f-win-note" hidden>
-          <label class="check"><input type="checkbox" id="f-undated"> Include postings with no time on them</label>
-          <div class="hint">Under a day, a posting the board gave no time for is skipped — it cannot be shown to be inside the window, so "last 2 hours" really means it. Turn this on to keep them anyway.</div>
+          <label class="check"><input type="checkbox" id="f-undated" checked> Keep postings whose time stays unknown</label>
+          <div class="hint">Every posting the board gave no time for has its own page read for a date; one shown to be older than the window is dropped. This switch decides the ones whose page says nothing either: on = keep them, marked "posting time not stated"; off = drop them, so "last 2 hours" means exactly that.</div>
         </div>
           </div>
         </details>
@@ -482,6 +488,12 @@
                 <select id="f-fit"><option value="default">default</option><option value="strict">strict</option><option value="all">all (no filter)</option></select></div>
               <div><label>Extra flags</label><input id="f-extra" placeholder="--must python" autocapitalize="none"></div>
             </div>
+          </div>
+        </details>
+        <details class="filters sub" id="sf-pay" open><summary><b>Pay</b><span class="sum" id="f-pay-sum"></span></summary>
+          <div class="fbody">
+            <label>Pays at least (LPA) <span class="muted">(blank = no floor)</span></label><input id="f-minsal" inputmode="decimal" value="10">
+            <div class="hint">Read from each posting's own pay field or text (LPA, ₹, $, €, per month, per hour…) and converted to rupees a year. Postings that state less are left out; ones that state no pay stay, marked "pay not stated", and you can filter them under Jobs.</div>
           </div>
         </details>
         <button class="primary" id="btn-run">Start search</button>
@@ -515,12 +527,18 @@
             <label class="check"><input type="checkbox" id="c-visa"> …or visa sponsorship</label>
           </div>
         </details>
-        <details class="filters sub" id="cf-when" open><summary><b>Posted &amp; companies</b></summary>
+        <details class="filters sub" id="cf-when" open><summary><b>Posted, pay &amp; companies</b></summary>
           <div class="fbody">
             <div class="row">
               <div><label>Posted in last N days <span class="muted">(empty = all)</span></label><input id="c-days" inputmode="numeric"></div>
+              <div><label>…or last N hours <span class="muted">(wins over days)</span></label><input id="c-hours" inputmode="decimal" placeholder="24"></div>
+            </div>
+            <div class="hint">Boards that give an exact time are cut exactly; a posting with only a date, or none, is kept and marked "date only".</div>
+            <div class="row">
+              <div><label>Pays at least (LPA) <span class="muted">(blank = no floor)</span></label><input id="c-minsal" inputmode="decimal" value="10"></div>
               <div><label>Only these companies <span class="muted">(optional)</span></label><input id="c-companies" placeholder="agoda, adyen" autocapitalize="none"></div>
             </div>
+            <div class="hint">Pay is read from each posting's text (LPA, ₹, $, €…). Postings that state less a year are left out; ones that state no pay stay, marked "pay not stated".</div>
           </div>
         </details>
         <button class="primary" id="btn-careers">Search career pages</button>
@@ -543,6 +561,13 @@
     <div class="card"><h2>Applications sent (PC)</h2><div id="list-applications" class="muted">Loading…</div>
       <div class="hint">The Naukri screener's log of every application it sent, rebuilt after each run and published with the scans.</div></div>
     <div class="muted" id="index-updated"></div>
+  </section>
+
+  <!-- ----------------------------------------------------------------- Posts -->
+  <!-- LinkedIn "we are hiring" posts from the last 12 h, read every 30 min on the PC
+       (Profile_Naukri_Screener-main\naukri\jobs\linkedin_posts.py -> data/posts/linkedin_posts.json) -->
+  <section id="tab-posts" hidden>
+    <div id="posts-body"><div class="card"><span class="spin"></span> Loading…</div></div>
   </section>
 
   <!-- ----------------------------------------------------------------- Queue -->
@@ -860,10 +885,11 @@
   }
 
   // ---- tabs
-  var TABS = ["home", "search", "jobs", "queue", "track", "plan", "settings"];
+  var TABS = ["home", "search", "jobs", "posts", "queue", "track", "plan", "settings"];
   var tabs = document.querySelectorAll("nav.tabs button");
   var TITLES = { home: ["Home", "what is happening right now"], search: ["Search", "start a run on GitHub; results land under Jobs"],
-    jobs: ["Jobs", "every report, newest first"], queue: ["Queue", "what your PC applies to, and the rules"],
+    jobs: ["Jobs", "every report, newest first"], posts: ["Posts", "LinkedIn hiring posts from the last 12 h, read by your PC"],
+    queue: ["Queue", "what your PC applies to, and the rules"],
     track: ["Track", "applications, replies and your answers"], plan: ["Plan", "75-day SDE plan - calendar, daily tasks, progress"],
     settings: ["Settings", "this phone only"] };
   // The Plan frame takes exactly the height left under the header, so the page itself never scrolls.
@@ -888,7 +914,8 @@
     store.set("tab", name);
     try { history.replaceState(history.state, "", "#" + name); } catch (e) {}
     if (name === "home") { loadIndex(); loadQueue().then(renderHome); loadRuns("jobhunt.yml", null); loadRuns("careers.yml", null); }
-    if (name === "jobs") loadIndex();
+    if (name === "jobs") { loadIndex(); loadCompanies(); }
+    if (name === "posts") loadPosts(true).then(renderPosts);
     if (name === "search") { loadRuns("jobhunt.yml", "runs"); loadRuns("careers.yml", "c-runs"); loadCompanies(); }
     if (name === "queue") loadQueue(true).then(renderQueue);
     if (name === "track") loadTrack();
@@ -993,7 +1020,14 @@
     if (m.countries && m.countries !== "default countries") sub.push(m.countries);
     if (m.experience) sub.push(m.experience + " yrs");
     var win = windowLabel(m); if (win) sub.push(win);
+    if (m.min_salary) sub.push("pays ≥ " + m.min_salary);
     if (i.kind === "jobhunt" && m.platforms_asked) sub.push(platformsLabel(m));
+    // careers: which company list the report was made from, against the list on the branch now
+    var listChip = "";
+    if (i.kind === "careers" && m.list_sha) {
+      if (m.list_count) sub.push(m.list_count + " companies");
+      if (companiesFp) listChip = " " + (m.list_sha === companiesFp ? chip("ok", "current list") : chip("warn", "older list"));
+    } else if (i.kind === "careers" && companiesFp) listChip = " " + chip("warn", "older list");
     var right = (i.kind === "jobhunt" || i.kind === "naukri")
       ? (m.jobs_file ? chip("acc", "jobs ›") : chip("", "report ›"))
       : chip("", "open ›");
@@ -1002,7 +1036,7 @@
       ((i.kind === "jobhunt" || i.kind === "naukri") && m.jobs_file ? '<button class="ghost small" data-ra="full">Full report</button>' : "") +
       (gone ? '<button class="ghost small" data-ra="restore" title="Show it in the list again">↺ restore</button>'
         : '<button class="ghost small danger" data-ra="remove" title="Remove from the list" aria-label="Remove from the list">🗑</button>') + "</div>";
-    return '<div class="item' + (gone ? " gone" : "") + '" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + "</b><span>" + esc(sub.join(" · ")) + "</span>" + acts + "</div>" + right + "</div>";
+    return '<div class="item' + (gone ? " gone" : "") + '" data-id="' + esc(i.id) + '"><div class="t"><b>' + esc(i.title) + listChip + "</b><span>" + esc(sub.join(" · ")) + "</span>" + acts + "</div>" + right + "</div>";
   }
   function bindReportRows(box) {
     box.querySelectorAll(".item[data-id]").forEach(function (el) {
@@ -1154,7 +1188,10 @@
   function stChip(st, note) { var s = STATUS[st] || ["", st]; var cls = s[0]; return '<span class="chip ' + cls + '" title="' + esc(note || "") + '">' + esc(s[1]) + "</span>"; }
   function loadQueue(force) {
     if (!force && queue && Date.now() - queueAt < 45000) return Promise.resolve(queue);
+    // heartbeat.json: written by a queue run that found another run busy (it cannot push queue.json then)
+    var beat = fetchEnc("data/apply/heartbeat.json?t=" + Date.now()).then(JSON.parse).catch(function () { return null; });
     return fetchEnc("data/apply/queue.json?t=" + Date.now()).then(JSON.parse)
+      .then(function (q) { return beat.then(function (b) { q.heartbeat = b; return q; }); })
       .then(function (q) {
         queue = q; queueAt = Date.now();
         // forget local "sent" marks the PC has now seen
@@ -1167,9 +1204,13 @@
   function itemsLive() { return ((queue || {}).items || []).filter(function (i) { return i.status !== "removed"; }); }
   function queueKeys() { var k = {}; ((queue || {}).items || []).forEach(function (i) { k[i.key] = i; }); pendingLocal().forEach(function (p) { if (!k[p.key]) k[p.key] = { key: p.key, status: "requested", local: true }; }); return k; }
   function pcState() {
-    var pc = (queue || {}).pc || {}, h = hoursSince(pc.last_seen);
-    if (!pc.last_seen) return { cls: "off", text: "PC not seen yet", h: h };
-    if (h < 1.25) return { cls: "on", text: "PC on · " + ago(pc.last_seen), h: h };
+    var pc = (queue || {}).pc || {}, hb = (queue || {}).heartbeat || {}, h = hoursSince(pc.last_seen);
+    var busy = hb.last_seen && hoursSince(hb.last_seen) < h;
+    if (busy) h = hoursSince(hb.last_seen);
+    if (!pc.last_seen && !busy) return { cls: "off", text: "PC not seen yet", h: h };
+    if (h < 1.25) return busy ? { cls: "on", text: "PC on · busy · " + ago(hb.last_seen), h: h, busy: hb.busy }
+                              : { cls: "on", text: "PC on · " + ago(pc.last_seen), h: h };
+    if (busy) return { cls: "off", text: "PC off? last " + ago(hb.last_seen), h: h };
     return { cls: "off", text: "PC off? last " + ago(pc.last_seen), h: h };
   }
   function updateHeader() {
@@ -1194,6 +1235,7 @@
   function pcHtml() {
     var pc = (queue || {}).pc || {}, st = pcState(), s = "";
     if (!queue || queue.missing) return '<div class="msg warn">Your PC has not run the queue yet. On the PC, run <code>site\\schedule_phone_apply.ps1</code> once; from then on it checks every 30 minutes and after every logon.</div>';
+    if (st.busy) s += '<div class="msg">PC is on but busy (' + esc(st.busy) + '). Queue items wait for that run to finish.</div>';
     if (st.h > 1.25) s += '<div class="msg warn">The PC has not checked in for ' + (st.h < 48 ? Math.round(st.h) + " h" : Math.round(st.h / 24) + " days") + '. Everything you queue waits safely and is applied when it is on again (lock screen is fine; sleep is not).</div>';
     var a = pc.applied_today || {}, caps = pc.caps || {};
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
@@ -1207,13 +1249,15 @@
     var q = queue || {}, p = q.progress || {}, pend = q.pending_questions || [];
     h += '<div class="card tap" id="home-queue"><h2>Auto-apply queue <span class="r">open ›</span></h2>' + progressHtml(p) + pcHtml() + "</div>";
     if (pend.length) h += '<div class="card"><h2>' + pend.length + ' question' + (pend.length > 1 ? "s" : "") + ' waiting for you</h2>' + questionsHtml(pend, "hq") + "</div>";
+    h += '<div class="card tap" id="home-posts-card"><h2>LinkedIn hiring posts <span class="r">open ›</span></h2><div id="home-posts" class="muted">Loading…</div></div>';
     h += '<div class="card"><h2>Latest reports <span class="r" data-go="jobs">all ›</span></h2><div id="home-reports" class="muted">Loading…</div></div>';
     h += '<div class="card"><h2>Searches running <span class="r" data-go="search">new search ›</span></h2><div id="home-runs" class="muted">…</div></div>';
     $("home-body").innerHTML = h; restoreDirty($("home-body"));
     $("home-queue").addEventListener("click", function (e) { if (!e.target.closest("input,select,button,a")) showTab("queue"); });
+    $("home-posts-card").addEventListener("click", function (e) { if (!e.target.closest("input,select,button,a")) showTab("posts"); });
     $("home-body").querySelectorAll("[data-go]").forEach(function (el) { el.addEventListener("click", function (e) { e.stopPropagation(); showTab(el.dataset.go); }); });
     bindQuestions("hq", pend);
-    renderHomeReports(); renderHomeRuns();
+    renderHomeReports(); renderHomeRuns(); renderHomePosts(); loadPosts(false);
   }
   function renderHomeReports() {
     var box = $("home-reports"); if (!box || !index) return;
@@ -1521,7 +1565,8 @@
     $("v-report").addEventListener("click", function () { openReport(item); });
     Promise.all([fetchEnc(item.meta.jobs_file, { cache: "force-cache" }).then(JSON.parse), loadQueue(true)]).then(function (res) {
       var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; j._src = srcKey(j); return j; });
-      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
+      JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sal: "any", floorLpa: parseFloat((item.meta || {}).min_salary) || 10,
+             sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
       renderJobs();
       $("j-box").scrollTop = 0;
       // the detail column shows the form the PC filled in; that lives in profile.json
@@ -1547,6 +1592,10 @@
       if (onKeys(JV.boards).length && !JV.boards[j._src]) return false;
       if (onKeys(JV.countries).length && !JV.countries[j.country || "??"]) return false;
       if (JV.min && !((j.score || 0) >= JV.min)) return false;
+      var ex = j.extra || {};
+      if (JV.sal === "stated" && !ex.salary_stated) return false;
+      if (JV.sal === "unstated" && ex.salary_stated) return false;
+      if (JV.sal === "floor" && !(ex.salary_stated && (ex.salary_lpa || 0) >= JV.floorLpa)) return false;
       return true;
     }).sort(function (a, b) {
       if (JV.tsort) {  // a column heading was clicked: that wins over the Sort box
@@ -1590,7 +1639,8 @@
     var labelOf = function (list, k) { return (list.filter(function (b) { return b[0] === k; })[0] || [k, k])[1]; };
     var fsum = [fb.length === 0 ? "All boards" : fb.length === 1 ? labelOf(boards, fb[0]) : fb.length + " boards",
       fc.length === 0 ? "All countries" : fc.length === 1 ? ccLabel(fc[0]) : fc.length + " countries",
-      JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sort === "new" ? "newest first" : "best match first"].join(" · ");
+      JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sal === "any" ? "" : { floor: "pay ≥ " + JV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated" }[JV.sal],
+      JV.sort === "new" ? "newest first" : "best match first"].filter(Boolean).join(" · ");
     var fchip = function (attr, k, label, n, on) { return '<button type="button" data-' + attr + '="' + esc(k) + '" class="' + (on ? "on" : "") + (n ? "" : " zero") + '">' + label + " · " + n + "</button>"; };
     var jm = JV.item.meta || {}, jwin = windowLabel(jm);
     var h = '<div class="card"><div class="muted">' + JV.jobs.length + " postings · " + counts.linkedin + " LinkedIn · " + counts.naukri + " Naukri · " + counts.web + " other boards / company sites</div>" +
@@ -1608,7 +1658,9 @@
         ccs.map(function (c) { return fchip("cc", c, (flag(c) ? flag(c) + " " : "") + esc(ccLabel(c)), cc[c] || 0, JV.countries[c]); }).join("") + "</div>" +
       '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 60, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div>" +
-      (fb.length || fc.length || JV.min ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
+      '<div class="row"><div><label>Pay</label>' + sel("jf-sal", JV.sal, [["any", "any"], ["floor", "stated ≥ " + JV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div></div>" +
+      '<div class="hint">Pay is read from each posting\'s pay field or text. Postings that stated less than the search\'s floor were already left out.</div>' +
+      (fb.length || fc.length || JV.min || JV.sal !== "any" ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
     // the list itself: a table at >=1100px, the cards below that. The detail of the
     // selected posting is the second column (wide) or an accordion under its card.
     var shown = todo.slice(0, JV.limit), body = "";
@@ -1638,8 +1690,9 @@
     var toggleIn = function (set, k) { if (!k) Object.keys(set).forEach(function (x) { delete set[x]; }); else if (set[k]) delete set[k]; else set[k] = 1; JV.limit = 50; renderJobs(); };
     $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) toggleIn(JV.boards, b.dataset.b); });
     $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) toggleIn(JV.countries, b.dataset.cc); });
-    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.limit = 50; renderJobs(); });
+    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.sal = "any"; JV.limit = 50; renderJobs(); });
     $("jf-min").addEventListener("change", function (e) { JV.min = +e.target.value; renderJobs(); });
+    if ($("jf-sal")) $("jf-sal").addEventListener("change", function (e) { JV.sal = e.target.value; JV.limit = 50; renderJobs(); });
     $("jf-sort").addEventListener("change", function (e) { JV.sort = e.target.value; renderJobs(); });
     if ($("jf-more")) $("jf-more").addEventListener("click", function () { JV.limit += 50; renderJobs(); });
     box.querySelectorAll("[data-sel]").forEach(function (c) { c.addEventListener("change", function () { JV.sel[c.dataset.sel] = c.checked; renderJobs(); }); });
@@ -1720,7 +1773,8 @@
     t.push(chip("", j.source_name || j.source || ""));
     if (j.fit && j.fit !== "unknown") t.push(chip(j.fit === "fit" ? "ok" : "warn", { fit: "experience fits", stretch: "stretch", over: "over-qualified" }[j.fit] || j.fit));
     if ((j.extra || {}).company_apply) t.push(chip("", "company site"));
-    if (j.salary) t.push(chip("", j.salary));
+    if ((j.extra || {}).salary_lpa) t.push(chip("ok", "₹ " + j.extra.salary_lpa + " LPA")); else if (j.salary) t.push(chip("", j.salary.slice(0, 40)));
+    if (!(j.posted_at || j.posted)) t.push(chip("", "posting time not stated")); else if ((j.extra || {}).posted_source) t.push(chip("", "date from the page"));
     var qchip = q ? stChip(q.status, q.note) : "";
     var ex = j.extra || {}, c = ex.contacts, hasC = c && ((c.people || []).length || (c.emails || []).length);
     var btn = q ? '<button class="btn done" disabled>' + (STATUS[q.status] || [0, q.status])[1] + "</button>" : (applied ? "" : '<button class="btn" data-q1="' + esc(j._key) + '">+ Queue</button>');
@@ -2015,20 +2069,29 @@
     US: "United States", NO: "Norway", IT: "Italy", BE: "Belgium", HK: "Hong Kong", KR: "South Korea" };
   // India is always searched: it is locked on, always first, and always sent to jobhunt.yml.
   function wPicked() { return ["IN"].concat((store.get("f.cc", W_DEFAULT) || "").split(",").filter(function (c) { return c && c !== "IN"; })); }
+  // 🌍 Everywhere: every country the bot knows plus a global LinkedIn pass (job_bot --countries worldwide)
+  function worldOn() { return store.get("f.world", "") === "1"; }
   function renderWCountries() {
-    var picked = wPicked();
-    $("f-countries").innerHTML = W_CHOICES.map(function (cc) { return cc === "IN" ? '<button type="button" data-cc="IN" class="on lock" aria-pressed="true" title="India is always included">' + flag(cc) + " India · always</button>"
-      : '<button type="button" data-cc="' + cc + '"' + (picked.indexOf(cc) >= 0 ? ' class="on"' : "") + ">" + flag(cc) + " " + NAMES[cc] + "</button>"; }).join("");
+    var picked = wPicked(), world = worldOn();
+    $("f-countries").innerHTML = '<button type="button" data-cc="*"' + (world ? ' class="on"' : "") + ' title="Every country the bot knows, plus a global LinkedIn pass">🌍 Everywhere</button>' +
+      W_CHOICES.map(function (cc) { return cc === "IN" ? '<button type="button" data-cc="IN" class="on lock" aria-pressed="true" title="India is always included">' + flag(cc) + " India · always</button>"
+      : '<button type="button" data-cc="' + cc + '"' + (world ? ' class="on zero"' : (picked.indexOf(cc) >= 0 ? ' class="on"' : "")) + ">" + flag(cc) + " " + NAMES[cc] + "</button>"; }).join("");
+    var sum = $("sf-cc") && $("sf-cc").querySelector(".sum"); if (sum) sum.textContent = world ? "Everywhere · the whole world" : "India always included";
   }
   $("f-countries").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-cc]"); if (!b) return;
-    if (b.dataset.cc === "IN") { toast("India is always included in every search."); return; }
+    if (b.dataset.cc === "*") { store.set("f.world", worldOn() ? "" : "1"); renderWCountries(); return; }
+    if (worldOn()) { store.set("f.world", ""); }   // picking one country leaves Everywhere
+    if (b.dataset.cc === "IN") { renderWCountries(); toast("India is always included in every search."); return; }
     var picked = wPicked(), i = picked.indexOf(b.dataset.cc);
     if (i >= 0) picked.splice(i, 1); else picked.push(b.dataset.cc);
     store.set("f.cc", picked.join(",")); renderWCountries();
   });
-  function advSum() { accSum("sf-adv", "experience filter: " + $("f-fit").value + ($("f-extra").value.trim() ? " · " + $("f-extra").value.trim() : "")); }
-  ["role", "exp", "fit", "extra", "more"].forEach(function (k) {
+  function advSum() {
+    accSum("sf-adv", "experience filter: " + $("f-fit").value + ($("f-extra").value.trim() ? " · " + $("f-extra").value.trim() : ""));
+    accSum("sf-pay", $("f-minsal").value.trim() ? "at least " + $("f-minsal").value.trim() + " LPA" : "no floor");
+  }
+  ["role", "exp", "fit", "extra", "more", "minsal"].forEach(function (k) {
     var el = $("f-" + k); el.value = store.get("f." + k, el.value);
     var save = function () { store.set("f." + k, el.value); advSum(); };
     el.addEventListener("input", save); el.addEventListener("change", save);
@@ -2074,7 +2137,7 @@
       var oldDays = store.get("f.days", "");  // runs made before the hours window existed
       $("f-win-n").value = store.get("f.win.n", oldDays || "7");
       $("f-win-u").value = store.get("f.win.u", "d") === "h" ? "h" : "d";
-      $("f-undated").checked = store.get("f.undated", "") === "1";
+      $("f-undated").checked = store.get("f.undated", "1") === "1";
     } catch (e) {}
     renderWindow();
   })();
@@ -2144,15 +2207,16 @@
     var w = winValue(), hours = winHours(w), picked = platPicked();
     // jobhunt.yml inputs: days always (job_bot's own window), hours only when the window is in hours
     // (it wins over days there), allow_undated only with it, platforms empty = all.
-    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: countries.join(","),
+    var inputs = { role: role, experience: $("f-exp").value.trim(), countries: worldOn() ? "worldwide" : countries.join(","),
                    days: String(Math.max(1, Math.ceil(hours / 24))),
+                   min_salary: $("f-minsal").value.trim() ? $("f-minsal").value.trim() + " LPA" : "",
                    fit: $("f-fit").value, extra: extra.trim(), platforms: picked.join(",") };
     // hours wins over days in the workflow, so it is sent for any window under a day -
     // including one typed in days ("0.5 days"), where the undated switch applies too.
     if (hours < 24) { inputs.hours = trimNum(hours); inputs.allow_undated = $("f-undated").checked ? "true" : "false"; }
     $("btn-run").disabled = true; msg("run-msg", "Starting…");
     gh("/actions/workflows/jobhunt.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
-      .then(function () { msg("run-msg", "Started. 5–15 minutes; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
+      .then(function () { msg("run-msg", "Started. " + (worldOn() ? "20–40 minutes for the whole world" : "5–15 minutes") + "; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
       .catch(function (e) { msg("run-msg", "Could not start: " + e.message, "bad"); })
       .then(function () { $("btn-run").disabled = false; });
   });
@@ -2162,6 +2226,166 @@
     $("s-world").hidden = b.dataset.s !== "world"; $("s-careers").hidden = b.dataset.s !== "careers";
     store.set("s.seg", b.dataset.s);
   });
+
+  // ---- Posts: LinkedIn "we are hiring" posts from the last 12 h, read every 30 min by the PC's
+  // watcher (Profile_Naukri_Screener-main/naukri/jobs/linkedin_posts.py -> data/posts/linkedin_posts.json).
+  // Everything here is a filter over that file; nothing is sent anywhere.
+  var posts = null, postsAt = 0, postsErr = "", postsWait = null;
+  var PF = { q: store.get("p.q", ""), role: store.get("p.role", ""), exp: store.get("p.exp", ""), hours: +store.get("p.hours", "12") || 12,
+             loc: store.get("p.loc", ""), need: store.get("p.need", ""), sort: store.get("p.sort", "new"), limit: 40, open: {}, showRemoved: false };
+  var P_ROLES = [["", "Any role"], ["swe", "SWE / SDE"], ["backend", "Backend"], ["frontend", "Frontend"], ["fullstack", "Full stack"], ["java", "Java"],
+    ["python", "Python"], ["dotnet", ".NET / C#"], ["mobile", "Mobile"], ["devops", "DevOps / Cloud"], ["qa", "QA / Test"], ["data", "Data / ML / AI"]];
+  var P_ROLE_RX = { swe: /software|\bsde\b|\bswe\b|developer|engineer/i, backend: /back-?end|\bjava\b|python|node|spring|django|\.net|golang|\bapi\b/i,
+    frontend: /front-?end|react|angular|vue|javascript|typescript|html|css|ui developer/i, fullstack: /full[- ]?stack|mern|mean stack/i,
+    java: /\bjava\b|spring/i, python: /python|django|flask/i, dotnet: /\.net|dotnet|c#/i, mobile: /android|\bios\b|flutter|react native|mobile|kotlin|swift/i,
+    devops: /devops|cloud|\baws\b|azure|\bgcp\b|kubernetes|docker|\bsre\b/i, qa: /\bqa\b|sdet|\btest|automation engineer|selenium/i,
+    data: /data engineer|\bml\b|machine learning|\bai\b|data scien|analytics/i };
+  var P_EXP = [["", "Any"], ["entry", "Freshers / entry level"], ["le1", "≤ 1 yr"], ["le2", "≤ 2 yrs stated"], ["unstated", "Not stated"]];
+  var P_LOC = [["", "Anywhere"], ["India", "India"], ["Remote", "Remote"], ["Bengaluru", "Bengaluru"], ["Hyderabad", "Hyderabad"], ["Pune", "Pune"],
+    ["NCR", "Delhi NCR"], ["Mumbai", "Mumbai"], ["Chennai", "Chennai"], ["abroad", "Outside India"]];
+  var P_NEED = [["", "Anything"], ["email", "Has email"], ["link", "Has apply link"], ["salary", "Pay stated"], ["batch", "Names a batch"]];
+  var INDIA_CITY = /bengaluru|bangalore|hyderabad|pune|chennai|mumbai|gurgaon|gurugram|noida|delhi|\bncr\b|kolkata|ahmedabad|jaipur|chandigarh|mohali|indore|bhopal|kochi|trivandrum|coimbatore|mysore|nagpur|lucknow|bhubaneswar|vizag|vadodara|surat|\bindia\b/i;
+  function loadPosts(force) {
+    if (!force && posts && Date.now() - postsAt < 60000) return Promise.resolve(posts);
+    if (postsWait) return postsWait;
+    postsWait = fetchEnc("data/posts/linkedin_posts.json?t=" + Date.now()).then(JSON.parse)
+      .then(function (p) { posts = p; postsAt = Date.now(); postsErr = ""; postsWait = null; updatePostsDot(); if (!$("tab-posts").hidden) renderPosts(); renderHomePosts(); return p; },
+            function (e) { postsWait = null; postsErr = errText(e); if (!$("tab-posts").hidden) renderPosts(); renderHomePosts(); return posts; });
+    return postsWait;
+  }
+  function updatePostsDot() {
+    var n = ((posts || {}).posts || []).filter(function (p) { return hoursSince(p.posted_at) <= 3 && !marks.removed["p:" + p.id] && !marks.applied["p:" + p.id]; }).length;
+    $("dot-posts").hidden = !n; $("dot-posts").textContent = n > 99 ? "99+" : n;
+  }
+  function postText(p) { return [p.author, p.headline, p.text, (p.locations || []).join(" "), (p.skills || []).join(" "), (p.emails || []).join(" ")].join(" ").toLowerCase(); }
+  function postRoleOk(p) { if (!PF.role) return true; var rx = P_ROLE_RX[PF.role]; return rx ? rx.test((p.roles || []).join(" ") + " " + (p.skills || []).join(" ") + " " + (p.text || "")) : true; }
+  function postExpOk(p) {
+    var e = p.exp || {};
+    if (PF.exp === "entry") return !!e.entry;
+    if (PF.exp === "le1") return (e.min != null && e.min <= 1 && (e.max == null || e.max <= 1)) || /\bfreshers?\b|entry[- ]level|new ?grad|0 years?|no experience/i.test(p.text || "");
+    if (PF.exp === "le2") return e.min != null && e.min <= 2;
+    if (PF.exp === "unstated") return e.min == null && !e.entry;
+    return true;
+  }
+  function postLocOk(p) {
+    if (!PF.loc) return true;
+    var l = (p.locations || []).join(" ") + " " + (p.text || "");
+    if (PF.loc === "India") return INDIA_CITY.test(l);
+    if (PF.loc === "Remote") return /remote|work from home|\bwfh\b/i.test(l);
+    if (PF.loc === "NCR") return /gurgaon|gurugram|noida|delhi|\bncr\b/i.test(l);
+    if (PF.loc === "abroad") return (p.locations || []).some(function (x) { return !INDIA_CITY.test(x) && !/remote|hybrid|onsite/i.test(x); });
+    return new RegExp(PF.loc.replace(/[.*+?^${}()|[\]\\]/g, "\\$&"), "i").test(l);
+  }
+  function postNeedOk(p) {
+    if (PF.need === "email") return (p.emails || []).length > 0;
+    if (PF.need === "link") return (p.links || []).length > 0;
+    if (PF.need === "salary") return !!p.salary;
+    if (PF.need === "batch") return (p.batch || []).length > 0;
+    return true;
+  }
+  function postsFiltered() {
+    var all = (posts || {}).posts || [], q = PF.q.trim().toLowerCase();
+    return all.filter(function (p) {
+      if (marks.removed["p:" + p.id] && !PF.showRemoved) return false;
+      if (hoursSince(p.posted_at) > PF.hours) return false;
+      if (q && postText(p).indexOf(q) < 0) return false;
+      return postRoleOk(p) && postExpOk(p) && postLocOk(p) && postNeedOk(p);
+    }).sort(function (a, b) {
+      var newer = String(b.posted_at || "").localeCompare(String(a.posted_at || ""));
+      if (PF.sort === "score") return (b.score || 0) - (a.score || 0) || newer;
+      if (PF.sort === "hot") return (b.reactions || 0) - (a.reactions || 0) || newer;
+      return newer;
+    });
+  }
+  function expLabel(p) { var e = p.exp || {}; if (e.text) return e.text; if (e.entry) return "freshers / entry level"; return "experience not stated"; }
+  function postCard(p) {
+    var mk = "p:" + p.id, seen = !!marks.applied[mk], t = [], e = p.exp || {};
+    (p.roles || []).slice(0, 3).forEach(function (r) { t.push(chip("acc", r)); });
+    t.push(chip(e.entry || (e.min != null && e.min <= 2) ? "ok" : "", expLabel(p)));
+    (p.locations || []).slice(0, 3).forEach(function (l) { t.push(chip("", l)); });
+    (p.batch || []).forEach(function (b) { t.push(chip("warn", b + " batch")); });
+    if (p.salary && p.salary.lpa) t.push(chip("ok", "₹ " + p.salary.lpa + " LPA"));
+    if (p.reactions) t.push(chip("", p.reactions + " reactions"));
+    var open = !!PF.open[p.id], text = p.text || "", contact = [];
+    (p.emails || []).forEach(function (m) { contact.push('<a href="mailto:' + esc(m) + '">✉ ' + esc(m) + "</a>"); });
+    (p.links || []).slice(0, 3).forEach(function (l) { contact.push(ext(l, "🔗 " + l.replace(/^https?:\/\/(www\.)?/, "").slice(0, 40))); });
+    var found = p.queries && p.queries.length ? ' · <span title="' + esc(p.queries.join(", ")) + '">' + p.queries.length + " search" + (p.queries.length > 1 ? "es" : "") + "</span>" : "";
+    return '<div class="job post' + (seen ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(p.author || "(someone)") + "</h3>" +
+      '<div class="sub">' + esc(p.headline || "") + (p.headline ? " · " : "") + esc(ago(p.posted_at)) + found + "</div>" +
+      '<div class="tags">' + t.join("") + "</div>" +
+      '<div class="ptext' + (open ? "" : " clip") + '" data-pmore="' + esc(p.id) + '">' + esc(text) + "</div>" +
+      (text.length > 400 ? '<a href="#" class="muted" data-pmore="' + esc(p.id) + '">' + (open ? "less" : "read all") + "</a>" : "") +
+      (contact.length ? '<div class="hint">' + contact.join(" · ") + "</div>" : "") +
+      '<div class="acts">' + openLink(p.url, p.link_kind === "post" ? "Open post" : "Author's posts", "btn", mk) +
+      (p.author_url ? ext(p.author_url, "Profile", "btn2") : "") + markBtns(mk, seen) + "</div></div>";
+  }
+  function renderPosts() {
+    var box = $("posts-body"), d = posts, h = "";
+    if (!d) {
+      box.innerHTML = '<div class="card">' + (postsErr && !/HTTP 404/.test(postsErr) ? '<div class="msg bad">' + esc(postsErr) + "</div>" :
+        '<div class="msg info">Nothing published yet. On the PC, run <code>Profile_Naukri_Screener-main\\scripts\\schedule_linkedin_posts.ps1</code> once (after <code>python main.py --linkedin-login</code>); the watcher then reads LinkedIn\'s hiring posts every 30 minutes while the PC is on.</div>') + "</div>";
+      return;
+    }
+    var pc = d.pc || {}, age = hoursSince(d.updated), list = postsFiltered(), all = d.posts || [];
+    h += '<div class="card"><div><b>' + all.length + " hiring post" + (all.length !== 1 ? "s" : "") + " for 0–2 yrs · last " + (d.window_hours || 12) + " h</b></div>" +
+      '<div class="muted">LinkedIn posts, read every ' + (d.every_minutes || 30) + " min on your PC" + (pc.host ? " (" + esc(pc.host) + ")" : "") + " · updated " + esc(ago(d.updated)) +
+      (pc.passes ? " · " + pc.passes + " passes" : "") + (d.seen_total ? " · " + d.seen_total + " posts read this week" : "") + "</div>" +
+      (pc.last_error ? '<div class="msg bad">' + esc(pc.last_error) + "</div>" : "") +
+      (age > 1.5 ? '<div class="msg warn">The PC\'s watcher has not reported for ' + (age < 48 ? Math.round(age) + " h" : Math.round(age / 24) + " days") + ". Is the PC on? The watcher restarts by itself at logon (task LinkedInPostsWatch).</div>" : "") +
+      '<details class="hint"><summary>Searches it runs</summary>' + esc((d.queries || []).join(" · ")) + "</details></div>";
+    var chips = function (attr, opts, cur) { return '<div class="chips small">' + opts.map(function (o) { return '<button type="button" data-' + attr + '="' + esc(o[0]) + '"' + (cur === o[0] ? ' class="on"' : "") + ">" + esc(o[1]) + "</button>"; }).join("") + "</div>"; };
+    var named = function (opts, v) { return (opts.filter(function (o) { return o[0] === v; })[0] || ["", ""])[1]; };
+    var inList = P_LOC.some(function (o) { return o[0] === PF.loc; });
+    var sum = [PF.hours + " h", PF.role ? named(P_ROLES, PF.role) : "any role", PF.exp ? named(P_EXP, PF.exp) : "", PF.loc ? (inList ? named(P_LOC, PF.loc) : PF.loc) : "anywhere",
+               PF.need ? named(P_NEED, PF.need) : "", PF.q ? '"' + PF.q + '"' : ""].filter(Boolean).join(" · ") + " · " + list.length + " shown";
+    h += acc("pf", "Filters", sum,
+      '<input id="pf-q" placeholder="search text, company, skill, email…" value="' + esc(PF.q) + '" autocapitalize="none" style="margin-top:10px">' +
+      "<label>Posted within</label>" + chips("ph", [["3", "3 h"], ["6", "6 h"], ["12", "12 h"]], String(PF.hours)) +
+      "<label>Role</label>" + chips("pr", P_ROLES, PF.role) +
+      "<label>Experience</label>" + chips("pe", P_EXP, PF.exp) +
+      "<label>Location</label>" + chips("pl", P_LOC, inList ? PF.loc : "") +
+      '<input id="pf-loc" placeholder="or type a city / country" value="' + esc(inList ? "" : PF.loc) + '" autocapitalize="none" style="margin-top:8px">' +
+      "<label>Must have</label>" + chips("pn", P_NEED, PF.need) +
+      "<label>Sort</label>" + sel("pf-sort", PF.sort, [["new", "newest first"], ["score", "best match"], ["hot", "most reactions"]]));
+    var shown = list.slice(0, PF.limit);
+    h += list.length ? '<div class="jobs">' + shown.map(postCard).join("") + "</div>"
+      : '<div class="card muted">No posts match these filters' + (all.length ? "." : " yet - the watcher adds them as they appear.") + "</div>";
+    if (list.length > PF.limit) h += '<button class="primary" id="pf-more">Show more (' + (list.length - PF.limit) + " left)</button>";
+    h += removedHint(all.filter(function (p) { return marks.removed["p:" + p.id]; }).length, PF.showRemoved);
+    var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top; bindAcc(box);
+    bindMarks(box, function (toggle) { if (toggle === true) PF.showRemoved = !PF.showRemoved; renderPosts(); updatePostsDot(); });
+    var set = function (k, v) { PF[k] = v; store.set("p." + k, String(v)); PF.limit = 40; renderPosts(); };
+    box.querySelectorAll("[data-ph]").forEach(function (b) { b.addEventListener("click", function () { set("hours", +b.dataset.ph); }); });
+    box.querySelectorAll("[data-pr]").forEach(function (b) { b.addEventListener("click", function () { set("role", b.dataset.pr); }); });
+    box.querySelectorAll("[data-pe]").forEach(function (b) { b.addEventListener("click", function () { set("exp", b.dataset.pe); }); });
+    box.querySelectorAll("[data-pl]").forEach(function (b) { b.addEventListener("click", function () { set("loc", b.dataset.pl); }); });
+    box.querySelectorAll("[data-pn]").forEach(function (b) { b.addEventListener("click", function () { set("need", b.dataset.pn); }); });
+    var typed = function (id, key) {   // re-render after a pause, keeping the cursor where it was
+      var tm; $(id).addEventListener("input", function () {
+        clearTimeout(tm); var v = $(id).value;
+        tm = setTimeout(function () { PF[key] = v.trim(); store.set("p." + key, v.trim()); PF.limit = 40; var pos = $(id).selectionStart; renderPosts(); var el = $(id); if (el) { el.focus(); try { el.setSelectionRange(pos, pos); } catch (e) {} } }, 350);
+      });
+    };
+    typed("pf-q", "q"); typed("pf-loc", "loc");
+    $("pf-sort").addEventListener("change", function () { set("sort", $("pf-sort").value); });
+    if ($("pf-more")) $("pf-more").addEventListener("click", function () { PF.limit += 40; renderPosts(); });
+    box.querySelectorAll("[data-pmore]").forEach(function (el) {
+      el.addEventListener("click", function (e) {
+        if (el.tagName === "A") e.preventDefault(); else if (!el.classList.contains("clip")) return;
+        PF.open[el.dataset.pmore] = !PF.open[el.dataset.pmore]; renderPosts();
+      });
+    });
+  }
+  function renderHomePosts() {
+    var box = $("home-posts"); if (!box) return;
+    if (!posts) { box.innerHTML = '<span class="muted">' + (postsErr ? "Not published yet - start the watcher on the PC (scripts\\schedule_linkedin_posts.ps1)." : "Loading…") + "</span>"; return; }
+    var all = (posts.posts || []).filter(function (p) { return !marks.removed["p:" + p.id]; }), fresh = all.filter(function (p) { return hoursSince(p.posted_at) <= 3; });
+    box.innerHTML = '<div class="muted"><span class="big">' + all.length + "</span> hiring posts for 0–2 yrs in the last " + (posts.window_hours || 12) + " h · " + fresh.length + " in the last 3 h · updated " + esc(ago(posts.updated)) + "</div>" +
+      all.slice(0, 3).map(function (p) {
+        return '<div class="item" style="cursor:default"><div class="t"><b>' + esc(p.author) + "</b><span>" + esc([((p.roles || [])[0] || ""), expLabel(p), ago(p.posted_at)].filter(Boolean).join(" · ")) + "</span></div>" +
+          openLink(p.url, "open ›", "ghost small", "p:" + p.id) + "</div>";
+      }).join("");
+  }
 
   // ---- Search: careers form (careers.yml)
   var CHOICES = ["*", "NL", "DE", "TH", "AE", "SG", "IE", "GB", "JP", "AU", "CA", "SE", "FI", "DK", "EE", "ES", "PT", "PL", "MY", "CH", "AT", "FR", "NZ", "US", "IN"];
@@ -2180,7 +2404,7 @@
     if (cc === "*") picked = []; else if (picked.indexOf(cc) >= 0) picked.splice(picked.indexOf(cc), 1); else picked.push(cc);
     store.set("c.countries", picked.length ? picked.join(",") : "*"); renderCountryPicker();
   });
-  ["role", "exp", "fit", "days", "companies", "more"].forEach(function (k) {
+  ["role", "exp", "fit", "days", "hours", "minsal", "companies", "more"].forEach(function (k) {
     var el = $("c-" + k); el.value = store.get("c." + k, el.value);
     var save = function () { store.set("c." + k, el.value); };
     el.addEventListener("input", save); el.addEventListener("change", save);
@@ -2205,26 +2429,48 @@
     var countries = picked.concat(more);
     var inputs = { role: role, experience: $("c-exp").value.trim(), countries: countries.length ? countries.join(",") : "worldwide",
                    relocation: $("c-reloc").checked ? ($("c-visa").checked ? "visa" : "strict") : "any",
-                   fit: $("c-fit").value, days: $("c-days").value.trim(), companies: $("c-companies").value.trim() };
+                   fit: $("c-fit").value, days: $("c-days").value.trim(), hours: $("c-hours").value.trim(),
+                   min_salary: $("c-minsal").value.trim() ? $("c-minsal").value.trim() + " LPA" : "", companies: $("c-companies").value.trim() };
     $("btn-careers").disabled = true; msg("careers-msg", "Starting…");
     gh("/actions/workflows/careers.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
       .then(function () { msg("careers-msg", "Started. About 15–25 minutes (the whole list, read in 4 parts); the result appears under Jobs → Career-page searches.", "ok"); setTimeout(function () { loadRuns("careers.yml", "c-runs"); }, 4000); })
       .catch(function (e) { msg("careers-msg", "Could not start: " + e.message, "bad"); })
       .then(function () { $("btn-careers").disabled = false; });
   });
-  var companiesLoaded = false;
+  // The company list as it is on the branch right now, and its fingerprint (the same sha1 of
+  // the sorted, lower-cased, unique names that careers_bot writes into every report as
+  // meta.list.sha), so a report made with an older list is marked instead of looking wrong.
+  var companiesLoaded = false, companiesFp = "", companiesCount = 0;
+  function sha1hex(text) {
+    if (!(window.crypto && crypto.subtle && window.TextEncoder)) return Promise.resolve("");
+    return crypto.subtle.digest("SHA-1", new TextEncoder().encode(text))
+      .then(function (buf) { return Array.prototype.map.call(new Uint8Array(buf), function (b) { return ("0" + b.toString(16)).slice(-2); }).join(""); })
+      .catch(function () { return ""; });
+  }
+  function companiesText() {
+    var s = settings();
+    // The GitHub API serves the file as it is this second; raw.githubusercontent.com may lag minutes behind an edit.
+    if (s.token) return fetch(API + "/repos/" + s.repo + "/contents/" + COMPANIES_PATH + "?ref=" + encodeURIComponent(s.ref),
+      { headers: { "Accept": "application/vnd.github.raw+json", "Authorization": "Bearer " + s.token, "X-GitHub-Api-Version": "2022-11-28" }, cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); });
+    return fetch("https://raw.githubusercontent.com/" + s.repo + "/" + s.ref + "/" + COMPANIES_PATH + "?t=" + Date.now(), { cache: "no-store" })
+      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); });
+  }
   function loadCompanies() {
     var s = settings();
     if (companiesLoaded || !s.repo) return;
-    fetch("https://raw.githubusercontent.com/" + s.repo + "/" + s.ref + "/" + COMPANIES_PATH, { cache: "no-store" })
-      .then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.text(); })
-      .then(function (txt) {
+    companiesLoaded = true;   // one load per page view; a failure below allows another try
+    companiesText().then(function (txt) {
         var names = txt.split("\n").map(function (l) { return l.trim(); }).filter(function (l) { return l && l.charAt(0) !== "#"; }).map(function (l) { return l.split("|")[0].trim(); }).filter(Boolean);
-        companiesLoaded = true;
-        $("c-list-sum").textContent = "Company list (" + names.length + ")";
-        $("c-list-body").innerHTML = '<div class="chips">' + names.map(function (n) { return '<button type="button" data-co="' + esc(n) + '">' + esc(n) + "</button>"; }).join("") + '</div><div class="hint">Tap a company to search only that one. ' +
-          ext("https://github.com/" + s.repo + "/edit/" + s.ref + "/" + COMPANIES_PATH, "Edit the list on GitHub") + " (one line per company; the file explains the format).</div>";
-      }).catch(function (e) { $("c-list-body").textContent = "Could not load the list: " + e.message; });
+        var uniq = {}; names.forEach(function (n) { uniq[n.toLowerCase()] = 1; });
+        var sorted = Object.keys(uniq).sort();
+        companiesCount = sorted.length;
+        sha1hex(sorted.join("\n")).then(function (hex) { companiesFp = hex.slice(0, 12); renderIndex(); if (CV && !$("c-box").hidden) renderCareers(); });
+        var shown = names.filter(function (n, i) { return names.indexOf(n) === i; });
+        $("c-list-sum").textContent = "Company list (" + sorted.length + ")";
+        $("c-list-body").innerHTML = '<div class="chips">' + shown.map(function (n) { return '<button type="button" data-co="' + esc(n) + '">' + esc(n) + "</button>"; }).join("") + '</div><div class="hint">Tap a company to search only that one. ' +
+          ext("https://github.com/" + s.repo + "/edit/" + s.ref + "/" + COMPANIES_PATH, "Edit the list on GitHub") + " (one line per company; the file explains the format). A report made before an edit keeps the old list's companies - it says \"older list\"; search again for the new one.</div>";
+      }).catch(function (e) { companiesLoaded = false; $("c-list-body").textContent = "Could not load the list: " + e.message; });
   }
   $("c-list-body").addEventListener("click", function (e) {
     var b = e.target.closest("button[data-co]"); if (!b) return;
@@ -2257,7 +2503,9 @@
   function expText(e) { if (e[1] === null || e[1] === undefined) return e[0] + "+ yrs"; return e[0] === e[1] ? e[0] + " yrs" : e[0] + "–" + e[1] + " yrs"; }
   function showCareers(title, data, item) {
     $("j-box").hidden = true; $("j-box").innerHTML = "";
-    CV = { data: data, item: item || null, country: "", reloc: "any", min: 0, sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false, keys: {} };
+    var mm = data.meta || {};
+    CV = { data: data, item: item || null, country: "", reloc: "any", min: 0, sal: "any", floorLpa: mm.min_salary_inr ? Math.round(mm.min_salary_inr / 10000) / 10 : 10,
+           sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false, keys: {} };
     (data.jobs || []).forEach(function (j) { var k = jobKey({ url: j.url }); j._qk = k.key; });
     $("v-title").textContent = title; $("v-right").innerHTML = "";
     $("v-box").hidden = true; $("c-box").hidden = false;
@@ -2285,6 +2533,9 @@
       if (CV.reloc === "yes" && j.reloc !== "yes") return false;
       if (CV.reloc === "visa" && j.reloc !== "yes" && j.reloc !== "visa") return false;
       if (CV.min && !(j.score >= CV.min)) return false;
+      if (CV.sal === "stated" && !j.salary_stated) return false;
+      if (CV.sal === "unstated" && j.salary_stated) return false;
+      if (CV.sal === "floor" && !(j.salary_stated && (j.salary_lpa || 0) >= CV.floorLpa)) return false;
       if (withCountry && CV.country) { var cs = j.countries && j.countries.length ? j.countries : ["??"]; if (cs.indexOf(CV.country) < 0) return false; }
       return true;
     });
@@ -2310,17 +2561,24 @@
     var all = d.jobs || [], nReloc = all.filter(function (j) { return j.reloc === "yes"; }).length;
     var dropped = Object.keys(m.dropped || {}).map(function (k) { return m.dropped[k] + " " + k; }).join(", ");
     var asked = [(m.roles || []).join(", "), m.experience ? m.experience + " yrs" : "", (m.countries || []).indexOf("*") >= 0 ? "worldwide" : (m.countries || []).join(", "),
-                 { strict: "relocation only", visa: "relocation or visa", any: "" }[m.relocation] || ""].filter(Boolean).join(" · ");
+                 { strict: "relocation only", visa: "relocation or visa", any: "" }[m.relocation] || "",
+                 m.hours ? "posted within " + m.hours + " h" : (m.days ? "last " + m.days + " day" + (m.days === 1 ? "" : "s") : ""),
+                 m.min_salary_inr ? "pays ≥ " + (Math.round(m.min_salary_inr / 10000) / 10) + " LPA" : ""].filter(Boolean).join(" · ");
+    var lst = m.list || {}, stale = !!(lst.sha && companiesFp && lst.sha !== companiesFp);
     var ccBtn = function (cc, label) { return '<button type="button" data-cc="' + esc(cc) + '"' + (CV.country === cc ? ' class="on"' : "") + ">" + esc(label) + "</button>"; };
     var h = '<div class="card"><div><b>' + esc(asked) + "</b></div>" +
       '<div class="muted">' + esc((m.companies_ok || 0) + "/" + (m.companies || 0) + " career pages read" + (m.companies_link_only ? " · " + m.companies_link_only + " link only" : "") + " · " + (m.role_matches || 0) + " postings match the role · " + all.length + " kept · " + nReloc + " offer relocation" + (dropped ? " · left out: " + dropped : "") + " · " + (m.generated || "")) + "</div>" +
+      (stale ? '<div class="msg warn">Made with an <b>older company list</b> (' + (lst.count || "?") + " companies then, " + companiesCount + ' now), so it still shows companies you have since removed. <a href="#" id="c-rerun">Search again with the current list</a></div>'
+             : (lst.sha && companiesFp ? '<div class="hint">Made with the current company list (' + (lst.count || companiesCount) + " companies).</div>" : "")) +
       (m.scored ? "" : '<div class="msg info">No resume match scores: store your resume with setup_phone.bat (RESUME_TEXT secret) and search again.</div>') +
       acc("crf-cc", "Country", CV.country ? cname(CV.country) : "All countries",
         '<div class="chips small" style="margin-top:10px">' + ccBtn("", "All · " + base.length) + rank.map(function (r) { return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n); }).join("") + "</div>" +
         '<div class="hint">Ordered by best chance of getting hired first.</div>', "sub") +
-      acc("crf-opts", "Relocation · sort · match", [CV.reloc, CV.sort, CV.min ? CV.min + "%+" : "any match", CV.view].join(" · "),
+      acc("crf-opts", "Relocation · pay · sort · match", [CV.reloc, CV.sal === "any" ? "" : { floor: "pay ≥ " + CV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated" }[CV.sal], CV.sort, CV.min ? CV.min + "%+" : "any match", CV.view].filter(Boolean).join(" · "),
         '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) + '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
-        '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div>", "sub") +
+        '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div>" +
+        '<div class="row"><div><label>Pay</label>' + sel("cf-sal", CV.sal, [["any", "any"], ["floor", "stated ≥ " + CV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div></div>" +
+        '<div class="hint">Pay is read from the posting\'s text (LPA, ₹, $, €...). Postings that state less than the floor were already left out of this report; the rest either state a figure or say nothing.</div>', "sub") +
       (CV.view === "jobs" && CV.item ? '<button class="primary" id="cq-all"' + (toQueue.length ? "" : " disabled") + ">Queue all shown (" + toQueue.length + ")</button>" +
         '<div class="hint">Your PC opens each career page, fills the form from your details and submits it; ones behind a login or CAPTCHA are marked "by hand" under Queue.</div>' : "") + "</div>";
     if (CV.view === "companies") h += companiesHtml(jobs);
@@ -2334,6 +2592,22 @@
     }
     box.innerHTML = h; box.scrollTop = top; bindAcc(box);
     bindMarks(box, function (toggle) { if (toggle === true) CV.showRemoved = !CV.showRemoved; renderCareers(); });
+    var rerun = $("c-rerun");
+    if (rerun) rerun.addEventListener("click", function (e) { e.preventDefault(); prefillCareers(m); });
+  }
+  // Fill the careers form from a report's own settings and go there: the way to redo a search
+  // after the company list changed.
+  function prefillCareers(m) {
+    var setv = function (id, key, v) { $(id).value = v; store.set("c." + key, v); };
+    setv("c-role", "role", (m.roles || []).join(", ")); setv("c-exp", "exp", m.experience || ""); setv("c-fit", "fit", m.fit || "default");
+    setv("c-days", "days", m.days ? String(m.days) : ""); setv("c-hours", "hours", m.hours ? String(m.hours) : "");
+    setv("c-minsal", "minsal", m.min_salary_inr ? String(Math.round(m.min_salary_inr / 10000) / 10) : "");
+    store.set("c.countries", (m.countries || []).indexOf("*") >= 0 || !(m.countries || []).length ? "*" : m.countries.join(",")); renderCountryPicker();
+    $("c-reloc").checked = m.relocation === "strict" || m.relocation === "visa"; $("c-visa").checked = m.relocation === "visa"; $("c-visa").disabled = !$("c-reloc").checked;
+    store.set("c.reloc", $("c-reloc").checked ? "1" : ""); store.set("c.visa", $("c-visa").checked ? "1" : "");
+    var pushed = history.state && history.state.viewer; closeViewer(); if (pushed) history.back();
+    showTab("search"); $("s-seg").querySelector('[data-s="careers"]').click();
+    toast("Form filled from that report - tap Search career pages.");
   }
   // The "why it fits / gap" line the local model wrote for the top jobs (careers_bot summarize_top).
   function aiLine(j) {
@@ -2349,10 +2623,11 @@
     t.push(chip(j.chance >= 65 ? "ok" : j.chance >= 45 ? "warn" : "", "chance " + j.chance));
     if (typeof j.score === "number") t.push(chip(j.score >= 55 ? "ok" : j.score >= 35 ? "warn" : "bad", "match " + Math.round(j.score) + "%"));
     t.push(chip(R[0], R[1])); t.push(chip(F[0], F[1] + (j.exp && j.exp[0] !== null && j.exp[0] !== undefined ? " · asks " + expText(j.exp) : "")));
+    if (j.salary_lpa) t.push(chip("ok", "₹ " + j.salary_lpa + " LPA")); else if (j.salary) t.push(chip("", j.salary.slice(0, 40)));
     var flags = (j.countries || []).map(flag).join(" "), skills = "";
     if (j.matched && j.matched.length) skills += '<div class="hint">✓ ' + esc(j.matched.join(", ")) + "</div>";
     if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
-    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted ? " · " + esc(ago(j.posted)) : "") + "</div>" +
+    return '<div class="job' + (applied ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(j.title) + '</h3><div class="sub">' + esc(j.company) + " · " + flags + " " + esc(j.location || "location not stated") + (j.posted_at || j.posted ? " · " + esc(ago(j.posted_at || j.posted)) + (j.posted_at ? "" : " (date only)") : " · posting time not stated") + "</div>" +
       '<div class="tags">' + t.join("") + "</div>" + (j.evidence ? '<div class="ev">' + esc(j.evidence) + "</div>" : "") + aiLine(j) + skills +
       // with the PC applying ("+ Queue" or a status), opening it is no longer the main action
       '<div class="acts">' + (applied || q || qBtn ? openLink(j.url, "Open", "btn2", mk) : openLink(j.url, "Open & apply", "btn", mk)) + '<a href="#" class="btn2" data-contacts="' + esc(j.id) + '">' + (CV.open[j.id] ? "Hide contacts" : "Contacts") + "</a>" + qBtn + markBtns(mk, applied) + "</div>" +
@@ -2404,7 +2679,8 @@
     if (!CV) return;
     var id = e.target.id;
     if (id === "cf-reloc") CV.reloc = e.target.value; else if (id === "cf-sort") CV.sort = e.target.value;
-    else if (id === "cf-min") CV.min = +e.target.value; else if (id === "cf-view") CV.view = e.target.value; else return;
+    else if (id === "cf-min") CV.min = +e.target.value; else if (id === "cf-view") CV.view = e.target.value;
+    else if (id === "cf-sal") CV.sal = e.target.value; else return;
     CV.limit = 60; renderCareers();
   });
 
@@ -2421,7 +2697,7 @@
     if (!$("tab-queue").hidden && !typing("tab-queue")) renderQueue();
     if (!$("tab-home").hidden && !typing("tab-home")) renderHome();
   }
-  setInterval(function () { if (document.hidden) return; loadQueue(true).then(refreshVisible); }, 120000);
+  setInterval(function () { if (document.hidden) return; loadQueue(true).then(refreshVisible); if (!$("tab-posts").hidden || !$("tab-home").hidden) loadPosts(true); }, 120000);
   document.addEventListener("visibilitychange", function () { if (!document.hidden) loadQueue(true).then(refreshVisible); });
 })();
 </script>

@@ -15,6 +15,8 @@ Inputs come from the environment (set by .github/workflows/careers.yml):
     INPUT_RELOCATION  strict | visa | any                     (optional)
     INPUT_FIT         default | strict | all                  (optional)
     INPUT_DAYS        "30"                                    (optional; all open postings when empty)
+    INPUT_HOURS       "24"                                    (optional; wins over days, exact where the board gives a time)
+    INPUT_MIN_SALARY  "10 LPA"                                (optional; postings that state less are dropped)
     INPUT_COMPANIES   "agoda, adyen"                          (optional; whole list when empty)
     SHARD             "2/4"                                   (search: which part of the list)
     CAREERS_PARTS     folder the parts are written to / merged from (default $RUNNER_TEMP/parts)
@@ -89,6 +91,10 @@ def search():
             "--max-minutes", env("INPUT_MAX_MINUTES", "65")]
     if shard:
         argv += ["--shard", shard]
+    if env("INPUT_HOURS"):
+        argv += ["--hours", env("INPUT_HOURS")]          # wins over days; exact where the board gives a time
+    if env("INPUT_MIN_SALARY"):
+        argv += ["--min-salary", env("INPUT_MIN_SALARY")]
     if env("INPUT_EXPERIENCE"):
         argv += ["--experience", env("INPUT_EXPERIENCE")]
     if env("INPUT_COMPANIES"):
@@ -128,7 +134,13 @@ def publish():
                          "--meta", "relocation=%s" % summary.get("relocation", ""),
                          "--meta", "countries=%s" % countries,
                          "--meta", "experience=%s" % env("INPUT_EXPERIENCE"),
-                         "--meta", "reloc_mode=%s" % env("INPUT_RELOCATION", "any")], check=True)
+                         "--meta", "reloc_mode=%s" % env("INPUT_RELOCATION", "any"),
+                         "--meta", "days=%s" % env("INPUT_DAYS"),
+                         "--meta", "hours=%s" % env("INPUT_HOURS"),
+                         "--meta", "min_salary=%s" % env("INPUT_MIN_SALARY"),
+                         # which company list this report came from; the phone marks reports made with an older one
+                         "--meta", "list_sha=%s" % summary.get("list_sha", ""),
+                         "--meta", "list_count=%s" % summary.get("list_count", "")], check=True)
     subprocess.run(py + [os.path.join(HERE, "pages_git.py"), "push", pages,
                          "careers search: %s (%s)" % (title, countries)], check=True)
     print("done: %s jobs (%s with relocation) from %s companies published for %s"

@@ -1,6 +1,7 @@
 """LinkedIn public (guest) job search - no login needed, ~10 cards per page."""
 import re
 
+from ..config import REMOTE
 from ..textutil import clean_company, clean_title, parse_date, soup, html_to_text, normalize_ws
 from .base import Source
 
@@ -13,9 +14,25 @@ class LinkedIn(Source):
     name = "LinkedIn"
     homepage = "https://www.linkedin.com/jobs/"
 
+    def search_worldwide(self, ctx):
+        """One global pass: LinkedIn's "Worldwide" location, newest first. Each card gets the
+        country its location names (jobbot.config.countries_in_text), else "??"."""
+        from ..config import countries_in_text
+        jobs = self._search(ctx, "Worldwide", "??")
+        for j in jobs:
+            hit = countries_in_text(j.location)
+            if hit:
+                j.country = hit[0]
+            elif j.remote:
+                j.country = REMOTE
+        return jobs
+
     def search(self, ctx, country):
         meta = ctx.country_meta(country)
         location = meta.get("linkedin") or meta.get("name") or country
+        return self._search(ctx, location, country)
+
+    def _search(self, ctx, location, country):
         codes = ctx.linkedin_codes()
         out, seen = [], set()
         for kw in ctx.keywords():

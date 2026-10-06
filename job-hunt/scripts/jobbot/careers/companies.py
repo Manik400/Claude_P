@@ -159,6 +159,19 @@ class _CompanyList(list):
     skipped = ()
 
 
+def fingerprint(companies):
+    """A short id of WHICH companies are in the list - names only, order-free.
+
+    Every careers report carries it, and the phone computes the same from the list it
+    shows (sha1 of the sorted, lower-cased, unique names joined by newlines, first 12 hex
+    digits), so a report made with an older list is marked as such instead of looking
+    like the list is wrong.
+    """
+    import hashlib
+    names = sorted({(c.name or "").strip().lower() for c in companies if (c.name or "").strip()})
+    return {"sha": hashlib.sha1("\n".join(names).encode("utf-8")).hexdigest()[:12], "count": len(names)}
+
+
 def select(companies, names_text):
     """Keep companies whose name or board contains any of the comma-separated terms (empty = all)."""
     terms = [t.strip().lower() for t in (names_text or "").split(",") if t.strip()]

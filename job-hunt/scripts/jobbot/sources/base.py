@@ -13,17 +13,24 @@ class SearchContext:
 
     def __init__(self, roles, countries, user_years=None, days=30, max_per_source=60, http=None, log=None,
                  exclude_terms=None, must_terms=None, loose=False, hours=None, allow_undated=None,
-                 min_relevance=0.4):
+                 min_relevance=0.4, min_salary_inr=None, worldwide=False, strict_undated=False):
         self.roles = [r.strip() for r in roles if r and r.strip()]
         self.countries = countries
         self.user_years = user_years
         self.days = days
-        # `hours` wins over `days` when set. Under a day, a posting with no time
-        # on it cannot be shown to be inside the window, so it is dropped unless
-        # allow_undated says otherwise - that is what makes "last 2 hours" mean
-        # what it says.
+        # `hours` wins over `days` when set. A posting the board gave no time for is
+        # not thrown out on that alone any more: its own page is read for a date
+        # (jobbot.dates.verify) and only a posting shown to be older than the window
+        # is dropped. One still undated after that is kept and marked, unless
+        # strict_undated (the old "last 2 hours means it or nothing" behaviour).
         self.hours = hours or None
-        self.allow_undated = (self.hours is None) if allow_undated is None else bool(allow_undated)
+        self.strict_undated = bool(strict_undated)
+        self.allow_undated = (not self.strict_undated) if allow_undated is None else bool(allow_undated)
+        # Rupees a year a posting must say it pays (None = no floor). A posting that
+        # states no salary is kept and marked salary_stated: false.
+        self.min_salary_inr = int(min_salary_inr) if min_salary_inr else None
+        # The whole world: every country this bot knows plus a global LinkedIn pass.
+        self.worldwide = bool(worldwide)
         self.max_per_source = max_per_source
         self.http = http
         self.log = log or (lambda *a, **k: None)

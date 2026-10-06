@@ -44,7 +44,7 @@ from jobbot.models import Job  # noqa: E402
 from jobbot.render import render  # noqa: E402
 from jobbot.resume import ResumeError, extract_text  # noqa: E402
 from jobbot.scoring import score_jobs  # noqa: E402
-from jobbot.search import apply_fit_filter, run_search, sort_jobs  # noqa: E402
+from jobbot.search import apply_fit_filter, run_search, salary_filter, sort_jobs  # noqa: E402
 from jobbot.sources import ALL_SOURCES, BY_KEY, select_sources  # noqa: E402
 from jobbot.sources.base import SearchContext  # noqa: E402
 from jobbot.textutil import slugify  # noqa: E402
@@ -65,9 +65,21 @@ class Logger:
                 f.write(line + "\n")
 
 
+WORLD_WORDS = {"worldwide", "world", "everywhere", "all", "all countries", "*", "global", "whole world"}
+
+
+def is_worldwide(text):
+    """Did the countries input ask for the whole world?"""
+    return any(part.strip().lower() in WORLD_WORDS for part in (text or "").replace(";", ",").split(","))
+
+
 def parse_countries(text):
     if not text:
         return list(DEFAULT_COUNTRIES)
+    if is_worldwide(text):
+        # every country this bot knows, India first (the rest of the world comes through the
+        # remote boards and LinkedIn's global pass, see SearchContext.worldwide)
+        return ["IN"] + [c for c in COUNTRIES if c != "IN"]
     out, unknown = [], []
     for part in text.replace(";", ",").split(","):
         p = part.strip()
@@ -145,6 +157,18 @@ def summary(meta, jobs, statuses, report, log):
 
 
 # ----------------------------------------------------------------------------- commands
+def salary_floor(args):
+    """--min-salary as rupees a year, or None. "10 LPA", "10", "12 lakh", "$30k" and 1000000 all work."""
+    from jobbot import salary as salary_mod
+    raw = getattr(args, "min_salary", None)
+    if raw in (None, ""):
+        return None
+    floor = salary_mod.parse_floor(str(raw))
+    if floor is None:
+        raise SystemExit(f'--min-salary: cannot read "{raw}" (try "10 LPA", "12 lakh" or 1000000)')
+    return floor
+
+
 def build_context(args, log, countries):
     user_years = parse_user_experience(args.experience)
     http = Http(log=log, min_interval=args.interval)
@@ -155,6 +179,8 @@ def build_context(args, log, countries):
         exclude_terms=[t.strip() for t in (args.exclude or "").split(",") if t.strip()],
         must_terms=[t.strip() for t in (args.must or "").split(",") if t.strip()],
         loose=args.loose, min_relevance=getattr(args, "min_relevance", 0.4),
+        min_salary_inr=salary_floor(args), worldwide=is_worldwide(getattr(args, "countries", None)),
+        strict_undated=bool(getattr(args, "strict_undated", False)),
     )
     return ctx, user_years
 
@@ -210,13 +236,27 @@ def do_search(args, run_dir, log):
     if asked_off:
         log(f"platforms picked but not set up (missing API key): {', '.join(asked_off)}")
     window = (f"{ctx.hours:g} hour(s)" if ctx.hours else (f"{ctx.days} day(s)" if ctx.days else "any age"))
-    log(f"job_bot v{__version__} | roles={ctx.roles} | experience={args.experience} ({user_years}) | countries={countries}")
-    log(f"posted within: {window}" + ("" if ctx.allow_undated else " (postings with no time on them are dropped)"))
+    log(f"job_bot v{__version__} | roles={ctx.roles} | experience={args.experience} ({user_years}) | "
+        f"countries={'worldwide (' + str(len(countries)) + ')' if ctx.worldwide else countries}")
+    log(f"posted within: {window}" + ("" if not ctx.window_hours else
+        (" (undated postings: page read for a date, then dropped)" if not ctx.allow_undated
+         else " (undated postings: page read for a date; still undated ones are kept and marked)")))
+    if ctx.min_salary_inr:
+        from jobbot import salary as salary_mod
+        log(f"salary floor: {salary_mod.label(ctx.min_salary_inr)} a year (postings that state less are dropped; unstated ones are kept and marked)")
     log(f"sources: {', '.join(s.key for s in sources)}" + (f" | keyed sources skipped (no API key): {', '.join(skipped)}" if skipped else ""))
     t0 = time.time()
-    jobs, statuses = run_search(ctx, sources, log=log, workers=args.workers)
+    jobs, statuses = run_search(ctx, sources, log=log, workers=args.workers, max_minutes=getattr(args, "max_minutes", 0) or 0)
     if args.details:
         fetch_details(ctx, jobs, BY_KEY, limit=args.details, log=log)
+    # The window, made honest: postings the board never timed get their own page read for a
+    # date; the ones shown to be older than the window go, the rest stay (marked when still undated).
+    dates_checked = dates_dropped = 0
+    verify_n = getattr(args, "verify_dates", 0) or 0
+    if ctx.window_hours and verify_n:
+        from jobbot import dates
+        jobs, dates_dropped, dates_checked = dates.verify(ctx, jobs, limit=verify_n, log=log)
+    jobs, salary_dropped = salary_filter(ctx, jobs, log=log)
     before = len(jobs)
     jobs = apply_fit_filter(jobs, args.fit)
     if before != len(jobs):
@@ -226,8 +266,10 @@ def do_search(args, run_dir, log):
     meta = {
         "run_id": os.path.basename(run_dir), "version": __version__,
         "roles": ctx.roles, "experience_label": args.experience or "", "experience_years": user_years,
-        "countries": [c for c in countries if c != REMOTE], "remote": not args.no_remote,
+        "countries": [c for c in countries if c != REMOTE], "remote": not args.no_remote, "worldwide": ctx.worldwide,
         "days": args.days, "hours": ctx.hours, "window_hours": ctx.window_hours,
+        "strict_undated": ctx.strict_undated, "dates_checked": dates_checked, "dates_dropped": dates_dropped,
+        "min_salary_inr": ctx.min_salary_inr, "salary_dropped": salary_dropped,
         "platforms": [s.key for s in sources], "platforms_asked": include,
         "fit_mode": args.fit, "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "seconds": round(time.time() - t0, 1), "requests": ctx.http.requests_made,
@@ -511,14 +553,25 @@ def cmd_selftest(args):
 def add_search_args(p):
     p.add_argument("--role", "-r", action="append", help="job title / role to search (repeatable)")
     p.add_argument("--experience", "-e", help="your years of experience, e.g. 3 or 2-4")
-    p.add_argument("--countries", "-c", help="comma list of countries (names or ISO2). Default: " + ",".join(DEFAULT_COUNTRIES))
+    p.add_argument("--countries", "-c", help="comma list of countries (names or ISO2), or `worldwide` for every country "
+                                             "this bot knows plus a global LinkedIn pass. Default: " + ",".join(DEFAULT_COUNTRIES))
     p.add_argument("--days", type=int, default=DEFAULT_DAYS, help="ignore postings older than N days (0 = no limit)")
     p.add_argument("--hours", type=float, default=None, metavar="N",
                    help="ignore postings older than N hours - wins over --days. Under 24 h, a posting the "
                         "board gave no time for is dropped (it cannot be shown to be inside the window); "
                         "--allow-undated keeps those")
     p.add_argument("--allow-undated", action="store_true", dest="allow_undated",
-                   help="with --hours: keep postings whose exact time the board never said")
+                   help="(the default) keep postings whose exact time the board never said - their own page is read "
+                        "for a date first, and only ones shown to be older than the window are dropped")
+    p.add_argument("--strict-undated", action="store_true", dest="strict_undated",
+                   help="drop postings whose time is still unknown after their page was read")
+    p.add_argument("--verify-dates", type=int, default=80, dest="verify_dates", metavar="N",
+                   help="read up to N posting pages for a date when the board gave none or only a day (0 = off)")
+    p.add_argument("--min-salary", dest="min_salary", metavar="X",
+                   help='keep only postings that state at least this a year - "10 LPA", "12 lakh", "$30k" or 1000000; '
+                        "postings with no stated pay are kept and marked")
+    p.add_argument("--max-minutes", type=float, default=0, dest="max_minutes", metavar="N",
+                   help="stop starting new source/country searches after N minutes and report what was read (0 = no limit)")
     p.add_argument("--max-per-source", type=int, default=DEFAULT_MAX_PER_SOURCE, help="cap per source per country")
     p.add_argument("--details", type=int, default=DEFAULT_DETAILS, help="fetch full descriptions for the top N jobs (0 = off)")
     p.add_argument("--sources", "--platforms", dest="sources",

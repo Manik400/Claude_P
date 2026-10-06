@@ -459,6 +459,23 @@ output goes to `logs\scheduled.log`. The tasks are still registered as "run
 only when the user is logged on", because the off-screen fallback (used only
 if Naukri refuses the headless browser) needs a desktop session.
 
+## LinkedIn hiring posts (the phone's Posts tab)
+
+    python -m naukri.jobs.linkedin_posts --once            one pass over the queries, then publish
+    python -m naukri.jobs.linkedin_posts --loop            the same every 30 min, for as long as the PC is on
+    powershell -ExecutionPolicy Bypass -File scripts\schedule_linkedin_posts.ps1    run it at logon, restart it if it stops
+
+Reads LinkedIn's *post* search ("hiring software engineer", "hiring SDE", "hiring freshers software", "hiring 2025
+batch"... - `QUERIES` in `naukri/jobs/linkedin_posts.py`, or one per line in `data/posts/queries.txt`) on the saved
+session, newest first, last 24 h, eight queries a pass, one result page each. Each post is read for who wrote it, when
+(exact where LinkedIn says), what it says, its emails, links, skills, locations, batch years and pay; the hiring posts
+for 0-2 years (freshers / entry level / "0-2 yrs" / a recent batch / junior, or nothing said about seniority - job
+seekers' own "open to work" posts are dropped) from the last 12 hours go to the phone site as
+`data/posts/linkedin_posts.json`, written through the GitHub API so it never collides with the queue run. Each post's own
+link comes from its menu's "Copy link to post" (read from the clipboard); when that fails the post links to the author's
+posts page. Local store: `data/posts/linkedin_posts.json` (a week). Log: `logs/linkedin_posts.log`. It only reads
+LinkedIn - nothing is liked, commented on, followed or messaged - at about 16 page loads an hour.
+
 ## Keeping the profile fresh
 
 ```powershell

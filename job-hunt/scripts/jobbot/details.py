@@ -12,6 +12,15 @@ def generic_details(ctx, job):
     if r.status_code != 200 or "html" not in r.headers.get("content-type", ""):
         return None
     html = r.text
+    # The page usually knows when the job went up, even when the board's card did not say.
+    if not job.posted_at:
+        from .dates import from_html
+        d, at, how = from_html(html)
+        if d and (not job.posted or at):
+            job.posted = job.posted or d
+            if at:
+                job.posted_at = at
+            job.extra["posted_source"] = "page:" + how
     for m in re.finditer(r'<script[^>]*type="application/ld\+json"[^>]*>(.*?)</script>', html, re.S):
         try:
             data = json.loads(m.group(1).strip())

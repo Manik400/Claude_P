@@ -39,6 +39,14 @@ on:
         description: "Only postings from the last N days (empty = all open postings)"
         required: false
         default: ""
+      hours:
+        description: "Only postings from the last N hours (wins over days; exact where the board gives a time, a posting with only a date or none is kept and marked)"
+        required: false
+        default: ""
+      min_salary:
+        description: "Only postings whose text states at least this a year, e.g. 10 LPA (postings that state no pay are kept and marked; empty = no floor)"
+        required: false
+        default: ""
       companies:
         description: "Only these companies (comma list, empty = whole list)"
         required: false
@@ -110,6 +118,8 @@ jobs:
           INPUT_RELOCATION: ${{ inputs.relocation }}
           INPUT_FIT: ${{ inputs.fit }}
           INPUT_DAYS: ${{ inputs.days }}
+          INPUT_HOURS: ${{ inputs.hours }}
+          INPUT_MIN_SALARY: ${{ inputs.min_salary }}
           INPUT_COMPANIES: ${{ inputs.companies }}
           RESUME_TEXT: ${{ secrets.RESUME_TEXT }}
           # Local model settings (repo variables; see job-hunt/README.md)
@@ -156,6 +166,9 @@ jobs:
           INPUT_EXPERIENCE: ${{ inputs.experience }}
           INPUT_COUNTRIES: ${{ inputs.countries }}
           INPUT_RELOCATION: ${{ inputs.relocation }}
+          INPUT_DAYS: ${{ inputs.days }}
+          INPUT_HOURS: ${{ inputs.hours }}
+          INPUT_MIN_SALARY: ${{ inputs.min_salary }}
           CAREERS_PARTS: ${{ runner.temp }}/parts
           PAGES_REPO_URL: https://x-access-token:${{ github.token }}@github.com/${{ github.repository }}.git
         run: python site/tools/run_careers.py publish

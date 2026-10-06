@@ -6,8 +6,9 @@ Inputs come from the environment (set by .github/workflows/jobhunt.yml):
     INPUT_COUNTRIES   "DE,NL,India"                           (optional; bot default when empty)
     INPUT_DAYS        "14"                                    (optional)
     INPUT_HOURS       "2" or "0.5"                            (optional; wins over INPUT_DAYS)
-    INPUT_ALLOW_UNDATED "true"                                (optional; with INPUT_HOURS, keep postings
-                                                               whose exact time the board never stated)
+    INPUT_ALLOW_UNDATED "true"                                (optional; "false" drops postings whose time is
+                                                               still unknown after their page was read)
+    INPUT_MIN_SALARY  "10 LPA"                                (optional; postings that state less are dropped)
     INPUT_PLATFORMS   "linkedin,seek,The Muse"                (optional; empty = every platform set up)
     INPUT_FIT         default | strict | all                  (optional)
     INPUT_EXTRA       any extra job_bot flags                 (optional)
@@ -48,8 +49,14 @@ def main():
         argv += ["--days", env("INPUT_DAYS")]
     if env("INPUT_HOURS"):
         argv += ["--hours", env("INPUT_HOURS")]
-    if env("INPUT_ALLOW_UNDATED").lower() in ("1", "true", "yes", "on"):
-        argv += ["--allow-undated"]
+    # Undated postings: their page is read for a date either way; "false" drops the ones still undated.
+    if env("INPUT_ALLOW_UNDATED").lower() in ("0", "false", "no", "off"):
+        argv += ["--strict-undated"]
+    if env("INPUT_MIN_SALARY"):
+        argv += ["--min-salary", env("INPUT_MIN_SALARY")]
+    # The job is killed at 60 min (jobhunt.yml) and a killed run publishes nothing: stop starting
+    # new source/country pairs well before that and publish what was read.
+    argv += ["--max-minutes", env("INPUT_MAX_MINUTES", "40")]
     if env("INPUT_PLATFORMS"):
         argv += ["--sources", env("INPUT_PLATFORMS")]
     if env("INPUT_FIT"):
@@ -121,7 +128,10 @@ def main():
                          "--meta", "hours=%s" % (meta_num("hours") or env("INPUT_HOURS")),
                          "--meta", "window_hours=%s" % meta_num("window_hours"),
                          "--meta", "platforms_asked=%s" % meta_list("platforms_asked", env("INPUT_PLATFORMS")),
-                         "--meta", "platforms=%s" % meta_list("platforms")], check=True)
+                         "--meta", "platforms=%s" % meta_list("platforms"),
+                         "--meta", "min_salary=%s" % env("INPUT_MIN_SALARY"),
+                         "--meta", "worldwide=%s" % ("1" if run_meta.get("worldwide") else ""),
+                         "--meta", "dates_checked=%s" % meta_num("dates_checked")], check=True)
     subprocess.run(py + [os.path.join(HERE, "pages_git.py"), "push", pages,
                          "job-hunt report: %s (%s)" % (title, countries)], check=True)
     print("done: %s jobs published for %s" % (summary.get("jobs", "?"), title))

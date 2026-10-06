@@ -33,6 +33,22 @@ Platforms chips) still override the file for a single run.
 
 API keys for the keyed platforms go in `.env` (see `.env.example` in the repo root), never in these files.
 
+## Pay floor, the honest window, the whole world
+
+* `--min-salary "10 LPA"` (also `12 lakh`, `$30k`, `1000000`) keeps only postings that state at least that a year.
+  Pay is read from the posting's own pay field, else its text (LPA / lakh / Rs / $ / EUR / GBP / per month / per hour, see
+  `jobbot/salary.py`; fixed rates, `JOBHUNT_FX_JSON` overrides them). A posting that states no pay is **kept** and
+  marked `salary_stated: false` - nobody knows what it pays - and the phone can filter those in or out.
+* A window in hours or days is checked against the exact time where the board gave one. A posting with only a date, or
+  none, has its own page read for a date (`jobbot/dates.py`: JSON-LD `datePosted`, meta tags, "Posted 3 days ago";
+  `--verify-dates N` pages, default 80); one shown to be older than the window is dropped, one still undated is kept and
+  marked `posted_checked`. `--strict-undated` drops the still-undated ones (the old rule under a day).
+* `--countries worldwide` searches every country the bot knows plus a global LinkedIn pass; `--max-minutes N` stops
+  starting new source/country pairs after N minutes, so a long run still publishes what it read.
+
+The careers bot takes the same `--hours` and `--min-salary`, and every careers report carries the fingerprint of the
+company list it was made from (`meta.list`), which the phone compares with the list on the branch.
+
 ## Applying (LinkedIn Easy Apply)
 The report's Apply buttons open each posting. LinkedIn postings can also be applied to for you:
 

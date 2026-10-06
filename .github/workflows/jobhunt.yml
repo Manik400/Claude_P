@@ -17,7 +17,7 @@ on:
         required: false
         default: ""
       countries:
-        description: "Countries (names or ISO2), comma-separated, e.g. IN,DE,NL. India (IN) is always added. Empty = IN,DE,NL,ES,FI,AU,JP,TH + Remote"
+        description: "Countries (names or ISO2), comma-separated, e.g. IN,DE,NL - or `worldwide` for every country the bot knows plus a global LinkedIn pass. India (IN) is always added. Empty = IN,DE,NL,ES,FI,AU,JP,TH + Remote"
         required: false
         default: "IN,DE,NL,ES,FI,AU,JP,TH"
       days:
@@ -29,10 +29,14 @@ on:
         required: false
         default: ""
       allow_undated:
-        description: "With hours: keep postings whose exact time the board never stated"
+        description: "Keep postings whose time stays unknown after their own page was read for a date (off = drop them)"
         type: boolean
         required: false
-        default: false
+        default: true
+      min_salary:
+        description: "Only postings that state at least this a year, e.g. 10 LPA (postings that state no pay are kept and marked; empty = no floor)"
+        required: false
+        default: ""
       platforms:
         description: "Only these platforms, comma-separated keys or names (e.g. linkedin,seek,The Muse). Empty = every platform that is set up"
         required: false
@@ -57,7 +61,7 @@ concurrency:
 jobs:
   search:
     runs-on: ubuntu-latest
-    timeout-minutes: 45
+    timeout-minutes: 60   # run_jobhunt.py stops starting new source/country searches at 40 min
     steps:
       - uses: actions/checkout@v4
 
@@ -103,6 +107,7 @@ jobs:
           INPUT_DAYS: ${{ inputs.days }}
           INPUT_HOURS: ${{ inputs.hours }}
           INPUT_ALLOW_UNDATED: ${{ inputs.allow_undated }}
+          INPUT_MIN_SALARY: ${{ inputs.min_salary }}
           INPUT_PLATFORMS: ${{ inputs.platforms }}
           INPUT_FIT: ${{ inputs.fit }}
           INPUT_EXTRA: ${{ inputs.extra }}
@@ -130,11 +135,12 @@ jobs:
           APOLLO_API_KEY: ${{ secrets.APOLLO_API_KEY }}
         shell: bash
         run: |
-          # India is always searched: put IN first unless the list already names it.
+          # India is always searched: put IN first unless the list already names it
+          # (a worldwide search covers it anyway).
           C="$(printf '%s' "$INPUT_COUNTRIES" | sed 's/^[ ,]*//; s/[ ,]*$//')"
           [ -n "$C" ] || C="DE,NL,ES,FI,AU,JP,TH"
           case ",$(printf '%s' "$C" | tr '[:upper:]' '[:lower:]' | sed 's/ *[,;] */,/g')," in
-            *,in,*|*,india,*|*,bharat,*) ;;
+            *,in,*|*,india,*|*,bharat,*|*,worldwide,*|*,everywhere,*|*,world,*|*,all,*|*,\*,*) ;;
             *) C="IN,$C" ;;
           esac
           export INPUT_COUNTRIES="$C"

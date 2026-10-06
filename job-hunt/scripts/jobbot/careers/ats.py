@@ -31,8 +31,11 @@ def _job(c, title, url, locations, iso, text, posted, remote=None, department=""
     if len(codes) > 1 and REMOTE in codes:
         codes.remove(REMOTE)
     location = " / ".join(dict.fromkeys(locs))[:160]
+    # posted_raw keeps the board's own value (an ISO timestamp, an epoch, "Posted Today"): Job.finalize
+    # reads the exact time out of it when there is one, so an hours-long window can be honest.
     job = Job(source=c.ats, source_name=c.name, title=title or "", company=c.name, url=url or c.careers,
               country=codes[0] if codes else "", location=location, remote=remote, posted=parse_date(posted),
+              posted_raw="" if posted in (None, "") else str(posted),
               description=text or "", snippet=(text or "")[:300], employment_type=employment or "",
               extra={"countries": codes, "department": department or "", "recruiter": recruiter or ""})
     return job.finalize()

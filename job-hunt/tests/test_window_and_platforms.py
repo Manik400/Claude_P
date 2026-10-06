@@ -66,9 +66,10 @@ def test_hours_window_drops_what_is_outside_it():
     assert not ok and why == "old"
 
 
-def test_under_a_day_a_posting_with_no_time_is_dropped():
+def test_under_a_day_a_posting_with_no_time_is_dropped_in_strict_mode():
+    # the default now keeps it for the page check (jobbot.dates); strict is the old rule
     today = datetime.now(timezone.utc).date().isoformat()
-    ok, why = ctx(hours=2).fresh_job(job(posted=today))
+    ok, why = ctx(hours=2, strict_undated=True).fresh_job(job(posted=today))
     assert not ok and why == "undated"
 
 
@@ -76,6 +77,7 @@ def test_allow_undated_keeps_those_postings():
     today = datetime.now(timezone.utc).date().isoformat()
     ok, _ = ctx(hours=2, allow_undated=True).fresh_job(job(posted=today))
     assert ok
+    assert ctx(hours=2).fresh_job(job(posted=today))[0]   # and that is the default
 
 
 def test_days_window_still_works_on_dates_alone():
@@ -132,7 +134,7 @@ def test_another_profession_is_dropped_even_when_the_advert_mentions_software():
 
 
 def test_postfilter_counts_each_reason_separately():
-    c = ctx(hours=2)
+    c = ctx(hours=2, strict_undated=True)
     today = datetime.now(timezone.utc).date().isoformat()
     kept = postfilter(c, [
         job("Software Engineer", posted_at=ago(minutes=10)),        # kept
