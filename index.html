@@ -1154,10 +1154,7 @@
   function stChip(st, note) { var s = STATUS[st] || ["", st]; var cls = s[0]; return '<span class="chip ' + cls + '" title="' + esc(note || "") + '">' + esc(s[1]) + "</span>"; }
   function loadQueue(force) {
     if (!force && queue && Date.now() - queueAt < 45000) return Promise.resolve(queue);
-    // heartbeat.json: written by a queue run that found another run busy (it cannot push queue.json then)
-    var beat = fetchEnc("data/apply/heartbeat.json?t=" + Date.now()).then(JSON.parse).catch(function () { return null; });
     return fetchEnc("data/apply/queue.json?t=" + Date.now()).then(JSON.parse)
-      .then(function (q) { return beat.then(function (b) { q.heartbeat = b; return q; }); })
       .then(function (q) {
         queue = q; queueAt = Date.now();
         // forget local "sent" marks the PC has now seen
@@ -1170,13 +1167,9 @@
   function itemsLive() { return ((queue || {}).items || []).filter(function (i) { return i.status !== "removed"; }); }
   function queueKeys() { var k = {}; ((queue || {}).items || []).forEach(function (i) { k[i.key] = i; }); pendingLocal().forEach(function (p) { if (!k[p.key]) k[p.key] = { key: p.key, status: "requested", local: true }; }); return k; }
   function pcState() {
-    var pc = (queue || {}).pc || {}, hb = (queue || {}).heartbeat || {}, h = hoursSince(pc.last_seen);
-    var busy = hb.last_seen && hoursSince(hb.last_seen) < h;
-    if (busy) h = hoursSince(hb.last_seen);
-    if (!pc.last_seen && !busy) return { cls: "off", text: "PC not seen yet", h: h };
-    if (h < 1.25) return busy ? { cls: "on", text: "PC on · busy · " + ago(hb.last_seen), h: h, busy: hb.busy }
-                              : { cls: "on", text: "PC on · " + ago(pc.last_seen), h: h };
-    if (busy) return { cls: "off", text: "PC off? last " + ago(hb.last_seen), h: h };
+    var pc = (queue || {}).pc || {}, h = hoursSince(pc.last_seen);
+    if (!pc.last_seen) return { cls: "off", text: "PC not seen yet", h: h };
+    if (h < 1.25) return { cls: "on", text: "PC on · " + ago(pc.last_seen), h: h };
     return { cls: "off", text: "PC off? last " + ago(pc.last_seen), h: h };
   }
   function updateHeader() {
@@ -1201,7 +1194,6 @@
   function pcHtml() {
     var pc = (queue || {}).pc || {}, st = pcState(), s = "";
     if (!queue || queue.missing) return '<div class="msg warn">Your PC has not run the queue yet. On the PC, run <code>site\\schedule_phone_apply.ps1</code> once; from then on it checks every 30 minutes and after every logon.</div>';
-    if (st.busy) s += '<div class="msg">PC is on but busy (' + esc(st.busy) + '). Queue items wait for that run to finish.</div>';
     if (st.h > 1.25) s += '<div class="msg warn">The PC has not checked in for ' + (st.h < 48 ? Math.round(st.h) + " h" : Math.round(st.h / 24) + " days") + '. Everything you queue waits safely and is applied when it is on again (lock screen is fine; sleep is not).</div>';
     var a = pc.applied_today || {}, caps = pc.caps || {};
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
