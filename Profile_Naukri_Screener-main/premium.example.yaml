@@ -1,0 +1,45 @@
+# LinkedIn Premium runner settings (naukri/jobs/linkedin_premium.py).
+#
+#   copy premium.example.yaml data\premium\premium.yaml      then edit
+#
+# Every key is optional; what is left out takes the default shown here.
+
+until: 2026-10-30            # last day Premium is paid for; the loop stops itself the day after
+every_minutes: 240           # a pass every 4 hours while the PC is on (5-6 passes a day)
+
+roles:                       # the job titles searched (the first three are used abroad)
+  - Software Engineer
+  - Backend Engineer
+  - Java Developer
+  - Backend Developer
+  - Full Stack Developer
+
+abroad_countries:            # searched in rotation, abroad_searches_per_pass a pass, newest 24 h only
+  - Germany
+  - Netherlands
+  - Ireland
+  - United Kingdom
+  - Canada
+  - Singapore
+  - United Arab Emirates
+  - Australia
+  - Sweden
+  - Switzerland
+  - Japan
+  - Portugal
+include_india: true          # also the India searches (india_searches_per_pass a pass)
+remote_worldwide: true       # LinkedIn's own "remote" filter, location Worldwide
+
+apply_per_day: 8             # Easy Applies this runner makes a day, inside jobs.yaml's linkedin_max_applies_per_day
+open_per_pass: 14            # job pages opened and ranked per pass (Top Applicant collection first)
+abroad_searches_per_pass: 6
+india_searches_per_pass: 2
+max_experience_years: 4      # postings asking for more than this are skipped
+exclude_senior: true         # senior / lead / staff / manager titles are skipped
+
+likes_per_day: 2             # hiring posts for your roles liked a day (at least 1)
+connect_per_day: 0           # connection requests (with a note) to recruiters who viewed your profile.
+                             # 0 = only draft the note into the report; 3-5 is a safe daily number.
+draft_per_day: 1             # post drafts a day (data/premium/drafts/TODAY.md) - you post them yourself
+
+hashtags: ["#SoftwareEngineer", "#Backend", "#Java", "#Kafka", "#OpenToWork", "#Relocation"]

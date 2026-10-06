@@ -476,6 +476,30 @@ link comes from its menu's "Copy link to post" (read from the clipboard); when t
 posts page. Local store: `data/posts/linkedin_posts.json` (a week). Log: `logs/linkedin_posts.log`. It only reads
 LinkedIn - nothing is liked, commented on, followed or messaged - at about 16 page loads an hour.
 
+## LinkedIn Premium runner (while Premium is paid for)
+
+    linkedin_premium.bat                    one pass now (headless), then the day's report
+    linkedin_premium.bat --loop             a pass every 4 h until the end date in data\premium\premium.yaml
+    linkedin_premium.bat --once --dry-run   read and rank everything; apply to nothing, like nothing
+    linkedin_premium.bat --draft            only today's post draft, no browser
+    powershell -ExecutionPolicy Bypass -File scripts\schedule_linkedin_premium.ps1    task LinkedInPremium: at logon, restarted if it stops
+
+`naukri/jobs/linkedin_premium.py` uses what Premium adds, every pass, each step on its own so one broken step never
+stops the rest: the reach numbers on your profile (views, post impressions, search appearances, kept day by day);
+the full **who viewed your profile** list, with recruiters / talent / hiring people turned into leads with a drafted
+connection note (`connect_per_day` > 0 sends that many a day - default 0, the note is only drafted); Premium's **Top
+applicant** collection plus 24-hour searches for your roles in India and in `abroad_countries`, each posting's page
+read for the applicant insight ("you'd be a top applicant", the applicant count), the named hiring team and - abroad
+- whether it offers visa sponsorship or relocation; the best Easy Apply postings applied to through the same walker,
+answers, ledger and daily cap as every other run (`apply_per_day` of them, inside `linkedin_max_applies_per_day`), the
+offsite ones listed for you best first; an **InMail draft** under 80 words for the best postings with a named hiring
+manager (you send them: 5 credits a month); at least one hiring post for your roles **liked** a day (from the
+hiring-posts watcher's store); and one **post draft** a day from a 23-topic rotation drawn from your resume
+(`data/premium/drafts/TODAY.md` - you post it yourself). Settings: `data/premium/premium.yaml` (template:
+`premium.example.yaml`). Report, rebuilt after every pass: `data/premium/daily/<date>.md` and `LATEST.md`. State:
+`data/premium/state.json`. Log: `logs/linkedin_premium.log`. About 20-40 page loads a pass, human gaps between them,
+and the loop exits by itself the day after `until`.
+
 ## Keeping the profile fresh
 
 ```powershell
