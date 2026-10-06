@@ -55,9 +55,9 @@ on:
 permissions:
   contents: write
 
-concurrency:
-  group: gh-pages
-  cancel-in-progress: false
+# The gh-pages group is on the `publish` job alone (below): only it touches the branch. With
+# it on the whole workflow, a search started while another run was publishing sat in the
+# queue - and GitHub keeps one queued run per group, so a second one was simply cancelled.
 
 env:
   PARTS: 4
@@ -142,6 +142,9 @@ jobs:
     if: ${{ !cancelled() }}   # publish what the parts that finished found, even if one failed
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    concurrency:
+      group: gh-pages
+      cancel-in-progress: false
     steps:
       - uses: actions/checkout@v4
 
