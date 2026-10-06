@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-06T18:23:18Z",
+ "updated": "2026-10-06T18:48:34Z",
  "items": [
+  {
+   "id": "applications-20261006-184834-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-06T18:48:34Z",
+   "file": "data/applications/applications-20261006-184834-applications-sent.html",
+   "bytes": 2043254,
+   "meta": {}
+  },
   {
    "id": "careers-20261006-181826-software-engineer-software-developer-bac",
    "kind": "careers",
@@ -42,15 +51,6 @@
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261006-163129-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-06T16:31:29Z",
-   "file": "data/applications/applications-20261006-163129-applications-sent.html",
-   "bytes": 1967090,
-   "meta": {}
   },
   {
    "id": "jobhunt-20261006-163111-software-engineer-software-developer-bac",
