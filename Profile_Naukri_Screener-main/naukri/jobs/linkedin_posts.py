@@ -112,8 +112,8 @@ ROLE_RX = re.compile(
     r"react(?:\.?js)? developers?|node(?:\.?js)? developers?|angular developers?|android developers?|ios developers?|flutter developers?|"
     r"mobile (?:app )?developers?|mern|mean stack|devops|cloud engineers?|data engineers?|ml engineers?|machine learning engineers?|"
     r"ai engineers?|qa engineers?|test engineers?|automation engineers?|programmers?|application developers?|"
-    r"engineering (?:intern|trainee|graduate)|graduate engineer trainee|\bget\b|associate software|software trainee|"
-    r"developer trainee|coding|programming|technical (?:intern|trainee))", re.I)
+    r"engineering (?:intern|trainee|graduate)|graduate engineer trainee|associate software|software trainee|"
+    r"developer trainee|technical (?:intern|trainee))", re.I)
 # "developer" / "engineer" on their own count only with a technology next to them
 TECH_RX = re.compile(r"\b(java|python|c\+\+|c#|\.net|dotnet|javascript|typescript|react|angular|vue|node|spring|django|flask|sql|mysql|"
                      r"postgres|mongodb|aws|azure|gcp|docker|kubernetes|git|rest api|microservices|html|css|php|golang|\bgo\b|rust|kotlin|"
@@ -261,6 +261,12 @@ def classify(text: str, headline: str = "", open_to_work: bool = False) -> dict:
         r = re.sub(r"s$", "", r) if r.endswith(("developers", "engineers", "programmers")) else r
         if r not in roles:
             roles.append(r)
+    # "GET" (Graduate Engineer Trainee) only in capitals - "get the details" is not a role
+    if re.search(r"\bGET\b", t) and not any("trainee" in r for r in roles):
+        roles.append("graduate engineer trainee")
+    # a post about coding / developers that names a technology but no title still is a software post
+    if not roles and re.search(r"\b(coding|programming|developers?|engineers?)\b", t, re.I) and TECH_RX.search(t):
+        roles.append("software (general)")
     off_field = bool(OFF_FIELD_RX.search(t)) and not roles
     exp = experience_of(both)
     emails = []
@@ -527,6 +533,9 @@ def read_card(card: dict, query: str, now: datetime | None = None) -> dict | Non
     info = classify(text, card.get("headline") or "", open_to_work=bool(card.get("open_to_work")))
     reactions, comments = _counts(card.get("counts") or "")
     author_url = card.get("actor_url") or ""
+    # apply links are mostly written INTO the text ("Apply here: https://lnkd.in/..."), not rendered as anchors
+    text_links = [u.rstrip(".,;:!?)") for u in re.findall(r"https?://[^\s<>\"'\]\)]+", text)]
+    text_links += ["https://" + u for u in re.findall(r"(?<![\w/.])((?:lnkd\.in|bit\.ly|forms\.gle|tinyurl\.com|t\.ly|cutt\.ly)/[A-Za-z0-9_\-]+)", text)]
     if pid.isdigit():
         url, kind = _post_url(pid), "post"
     elif card.get("url"):
@@ -538,7 +547,7 @@ def read_card(card: dict, query: str, now: datetime | None = None) -> dict | Non
         "author_posts_url": author_posts_url(author_url), "open_to_work": bool(card.get("open_to_work")),
         "headline": (card.get("headline") or "")[:200], "posted_at": at.isoformat(timespec="seconds") if at else None,
         "age_label": label[:40], "text": text, "query": query, "queries": [query],
-        "reactions": reactions, "comments": comments, "links": good_links(card.get("links"), author_url),
+        "reactions": reactions, "comments": comments, "links": good_links(list(card.get("links") or []) + text_links, author_url),
         "first_seen": now.isoformat(timespec="seconds"), "last_seen": now.isoformat(timespec="seconds"),
     }
     rec.update(info)

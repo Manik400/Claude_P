@@ -162,6 +162,16 @@ def test_payload_shows_only_wanted_posts_inside_the_window_newest_first():
     json.dumps(out)   # what goes to the phone is plain JSON
 
 
+def test_links_written_in_the_text_are_read_and_get_is_a_role_only_in_capitals():
+    now = datetime(2026, 10, 6, 12, 0, tzinfo=timezone.utc)
+    text = "Amazon is hiring SDE I freshers. Apply here: https://lnkd.in/dnpNgui5, form lnkd.in/guNPiXtw. Get the details in comments."
+    rec = lp.read_card({"id": "k" * 24, "author": "A", "sub": "1h", "text": text, "full": text, "links": []}, "q", now)
+    assert rec["links"] == ["https://lnkd.in/dnpNgui5", "https://lnkd.in/guNPiXtw"]
+    assert "graduate engineer trainee" not in rec["roles"] and "get" not in rec["roles"]
+    assert "graduate engineer trainee" in lp.classify("Hiring GET - Graduate Engineer Trainee, B.Tech 2026, Java basics.")["roles"]
+    assert lp.classify("We are hiring! Coding role for freshers with Java and SQL. Apply now.")["roles"] == ["software (general)"]
+
+
 def test_a_repost_of_the_same_long_text_is_the_same_post():
     assert lp.fingerprint("Page A", FRESHER_POST) == lp.fingerprint("Someone Else", FRESHER_POST)
     assert lp.fingerprint("A", "short hiring note") != lp.fingerprint("B", "short hiring note")
