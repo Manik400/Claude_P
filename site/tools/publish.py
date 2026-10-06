@@ -171,9 +171,24 @@ def load_index(pages):
     return {"updated": None, "items": []}
 
 
+def dedupe_items(items):
+    """One entry per report id. Of two entries for the same id the one that knows more (more
+    meta) stays - an entry rebuilt from the file alone loses to the one the publisher wrote."""
+    best = {}
+    for i in items:
+        rid = i.get("id")
+        if not rid:
+            continue
+        old = best.get(rid)
+        if old is None or len(i.get("meta") or {}) >= len(old.get("meta") or {}):
+            best[rid] = i
+    return list(best.values())
+
+
 def save_index(pages, idx):
     os.makedirs(os.path.join(pages, "data"), exist_ok=True)
     idx["updated"] = dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%M:%SZ")
+    idx["items"] = dedupe_items(idx["items"])
     idx["items"].sort(key=lambda i: i["when"], reverse=True)
     with open(os.path.join(pages, "data", "index.json"), "w", encoding="utf-8") as f:
         json.dump(idx, f, ensure_ascii=False, indent=1)
@@ -194,6 +209,10 @@ def publish_report(a):
     now = dt.datetime.now(dt.timezone.utc)
     rid = "%s-%s-%s" % (a.kind, now.strftime("%Y%m%d-%H%M%S"), slug(a.title))
     rel = "data/%s/%s.%s" % (a.kind, rid, EXT.get(a.kind, "html"))
+    # Relist any orphaned file BEFORE this report's own file exists, or the new file is taken
+    # for an orphan and listed twice (once from its name, once with the meta given here).
+    idx = load_index(a.pages)
+    reconcile_index(a.pages, idx)
     os.makedirs(os.path.join(a.pages, "data", a.kind), exist_ok=True)
     with open(os.path.join(a.pages, rel), "wb") as f:
         f.write(raw)
@@ -208,8 +227,6 @@ def publish_report(a):
         rel_jobs = "data/%s/%s.jobs.json" % (a.kind, rid)
         shutil.copyfile(a.attach, os.path.join(a.pages, rel_jobs))
         meta["jobs_file"] = rel_jobs
-    idx = load_index(a.pages)
-    reconcile_index(a.pages, idx)
     # A re-published file with the same title on the same day replaces the earlier copy (Naukri re-runs).
     if a.replace_same_title:
         for old in [i for i in idx["items"] if i["kind"] == a.kind and i["title"] == a.title]:
@@ -356,8 +373,11 @@ def publish_site(a):
         added, deleted = reconcile_index(a.pages, idx)
         pruned = prune_keep(a.pages, idx)
         aged = prune_old(a.pages, idx, dt.datetime.now(dt.timezone.utc))
-        if added or deleted or pruned or aged:
+        dups = len(idx["items"]) - len(dedupe_items(idx["items"]))
+        if added or deleted or pruned or aged or dups:
             save_index(a.pages, idx)
+        if dups:
+            print("publish: %d duplicate index entr%s removed" % (dups, "y" if dups == 1 else "ies"))
         if aged:
             print("publish: deleted %d report(s) older than %d days" % (aged, RETENTION_DAYS))
     migrate_plain(a.pages)

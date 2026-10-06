@@ -95,6 +95,26 @@ def test_reconcile_deletes_leftovers_of_one_copy_kinds(tmp_path):
     assert sorted(os.listdir(os.path.join(pages, "data", "applications"))) == [os.path.basename(live["file"])]
 
 
+def test_publishing_a_report_lists_it_once_with_its_full_meta(tmp_path):
+    pages = str(tmp_path)
+    src = tmp_path / "report.html"
+    src.write_text("<html><head><title>Job Hunt · software engineer · 06 Oct 2026</title></head></html>", encoding="utf-8")
+    publish.main(["report", "--pages", pages, "--kind", "jobhunt", "--title", "software engineer", "--file", str(src),
+                  "--meta", "jobs=12", "--meta", "countries=worldwide", "--meta", "min_salary=10 LPA"])
+    idx = publish.load_index(pages)
+    assert len(idx["items"]) == 1, "the report's own file must not be relisted as an orphan"
+    assert idx["items"][0]["meta"] == {"jobs": "12", "countries": "worldwide", "min_salary": "10 LPA"}
+
+
+def test_save_index_keeps_one_entry_per_id_the_richer_one(tmp_path):
+    pages = str(tmp_path)
+    thin = _item("jobhunt", "20261006-181802", "x", "2026-10-06T18:18:02Z", jobs="1621")
+    rich = _item("jobhunt", "20261006-181802", "x", "2026-10-06T18:18:02Z", jobs="1621", countries="worldwide", min_salary="10 LPA")
+    publish.save_index(pages, {"updated": None, "items": [thin, rich]})
+    idx = publish.load_index(pages)
+    assert len(idx["items"]) == 1 and idx["items"][0]["meta"]["countries"] == "worldwide"
+
+
 def test_prune_keep_trims_each_kind_to_its_limit(tmp_path):
     pages = str(tmp_path)
     items = [_item("careers", "2026100%d-120000" % d, "r", "2026-10-0%dT12:00:00Z" % d) for d in range(1, 8)]
