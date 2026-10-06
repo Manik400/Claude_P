@@ -64,7 +64,9 @@ $repeat  = New-TimeSpan -Minutes $Every
 $trigger = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(3) -RepetitionInterval $repeat
 $logon   = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
 $logon.Delay = "PT2M"
-$logon.Repetition = $trigger.Repetition
+# One run after logon, no repetition of its own: a repeating logon trigger ran a
+# second 30-minute chain beside the first (runs at :01 :20 :31 :50 - twice as
+# many as asked for).
 
 Register-ScheduledTask `
     -TaskName $name `

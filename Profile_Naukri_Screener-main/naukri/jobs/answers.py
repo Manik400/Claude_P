@@ -462,6 +462,14 @@ def choose_option(answer: str, options: list[str]) -> str | None:
     return None
 
 
+def _as_option(answer, options: list[str]):
+    """A rule's or saved answer in the form's own spelling: "yes" -> "Yes" when
+    that is the option, so a strict option match on the page still finds it."""
+    if answer is None or not options:
+        return answer
+    return next((o for o in options if _norm(o) == _norm(str(answer))), answer)
+
+
 def resolve(question: str, options: list[str], facts: dict, *, job: dict | None = None,
             long_text: bool = False) -> tuple[str | None, str]:
     """Answer one question from facts, or explain why it cannot be answered.
@@ -484,7 +492,7 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
         if rule.get("skip"):
             return None, (f"your rule {rule['match']!r} keeps this one for you "
                           "- the job is queued unanswered")
-        return _format("_rule", rule["answer"]), f"your rule {rule['match']!r}"
+        return _as_option(_format("_rule", rule["answer"]), options), f"your rule {rule['match']!r}"
 
     # Relocation, visa sponsorship and work permit depend on where the job is,
     # so they are decided here, ahead of any saved answer from another job.
@@ -507,7 +515,7 @@ def resolve(question: str, options: list[str], facts: dict, *, job: dict | None 
     if saved:
         if str(saved.get("answer", "")).strip().lower() == questions_mod.SKIP:
             return None, "you chose to skip this question (data/jobs/answer_bank.yaml)"
-        return _format("_bank", saved.get("answer")), "your saved answer"
+        return _as_option(_format("_bank", saved.get("answer")), options), "your saved answer"
     # The one-answer questions every application system asks ("worked here before?").
     standard = _resolve_standard(text, facts, job or facts.get("_job"))
     if standard is not None:

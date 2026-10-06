@@ -428,6 +428,26 @@ def _embedder():
     return _embedder_instance
 
 
+def release() -> None:
+    """Drop the loaded models so their memory goes back to Windows.
+
+    A scheduled run keeps going for a long time after its last model call (the
+    apply phase), and three runs each holding their own multi-GB copy pushed the
+    PC past its commit limit. The next call loads the model again on its own.
+    """
+    global _llm_instance, _embedder_instance
+    with _model_lock:
+        llm, _llm_instance = _llm_instance, None
+        _embedder_instance = None
+    if llm is not None:
+        try:
+            llm.close()
+        except Exception:  # noqa: BLE001 - older llama-cpp-python has no close(); GC frees it
+            pass
+    import gc
+    gc.collect()
+
+
 def download(log=print) -> dict:
     """Fetch both model files now (the workflow runs this behind actions/cache)."""
     out = {"llm": None, "embed": None}

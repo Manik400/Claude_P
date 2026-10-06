@@ -17,10 +17,21 @@ echo.
 echo   Signing in to Claude for the interview preparation.
 echo   Login folder: %CLAUDE_CONFIG_DIR%
 echo   Choose the ORGANISATION (Max plan) account in the browser.
+rem The CLI on PATH, else the one bundled with the Claude desktop app (engine.py finds both).
+set "PY=python"
+if exist ".venv\Scripts\python.exe" set "PY=.venv\Scripts\python.exe"
+set "CLAUDE_EXE="
+for /f "delims=" %%i in ('"%PY%" -c "from naukri.interview.engine import _claude_cli; print(_claude_cli() or '')"') do set "CLAUDE_EXE=%%i"
+if "%CLAUDE_EXE%"=="" (
+    echo   No claude CLI found. Install it:  npm install -g @anthropic-ai/claude-code
+    pause
+    exit /b 1
+)
+echo   CLI: %CLAUDE_EXE%
 echo.
-claude auth login
+"%CLAUDE_EXE%" auth login
 echo.
-claude auth status
+"%CLAUDE_EXE%" auth status
 echo.
 echo   Done. interview_prep.bat now uses this account (Claude Opus 5, effort high).
 pause

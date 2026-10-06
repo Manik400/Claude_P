@@ -251,11 +251,45 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         return {"_summary": {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "per_run": per_run,
                              "questions_saved": 0, "retried": 0, "pending_questions": 0, "backlog": 0,
                              "busy": True, "note": "another apply run was in progress; nothing was tried"}}
+    dog = _watchdog()
     try:
         return _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,
                     sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify)
     finally:
+        if dog:
+            dog.cancel()
         lock.release()
+
+
+# The run time limit is only checked between applications. One application once
+# froze inside a company page (no timeout fired) and the run held the lock and
+# its browser for 5+ hours. Past the limit plus this grace the whole run - this
+# process and its browser - is stopped; the ledger already has every finished job.
+WATCHDOG_GRACE_MIN = 30
+
+
+def _watchdog():
+    deadline = _deadline()
+    if deadline is None:
+        return None
+    import threading
+    from .runlock import _kill_tree
+
+    def fire():
+        log.error("apply run still going %d min past its time limit - it is hung; stopping it and its browser",
+                  WATCHDOG_GRACE_MIN)
+        for h in logging.getLogger().handlers:
+            try:
+                h.flush()
+            except Exception:  # noqa: BLE001
+                pass
+        _kill_tree(os.getpid())
+        os._exit(3)
+
+    t = threading.Timer(deadline - time.monotonic() + WATCHDOG_GRACE_MIN * 60, fire)
+    t.daemon = True
+    t.start()
+    return t
 
 
 def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,

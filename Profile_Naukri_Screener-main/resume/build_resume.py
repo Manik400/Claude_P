@@ -30,6 +30,7 @@ Text may mark **bold** phrases (the metrics in a bullet); the .txt drops the
 marks.
 """
 import html
+import os
 import re
 import sys
 import threading
@@ -422,6 +423,20 @@ def _pages(pdf: bytes) -> int:
     return len(PdfReader(io.BytesIO(pdf)).pages)
 
 
+def _pdf_browser(pw):
+    """Installed Google Chrome first, like the applier (session.launch_browser):
+    Playwright's bundled headless shell failed every scheduled run with
+    "Executable doesn't exist" while Chrome launched fine, so every tailored
+    resume went out as a .docx. The bundled one stays as the fallback."""
+    channel = os.environ.get("NAUKRI_BROWSER_CHANNEL", "chrome")
+    if channel and channel.lower() != "none":
+        try:
+            return pw.chromium.launch(channel=channel, headless=True)
+        except Exception:  # noqa: BLE001 - Chrome not installed: the bundled one below
+            pass
+    return pw.chromium.launch()
+
+
 def build_pdf(data: dict, path: Path | None = None, shrink=None, scales=(1.0, 0.97, 0.94)) -> tuple[Path, int, int]:
     """Print the resume to PDF in the original's layout -> (path, pages, times shrink() was called).
 
@@ -437,7 +452,7 @@ def build_pdf(data: dict, path: Path | None = None, shrink=None, scales=(1.0, 0.
         try:
             from playwright.sync_api import sync_playwright
             with sync_playwright() as pw:
-                browser = pw.chromium.launch()
+                browser = _pdf_browser(pw)
                 try:
                     page = browser.new_page()
                     dropped = 0

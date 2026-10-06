@@ -455,6 +455,55 @@ def progress_of(queue: dict) -> dict:
 
 # ------------------------------------------------------------------ apply
 
+# A run that sent nothing, with the same queue / settings / answers the next run
+# would see, is not repeated: most half-hourly runs found Naukri's own apply
+# switched off, LinkedIn done for the day and one incomplete company form - and
+# still started Chrome and the local model (~1.5 GB) for minutes, sending
+# nothing. A full try still happens at least every IDLE_RECHECK_HOURS.
+IDLE_RECHECK_HOURS = 3
+
+
+def _idle_path() -> str:
+    return os.path.join(config_dir(), "apply_idle.json")
+
+
+def _idle_fingerprint(todo: list, settings: dict, limit: int) -> str:
+    import hashlib
+    watched = [os.path.join(NAUKRI, "jobs.yaml"), os.path.join(NAUKRI, "data", "jobs", "answer_bank.yaml"),
+               os.path.join(NAUKRI, "data", "jobs", "questions.yaml")]
+    mtimes = []
+    for path in watched:
+        try:
+            mtimes.append(int(os.path.getmtime(path)))
+        except OSError:
+            mtimes.append(0)
+    raw = json.dumps({"day": date.today().isoformat(), "limit": limit, "settings": settings, "files": mtimes,
+                      "items": sorted((i["key"], i["status"]) for i in todo)}, sort_keys=True, default=str)
+    return hashlib.sha1(raw.encode("utf-8")).hexdigest()
+
+
+def _idle_load() -> dict:
+    try:
+        with open(_idle_path(), encoding="utf-8") as f:
+            return json.load(f)
+    except (OSError, ValueError):
+        return {}
+
+
+def _idle_save(data: dict) -> None:
+    try:
+        with open(_idle_path(), "w", encoding="utf-8") as f:
+            json.dump(data, f)
+    except OSError:
+        pass
+
+
+def _sent(outcomes: dict) -> int:
+    s = (outcomes or {}).get("_summary") or {}
+    return sum((s.get(b) or {}).get(k, 0) for b in ("naukri", "linkedin", "career")
+               for k in ("applied", "submitted", "would-apply"))
+
+
 def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoapply, config_mod, NaukriJob) -> dict:
     mode = settings.get("offsite", "career")
     simplify_on = mode in SIMPLIFY_MODES
@@ -470,6 +519,13 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
         log("apply: queue paused from the phone (%d waiting)" % len(todo))
         return {}
     if not todo:
+        return {}
+    fp = _idle_fingerprint(todo, settings, limit)
+    idle = _idle_load()
+    if not dry_run and idle.get("fp") == fp and             idle.get("at", "") > (datetime.now() - timedelta(hours=IDLE_RECHECK_HOURS)).isoformat():
+        log("apply: same %d queued item(s), settings and answers as the %s run, which sent nothing - "
+            "browser not started (full try again within %d h, or as soon as anything changes)"
+            % (len(todo), idle["at"][11:16], IDLE_RECHECK_HOURS))
         return {}
     todo.sort(key=lambda i: -(i.get("score") or 0))
     naukri_jobs, cards = [], []
@@ -508,6 +564,8 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
         for it in todo:
             it["attempts"] = max(0, it.get("attempts", 0) - 1)
         return outcomes
+    if not dry_run:
+        _idle_save({"fp": fp, "at": now_iso()} if outcomes and not _sent(outcomes) else {})
     # LinkedIn's daily Easy Apply limit (24 h pause, naukri/jobs/linkedin_limit.py):
     # nothing happened to these, so they stay queued and the try is not counted.
     for it in todo:
@@ -564,6 +622,22 @@ def check_in(queue: dict, queue_path: str, passphrase: str, pages: str, cfg: dic
         log("check-in push failed: %s" % exc)
 
 
+def heartbeat(busy: str) -> None:
+    """Tell the phone the PC is on without touching the gh-pages clone (another
+    run may be using it): data/apply/heartbeat.json, written through the API.
+    The phone takes whichever of it and queue.json's pc.last_seen is newer."""
+    cfg = load_config()
+    beat = {"last_seen": now_iso(), "host": os.environ.get("COMPUTERNAME", ""), "busy": busy}
+    sys.path.insert(0, HERE)
+    try:
+        import pages_git
+        pages_git.put_file(cfg.get("repo_url") or pages_git.default_repo_url(), "data/apply/heartbeat.json",
+                           json.dumps(beat, ensure_ascii=False), "heartbeat: PC on (%s)" % busy[:60])
+        log("heartbeat pushed: %s" % busy)
+    except (Exception, SystemExit) as exc:  # noqa: BLE001 - only a status line on the phone
+        log("heartbeat push failed: %s" % exc)
+
+
 # ------------------------------------------------------------------ main
 
 def main(argv=None) -> int:
@@ -582,9 +656,17 @@ def main(argv=None) -> int:
     # the gh-pages clone (reset --hard), which threw away a finishing run's queue once.
     from naukri.jobs.runlock import RunLock
     lock = RunLock()
-    if not lock.acquire():
-        log("another run (%s) is still going after a long wait - this run steps aside" % lock.holder())
-        return 0
+    if not lock.try_acquire():
+        # The phone only hears from the PC through pushes; without this a long
+        # scan holding the lock made every queue run step aside silently and
+        # the phone said "PC off" for hours while the PC was on.
+        if not args.dry_run:
+            heartbeat("waiting for another run (%s)" % lock.holder())
+        if not lock.acquire():
+            log("another run (%s) is still going after a long wait - this run steps aside" % lock.holder())
+            if not args.dry_run:
+                heartbeat("busy: another run (%s) holds the apply lock" % lock.holder())
+            return 0
     try:
         return _main(args)
     finally:

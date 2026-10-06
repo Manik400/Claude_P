@@ -234,11 +234,15 @@ def launch(p, headless: bool, states: list[Path] | None = None,
         args += [a for a in OFFSCREEN_ARGS if a not in args]
     kwargs = dict(headless=False, args=args, ignore_default_args=["--enable-automation"],
                   viewport={"width": 1366, "height": 900} if headless else None)
-    # Edge first: Google Chrome 137+ ignores --load-extension, so in Chrome the
-    # browser starts fine but WITHOUT Simplify (measured on Chrome 154: no
-    # extension, no storage; Edge 152 loads it and reads the same profile's
-    # logins). Chrome stays as the fallback for a PC without Edge.
-    channels = [os.environ.get("SIMPLIFY_CHANNEL") or "msedge", "chrome", None]
+    # Never Edge (SIMPLIFY_CHANNEL=msedge opts back in). Bundled Chromium first:
+    # it still honours --load-extension, so Simplify loads. Google Chrome 137+
+    # ignores that switch (re-checked on Chrome 154, also with
+    # --disable-features=DisableLoadExtensionCommandLineSwitch), so in Chrome the
+    # run works WITHOUT Simplify's autofill - career_apply.fill_form() still fills.
+    # On this PC bundled Chromium fails with "side-by-side configuration" (spawn
+    # UNKNOWN) and the launch falls through to headless Chrome.
+    env_channel = os.environ.get("SIMPLIFY_CHANNEL")
+    channels = [env_channel, None, "chrome"] if env_channel else [None, "chrome"]
     context, last = None, None
     deadline = time.time() + PROFILE_BUSY_WAIT_S
     while True:

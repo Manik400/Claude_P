@@ -67,6 +67,16 @@ cmd = "cmd.exe /S /C """ & _
       "echo ===== %DATE% %TIME%  " & fso.GetFileName(batch) & " ===== >> """ & logFile & """ && " & _
       """" & batch & """" & args & " >> """ & logFile & """ 2>&1"""
 
+' Through scripts\jobguard.py when the venv is there: the run goes into a
+' kill-on-close Job Object, so no browser, node driver or Python started by
+' it outlives it - however it ends. Without the venv, the old direct launch.
+Dim guardPy
+guardPy = root & "\.venv\Scripts\python.exe"
+If fso.FileExists(guardPy) And fso.FileExists(root & "\scripts\jobguard.py") Then
+    sh.Environment("PROCESS")("JOBGUARD_CMD") = cmd
+    cmd = """" & guardPy & """ """ & root & "\scripts\jobguard.py"""
+End If
+
 ' 0 = hidden window, True = wait for it to finish so the task shows the real
 ' exit code and Task Scheduler's own time limit still applies to the run.
 rc = sh.Run(cmd, 0, True)

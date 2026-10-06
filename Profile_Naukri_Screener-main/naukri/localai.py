@@ -18,7 +18,7 @@ if os.path.isdir(_JOBHUNT_SCRIPTS) and _JOBHUNT_SCRIPTS not in sys.path:
 try:
     from jobbot.localai import (  # noqa: F401
         PERSONAL_MODEL, answer_from_facts, available, budget_left, chunk_text, cosine, embed, ollama_model, personal_model,
-        relocation_opinion, same_question, semantic_scores, status, status_line, summarize_fit, write_answer,
+        relocation_opinion, release, same_question, semantic_scores, status, status_line, summarize_fit, write_answer,
     )
 except Exception:  # noqa: BLE001 - no job-hunt checkout next door: hard no-op
     PERSONAL_MODEL = "jobbot-answers"
@@ -66,4 +66,7 @@ except Exception:  # noqa: BLE001 - no job-hunt checkout next door: hard no-op
         return None
 
     def personal_model():
+        return None
+
+    def release():
         return None

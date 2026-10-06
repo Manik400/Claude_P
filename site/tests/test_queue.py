@@ -164,3 +164,33 @@ def test_progress_and_ledger_sync():
     assert q["items"][1]["status"] == "questionnaire-pending" and q["items"][1]["note"] == "asked"
     p = pa.progress_of(q)
     assert p == {"total": 4, "applied": 1, "waiting": 1, "manual": 1, "skipped": 0, "failed": 0, "queued": 1, "done": 3, "pct": 75}
+
+
+def test_a_run_that_sent_nothing_is_not_repeated_until_something_changes(tmp_path, monkeypatch):
+    monkeypatch.setattr(pa, "config_dir", lambda: str(tmp_path))
+    calls = []
+
+    class Auto:
+        @staticmethod
+        def run(naukri_jobs, cards, *a, **k):
+            calls.append(len(cards))
+            return {"_summary": {"naukri": {}, "linkedin": {"skipped-once-a-day": len(cards)}, "career": {}}}
+
+    class Cfg:
+        load_profile = staticmethod(lambda: {})
+        load = staticmethod(lambda profile=None: {})
+
+    def queue():
+        return {"items": [{"key": "linkedin:1", "board": "linkedin", "job_id": "1", "url": "u", "title": "t",
+                           "company": "c", "status": "queued"}]}
+
+    settings = dict(pa.DEFAULT_SETTINGS)
+    pa.run_applies(queue(), settings, 5, False, Auto, Cfg, None)
+    pa.run_applies(queue(), settings, 5, False, Auto, Cfg, None)
+    assert calls == [1]                                 # second run: same queue, nothing sent -> no browser
+    pa.run_applies(queue(), dict(settings, limit=7), 5 + 1, False, Auto, Cfg, None)
+    assert calls == [1, 1]                              # anything changed -> a real try
+    q = queue()
+    q["items"].append(dict(q["items"][0], key="linkedin:2", job_id="2"))
+    pa.run_applies(q, settings, 5, False, Auto, Cfg, None)
+    assert calls == [1, 1, 2]                           # a new item -> a real try

@@ -72,9 +72,25 @@ def _search_links(company: str, city: str, role: str) -> dict:
 
 # ----------------------------------------------------------------- providers
 
+# Providers that refused the key / quota this run: one refusal is account-wide,
+# so the remaining companies skip them instead of logging the same error 30 times.
+_REFUSED: set[str] = set()
+
+
+def _refuse(name: str, status: int, why: str, log) -> None:
+    _REFUSED.add(name)
+    log(f"  {name}: HTTP {status} - {why}; skipped for the rest of this run")
+
+
+def _refused_exc(exc) -> int:
+    """The HTTP status when the client raised for a refusal ("403 from api.apollo.io"), else 0."""
+    m = re.match(r"\s*(401|402|403|429) from ", str(exc))
+    return int(m.group(1)) if m else 0
+
+
 def _signalhire(http, company: str, location: str, log) -> list[dict]:
     key = os.environ.get("SIGNALHIRE_API_KEY")
-    if not key:
+    if not key or "signalhire" in _REFUSED:
         return []
     people = []
     for title in TITLES:
@@ -87,11 +103,14 @@ def _signalhire(http, company: str, location: str, log) -> list[dict]:
             r = http.post("https://www.signalhire.com/api/v1/candidate/searchByQuery", json=body,
                           headers={"apikey": key, "Content-Type": "application/json"}, retries=0, timeout=30)
         except Exception as exc:  # noqa: BLE001
-            log(f"  signalhire {company}: {exc}")
+            if _refused_exc(exc):
+                _refuse("signalhire", _refused_exc(exc), "check the key / credits", log)
+            else:
+                log(f"  signalhire {company}: {exc}")
             return people
         if r.status_code != 200:
             if r.status_code in (401, 402, 429):
-                log(f"  signalhire: HTTP {r.status_code} - check the key / credits")
+                _refuse("signalhire", r.status_code, "check the key / credits", log)
                 return people
             continue
         for p in (r.json().get("profiles") or []):
@@ -111,7 +130,7 @@ def _signalhire(http, company: str, location: str, log) -> list[dict]:
 
 def _hunter(http, company: str, domain: str, log) -> tuple[list[dict], str, list[str]]:
     key = os.environ.get("HUNTER_API_KEY")
-    if not key:
+    if not key or "hunter" in _REFUSED:
         return [], domain, []
     params = {"api_key": key, "limit": 10, "department": "hr,it,management,executive"}
     if domain:
@@ -121,11 +140,14 @@ def _hunter(http, company: str, domain: str, log) -> tuple[list[dict], str, list
     try:
         r = http.get("https://api.hunter.io/v2/domain-search", params=params, retries=0, timeout=30)
     except Exception as exc:  # noqa: BLE001
-        log(f"  hunter {company}: {exc}")
+        if _refused_exc(exc):
+            _refuse("hunter", _refused_exc(exc), "key invalid or monthly quota used up", log)
+        else:
+            log(f"  hunter {company}: {exc}")
         return [], domain, []
     if r.status_code != 200:
-        if r.status_code in (401, 429):
-            log(f"  hunter: HTTP {r.status_code} - check the key / quota")
+        if r.status_code in (401, 403, 429):
+            _refuse("hunter", r.status_code, "key invalid or monthly quota used up", log)
         return [], domain, []
     data = r.json().get("data") or {}
     people, emails = [], []
@@ -146,7 +168,7 @@ def _hunter(http, company: str, domain: str, log) -> tuple[list[dict], str, list
 
 def _apollo(http, company: str, log) -> list[dict]:
     key = os.environ.get("APOLLO_API_KEY")
-    if not key:
+    if not key or "apollo" in _REFUSED:
         return []
     body = {"q_organization_name": company, "person_titles": TITLES, "page": 1, "per_page": PEOPLE_PER_COMPANY}
     try:
@@ -154,11 +176,16 @@ def _apollo(http, company: str, log) -> list[dict]:
                       headers={"X-Api-Key": key, "Content-Type": "application/json", "Cache-Control": "no-cache"},
                       retries=0, timeout=30)
     except Exception as exc:  # noqa: BLE001
-        log(f"  apollo {company}: {exc}")
+        if _refused_exc(exc):
+            _refuse("apollo", _refused_exc(exc), "key invalid, or the plan has no people-search API", log)
+        else:
+            log(f"  apollo {company}: {exc}")
         return []
     if r.status_code != 200:
-        if r.status_code in (401, 403, 422, 429):
-            log(f"  apollo: HTTP {r.status_code} - check the key / plan")
+        if r.status_code in (401, 403, 429):
+            _refuse("apollo", r.status_code, "key invalid, or the plan has no people-search API", log)
+        elif r.status_code == 422:
+            log(f"  apollo {company}: HTTP 422")
         return []
     people = []
     for p in r.json().get("people") or []:
@@ -186,6 +213,7 @@ def enrich(jobs, http, roles, log=print, max_companies: int = MAX_COMPANIES) -> 
             by_company.setdefault(name, []).append(j)
     ranked = sorted(by_company.items(), key=lambda kv: -max((g(j, "score") or 0) for j in kv[1]))
     role = (roles or ["software engineer"])[0]
+    _REFUSED.clear()
     active = providers()
     log(f"contacts: {min(len(ranked), max_companies)} of {len(ranked)} companies, providers: {', '.join(active) or 'none (links + what the postings say)'}")
     out = {}

@@ -197,6 +197,7 @@ def summarize_top(kept, config: dict) -> int:
             done += 1
     log.info("local AI: %d of %d top jobs got a fit line (%.0fs of budget left)",
              done, len(ranked), localai.budget_left())
+    localai.release()  # the apply phase runs long; reloads on demand if it needs the model
     return done
 
 

@@ -110,6 +110,28 @@ def _claude_cli() -> str | None:
         found = shutil.which(name)
         if found:
             return found
+    return _bundled_cli()
+
+
+def _bundled_cli() -> str | None:
+    """claude.exe shipped with the Claude desktop app, when no CLI is installed
+    on PATH (a fresh PC). It lives in a folder per version that changes on every
+    app update, so take the newest one that has the exe."""
+    root = os.path.join(os.environ.get("APPDATA", ""), "Claude", "claude-code")
+    if not os.path.isdir(root):
+        return None
+
+    def ver(name: str) -> tuple:
+        return tuple(int(p) if p.isdigit() else 0 for p in name.split("."))
+
+    for version in sorted(os.listdir(root), key=ver, reverse=True):
+        vdir = os.path.join(root, version)
+        if not os.path.isdir(vdir):
+            continue
+        for sub in sorted(os.listdir(vdir)):
+            exe = os.path.join(vdir, sub, "claude.exe")
+            if os.path.isfile(exe):
+                return exe
     return None
 
 
