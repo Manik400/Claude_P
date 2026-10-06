@@ -1,25 +1,6 @@
 {
- "updated": "2026-10-06T18:18:26Z",
+ "updated": "2026-10-06T18:23:18Z",
  "items": [
-  {
-   "id": "careers-20261006-181826-software-engineer-software-developer-bac",
-   "kind": "careers",
-   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-06T18:18:26Z",
-   "file": "data/careers/careers-20261006-181826-software-engineer-software-developer-bac.json",
-   "bytes": 2739516,
-   "meta": {
-    "jobs": "94",
-    "relocation": "67",
-    "countries": "worldwide",
-    "experience": "0-2",
-    "reloc_mode": "visa",
-    "days": "1",
-    "hours": "",
-    "list_sha": "e6a9797c6ac1",
-    "list_count": "8951"
-   }
-  },
   {
    "id": "careers-20261006-181826-software-engineer-software-developer-bac",
    "kind": "careers",
@@ -38,18 +19,6 @@
     "min_salary": "10 LPA",
     "list_sha": "e6a9797c6ac1",
     "list_count": "8951"
-   }
-  },
-  {
-   "id": "jobhunt-20261006-181802-software-engineer-software-developer-bac",
-   "kind": "jobhunt",
-   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-06T18:18:02Z",
-   "file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.html",
-   "bytes": 3421888,
-   "meta": {
-    "jobs_file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.jobs.json",
-    "jobs": "1621"
    }
   },
   {
