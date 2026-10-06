@@ -1027,7 +1027,7 @@
     if (i.kind === "careers" && m.list_sha) {
       if (m.list_count) sub.push(m.list_count + " companies");
       if (companiesFp) listChip = " " + (m.list_sha === companiesFp ? chip("ok", "current list") : chip("warn", "older list"));
-    } else if (i.kind === "careers" && companiesFp) listChip = " " + chip("warn", "older list");
+    }   // a report from before the fingerprint existed says nothing either way
     var right = (i.kind === "jobhunt" || i.kind === "naukri")
       ? (m.jobs_file ? chip("acc", "jobs ›") : chip("", "report ›"))
       : chip("", "open ›");
