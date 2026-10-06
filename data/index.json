@@ -1,6 +1,40 @@
 {
- "updated": "2026-10-06T17:30:09Z",
+ "updated": "2026-10-06T18:18:02Z",
  "items": [
+  {
+   "id": "jobhunt-20261006-181802-software-engineer-software-developer-bac",
+   "kind": "jobhunt",
+   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-06T18:18:02Z",
+   "file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.html",
+   "bytes": 3421888,
+   "meta": {
+    "jobs_file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.jobs.json",
+    "jobs": "1621"
+   }
+  },
+  {
+   "id": "jobhunt-20261006-181802-software-engineer-software-developer-bac",
+   "kind": "jobhunt",
+   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-06T18:18:02Z",
+   "file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.html",
+   "bytes": 3421888,
+   "meta": {
+    "jobs": "1621",
+    "countries": "worldwide",
+    "experience": "0-2",
+    "days": "1",
+    "hours": "24",
+    "window_hours": "24",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads,himalayas,weworkremotely,adzuna,jooble,jsearch,firecrawl,apify-naukri",
+    "min_salary": "10 LPA",
+    "worldwide": "1",
+    "dates_checked": "80",
+    "jobs_file": "data/jobhunt/jobhunt-20261006-181802-software-engineer-software-developer-bac.jobs.json"
+   }
+  },
   {
    "id": "applications-20261006-163129-applications-sent",
    "kind": "applications",
