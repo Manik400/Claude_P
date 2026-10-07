@@ -377,6 +377,10 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                    "location": getattr(job, "location", "") or ("India" if board == "naukri" else ""),
                    "description": getattr(job, "description", "") or ""}, who, facts,
             dry_run=dry_run, capture=capture, offsite_click=offsite_click, prefill=prefill, tailor=tailor_fn)
+        if status == "career-unconfirmed" and not dry_run:
+            # Submit was pressed and the form went away, the site just showed no "thank you"
+            # on the page (many confirm by e-mail only): counted as sent, not left for you
+            status, note = "submitted", "submitted, no confirmation shown on the page: " + note
         if status == "submitted" and career_left[0] is not None:
             career_left[0] -= 1
         if status == "career-incomplete" and not dry_run:

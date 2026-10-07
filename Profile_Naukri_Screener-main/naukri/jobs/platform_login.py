@@ -43,6 +43,35 @@ PLATFORMS = [
 ]
 
 
+def needed_platforms(limit: int = 60) -> list[tuple[str, str, str]]:
+    """The sites the queue is stuck on for want of an account, from the ledger's notes
+    ("cisco.wd5.myworkdayjobs.com needs its own account", "your XING sign-in has expired" ...),
+    most jobs first, minus the hosts already saved. Each becomes a (name, url, host) tab."""
+    import re
+    from collections import Counter
+    from .ledger import Ledger
+    have = saved_logins()
+    hosts: Counter = Counter()
+    for entry in Ledger().entries.values():
+        note = str(entry.get("note") or "")
+        m = re.search(r"([a-z0-9][a-z0-9.\-]+\.[a-z]{2,}) needs its own account", note, re.I) \
+            or re.search(r"leads to ([a-z0-9][a-z0-9.\-]+\.[a-z]{2,}), which needs its own account", note, re.I)
+        host = m.group(1).lower() if m else None
+        if not host:
+            m = re.search(r"your (\w+) sign-in has expired", note, re.I)
+            if m:
+                name = m.group(1).lower()
+                host = next((p[2] for p in PLATFORMS if name in p[0].lower()), None)
+        if host and not any(s in host for s in have):
+            hosts[host] += 1
+    out = []
+    for host, n in hosts.most_common(limit):
+        url = next((p[1] for p in PLATFORMS if p[2] in host), None) or (
+            f"https://{host}/en-US/External/login" if "myworkdayjobs.com" in host else f"https://{host}/")
+        out.append((f"{host}  ({n} job{'s' if n != 1 else ''} waiting)", url, host))
+    return out
+
+
 def save(names: list[str]) -> list[str]:
     """Record platforms (by name, e.g. "linkedin seek") as signed in, without opening anything."""
     chosen = [p for p in PLATFORMS if any(n.lower() in p[0].lower() for n in names)] if names != ["all"] else PLATFORMS
@@ -91,10 +120,23 @@ def run(only: list[str] | None = None, prompt: bool = True) -> int:
     import os
     os.environ["NAUKRI_SHOW"] = "1"            # this one needs a window: you sign in by hand
     os.environ.pop("NAUKRI_BACKGROUND", None)
+    # `needed`: the sites the queue is stuck on (Workday tenants, expired board sign-ins ...), in
+    # rounds of 12 tabs, instead of the fixed platform list; `needed 2` = the second round
+    platforms = PLATFORMS
+    if only and only[0].lower() == "needed":
+        round_no = int(only[1]) if len(only) > 1 and str(only[1]).isdigit() else 1
+        allp = needed_platforms()
+        platforms = allp[(round_no - 1) * 12: round_no * 12]
+        only = None
+        if not platforms:
+            print("Nothing is waiting for an account" + (f" in round {round_no}" if round_no > 1 else "") + ".")
+            return 0
+        print(f"Round {round_no} of {(len(allp) + 11) // 12}: {len(platforms)} site(s) waiting for an account "
+              f"({sum(1 for _ in allp)} in all). Sign in or create your account on each tab yourself; nothing here types a password.")
     if not prompt:
         simplify.PROFILE_BUSY_WAIT_S = 3600    # a running scan holds the profile; wait for it
     if not prompt:
-        wanted = [p for p in PLATFORMS if not only or any(o.lower() in p[0].lower() for o in only)]
+        wanted = [p for p in platforms if not only or any(o.lower() in p[0].lower() for o in only)]
         with sync_playwright() as pw:
             browser = simplify.launch(pw, headless=False, offscreen=False, interactive=True)
             ctx = browser.context
@@ -118,7 +160,7 @@ def run(only: list[str] | None = None, prompt: bool = True) -> int:
                 pass
         print(f"LOGIN BROWSER CLOSED at {time.strftime('%H:%M')}", flush=True)
         return 0
-    wanted = [p for p in PLATFORMS if not only or any(o.lower() in p[0].lower() for o in only)]
+    wanted = [p for p in platforms if not only or any(o.lower() in p[0].lower() for o in only)]
     if not wanted:
         print("No platform matches: " + ", ".join(only or []))
         return 1
