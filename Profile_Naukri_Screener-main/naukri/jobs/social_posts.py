@@ -312,11 +312,55 @@ _X_JS = r"""
 """
 
 
-def login_x(state_path: Path = X_STATE_PATH, timeout_sec: int = 420) -> bool:
-    """Open a browser, wait for a manual sign-in to X, save the session."""
+def login_x(state_path: Path = X_STATE_PATH, timeout_sec: int = 420, port: int = 9334) -> bool:
+    """Open a browser, wait for a manual sign-in to X, save the session.
+
+    X (and Apple / Google sign-in inside it) refuse an automation-controlled browser with
+    "An unexpected error occurred", so the sign-in happens in a plain Chrome window with
+    nothing attached - the same way the Naukri login works. Playwright connects only after
+    X shows the home timeline, just long enough to copy the cookies. The bundled browser is
+    the fallback when Chrome is not installed (email + password only there)."""
     from playwright.sync_api import sync_playwright
-    from ..session import launch_browser
+    from ..session import _chrome_path, launch_browser
     state_path.parent.mkdir(parents=True, exist_ok=True)
+    chrome = _chrome_path()
+    if chrome:
+        import subprocess
+        import urllib.request
+
+        def open_tabs():
+            with urllib.request.urlopen(f"http://127.0.0.1:{port}/json", timeout=2) as resp:
+                return json.loads(resp.read())
+
+        profile_dir = state_path.parent / "chrome-login-profile"
+        proc = subprocess.Popen([chrome, f"--remote-debugging-port={port}", f"--user-data-dir={profile_dir}",
+                                 "--no-first-run", "--no-default-browser-check", "--new-window", "https://x.com/login"])
+        print("\n  A Chrome window is open. Sign in to X there (email/password, Apple or Google all work).")
+        print(f"  Waiting up to {timeout_sec // 60} minutes...\n")
+        deadline = time.time() + timeout_sec
+        try:
+            while time.time() < deadline:
+                try:
+                    tabs = open_tabs()
+                except Exception:  # noqa: BLE001 - Chrome still starting, or closed
+                    if proc.poll() is not None:
+                        print("  The browser was closed before the login finished.")
+                        return False
+                    time.sleep(1)
+                    continue
+                if any(t.get("type") == "page" and re.search(r"https://(x|twitter)\.com/(home|explore|notifications)", t.get("url", "")) for t in tabs):
+                    time.sleep(3)
+                    with sync_playwright() as p:
+                        browser = p.chromium.connect_over_cdp(f"http://127.0.0.1:{port}")
+                        browser.contexts[0].storage_state(path=str(state_path))
+                    print(f"  Login captured. Session saved to {state_path}")
+                    return True
+                time.sleep(1)
+            print("  Timed out waiting for login.")
+            return False
+        finally:
+            if proc.poll() is None:
+                proc.terminate()
     with sync_playwright() as p:
         browser = launch_browser(p, headless=False, interactive=True)
         context = browser.new_context(viewport={"width": 1280, "height": 900})
