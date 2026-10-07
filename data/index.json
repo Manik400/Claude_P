@@ -1,14 +1,25 @@
 {
- "updated": "2026-10-07T04:25:51Z",
+ "updated": "2026-10-07T05:24:56Z",
  "items": [
   {
-   "id": "applications-20261007-042551-applications-sent",
+   "id": "applications-20261007-052456-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-10-07T04:25:51Z",
-   "file": "data/applications/applications-20261007-042551-applications-sent.html",
-   "bytes": 2295510,
+   "when": "2026-10-07T05:24:56Z",
+   "file": "data/applications/applications-20261007-052456-applications-sent.html",
+   "bytes": 2319502,
    "meta": {}
+  },
+  {
+   "id": "naukri-20261007-052455-naukri-openings-2026-10-07-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-07 run 1 - Last 24h",
+   "when": "2026-10-07T05:24:55Z",
+   "file": "data/naukri/naukri-20261007-052455-naukri-openings-2026-10-07-run-1-last-24.html",
+   "bytes": 72866,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261007-052455-naukri-openings-2026-10-07-run-1-last-24.jobs.json"
+   }
   },
   {
    "id": "careers-20261006-181826-software-engineer-software-developer-bac",
@@ -921,18 +932,6 @@
    "bytes": 29013,
    "meta": {
     "jobs_file": "data/naukri/naukri-20260926-201457-naukri-openings-2026-09-26-run-10-early.jobs.json",
-    "jobs": "107"
-   }
-  },
-  {
-   "id": "naukri-20260926-201457-naukri-openings-2026-09-26-run-11-last-2",
-   "kind": "naukri",
-   "title": "Job Openings 2026-09-26 r11 - Last 24h",
-   "when": "2026-09-26T20:14:57Z",
-   "file": "data/naukri/naukri-20260926-201457-naukri-openings-2026-09-26-run-11-last-2.html",
-   "bytes": 51559,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20260926-201457-naukri-openings-2026-09-26-run-11-last-2.jobs.json",
     "jobs": "107"
    }
   },
