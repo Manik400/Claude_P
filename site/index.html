@@ -2232,7 +2232,7 @@
   // Everything here is a filter over that file; nothing is sent anywhere.
   var posts = null, postsAt = 0, postsErr = "", postsWait = null;
   var PF = { q: store.get("p.q", ""), role: store.get("p.role", ""), exp: store.get("p.exp", ""), hours: +store.get("p.hours", "12") || 12,
-             loc: store.get("p.loc", ""), need: store.get("p.need", ""), sort: store.get("p.sort", "new"), limit: 40, open: {}, showRemoved: false };
+             loc: store.get("p.loc", ""), need: store.get("p.need", ""), plat: store.get("p.plat", ""), sort: store.get("p.sort", "new"), limit: 40, open: {}, showRemoved: false };
   var P_ROLES = [["", "Any role"], ["swe", "SWE / SDE"], ["backend", "Backend"], ["frontend", "Frontend"], ["fullstack", "Full stack"], ["java", "Java"],
     ["python", "Python"], ["dotnet", ".NET / C#"], ["mobile", "Mobile"], ["devops", "DevOps / Cloud"], ["qa", "QA / Test"], ["data", "Data / ML / AI"]];
   var P_ROLE_RX = { swe: /software|\bsde\b|\bswe\b|developer|engineer/i, backend: /back-?end|\bjava\b|python|node|spring|django|\.net|golang|\bapi\b/i,
@@ -2248,10 +2248,28 @@
   function loadPosts(force) {
     if (!force && posts && Date.now() - postsAt < 60000) return Promise.resolve(posts);
     if (postsWait) return postsWait;
-    postsWait = fetchEnc("data/posts/linkedin_posts.json?t=" + Date.now()).then(JSON.parse)
+    // two files: LinkedIn's watcher and the social one (X, Telegram, Reddit, HN, Mastodon, Bluesky:
+    // naukri/jobs/social_posts.py -> data/posts/social_posts.json); either may be missing
+    postsWait = Promise.all([
+      fetchEnc("data/posts/linkedin_posts.json?t=" + Date.now()).then(JSON.parse).then(null, function (e) { return { _err: e }; }),
+      fetchEnc("data/posts/social_posts.json?t=" + Date.now()).then(JSON.parse).then(null, function () { return null; })
+    ]).then(function (r) { if (r[0] && r[0]._err && !r[1]) throw r[0]._err; return mergePosts(r[0] && r[0]._err ? null : r[0], r[1]); })
       .then(function (p) { posts = p; postsAt = Date.now(); postsErr = ""; postsWait = null; updatePostsDot(); if (!$("tab-posts").hidden) renderPosts(); renderHomePosts(); return p; },
             function (e) { postsWait = null; postsErr = errText(e); if (!$("tab-posts").hidden) renderPosts(); renderHomePosts(); return posts; });
     return postsWait;
+  }
+  var P_PLAT = [["", "All"], ["linkedin", "LinkedIn"], ["x", "X"], ["telegram", "Telegram"], ["reddit", "Reddit"], ["hn", "Hacker News"], ["mastodon", "Mastodon"], ["bluesky", "Bluesky"]];
+  function platName(k) { return (P_PLAT.filter(function (o) { return o[0] === k; })[0] || ["", k])[1]; }
+  function mergePosts(li, so) {
+    if (!so) return li;
+    var out = {}, k, seen = {};
+    for (k in (li || so)) out[k] = (li || so)[k];
+    var a = ((li || {}).posts || []).map(function (p) { if (!p.platform) p.platform = "linkedin"; return p; });
+    var b = (so.posts || []).map(function (p) { if (!p.platform) p.platform = "social"; return p; });
+    out.posts = a.concat(b).filter(function (p) { if (seen[p.id]) return false; seen[p.id] = 1; return true; });
+    out.social = { updated: so.updated, pc: so.pc || {}, sources: so.sources || {}, platforms: so.platforms || [], queries: so.queries || [] };
+    if (li && so.updated > (li.updated || "")) out.updated = so.updated;
+    return out;
   }
   function updatePostsDot() {
     var n = ((posts || {}).posts || []).filter(function (p) { return hoursSince(p.posted_at) <= 3 && !marks.removed["p:" + p.id] && !marks.applied["p:" + p.id]; }).length;
@@ -2288,6 +2306,7 @@
     return all.filter(function (p) {
       if (marks.removed["p:" + p.id] && !PF.showRemoved) return false;
       if (hoursSince(p.posted_at) > PF.hours) return false;
+      if (PF.plat && (p.platform || "linkedin") !== PF.plat) return false;
       if (q && postText(p).indexOf(q) < 0) return false;
       return postRoleOk(p) && postExpOk(p) && postLocOk(p) && postNeedOk(p);
     }).sort(function (a, b) {
@@ -2306,6 +2325,7 @@
     (p.batch || []).forEach(function (b) { t.push(chip("warn", b + " batch")); });
     if (p.salary && p.salary.lpa) t.push(chip("ok", "₹ " + p.salary.lpa + " LPA"));
     if (p.reactions) t.push(chip("", p.reactions + " reactions"));
+    if (p.platform && p.platform !== "linkedin") t.unshift(chip("warn", platName(p.platform)));
     var open = !!PF.open[p.id], text = p.text || "", contact = [];
     (p.emails || []).forEach(function (m) { contact.push('<a href="mailto:' + esc(m) + '">✉ ' + esc(m) + "</a>"); });
     (p.links || []).slice(0, 3).forEach(function (l) { contact.push(ext(l, "🔗 " + l.replace(/^https?:\/\/(www\.)?/, "").slice(0, 40))); });
@@ -2328,7 +2348,7 @@
     }
     var pc = d.pc || {}, age = hoursSince(d.updated), list = postsFiltered(), all = d.posts || [];
     h += '<div class="card"><div><b>' + all.length + " hiring post" + (all.length !== 1 ? "s" : "") + " for 0–2 yrs · last " + (d.window_hours || 12) + " h</b></div>" +
-      '<div class="muted">LinkedIn posts, read every ' + (d.every_minutes || 30) + " min on your PC" + (pc.host ? " (" + esc(pc.host) + ")" : "") + " · updated " + esc(ago(d.updated)) +
+      '<div class="muted">LinkedIn' + (d.social ? " + " + esc((d.social.platforms || []).map(platName).join(", ") || "social") : "") + " posts, read every " + (d.every_minutes || 30) + " min on your PC" + (pc.host ? " (" + esc(pc.host) + ")" : "") + " · updated " + esc(ago(d.updated)) +
       (pc.passes ? " · " + pc.passes + " passes" : "") + (d.seen_total ? " · " + d.seen_total + " posts read this week" : "") + "</div>" +
       (pc.last_error ? '<div class="msg bad">' + esc(pc.last_error) + "</div>" : "") +
       (age > 1.5 ? '<div class="msg warn">The PC\'s watcher has not reported for ' + (age < 48 ? Math.round(age) + " h" : Math.round(age / 24) + " days") + ". Is the PC on? The watcher restarts by itself at logon (task LinkedInPostsWatch).</div>" : "") +
@@ -2336,11 +2356,12 @@
     var chips = function (attr, opts, cur) { return '<div class="chips small">' + opts.map(function (o) { return '<button type="button" data-' + attr + '="' + esc(o[0]) + '"' + (cur === o[0] ? ' class="on"' : "") + ">" + esc(o[1]) + "</button>"; }).join("") + "</div>"; };
     var named = function (opts, v) { return (opts.filter(function (o) { return o[0] === v; })[0] || ["", ""])[1]; };
     var inList = P_LOC.some(function (o) { return o[0] === PF.loc; });
-    var sum = [PF.hours + " h", PF.role ? named(P_ROLES, PF.role) : "any role", PF.exp ? named(P_EXP, PF.exp) : "", PF.loc ? (inList ? named(P_LOC, PF.loc) : PF.loc) : "anywhere",
+    var sum = [PF.hours + " h", PF.plat ? platName(PF.plat) : "", PF.role ? named(P_ROLES, PF.role) : "any role", PF.exp ? named(P_EXP, PF.exp) : "", PF.loc ? (inList ? named(P_LOC, PF.loc) : PF.loc) : "anywhere",
                PF.need ? named(P_NEED, PF.need) : "", PF.q ? '"' + PF.q + '"' : ""].filter(Boolean).join(" · ") + " · " + list.length + " shown";
     h += acc("pf", "Filters", sum,
       '<input id="pf-q" placeholder="search text, company, skill, email…" value="' + esc(PF.q) + '" autocapitalize="none" style="margin-top:10px">' +
       "<label>Posted within</label>" + chips("ph", [["3", "3 h"], ["6", "6 h"], ["12", "12 h"]], String(PF.hours)) +
+      (d.social ? "<label>Platform</label>" + chips("pp", P_PLAT, PF.plat) : "") +
       "<label>Role</label>" + chips("pr", P_ROLES, PF.role) +
       "<label>Experience</label>" + chips("pe", P_EXP, PF.exp) +
       "<label>Location</label>" + chips("pl", P_LOC, inList ? PF.loc : "") +
@@ -2356,6 +2377,7 @@
     bindMarks(box, function (toggle) { if (toggle === true) PF.showRemoved = !PF.showRemoved; renderPosts(); updatePostsDot(); });
     var set = function (k, v) { PF[k] = v; store.set("p." + k, String(v)); PF.limit = 40; renderPosts(); };
     box.querySelectorAll("[data-ph]").forEach(function (b) { b.addEventListener("click", function () { set("hours", +b.dataset.ph); }); });
+    box.querySelectorAll("[data-pp]").forEach(function (b) { b.addEventListener("click", function () { set("plat", b.dataset.pp); }); });
     box.querySelectorAll("[data-pr]").forEach(function (b) { b.addEventListener("click", function () { set("role", b.dataset.pr); }); });
     box.querySelectorAll("[data-pe]").forEach(function (b) { b.addEventListener("click", function () { set("exp", b.dataset.pe); }); });
     box.querySelectorAll("[data-pl]").forEach(function (b) { b.addEventListener("click", function () { set("loc", b.dataset.pl); }); });

@@ -476,6 +476,24 @@ link comes from its menu's "Copy link to post" (read from the clipboard); when t
 posts page. Local store: `data/posts/linkedin_posts.json` (a week). Log: `logs/linkedin_posts.log`. It only reads
 LinkedIn - nothing is liked, commented on, followed or messaged - at about 16 page loads an hour.
 
+## Hiring posts on X, Telegram, Reddit, Hacker News, Mastodon (the same Posts tab)
+
+    social_posts.bat                       one pass over every source, then publish
+    social_posts.bat --loop                the same every 30 min
+    social_posts.bat --login-x             sign in to X once; without the saved session X is skipped
+    powershell -ExecutionPolicy Bypass -File scripts\schedule_social_posts.ps1    task SocialPostsWatch: at logon, restarted if it stops
+
+`naukri/jobs/social_posts.py` reads, without any account: public **Telegram** job channels through their t.me/s preview
+pages; **Reddit** subreddits' newest posts through their RSS; this month's **"Ask HN: Who is hiring?"** thread through
+the Algolia API (each comment is a job); **Mastodon** hashtag timelines; and, when `--login-x` has saved a session,
+**X**'s search (Latest tab) for a rotating set of hiring queries, headless. **Bluesky** is there too but off by default
+(its public API answers 403 on many networks). Every post goes through the LinkedIn watcher's reader, so the same
+rules decide what is a hiring post for a software role fitting 0-2 years, and the result is published as
+`data/posts/social_posts.json` with a `platform` on each post. The phone's Posts tab loads it next to the LinkedIn
+file and gets a Platform filter. Settings: `data/posts/social.yaml` (template `social.example.yaml`): channels,
+subreddits, tags, X queries, each source on/off. Log: `logs/social_posts.log`. Discord servers and Facebook groups
+need a logged-in member and are not read.
+
 ## LinkedIn Premium runner (while Premium is paid for)
 
     linkedin_premium.bat                    one pass now (headless), then the day's report

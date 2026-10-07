@@ -1,0 +1,57 @@
+# Social hiring-posts watcher settings (naukri/jobs/social_posts.py).
+#
+#   copy social.example.yaml data\posts\social.yaml      then edit
+#
+# Every source can be switched off with `on: false`. Lists replace the built-in list.
+
+every_minutes: 30
+
+telegram:                    # public channels, read from t.me/s/<channel> - no account needed
+  on: true
+  channels:
+    - offcampusjobs4u
+    - jobs_and_internships_updates
+    - freshersjobsupdates
+    - remotejobss
+    - gocareers
+    - jobs_internships
+    - itjobs
+    - developerjobs
+    - TechJobsAlerts
+    - internfreak
+    - offcampus_jobs_updates
+    - jobs_for_freshers
+    - fresher_jobs_updates
+
+reddit:                      # newest posts of each subreddit through its public RSS
+  on: true
+  subreddits: [forhire, hiring, developersIndia, jobbit, techjobs, RemoteJobs, remotejs]
+
+hn:                          # this month's "Ask HN: Who is hiring?" thread (Algolia API)
+  on: true
+
+mastodon:
+  on: true
+  instance: mastodon.social
+  tags: [hiring, hiringnow, techjobs, jobs]
+
+bluesky:                     # public search API; many networks answer 403 to it, so it starts off
+  on: false
+  queries: ["hiring software engineer", "hiring backend engineer", "hiring developer remote"]
+
+x:                           # X search, Latest tab, through the saved session (social_posts.bat --login-x)
+  on: true
+  per_pass: 4                # searches per pass, rotating through the list
+  queries:
+    - hiring software engineer
+    - we are hiring SDE
+    - hiring backend developer
+    - hiring java developer
+    - hiring freshers software
+    - hiring full stack developer
+    - hiring software developer immediate joiners
+    - hiring 2025 batch software engineer
+    - hiring 2026 batch software engineer
+    - hiring junior software engineer
+    - hiring software engineer visa sponsorship
+    - hiring remote backend engineer
