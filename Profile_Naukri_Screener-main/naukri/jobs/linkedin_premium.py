@@ -1042,6 +1042,34 @@ _POST_BOX = "div[role='textbox'][contenteditable='true'], div.ql-editor[contente
 _POST_BUTTON = "button.share-actions__primary-action, button:has-text('Post')[class*='share'], div[role='dialog'] button:has-text('Post')"
 
 
+def _post_button(page):
+    """The composer's Post button. The Oct 2026 composer has hashed class names and no dialog role:
+    the button is the one visible <button> whose whole text is 'Post' (the feed's own buttons say
+    'Repost', 'Hide post by ...')."""
+    old = page.locator(_POST_BUTTON).first
+    try:
+        if old.count() and old.is_visible(timeout=1000):
+            return old
+    except Exception:  # noqa: BLE001
+        pass
+    cands = page.locator("button").filter(has_text=re.compile(r"^\s*Post\s*$"))
+    try:
+        for i in range(cands.count()):
+            b = cands.nth(i)
+            if b.is_visible(timeout=800):
+                return b
+    except Exception:  # noqa: BLE001
+        pass
+    return None
+
+
+def _composer_open(page) -> bool:
+    try:
+        return page.locator(_POST_BOX).first.is_visible(timeout=1500)
+    except Exception:  # noqa: BLE001
+        return False
+
+
 def post_to_linkedin(page, text: str) -> tuple[str, str]:
     """Publish `text` as a LinkedIn post from the feed. Returns (status, note): posted | error."""
     from . import human
@@ -1066,17 +1094,19 @@ def post_to_linkedin(page, text: str) -> tuple[str, str]:
         typed = (box.inner_text(timeout=3000) or "").strip()
         if len(typed) < min(60, len(text) // 2):
             return "error", "the editor did not take the text"
-        btn = page.locator(_POST_BUTTON).first
-        if not btn.count():
+        btn = _post_button(page)
+        if btn is None:
             return "error", "no Post button"
+        if not btn.is_enabled(timeout=2000):
+            return "error", "the Post button stayed disabled"
         human.click(page, btn)
         page.wait_for_timeout(random.uniform(4000, 6000))
         body = _body(page, 3000)
-        if page.locator(_POST_BOX).count() and page.locator("div[role='dialog']").count():
-            return "error", "the post dialog is still open (LinkedIn did not accept it)"
         if re.search(r"post successful|your post was published|post published", body, re.I):
             return "posted", "LinkedIn confirmed the post"
-        return "posted", "dialog closed after Post"
+        if _composer_open(page):
+            return "error", "the composer is still open (LinkedIn did not accept the post)"
+        return "posted", "composer closed after Post"
     except Exception as exc:  # noqa: BLE001
         return "error", str(exc)[:200]
 
