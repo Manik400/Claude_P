@@ -1,13 +1,22 @@
 {
- "updated": "2026-10-07T07:18:28Z",
+ "updated": "2026-10-07T07:56:36Z",
  "items": [
   {
-   "id": "applications-20261007-070128-applications-sent",
+   "id": "applications-20261007-075636-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-10-07T07:01:28Z",
-   "file": "data/applications/applications-20261007-070128-applications-sent.html",
-   "bytes": 2351710,
+   "when": "2026-10-07T07:56:36Z",
+   "file": "data/applications/applications-20261007-075636-applications-sent.html",
+   "bytes": 2374750,
+   "meta": {}
+  },
+  {
+   "id": "accuracy-20261007-075636-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-07T07:56:36Z",
+   "file": "data/accuracy/accuracy-20261007-075636-accuracy-learning.html",
+   "bytes": 17062,
    "meta": {}
   },
   {
