@@ -808,7 +808,18 @@ def write_draft(cfg: dict, state: dict, me: dict, now: datetime | None = None) -
 def about_me() -> dict:
     """Name, role, stack and resume text for the drafts. From resume/*.txt, else data/profile.txt."""
     me = {"name": "Manik", "role": "Backend Software Engineer", "stack": "Java, Kafka, PostgreSQL, AWS", "resume": ""}
-    for p in sorted((ROOT / "resume").glob("*.txt")):
+    # the resume stored for this computer first (site\set_resume.bat), read through job-hunt's extractor
+    try:
+        scripts = ROOT.parent / "job-hunt" / "scripts"
+        if scripts.is_dir() and str(scripts) not in sys.path:
+            sys.path.insert(0, str(scripts))
+        from jobbot.resume import device_resume_path, extract_text  # type: ignore
+        dev = device_resume_path()
+        if dev:
+            me["resume"] = extract_text(dev)
+    except Exception as exc:  # noqa: BLE001 - then the project's own resume text
+        log.debug("device resume not read: %s", exc)
+    for p in ([] if me["resume"] else sorted((ROOT / "resume").glob("*.txt"))):
         try:
             me["resume"] = p.read_text(encoding="utf-8", errors="ignore")
             break

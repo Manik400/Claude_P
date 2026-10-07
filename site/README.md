@@ -84,7 +84,21 @@ restricted. So the PC has to be on (the lock screen is fine) for the queue to mo
 ## Privacy
 
 Reports, the queue and the Track data are published as plain files on the public `gh-pages` branch, so
-anyone with the URL can read them; there is no passphrase. Your resume is stored as text in a GitHub secret, never as a file in the repo.
+anyone with the URL can read them; there is no passphrase. Your resume is never a file in the repo.
+
+## Your resume: one per device, no login
+
+* **Phone (or any browser):** Settings → **Resume on this device** → upload a .pdf / .docx / .txt. Its text is read
+  in the browser (pdf.js / JSZip from cdnjs) and kept, with the original file, in that browser's own storage (IndexedDB).
+  Nothing is uploaded to the repo. Every worldwide or career-page search started from that device sends the text along
+  as the run's `resume` input, so the jobs are scored against it; the Search forms say which resume a run will use.
+  Another phone, another PC, or another browser has its own store (or none). Replace or remove it in Settings.
+  The run's inputs are visible on that run's page under Actions in your repository.
+* **PC:** `site\set_resume.bat` (drag a file onto it) stores the resume for that computer in
+  `%LOCALAPPDATA%\JobHuntPhone\resume` - outside the repo, per Windows user. Every run the PC starts (the hourly rounds,
+  `job_bot.py` without `--resume`, company-site applies, the LinkedIn Premium drafts) uses it; `--resume` on the command
+  line still wins. `python site\tools\resume_store.py show | set <file> | clear`.
+* **Fallback:** a run without a device resume uses the `RESUME_TEXT` repo secret, if set; without either, jobs are not scored.
 Naukri login cookies and profile data never leave the PC; only the generated HTML pages are published.
 
 ## Setup (once, on the PC)

@@ -99,15 +99,19 @@ def search():
         argv += ["--experience", env("INPUT_EXPERIENCE")]
     if env("INPUT_COMPANIES"):
         argv += ["--companies", env("INPUT_COMPANIES")]
-    resume_text = os.environ.get("RESUME_TEXT", "")
+    # The resume the phone sent with this run (stored on that device, workflow input `resume`)
+    # wins over the repo secret; the secret is the fallback for runs started without one.
+    resume_text, origin = os.environ.get("INPUT_RESUME", ""), "the phone's stored resume"
+    if not resume_text.strip():
+        resume_text, origin = os.environ.get("RESUME_TEXT", ""), "RESUME_TEXT secret"
     if resume_text.strip():
         resume_path = os.path.join(work, "resume.txt")
         with open(resume_path, "w", encoding="utf-8") as f:
             f.write(resume_text)
         argv += ["--resume", resume_path]
-        print("resume: using RESUME_TEXT secret (%d chars)" % len(resume_text))
+        print("resume: using %s (%d chars)" % (origin, len(resume_text)))
     else:
-        print("resume: no RESUME_TEXT secret, jobs will not be scored")
+        print("resume: none sent and no RESUME_TEXT secret, jobs will not be scored")
     summary = run_bot(argv)
     if not os.path.exists(out):
         raise SystemExit("careers_bot wrote no result")

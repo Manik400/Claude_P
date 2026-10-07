@@ -408,6 +408,11 @@ def _resume_path(config: dict) -> str | None:
     for cand in [app.get("resume"), os.environ.get("APPLY_RESUME")]:
         if cand and os.path.exists(os.path.expanduser(str(cand))):
             return os.path.abspath(os.path.expanduser(str(cand)))
+    # The resume stored for this computer (site\set_resume.bat): %LOCALAPPDATA%\JobHuntPhone\resume\current.*
+    device = Path(os.environ.get("JOBHUNT_DEVICE_DIR") or os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")) / "JobHuntPhone" / "resume"
+    for ext in (".pdf", ".docx", ".txt", ".md"):
+        if (device / f"current{ext}").exists():
+            return str(device / f"current{ext}")
     # The resume the worldwide search last scored against.
     runs = Path(os.path.expanduser("~")) / "Documents" / "JobHunt"
     try:

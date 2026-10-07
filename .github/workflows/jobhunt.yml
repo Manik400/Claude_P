@@ -28,11 +28,10 @@ on:
         description: "Only jobs posted in the last N hours (wins over days; empty = use days)"
         required: false
         default: ""
-      allow_undated:
-        description: "Keep postings whose time stays unknown after their own page was read for a date (off = drop them)"
-        type: boolean
+      resume:
+        description: "Resume as plain text, sent by the phone from the resume stored on that device (empty = the RESUME_TEXT secret). To drop still-undated postings, put --strict-undated in extra."
         required: false
-        default: true
+        default: ""
       min_salary:
         description: "Only postings that state at least this a year, e.g. 10 LPA (postings that state no pay are kept and marked; empty = no floor)"
         required: false
@@ -106,7 +105,7 @@ jobs:
           INPUT_COUNTRIES: ${{ inputs.countries }}
           INPUT_DAYS: ${{ inputs.days }}
           INPUT_HOURS: ${{ inputs.hours }}
-          INPUT_ALLOW_UNDATED: ${{ inputs.allow_undated }}
+          INPUT_RESUME: ${{ inputs.resume }}
           INPUT_MIN_SALARY: ${{ inputs.min_salary }}
           INPUT_PLATFORMS: ${{ inputs.platforms }}
           INPUT_FIT: ${{ inputs.fit }}

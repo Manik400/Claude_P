@@ -51,6 +51,10 @@ on:
         description: "Only these companies (comma list, empty = whole list)"
         required: false
         default: ""
+      resume:
+        description: "Resume as plain text, sent by the phone from the resume stored on that device (empty = the RESUME_TEXT secret)"
+        required: false
+        default: ""
 
 permissions:
   contents: write
@@ -121,6 +125,7 @@ jobs:
           INPUT_HOURS: ${{ inputs.hours }}
           INPUT_MIN_SALARY: ${{ inputs.min_salary }}
           INPUT_COMPANIES: ${{ inputs.companies }}
+          INPUT_RESUME: ${{ inputs.resume }}
           RESUME_TEXT: ${{ secrets.RESUME_TEXT }}
           # Local model settings (repo variables; see job-hunt/README.md)
           LOCAL_AI: ${{ vars.LOCAL_AI }}

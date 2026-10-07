@@ -42,7 +42,7 @@ from jobbot.http import Http  # noqa: E402
 from jobbot import localai  # noqa: E402
 from jobbot.models import Job  # noqa: E402
 from jobbot.render import render  # noqa: E402
-from jobbot.resume import ResumeError, extract_text  # noqa: E402
+from jobbot.resume import ResumeError, device_resume_path, extract_text  # noqa: E402
 from jobbot.scoring import score_jobs  # noqa: E402
 from jobbot.search import apply_fit_filter, run_search, salary_filter, sort_jobs  # noqa: E402
 from jobbot.sources import ALL_SOURCES, BY_KEY, select_sources  # noqa: E402
@@ -350,6 +350,9 @@ def apply_like_last(args, log):
     if args.countries and "IN" not in [c.strip().upper() for c in args.countries.split(",")] \
             and "india" not in args.countries.lower():
         args.countries = "IN," + args.countries
+    # the resume stored for this computer wins over the one the last run happened to use
+    if not getattr(args, "resume", None):
+        args.resume = device_resume_path()
     if not getattr(args, "resume", None) and meta.get("resume_path") and os.path.exists(meta["resume_path"]):
         args.resume = meta["resume_path"]
     if getattr(args, "hours", None) is None and meta.get("hours"):
@@ -415,9 +418,13 @@ def cmd_run(args):
         apply_like_last(args, log0)
     if not args.role:
         raise SystemExit("--role is required (or --like-last)")
+    if not getattr(args, "resume", None):
+        args.resume = device_resume_path()        # this computer's stored resume (site\set_resume.bat)
     run_dir = make_run_dir(args)
     log = Logger(os.path.join(run_dir, "run.log"), quiet=args.quiet)
     log(localai.status_line())
+    if args.resume:
+        log(f"resume: {args.resume}")
     meta, statuses, jobs = do_search(args, run_dir, log)
     if args.resume:
         do_score(run_dir, meta, jobs, args.resume, log)

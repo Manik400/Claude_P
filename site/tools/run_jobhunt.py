@@ -63,15 +63,19 @@ def main():
         argv += ["--fit", env("INPUT_FIT")]
     if env("INPUT_EXTRA"):
         argv += shlex.split(env("INPUT_EXTRA"))
-    resume_text = os.environ.get("RESUME_TEXT", "")
+    # The resume the phone sent with this run (stored on that device, workflow input `resume`)
+    # wins over the repo secret; the secret is the fallback for runs started without one.
+    resume_text, origin = os.environ.get("INPUT_RESUME", ""), "the phone's stored resume"
+    if not resume_text.strip():
+        resume_text, origin = os.environ.get("RESUME_TEXT", ""), "RESUME_TEXT secret"
     if resume_text.strip():
         resume_path = os.path.join(work, "resume.txt")
         with open(resume_path, "w", encoding="utf-8") as f:
             f.write(resume_text)
         argv += ["--resume", resume_path]
-        print("resume: using RESUME_TEXT secret (%d chars)" % len(resume_text))
+        print("resume: using %s (%d chars)" % (origin, len(resume_text)))
     else:
-        print("resume: no RESUME_TEXT secret, jobs will not be scored")
+        print("resume: none sent and no RESUME_TEXT secret, jobs will not be scored")
 
     print("running:", " ".join(shlex.quote(a) for a in argv[1:]), flush=True)
     r = subprocess.run(argv, text=True, encoding="utf-8", errors="replace", capture_output=True)
