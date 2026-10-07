@@ -496,6 +496,7 @@
             <div class="hint">Read from each posting's own pay field or text (LPA, ₹, $, €, per month, per hour…) and converted to rupees a year. Postings that state less are left out; ones that state no pay stay, marked "pay not stated", and you can filter them under Jobs.</div>
           </div>
         </details>
+        <div class="hint resume-hint" id="f-resume-hint"></div>
         <button class="primary" id="btn-run">Start search</button>
         <div id="run-msg"></div>
         <div class="hint">Runs on GitHub, 5–15 min. For India it reads Naukri, Indeed and LinkedIn through Apify when <code>APIFY_TOKEN</code> is set (see Settings → Coverage). The report lands in <b>Jobs</b>, where you can queue everything in two taps.</div>
@@ -541,6 +542,7 @@
             <div class="hint">Pay is read from each posting's text (LPA, ₹, $, €…). Postings that state less a year are left out; ones that state no pay stay, marked "pay not stated".</div>
           </div>
         </details>
+        <div class="hint resume-hint" id="c-resume-hint"></div>
         <button class="primary" id="btn-careers">Search career pages</button>
         <div id="careers-msg"></div>
         <details class="hint"><summary id="c-list-sum">Company list</summary><div id="c-list-body">Loading…</div></details>
@@ -602,6 +604,16 @@
       <button class="primary" id="btn-save">Save</button>
       <div id="s-msg"></div>
       <div class="hint">Stored only in this browser. The token is sent only to api.github.com to start runs and read their status. Reports need no passphrase.</div>
+    </div>
+    <div class="card" id="s-resume-card">
+      <h2>Resume on this device</h2>
+      <div id="s-resume-now" class="muted" style="font-size: 0.875rem">No resume stored on this device.</div>
+      <label style="margin-top:10px">Upload or replace <span class="muted">(.pdf, .docx or .txt)</span></label>
+      <input id="s-resume-file" type="file" accept=".pdf,.docx,.txt,.md,application/pdf,application/vnd.openxmlformats-officedocument.wordprocessingml.document,text/plain">
+      <div class="row" style="margin-top:8px"><button class="btn2" id="s-resume-dl" hidden>Download copy</button><button class="btn2" id="s-resume-rm" hidden>Remove</button></div>
+      <div id="s-resume-msg"></div>
+      <details class="hint" id="s-resume-prev" hidden><summary>Text read from it (what the search scores against)</summary><pre id="s-resume-text" style="white-space:pre-wrap;font-size:0.8rem;max-height:14em;overflow:auto"></pre></details>
+      <div class="hint">Kept only in this browser's storage on this device - never uploaded to the repo, never shared with another phone or PC. Every search and career-page search you start from here sends its text along, so jobs are scored against it. Without one, runs use the repo's RESUME_TEXT secret if set. On the PC, store the resume for that computer with <code>site\set_resume.bat</code>; the runs the PC starts use that one.</div>
     </div>
     <div class="card">
       <h2>How to get a token</h2>
@@ -684,6 +696,110 @@
     set: function (k, v) { try { localStorage.setItem("jh:" + k, v); } catch (e) {} }
   };
   function esc(s) { return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) { return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c]; }); }
+
+  // ---- Resume on this device: one file per browser, kept in IndexedDB (text + the original), never
+  // uploaded anywhere but the run it starts (workflow input `resume`). Another phone or PC has its own.
+  var deviceResume = (function () {
+    var DB = "jobhunt-device", STORE = "resume", KEY = "current", cache;
+    function open() {
+      return new Promise(function (res, rej) {
+        if (!window.indexedDB) return rej(new Error("no IndexedDB in this browser"));
+        var r = indexedDB.open(DB, 1);
+        r.onupgradeneeded = function () { r.result.createObjectStore(STORE); };
+        r.onsuccess = function () { res(r.result); }; r.onerror = function () { rej(r.error || new Error("IndexedDB failed")); };
+      });
+    }
+    function tx(mode, fn) {
+      return open().then(function (db) {
+        return new Promise(function (res, rej) {
+          var t = db.transaction(STORE, mode), req = fn(t.objectStore(STORE));
+          t.oncomplete = function () { res(req && req.result); }; t.onerror = function () { rej(t.error); }; t.onabort = function () { rej(t.error); };
+        });
+      });
+    }
+    function get() {
+      if (cache !== undefined) return Promise.resolve(cache);
+      return tx("readonly", function (s) { return s.get(KEY); }).then(function (v) { cache = v || null; return cache; }, function () { cache = null; return null; });
+    }
+    function put(rec) { return tx("readwrite", function (s) { return s.put(rec, KEY); }).then(function () { cache = rec; store.set("resume.name", rec.name); store.set("resume.chars", String(rec.text.length)); return rec; }); }
+    function clear() { return tx("readwrite", function (s) { return s.delete(KEY); }).then(function () { cache = null; store.set("resume.name", ""); store.set("resume.chars", ""); }); }
+    function text() { return get().then(function (r) { return r && r.text ? r.text.slice(0, 60000) : ""; }); }
+    function lib(src, ready) {
+      return new Promise(function (res, rej) {
+        if (ready()) return res();
+        var s = document.createElement("script"); s.src = src; s.onload = function () { res(); }; s.onerror = function () { rej(new Error("could not load " + src)); };
+        document.head.appendChild(s);
+      });
+    }
+    function extract(file) {
+      var name = file.name || "resume", low = name.toLowerCase();
+      if (/\.(txt|md|markdown)$/.test(low) || /^text\//.test(file.type || "")) return file.text();
+      if (/\.pdf$/.test(low) || file.type === "application/pdf") {
+        return lib("https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js", function () { return window.pdfjsLib; }).then(function () {
+          pdfjsLib.GlobalWorkerOptions.workerSrc = "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
+          return file.arrayBuffer().then(function (buf) { return pdfjsLib.getDocument({ data: buf }).promise; }).then(function (pdf) {
+            var pages = []; for (var i = 1; i <= pdf.numPages; i++) pages.push(pdf.getPage(i).then(function (pg) { return pg.getTextContent(); }));
+            return Promise.all(pages).then(function (contents) {
+              return contents.map(function (c) {
+                var out = "", lastY = null;
+                c.items.forEach(function (it) { var y = it.transform ? Math.round(it.transform[5]) : null; if (lastY !== null && y !== lastY) out += "\n"; out += it.str; if (it.hasEOL) out += "\n"; lastY = y; });
+                return out;
+              }).join("\n\n");
+            });
+          });
+        });
+      }
+      if (/\.docx$/.test(low) || /wordprocessingml/.test(file.type || "")) {
+        return lib("https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js", function () { return window.JSZip; }).then(function () {
+          return file.arrayBuffer().then(function (buf) { return JSZip.loadAsync(buf); }).then(function (zip) {
+            var doc = zip.file("word/document.xml"); if (!doc) throw new Error("not a Word document");
+            return doc.async("string");
+          }).then(function (xml) {
+            return xml.replace(/<\/w:p>/g, "\n").replace(/<w:tab\/>/g, "\t").replace(/<w:br[^>]*\/>/g, "\n").replace(/<[^>]+>/g, "")
+              .replace(/&amp;/g, "&").replace(/&lt;/g, "<").replace(/&gt;/g, ">").replace(/&quot;/g, '"').replace(/&#(\d+);/g, function (_, n) { return String.fromCharCode(+n); });
+          });
+        });
+      }
+      return Promise.reject(new Error("use a .pdf, .docx or .txt file"));
+    }
+    function save(file) {
+      return extract(file).then(function (t) {
+        t = String(t || "").replace(/[ \t]+\n/g, "\n").replace(/\n{3,}/g, "\n\n").trim();
+        if (t.length < 80) throw new Error("almost no text could be read from this file (a scanned PDF?). Export it as text or a text-based PDF.");
+        return put({ name: file.name, type: file.type || "", size: file.size, at: new Date().toISOString(), text: t, blob: file });
+      });
+    }
+    return { get: get, text: text, save: save, clear: clear };
+  })();
+  function resumeLine(prefix) {
+    var n = store.get("resume.name", ""), c = store.get("resume.chars", "");
+    return n ? prefix + " scored against <b>" + esc(n) + "</b> (this device" + (c ? ", " + c + " chars" : "") + ") · <a href=\"#\" data-tab=\"settings\">change</a>"
+             : prefix + " scored against the repo's RESUME_TEXT secret, if set · <a href=\"#\" data-tab=\"settings\">store a resume on this device</a>";
+  }
+  function renderResumeHints() {
+    ["f-resume-hint", "c-resume-hint"].forEach(function (id) { var el = $(id); if (el) el.innerHTML = resumeLine("Jobs are"); });
+    deviceResume.get().then(function (r) {
+      var now = $("s-resume-now"); if (!now) return;
+      if (!r) { now.innerHTML = "No resume stored on this device."; $("s-resume-dl").hidden = true; $("s-resume-rm").hidden = true; $("s-resume-prev").hidden = true; return; }
+      now.innerHTML = "<b>" + esc(r.name) + "</b> · " + Math.round((r.size || 0) / 1024) + " KB · " + r.text.length + " characters of text · stored " + esc(ago(r.at));
+      $("s-resume-dl").hidden = !r.blob; $("s-resume-rm").hidden = false; $("s-resume-prev").hidden = false; $("s-resume-text").textContent = r.text.slice(0, 4000) + (r.text.length > 4000 ? "\n…" : "");
+    });
+  }
+  (function () {
+    var file = $("s-resume-file"); if (!file) return;
+    file.addEventListener("change", function () {
+      var f = file.files && file.files[0]; if (!f) return;
+      msg("s-resume-msg", "Reading " + f.name + "…");
+      deviceResume.save(f).then(function (r) { msg("s-resume-msg", "Stored on this device: " + r.name + " (" + r.text.length + " characters). Searches from here use it now.", "ok"); file.value = ""; renderResumeHints(); })
+        .catch(function (e) { msg("s-resume-msg", "Not stored: " + e.message, "bad"); file.value = ""; });
+    });
+    $("s-resume-rm").addEventListener("click", function () { deviceResume.clear().then(function () { msg("s-resume-msg", "Removed from this device.", "ok"); renderResumeHints(); }); });
+    $("s-resume-dl").addEventListener("click", function () {
+      deviceResume.get().then(function (r) { if (!r || !r.blob) return; var u = URL.createObjectURL(r.blob), a = document.createElement("a"); a.href = u; a.download = r.name; document.body.appendChild(a); a.click(); a.remove(); setTimeout(function () { URL.revokeObjectURL(u); }, 2000); });
+    });
+    document.addEventListener("click", function (e) { var a = e.target.closest && e.target.closest(".resume-hint a[data-tab]"); if (a) { e.preventDefault(); showTab(a.dataset.tab); } });
+    renderResumeHints();
+  })();
   function ago(iso) {
     if (!iso) return "";
     var d = (Date.now() - new Date(iso).getTime()) / 1000;
@@ -2212,11 +2328,13 @@
                    min_salary: $("f-minsal").value.trim() ? $("f-minsal").value.trim() + " LPA" : "",
                    fit: $("f-fit").value, extra: extra.trim(), platforms: picked.join(",") };
     // hours wins over days in the workflow, so it is sent for any window under a day -
-    // including one typed in days ("0.5 days"), where the undated switch applies too.
-    if (hours < 24) { inputs.hours = trimNum(hours); inputs.allow_undated = $("f-undated").checked ? "true" : "false"; }
+    // including one typed in days ("0.5 days"), where the undated switch applies too
+    // (as job_bot's own --strict-undated flag: the workflow's ten inputs are all taken).
+    if (hours < 24) { inputs.hours = trimNum(hours); if (!$("f-undated").checked) inputs.extra = (inputs.extra + " --strict-undated").trim(); }
     $("btn-run").disabled = true; msg("run-msg", "Starting…");
-    gh("/actions/workflows/jobhunt.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
-      .then(function () { msg("run-msg", "Started. " + (worldOn() ? "20–40 minutes for the whole world" : "5–15 minutes") + "; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
+    deviceResume.text().then(function (rt) { if (rt) inputs.resume = rt; })
+      .then(function () { return gh("/actions/workflows/jobhunt.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) }); })
+      .then(function () { msg("run-msg", "Started" + (inputs.resume ? " with this device's resume" : "") + ". " + (worldOn() ? "20–40 minutes for the whole world" : "5–15 minutes") + "; the report lands under Jobs (and Home).", "ok"); setTimeout(function () { loadRuns("jobhunt.yml", "runs"); }, 4000); })
       .catch(function (e) { msg("run-msg", "Could not start: " + e.message, "bad"); })
       .then(function () { $("btn-run").disabled = false; });
   });
@@ -2454,8 +2572,9 @@
                    fit: $("c-fit").value, days: $("c-days").value.trim(), hours: $("c-hours").value.trim(),
                    min_salary: $("c-minsal").value.trim() ? $("c-minsal").value.trim() + " LPA" : "", companies: $("c-companies").value.trim() };
     $("btn-careers").disabled = true; msg("careers-msg", "Starting…");
-    gh("/actions/workflows/careers.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) })
-      .then(function () { msg("careers-msg", "Started. About 15–25 minutes (the whole list, read in 4 parts); the result appears under Jobs → Career-page searches.", "ok"); setTimeout(function () { loadRuns("careers.yml", "c-runs"); }, 4000); })
+    deviceResume.text().then(function (rt) { if (rt) inputs.resume = rt; })
+      .then(function () { return gh("/actions/workflows/careers.yml/dispatches", { method: "POST", body: JSON.stringify({ ref: s.ref, inputs: inputs }) }); })
+      .then(function () { msg("careers-msg", "Started" + (inputs.resume ? " with this device's resume" : "") + ". About 15–25 minutes (the whole list, read in 4 parts); the result appears under Jobs → Career-page searches.", "ok"); setTimeout(function () { loadRuns("careers.yml", "c-runs"); }, 4000); })
       .catch(function (e) { msg("careers-msg", "Could not start: " + e.message, "bad"); })
       .then(function () { $("btn-careers").disabled = false; });
   });
