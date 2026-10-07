@@ -164,6 +164,10 @@ scan_apply_min_score: 0
 # apply in bursts, so the daily cap is deliberately modest.
 linkedin_easy_apply: true
 linkedin_max_applies_per_day: 25
+# LinkedIn postings whose Apply leads OFF LinkedIn (to the company's own form) are not limited by
+# LinkedIn: every scheduled run, not only the day's one Easy Apply turn, opens up to this many of
+# them and lets the career applier fill the form. 0 = only on the day's LinkedIn turn.
+linkedin_offsite_per_run: 15
 
 # Company career sites (Naukri "Apply on company site", LinkedIn's plain
 # Apply, and the worldwide search's other boards): naukri/jobs/career_apply.py

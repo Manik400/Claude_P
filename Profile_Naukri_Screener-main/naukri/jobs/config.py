@@ -116,6 +116,10 @@ DEFAULTS = {
     # restricts accounts that apply in bursts, so keep this modest.
     "linkedin_easy_apply": True,
     "linkedin_max_applies_per_day": 25,
+    # LinkedIn postings whose Apply leads off LinkedIn: how many every run (not only the
+    # day's one Easy Apply turn) opens and follows to the company's form. 0 = only on the
+    # day's LinkedIn turn.
+    "linkedin_offsite_per_run": 15,
 }
 
 

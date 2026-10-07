@@ -648,12 +648,22 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
         # Scheduled runs open LinkedIn for applying once a day (linkedin_daily.py);
         # the postings stay in line for tomorrow's turn.
         if li_cards and not linkedin_daily.take("apply"):
+            # The day's Easy Apply turn is used: Easy Apply postings wait for tomorrow. Postings whose
+            # Apply leads OFF LinkedIn are not limited by anything LinkedIn counts, so every later run
+            # still opens a few of them (linkedin_offsite_per_run) and follows the Apply to the
+            # company's form - that is where "apply to as many as possible" happens.
             note = linkedin_daily.label("apply")
-            log.info("LinkedIn applies skipped: %s - %d job(s) left for tomorrow", note, len(li_cards))
-            for _card, job in li_cards:
+            cap = max(0, int(config.get("linkedin_offsite_per_run") or 0))
+            offsite = [(c, j) for c, j in li_cards if not c.get("easy_apply") or career_untried(j.job_id)] if career_ready() and cap else []
+            keep_ids = {j.job_id for _c, j in offsite[:cap]}
+            held = [(c, j) for c, j in li_cards if j.job_id not in keep_ids]
+            for _card, job in held:
                 outcomes[job.job_id] = {"status": "limit-cooldown", "note": note}
-            counts["skipped-once-a-day"] = len(li_cards)
-            li_cards = []
+            counts["skipped-once-a-day"] = len(held)
+            li_cards = [(c, j) for c, j in li_cards if j.job_id in keep_ids]
+            paused[0] = True
+            log.info("LinkedIn Easy Apply skipped: %s - %d Easy Apply job(s) wait for tomorrow; %d plain-Apply posting(s) go to the company site now",
+                     note, len(held), len(li_cards))
         if li_cards:
             log.info("LinkedIn: %s up to %d of %d job(s)%s",
                      "company-site applies from" if paused[0] else "Easy Apply to",
