@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-07T07:01:28Z",
+ "updated": "2026-10-07T07:18:28Z",
  "items": [
   {
    "id": "applications-20261007-070128-applications-sent",
@@ -42,15 +42,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261007-064651-naukri-openings-2026-10-07-run-3-all-job.jobs.json"
    }
-  },
-  {
-   "id": "accuracy-20261007-064651-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-10-07T06:46:51Z",
-   "file": "data/accuracy/accuracy-20261007-064651-accuracy-learning.html",
-   "bytes": 17062,
-   "meta": {}
   },
   {
    "id": "naukri-20261007-064649-naukri-openings-2026-10-07-run-1-last-24",

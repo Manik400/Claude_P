@@ -402,6 +402,15 @@
   html.site-fs #btn-side { display: none !important; }
   @media (max-width: 460px) { .brand #h-pc { display: none; } .brand h1 { font-size: 1rem; } }
   @media (min-width: 900px) { .brand { padding-right: 6px; } }
+  /* Premium tab: the runner's markdown report */
+  table.md { border-collapse: collapse; width: 100%; font-size: 0.85rem; margin: 6px 0 10px; }
+  table.md th, table.md td { border-bottom: 1px solid var(--line); padding: 5px 6px; text-align: left; vertical-align: top; }
+  table.md th { font-weight: 600; }
+  .md-report h2, .md-report h3 { margin: 14px 0 6px; font-size: 1rem; }
+  .md-report blockquote { margin: 6px 0 10px; padding: 8px 10px; border-left: 3px solid var(--accent, #2e7d32); background: var(--bg2, transparent); white-space: pre-wrap; font-size: 0.9rem; }
+  .md-report ul { padding-left: 18px; margin: 6px 0; }
+  .md-report li { margin: 3px 0; }
+  .md-report details { margin: 8px 0; }
 </style>
 <!-- UI v2: the portfolio's look, one button away. The skin is scoped to
      data-ui="v2", so nothing here changes the classic page. -->
@@ -423,6 +432,7 @@
     <button data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
     <button data-tab="jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>Jobs</button>
     <button data-tab="posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 15h5"/></svg>Posts<span class="dot" id="dot-posts" hidden></span></button>
+    <button data-tab="premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>Premium<span class="dot" id="dot-premium" hidden></span></button>
     <button data-tab="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Queue<span class="dot" id="dot-queue" hidden></span></button>
     <button data-tab="track"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 17l6-6 4 4 8-8"/><path d="M14 7h7v7"/></svg>Track</button>
     <button data-tab="plan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4M8 15l2 2 4-4"/></svg>Plan</button>
@@ -570,6 +580,12 @@
        (Profile_Naukri_Screener-main\naukri\jobs\linkedin_posts.py -> data/posts/linkedin_posts.json) -->
   <section id="tab-posts" hidden>
     <div id="posts-body"><div class="card"><span class="spin"></span> Loading…</div></div>
+  </section>
+
+  <!-- ----------------------------------------------------------------- Premium: the LinkedIn Premium runner's day, the post to publish, the PC's tasks
+       (Profile_Naukri_Screener-main\naukri\jobs\linkedin_premium.py -> data/premium/latest.json) -->
+  <section id="tab-premium" hidden>
+    <div id="premium-body"><div class="card"><span class="spin"></span> Loading…</div></div>
   </section>
 
   <!-- ----------------------------------------------------------------- Queue -->
@@ -1001,7 +1017,7 @@
   }
 
   // ---- tabs
-  var TABS = ["home", "search", "jobs", "posts", "queue", "track", "plan", "settings"];
+  var TABS = ["home", "search", "jobs", "posts", "premium", "queue", "track", "plan", "settings"];
   var tabs = document.querySelectorAll("nav.tabs button");
   var TITLES = { home: ["Home", "what is happening right now"], search: ["Search", "start a run on GitHub; results land under Jobs"],
     jobs: ["Jobs", "every report, newest first"], posts: ["Posts", "LinkedIn hiring posts from the last 12 h, read by your PC"],
@@ -1029,9 +1045,10 @@
     if (name === "plan") requestAnimationFrame(fitPlan);
     store.set("tab", name);
     try { history.replaceState(history.state, "", "#" + name); } catch (e) {}
-    if (name === "home") { loadIndex(); loadQueue().then(renderHome); loadRuns("jobhunt.yml", null); loadRuns("careers.yml", null); }
+    if (name === "home") { loadIndex(); loadQueue().then(renderHome); loadRuns("jobhunt.yml", null); loadRuns("careers.yml", null); loadPremium(); }
     if (name === "jobs") { loadIndex(); loadCompanies(); }
     if (name === "posts") loadPosts(true).then(renderPosts);
+    if (name === "premium") loadPremium(true).then(renderPremium);
     if (name === "search") { loadRuns("jobhunt.yml", "runs"); loadRuns("careers.yml", "c-runs"); loadCompanies(); }
     if (name === "queue") loadQueue(true).then(renderQueue);
     if (name === "track") loadTrack();
@@ -1357,6 +1374,135 @@
     s += '<div class="muted" style="margin-top:6px">Today: LinkedIn ' + (a.linkedin || 0) + (caps.linkedin ? "/" + caps.linkedin : "") + " · Naukri " + (a.naukri || 0) + (caps.naukri ? "/" + caps.naukri : "") +
       " · up to " + (pc.limit || 5) + " each on Naukri / LinkedIn per run, company sites unlimited" + (pc.platform_summary ? " · " + esc(pc.platform_summary) : "") + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
     return s;
+  }
+
+  // ---- Premium: data/premium/latest.json, written by the PC's LinkedIn Premium runner after every pass.
+  // The Post button and the task Start / Stop buttons go through the apply queue (apply.yml -> the PC).
+  var premium = null, premiumAt = 0, premiumErr = "", premiumWait = null;
+  function loadPremium(force) {
+    if (!force && premium && Date.now() - premiumAt < 60000) return Promise.resolve(premium);
+    if (premiumWait) return premiumWait;
+    premiumWait = fetchEnc("data/premium/latest.json?t=" + Date.now()).then(JSON.parse)
+      .then(function (p) { premium = p; premiumAt = Date.now(); premiumErr = ""; premiumWait = null; updatePremiumDot(); return p; },
+            function (e) { premiumWait = null; premiumErr = errText(e); return premium; });
+    return premiumWait;
+  }
+  function premiumPostedLocally(date) { return store.get("premium.sent." + date, ""); }
+  function updatePremiumDot() {
+    var d = (premium || {}).draft, on = d && d.text && !d.posted && !premiumPostedLocally(d.date);
+    $("dot-premium").hidden = !on; $("dot-premium").textContent = on ? "1" : "";
+  }
+  function mdInline(s) {
+    return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
+      .replace(/\[([^\]]+)\]\((https?:[^)\s]+)\)/g, function (_, t, u) { return '<a href="' + esc(u) + '" target="_blank" rel="noopener">' + t + "</a>"; })
+      .replace(/\*(?!\s)([^*]+?)\*/g, "<i>$1</i>");
+  }
+  function mdToHtml(md) {
+    var lines = String(md || "").split("\n"), out = [], i = 0, l;
+    function flushList(items) { if (items.length) out.push("<ul>" + items.map(function (x) { return "<li>" + x + "</li>"; }).join("") + "</ul>"); }
+    while (i < lines.length) {
+      l = lines[i];
+      if (/^<details|^<\/details|^<summary|^<\/summary/.test(l)) { out.push(l.replace(/<(?!\/?(details|summary)\b)[^>]*>/g, "")); i++; continue; }
+      if (/^#{1,6}\s/.test(l)) { var n = l.match(/^#+/)[0].length; out.push("<h" + Math.min(n + 1, 4) + ">" + mdInline(l.replace(/^#+\s*/, "")) + "</h" + Math.min(n + 1, 4) + ">"); i++; continue; }
+      if (/^\|/.test(l)) {
+        var rows = []; while (i < lines.length && /^\|/.test(lines[i])) { rows.push(lines[i]); i++; }
+        var cells = function (r) { return r.replace(/^\||\|$/g, "").split("|").map(function (c) { return c.trim(); }); };
+        var head = cells(rows[0]), body = rows.slice(2).map(cells);
+        out.push('<div style="overflow:auto"><table class="md"><thead><tr>' + head.map(function (c) { return "<th>" + mdInline(c) + "</th>"; }).join("") + "</tr></thead><tbody>" +
+          body.map(function (r) { return "<tr>" + r.map(function (c) { return "<td>" + mdInline(c) + "</td>"; }).join("") + "</tr>"; }).join("") + "</tbody></table></div>");
+        continue;
+      }
+      if (/^\s*[-*]\s/.test(l) || /^\s*\d+\.\s/.test(l)) {
+        var items = [];
+        while (i < lines.length && (/^\s*[-*]\s/.test(lines[i]) || /^\s*\d+\.\s/.test(lines[i]) || /^\s{2,}\S/.test(lines[i]))) {
+          if (/^\s{2,}\S/.test(lines[i]) && items.length) items[items.length - 1] += "<br>" + mdInline(lines[i].trim().replace(/^>\s?/, ""));
+          else items.push(mdInline(lines[i].replace(/^\s*([-*]|\d+\.)\s/, "")));
+          i++;
+        }
+        flushList(items); continue;
+      }
+      if (/^>\s?/.test(l)) {
+        var q = []; while (i < lines.length && /^>\s?/.test(lines[i])) { q.push(mdInline(lines[i].replace(/^>\s?/, ""))); i++; }
+        out.push("<blockquote>" + q.join("<br>") + "</blockquote>"); continue;
+      }
+      if (!l.trim()) { i++; continue; }
+      var p = []; while (i < lines.length && lines[i].trim() && !/^(#|\||>|\s*[-*]\s|\s*\d+\.\s|<)/.test(lines[i])) { p.push(mdInline(lines[i])); i++; }
+      if (p.length) out.push("<p>" + p.join(" ") + "</p>"); else i++;
+    }
+    return out.join("\n");
+  }
+  function taskLabel(n) {
+    return { LinkedInPremium: "LinkedIn Premium runner (every 4 h)", SocialPostsWatch: "Hiring posts: X, Telegram, Reddit, HN (every 30 min)",
+             LinkedInPostsWatch: "Hiring posts: LinkedIn (every 30 min)", JobHuntApply: "Job hunt rounds: search + apply (every 30 min)",
+             PhoneApplyQueue: "This phone's queue worker (every 30 min)", NaukriProfileRefresh: "Naukri profile refresh" }[n] || n;
+  }
+  function renderPremium() {
+    var box = $("premium-body"), d = premium, h = "";
+    if (!d) {
+      box.innerHTML = '<div class="card">' + (premiumErr && !/HTTP 404/.test(premiumErr) ? '<div class="msg bad">' + esc(premiumErr) + "</div>" :
+        '<div class="msg info">Nothing published yet. On the PC, run <code>Profile_Naukri_Screener-main\\scripts\\schedule_linkedin_premium.ps1</code> once; the runner then publishes its report here after every pass.</div>') + "</div>";
+      return;
+    }
+    var day = d.day || {}, c = d.counts || {}, age = hoursSince(d.updated);
+    h += '<div class="card"><div><b>LinkedIn Premium · ' + esc(d.date) + " · " + d.days_left + " day" + (d.days_left === 1 ? "" : "s") + " left (until " + esc(d.until) + ")</b></div>" +
+      '<div class="muted">Updated ' + esc(ago(d.updated)) + (d.host ? " on " + esc(d.host) : "") + " · passes today " + (day.passes || 0) + "</div>" +
+      (age > 6 ? '<div class="msg warn">The runner has not reported for ' + Math.round(age) + " h. Is the PC on? Start it below.</div>" : "") +
+      '<div class="tags" style="margin-top:8px">' + chip("ok", (day.applied || 0) + " applied") + chip("", (day.liked || 0) + " liked") + chip(c.leads ? "warn" : "", (c.leads || 0) + " recruiter leads") +
+      chip("", (c.inmails || 0) + " InMail drafts") + chip("", (c.offsite || 0) + " to apply by hand") + chip("", (day.viewers_new || 0) + " new viewers") + (c.errors ? chip("bad", c.errors + " problems") : "") + "</div></div>";
+    // the post to publish
+    var dr = d.draft, sent = dr ? premiumPostedLocally(dr.date) : "";
+    h += '<div class="card"><h2>Today\'s post</h2>';
+    if (!dr || !dr.text) h += '<div class="muted">No draft yet today; the runner writes one on its first pass of the day.</div>';
+    else {
+      var posted = dr.posted;
+      h += '<div class="muted">Topic: ' + esc(dr.topic || "") + " · " + dr.text.length + " characters" +
+        (posted ? " · " + chip(posted.status === "posted" ? "ok" : "bad", posted.status === "posted" ? "posted " + ago(posted.at) : "post failed: " + (posted.note || "")) : (sent ? " · " + chip("warn", "sent to the PC " + ago(sent) + "; it posts on its next check-in") : "")) + "</div>" +
+        '<pre id="pm-draft" style="white-space:pre-wrap;font-size:0.9rem;line-height:1.45;margin:10px 0">' + esc(dr.text) + "</pre>" +
+        '<div class="acts"><button class="primary" id="pm-post"' + (posted && posted.status === "posted" ? " disabled" : "") + '>Post on LinkedIn (via PC)</button>' +
+        '<a class="btn2" target="_blank" rel="noopener" href="https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(dr.text) + '">Open in LinkedIn, prefilled</a>' +
+        '<button class="btn2" id="pm-copy">Copy text</button></div>' +
+        '<div class="hint">"Post on LinkedIn (via PC)" sends the text to your PC, which publishes it from your saved LinkedIn session on its next check-in (within 30 minutes while the PC is on). "Open in LinkedIn, prefilled" opens LinkedIn here with the text in the composer, so you tap Post yourself right now.</div>';
+    }
+    h += "</div>";
+    // the PC's tasks
+    var tasks = d.tasks || [];
+    h += '<div class="card"><h2>What runs on the PC</h2>';
+    if (!tasks.length) h += '<div class="muted">No scheduled tasks reported yet.</div>';
+    tasks.forEach(function (t) {
+      var running = /running/i.test(t.state || ""), off = t.enabled === false || /disabled/i.test(t.state || "");
+      h += '<div class="job" style="padding:10px 0;border-top:1px solid var(--line)"><div><b>' + esc(taskLabel(t.name)) + "</b> " +
+        chip(running ? "ok" : off ? "bad" : "", running ? "running" : off ? "stopped" : esc(t.state || "?")) + "</div>" +
+        '<div class="muted" style="font-size:0.85rem">' + esc(t.name) + (t.last_run ? " · last " + esc(ago(t.last_run)) : "") + (t.next_run && !off ? " · next " + esc(ago(t.next_run).replace(" ago", "")) : "") + "</div>" +
+        '<div class="acts">' + (off ? '<button class="btn2" data-ctl="start" data-task="' + esc(t.name) + '">Start</button>' :
+          '<button class="btn2" data-ctl="stop" data-task="' + esc(t.name) + '">Stop</button><button class="btn2" data-ctl="run" data-task="' + esc(t.name) + '">Run now</button>') + "</div></div>";
+    });
+    h += '<div class="hint">Start / Stop reach the PC through the queue worker (every 30 minutes, and 2 minutes after logon). Stop also disables the task so it is not restarted; Start enables and starts it.</div></div>';
+    if (d.reach && d.reach.length) {
+      h += '<div class="card"><h2>Reach</h2>' + mdToHtml("| day | profile views | post impressions | search appearances |\n|---|---|---|---|\n" +
+        d.reach.slice(-7).map(function (r) { return "| " + r.date + " | " + (r.profile_views == null ? "-" : r.profile_views) + " | " + (r.post_impressions == null ? "-" : r.post_impressions) + " | " + (r.search_appearances == null ? "-" : r.search_appearances) + " |"; }).join("\n")) + "</div>";
+    }
+    if (d.report_md) h += '<div class="card md-report">' + mdToHtml(d.report_md.replace(/^# .*\n/, "").replace(/\n## Reach[\s\S]*?(?=\n## )/, "")) + "</div>";
+    var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top;
+    if ($("pm-post")) $("pm-post").addEventListener("click", function () {
+      var text = (premium.draft || {}).text || ""; if (!text) return;
+      if (!confirm("Post this on LinkedIn from your PC?\n\n" + text.slice(0, 200) + (text.length > 200 ? "…" : ""))) return;
+      $("pm-post").disabled = true;
+      request("post", { text: text, date: premium.draft.date, topic: premium.draft.topic }, "Sent to the PC; it posts on its next check-in.").then(function (ok) {
+        if (ok) store.set("premium.sent." + premium.draft.date, new Date().toISOString()); updatePremiumDot(); renderPremium();
+      });
+    });
+    if ($("pm-copy")) $("pm-copy").addEventListener("click", function () {
+      var text = (premium.draft || {}).text || "";
+      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { toast("Copied."); }, function () { var el = $("pm-draft"); var r = document.createRange(); r.selectNodeContents(el); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast("Select-all done; copy from the menu."); });
+    });
+    box.querySelectorAll("[data-ctl]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var task = b.dataset.task, act = b.dataset.ctl;
+        if (act === "stop" && !confirm("Stop and disable " + taskLabel(task) + " on the PC?")) return;
+        b.disabled = true;
+        request("control", { task: task, do: act }, (act === "stop" ? "Stop" : act === "run" ? "Run" : "Start") + " sent to the PC (applied on its next check-in).");
+      });
+    });
   }
 
   // ---- Home
