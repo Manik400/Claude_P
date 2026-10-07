@@ -1663,9 +1663,7 @@ Gartner                                                      | workday         |
 Gather                                                       | greenhouse      | gatherai | YC Summer 2019 · United States of America, America / Canada, Remote · hiring · 9 open job(s) when added
 GCM Grosvenor                                                | greenhouse      | gcmgrosvenor | new-grad / 0-2 YOE list · 16 open job(s) when added
 Gcore                                                        | smartrecruiters | gcore | hiring-without-whiteboards · 15 open job(s) when added
-GE Aerospace                                                 | workday         | geaerospace.wd5.myworkdayjobs.com/geaerospace/ge_externalsite | new-grad / 0-2 YOE list · 516 open job(s) when added
-GE Healthcare                                                | workday         | gehc.wd5.myworkdayjobs.com/gehc/GEHC_ExternalSite | new-grad / 0-2 YOE list · 942 open job(s) when added
-GE Vernova                                                   | workday         | gevernova.wd5.myworkdayjobs.com/gevernova/only_confidential_executive_recruiting | new-grad / 0-2 YOE list · 2417 open job(s) when added
+
 Gearset                                                      | ashby           | gearset | new-grad / 0-2 YOE list · 13 open job(s) when added
 Gecko Robotics                                               | ashby           | gecko-robotics | new-grad / 0-2 YOE list · 21 open job(s) when added
 GEHA                                                         | workday         | geha.wd5.myworkdayjobs.com/geha/GEHACareers | new-grad / 0-2 YOE list · 13 open job(s) when added
