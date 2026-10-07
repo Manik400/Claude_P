@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-07T06:46:51Z",
+ "updated": "2026-10-07T07:01:28Z",
  "items": [
+  {
+   "id": "applications-20261007-070128-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-07T07:01:28Z",
+   "file": "data/applications/applications-20261007-070128-applications-sent.html",
+   "bytes": 2351710,
+   "meta": {}
+  },
   {
    "id": "naukri-20261007-064651-naukri-openings-2026-10-07-run-1-last-24",
    "kind": "naukri",
@@ -33,15 +42,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261007-064651-naukri-openings-2026-10-07-run-3-all-job.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261007-064651-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-07T06:46:51Z",
-   "file": "data/applications/applications-20261007-064651-applications-sent.html",
-   "bytes": 2347942,
-   "meta": {}
   },
   {
    "id": "accuracy-20261007-064651-accuracy-learning",
