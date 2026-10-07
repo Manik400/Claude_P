@@ -15,7 +15,7 @@ on:
       action:
         description: "queue = add jobs; remove / retry = by key; pause / resume the queue; settings = auto rule, limit, offsite; answers = screening answers; profile = your answers form; notes = application status/notes (hidden: true removes one); reports = {remove: [report ids]}; post = {text} publish a LinkedIn post from the PC (empty text = today's draft); control = {task, do: start|stop|run} a PC scheduled task"
         type: choice
-        options: [queue, remove, retry, pause, resume, settings, answers, profile, notes, reports, post, control]
+        options: [queue, remove, retry, pause, resume, settings, answers, profile, notes, reports, post, control, drafts]
         default: queue
       payload:
         description: "JSON payload (see site/tools/run_apply_queue.py)"

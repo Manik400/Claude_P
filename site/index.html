@@ -1388,10 +1388,20 @@
             function (e) { premiumWait = null; premiumErr = errText(e); return premium; });
     return premiumWait;
   }
-  function premiumPostedLocally(date) { return store.get("premium.sent." + date, ""); }
+  function premiumPostedLocally(id) { return store.get("premium.sent." + id, ""); }
+  var PMF = { when: store.get("pm.when", "2d"), kind: store.get("pm.kind", ""), time: store.get("pm.time", ""), open: {} };
+  var pmDeleted = (function () { try { return JSON.parse(store.get("pm.deleted", "") || "{}"); } catch (e) { return {}; } })();
+  function draftsVisible() {
+    var list = ((premium || {}).drafts || []).filter(function (x) { return x && x.id && x.text && !pmDeleted[x.id]; });
+    if (!list.length && premium && premium.draft && premium.draft.text) list = [premium.draft];     // a PC still on the old single-draft file
+    return list;
+  }
+  function yesterdayKey(day) { return daysBefore(day, 1); }
+  function daysBefore(day, n) { var t = new Date(day + "T12:00:00"); if (isNaN(t)) return day; t.setDate(t.getDate() - n); return t.toISOString().slice(0, 10); }
+  function hourBand(hhmm) { var h = parseInt(String(hhmm || "").slice(0, 2), 10); if (isNaN(h)) return ""; return h < 12 ? "morning" : h < 17 ? "afternoon" : "evening"; }
   function updatePremiumDot() {
-    var d = (premium || {}).draft, on = d && d.text && !d.posted && !premiumPostedLocally(d.date);
-    $("dot-premium").hidden = !on; $("dot-premium").textContent = on ? "1" : "";
+    var today = (premium || {}).date, n = draftsVisible().filter(function (x) { return x.date === today && !x.posted && !premiumPostedLocally(x.id); }).length;
+    $("dot-premium").hidden = !n; $("dot-premium").textContent = n ? String(n) : "";
   }
   function mdInline(s) {
     return esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>").replace(/`([^`]+)`/g, "<code>$1</code>")
@@ -1450,21 +1460,29 @@
       (age > 6 ? '<div class="msg warn">The runner has not reported for ' + Math.round(age) + " h. Is the PC on? Start it below.</div>" : "") +
       '<div class="tags" style="margin-top:8px">' + chip("ok", (day.applied || 0) + " applied") + chip("", (day.liked || 0) + " liked") + chip(c.leads ? "warn" : "", (c.leads || 0) + " recruiter leads") +
       chip("", (c.inmails || 0) + " InMail drafts") + chip("", (c.offsite || 0) + " to apply by hand") + chip("", (day.viewers_new || 0) + " new viewers") + (c.errors ? chip("bad", c.errors + " problems") : "") + "</div></div>";
-    // the post to publish
-    var dr = d.draft, sent = dr ? premiumPostedLocally(dr.date) : "";
-    h += '<div class="card"><h2>Today\'s post</h2>';
-    if (!dr || !dr.text) h += '<div class="muted">No draft yet today; the runner writes one on its first pass of the day.</div>';
-    else {
-      var posted = dr.posted;
-      h += '<div class="muted">Topic: ' + esc(dr.topic || "") + " · " + dr.text.length + " characters" +
-        (posted ? " · " + chip(posted.status === "posted" ? "ok" : "bad", posted.status === "posted" ? "posted " + ago(posted.at) : "post failed: " + (posted.note || "")) : (sent ? " · " + chip("warn", "sent to the PC " + ago(sent) + "; it posts on its next check-in") : "")) + "</div>" +
-        '<pre id="pm-draft" style="white-space:pre-wrap;font-size:0.9rem;line-height:1.45;margin:10px 0">' + esc(dr.text) + "</pre>" +
-        '<div class="acts"><button class="primary" id="pm-post"' + (posted && posted.status === "posted" ? " disabled" : "") + '>Post on LinkedIn (via PC)</button>' +
-        '<a class="btn2" target="_blank" rel="noopener" href="https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(dr.text) + '">Open in LinkedIn, prefilled</a>' +
-        '<button class="btn2" id="pm-copy">Copy text</button></div>' +
-        '<div class="hint">"Post on LinkedIn (via PC)" sends the text to your PC, which publishes it from your saved LinkedIn session on its next check-in (within 30 minutes while the PC is on). "Open in LinkedIn, prefilled" opens LinkedIn here with the text in the composer, so you tap Post yourself right now.</div>';
-    }
-    h += "</div>";
+    // the post drafts: at least two new ones a day, kept by date, deletable here
+    var all = draftsVisible(), today = d.date, dayOf = function (x) { return x.date === today ? "Today" : x.date === yesterdayKey(today) ? "Yesterday" : x.date; };
+    var shown = all.filter(function (x) { return (PMF.when === "today" ? x.date === today : PMF.when === "2d" ? x.date >= yesterdayKey(today) : PMF.when === "7d" ? x.date >= daysBefore(today, 6) : true)
+                                               && (!PMF.kind || x.kind === PMF.kind) && (!PMF.time || hourBand(x.time) === PMF.time); });
+    h += '<div class="card"><h2>Post drafts</h2><div class="muted">' + (d.drafts_per_day || 2) + ' new drafts a day: a hiring roundup from what the watchers found, a generic engineering post, a light tech-news post. Never about your own work. Post one from here, or delete it.</div>' +
+      '<div class="chips small" style="margin-top:8px">' + [["today", "Today"], ["2d", "Today + yesterday"], ["7d", "7 days"], ["all", "All"]].map(function (o) { return '<button type="button" data-pmw="' + o[0] + '"' + (PMF.when === o[0] ? ' class="on"' : "") + ">" + o[1] + "</button>"; }).join("") + "</div>" +
+      '<div class="chips small">' + [["", "Any kind"], ["hiring", "Hiring roundup"], ["tech", "Tech"], ["news", "Tech news"]].map(function (o) { return '<button type="button" data-pmk="' + o[0] + '"' + (PMF.kind === o[0] ? ' class="on"' : "") + ">" + o[1] + "</button>"; }).join("") + "</div>" +
+      '<div class="chips small">' + [["", "Any time"], ["morning", "Morning"], ["afternoon", "Afternoon"], ["evening", "Evening / night"]].map(function (o) { return '<button type="button" data-pmt="' + o[0] + '"' + (PMF.time === o[0] ? ' class="on"' : "") + ">" + o[1] + "</button>"; }).join("") + "</div>";
+    if (!all.length) h += '<div class="muted" style="margin-top:8px">No drafts yet; the runner writes them on its first pass of the day.</div>';
+    else if (!shown.length) h += '<div class="muted" style="margin-top:8px">No drafts match these filters (' + all.length + " kept).</div>";
+    var lastDay = null;
+    shown.forEach(function (x) {
+      if (x.date !== lastDay) { h += '<h3 style="margin:14px 0 4px">' + esc(dayOf(x)) + ' <span class="muted" style="font-weight:400;font-size:0.85rem">' + esc(x.date) + "</span></h3>"; lastDay = x.date; }
+      var posted = x.posted, sent = premiumPostedLocally(x.id), open = !!PMF.open[x.id], kindName = { hiring: "Hiring roundup", tech: "Tech", news: "Tech news" }[x.kind] || x.kind;
+      h += '<div class="job post" style="margin-top:8px"><div class="sub">' + esc(x.time || "") + " · " + chip(x.kind === "hiring" ? "warn" : "acc", kindName) + " " + esc(x.topic || "") + " · " + (x.text || "").length + " chars" +
+        (posted ? " · " + chip(posted.status === "posted" ? "ok" : "bad", posted.status === "posted" ? "posted " + ago(posted.at) : "post failed: " + (posted.note || "")) : (sent ? " · " + chip("warn", "sent to the PC " + ago(sent)) : "")) + "</div>" +
+        '<pre class="ptext' + (open ? "" : " clip") + '" data-pmopen="' + esc(x.id) + '" style="white-space:pre-wrap;font-size:0.9rem;line-height:1.45;margin:8px 0">' + esc(x.text || "") + "</pre>" +
+        ((x.text || "").length > 400 ? '<a href="#" class="muted" data-pmopen="' + esc(x.id) + '">' + (open ? "less" : "read all") + "</a>" : "") +
+        '<div class="acts"><button class="primary" data-pmpost="' + esc(x.id) + '"' + (posted && posted.status === "posted" ? " disabled" : "") + '>Post on LinkedIn (via PC)</button>' +
+        '<a class="btn2" target="_blank" rel="noopener" href="https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(x.text || "") + '">Open in LinkedIn, prefilled</a>' +
+        '<button class="btn2" data-pmcopy="' + esc(x.id) + '">Copy</button><button class="btn2" data-pmdel="' + esc(x.id) + '">Delete</button></div></div>';
+    });
+    h += '<div class="hint">"Post on LinkedIn (via PC)" sends the text to your PC, which publishes it from your saved LinkedIn session on its next check-in (within 30 minutes while the PC is on). "Open in LinkedIn, prefilled" opens LinkedIn here with the text in the composer, so you tap Post yourself right now. Delete hides it here at once and removes it on the PC at its next check-in.</div></div>';
     // the PC's tasks
     var tasks = d.tasks || [];
     h += '<div class="card"><h2>What runs on the PC</h2>';
@@ -1484,17 +1502,37 @@
     }
     if (d.report_md) h += '<div class="card md-report">' + mdToHtml(d.report_md.replace(/^# .*\n/, "").replace(/\n## Reach[\s\S]*?(?=\n## )/, "")) + "</div>";
     var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top;
-    if ($("pm-post")) $("pm-post").addEventListener("click", function () {
-      var text = (premium.draft || {}).text || ""; if (!text) return;
-      if (!confirm("Post this on LinkedIn from your PC?\n\n" + text.slice(0, 200) + (text.length > 200 ? "…" : ""))) return;
-      $("pm-post").disabled = true;
-      request("post", { text: text, date: premium.draft.date, topic: premium.draft.topic }, "Sent to the PC; it posts on its next check-in.").then(function (ok) {
-        if (ok) store.set("premium.sent." + premium.draft.date, new Date().toISOString()); updatePremiumDot(); renderPremium();
+    var draftOf = function (id) { return draftsVisible().filter(function (x) { return x.id === id; })[0]; };
+    var setF = function (k, v) { PMF[k] = v; store.set("pm." + k, v); renderPremium(); };
+    box.querySelectorAll("[data-pmw]").forEach(function (b) { b.addEventListener("click", function () { setF("when", b.dataset.pmw); }); });
+    box.querySelectorAll("[data-pmk]").forEach(function (b) { b.addEventListener("click", function () { setF("kind", b.dataset.pmk); }); });
+    box.querySelectorAll("[data-pmt]").forEach(function (b) { b.addEventListener("click", function () { setF("time", b.dataset.pmt); }); });
+    box.querySelectorAll("[data-pmopen]").forEach(function (el) {
+      el.addEventListener("click", function (e) { if (el.tagName === "A") e.preventDefault(); else if (!el.classList.contains("clip")) return; PMF.open[el.dataset.pmopen] = !PMF.open[el.dataset.pmopen]; renderPremium(); });
+    });
+    box.querySelectorAll("[data-pmpost]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var x = draftOf(b.dataset.pmpost); if (!x) return;
+        if (!confirm("Post this on LinkedIn from your PC?\n\n" + x.text.slice(0, 200) + (x.text.length > 200 ? "…" : ""))) return;
+        b.disabled = true;
+        request("post", { id: x.id, text: x.text, date: x.date, topic: x.topic }, "Sent to the PC; it posts on its next check-in.").then(function (ok) {
+          if (ok) store.set("premium.sent." + x.id, new Date().toISOString()); updatePremiumDot(); renderPremium();
+        });
       });
     });
-    if ($("pm-copy")) $("pm-copy").addEventListener("click", function () {
-      var text = (premium.draft || {}).text || "";
-      (navigator.clipboard ? navigator.clipboard.writeText(text) : Promise.reject()).then(function () { toast("Copied."); }, function () { var el = $("pm-draft"); var r = document.createRange(); r.selectNodeContents(el); var sel = getSelection(); sel.removeAllRanges(); sel.addRange(r); toast("Select-all done; copy from the menu."); });
+    box.querySelectorAll("[data-pmcopy]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var x = draftOf(b.dataset.pmcopy); if (!x) return;
+        (navigator.clipboard ? navigator.clipboard.writeText(x.text) : Promise.reject()).then(function () { toast("Copied."); }, function () { toast("Copy blocked by the browser; select the text and copy it."); });
+      });
+    });
+    box.querySelectorAll("[data-pmdel]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var x = draftOf(b.dataset.pmdel); if (!x) return;
+        if (!confirm("Delete this draft?")) return;
+        pmDeleted[x.id] = Date.now(); store.set("pm.deleted", JSON.stringify(pmDeleted)); updatePremiumDot(); renderPremium();
+        request("drafts", { delete: [x.id] }, "Deleted here; removed on the PC at its next check-in.");
+      });
     });
     box.querySelectorAll("[data-ctl]").forEach(function (b) {
       b.addEventListener("click", function () {

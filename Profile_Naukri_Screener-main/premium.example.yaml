@@ -40,6 +40,6 @@ exclude_senior: true         # senior / lead / staff / manager titles are skippe
 likes_per_day: 2             # hiring posts for your roles liked a day (at least 1)
 connect_per_day: 0           # connection requests (with a note) to recruiters who viewed your profile.
                              # 0 = only draft the note into the report; 3-5 is a safe daily number.
-draft_per_day: 1             # post drafts a day (data/premium/drafts/TODAY.md) - you post them yourself
+drafts_per_day: 2            # new post drafts a day (hiring roundup, generic tech, tech news - never about your own work); kept dated, deletable on the phone
 
 hashtags: ["#SoftwareEngineer", "#Backend", "#Java", "#Kafka", "#OpenToWork", "#Relocation"]

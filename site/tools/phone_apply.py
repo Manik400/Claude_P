@@ -365,8 +365,17 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                 if len(text) < 40:
                     log("post: nothing to post (no text sent and no draft on this PC)")
                 else:
-                    status, note = linkedin_premium.post_draft(text, headless=True)
+                    status, note = linkedin_premium.post_draft(text, headless=True, draft_id=str(payload.get("id") or "") or None)
                     log("post: %s (%s)" % (status, note))
+            elif kind == "drafts":
+                # the phone's Delete on a draft: {delete: [ids]}
+                from naukri.jobs import linkedin_premium
+                n = linkedin_premium.delete_drafts([str(i) for i in (payload.get("delete") or [])])
+                log("drafts: %d deleted" % n)
+                try:
+                    linkedin_premium.publish_phone(linkedin_premium.load_config(), linkedin_premium.load_state())
+                except Exception as exc:  # noqa: BLE001
+                    log("drafts: phone file not republished: %s" % exc)
             elif kind == "control":
                 # Start / stop the PC's scheduled tasks from the phone (Premium tab)
                 from naukri.jobs import linkedin_premium

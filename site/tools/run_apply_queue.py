@@ -25,7 +25,7 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes", "reports", "post", "control"}
+ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes", "reports", "post", "control", "drafts"}
 
 
 def env(name, default=""):

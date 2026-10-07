@@ -85,7 +85,7 @@ DEFAULTS = {
     "india_searches_per_pass": 12,
     "likes_per_day": 2,
     "connect_per_day": 10,
-    "draft_per_day": 2,
+    "drafts_per_day": 2,
     "exclude_senior": True,
     "max_experience_years": 2,
     "hashtags": ["#SoftwareEngineer", "#Backend", "#Java", "#Kafka", "#OpenToWork", "#Relocation", "#Frontend" , "#SoftwareDeveloper" , "#SDE" , "#SWE" ,"#Software Engineer", "#BackendEngineer", "#BackendDeveloper", "#FullStackDeveloper" ,"#FullStackEngineer" , "#FrontendEngineer" , "#FrontendDeveloper" , "#SDE" , "#SWE" ],
@@ -663,144 +663,381 @@ def like_post(page, url: str) -> str:
         return "error"
 
 
-# ----------------------------------------------------------------------------- the daily post draft
+# ----------------------------------------------------------------------------- the daily post drafts
+#
+# At least `drafts_per_day` (2) new drafts a day, none about the user's own employer, projects or
+# numbers. Three kinds rotate so no two days look alike:
+#
+#   hiring   a roundup of 10+ openings the watchers found (LinkedIn / X / Telegram / Reddit / HN
+#            hiring posts from the last two days plus the jobs the Premium pass ranked), with links -
+#            the kind of post recruiters and job seekers reshare
+#   tech     a generic engineering post: scalability, distributed systems, databases, APIs, career,
+#            from a topic list, written by the local model when it is there, else from a template
+#   news     a light post on what is in the news in tech right now (Hacker News front page, r/programming),
+#            written by the model, with the headlines as a list in the fallback
+#
+# Every draft lives in data/premium/drafts/drafts.json ({id, date, time, kind, topic, text, source,
+# posted, deleted}) - kept for DRAFT_KEEP_DAYS, grouped by date on the phone, deletable there - and
+# the day's drafts are also written to drafts/<date>.md (TODAY.md = the newest day).
 
-# One topic a day, in this order, from the resume. Each: a hook, the facts the post can use, the lesson, the ask.
-TOPICS = [
-    {"key": "kafka-16x", "hook": "We took a Kafka pipeline from 30 to 500+ events/sec. The fix was not more hardware.",
-     "facts": ["400+ cameras, 200+ servers feeding ANPR, face recognition and intrusion events",
-               "the bottleneck was one shared topic; event-specific topics plus dead-letter handling fixed it",
-               "failed messages now replay from the DLQ instead of blocking the stream"],
-     "lesson": "Throughput problems are usually topology problems first.", "ask": "How do you split topics in your event pipelines?"},
-    {"key": "timescale", "hook": "Camera frames went from 70 to 300+ per second on the same PostgreSQL box.",
-     "facts": ["TimescaleDB hypertables and native compression on the frame tables", "retention policies so the hot set stays small",
-               "composite indexes matched to the actual query shapes, latency down 35%"],
-     "lesson": "Know your query shapes before you add an index.", "ask": "Postgres or a dedicated time-series store for sensor data?"},
-    {"key": "exports-92", "hook": "An analytics export took 12 minutes and crashed with out-of-memory. Now it takes under a minute.",
-     "facts": ["100K+ records read as a stream instead of one giant list", "incremental batches with bounded memory",
-               "no more OOM failures in production"],
-     "lesson": "Streaming reads beat clever caching for big exports.", "ask": "What is your go-to pattern for large exports?"},
-    {"key": "milvus", "hook": "Face enrollment and watchlists on Milvus: 75% less vector-index memory, same match accuracy.",
-     "facts": ["vector similarity search for enrollment, watchlists and deduplication", "index type and parameters tuned against real match rates",
-               "memory matters when the index lives next to video analytics"],
-     "lesson": "Measure accuracy and memory together, never one alone.", "ask": "Which vector store are you using in production?"},
-    {"key": "webrtc", "hook": "Sub-200 ms live camera playback in the browser. Side project, C++17 and FFmpeg.",
-     "facts": ["H.264 decoded and remuxed for live and recorded sources", "transport moved from WebSocket to WebRTC/RTP with libdatachannel",
-               "seek, pause and speed over a data channel; CMake, vcpkg, Docker, GitHub Actions, MSI packaging"],
-     "lesson": "The transport layer decides your latency floor.", "ask": "Anyone shipped WebRTC for CCTV-style playback?"},
-    {"key": "parknest", "hook": "Two people booking the same parking slot at the same second. ParkNest never double-books.",
-     "facts": ["optimistic concurrency on bookings", "an idempotent credit ledger so retries never charge twice",
-               "normalized PostgreSQL schema, REST APIs, React front end"],
-     "lesson": "Idempotency keys are cheaper than refunds.", "ask": "How do you test race conditions in booking flows?"},
-    {"key": "libraries", "hook": "New services used to take days to wire up storage and messaging. Now it takes hours.",
-     "facts": ["one abstraction over Kafka, local disk, NAS and AWS S3", "adopted by 4+ services",
-               "the same code path in dev and production"],
-     "lesson": "Write the library after the second copy-paste, not the fifth.", "ask": "When do you extract a shared library?"},
-    {"key": "releases", "hook": "Release turnaround down 40% with Docker and GitHub Actions. The changelog writes itself.",
-     "facts": ["Docker-based builds, automated changelog from commits", "Grafana and Prometheus dashboards with alerts for every service"],
-     "lesson": "Observability is part of the release, not an afterthought.", "ask": "What does your release checklist look like?"},
-    {"key": "mentoring", "hook": "Mentoring two junior engineers taught me more about Clean Architecture than any book.",
-     "facts": ["async service patterns explained until they could explain them back", "code reviews that cut QA-reported regressions"],
-     "lesson": "If you cannot explain the boundary, the boundary is wrong.", "ask": "What is the one thing you wish someone told you in year one?"},
-    {"key": "leetcode", "hook": "800+ LeetCode problems. Here is what actually carried over to production work.",
-     "facts": ["graphs and trees show up in dependency resolution and permission checks", "two-pointer and sliding window in stream processing",
-               "top 5 percentile nationally in Adobe GenSolve"],
-     "lesson": "DSA practice pays off when you recognise the shape in real code.", "ask": "Which problem pattern do you see most at work?"},
-    {"key": "relocate", "hook": "Backend engineer, 2 years in production, open to relocating. Here is what I bring.",
-     "facts": ["Java, Spring Boot, Kafka, PostgreSQL/TimescaleDB, AWS, Docker", "16x throughput and 92% faster exports on a live video analytics platform",
-               "valid passport, ready to relocate to Europe, UK, Canada, Singapore, UAE, Australia or Japan"],
-     "lesson": "I am looking for a team that ships distributed systems and sponsors visas.", "ask": "If your team is hiring backend engineers abroad, I would love an intro."},
+DRAFTS_PATH = DRAFTS_DIR / "drafts.json"
+DRAFT_KEEP_DAYS = 45
+KINDS = ["hiring", "tech", "news"]
+
+TECH_TOPICS = [
+    {"key": "scale-topology", "hook": "Most throughput problems are topology problems, not hardware problems.",
+     "points": ["one shared queue or topic becomes the bottleneck long before the CPU does", "split by event type, partition by key, isolate the slow consumer",
+                "a dead-letter path turns failures into something you can replay"], "lesson": "Draw the data flow before you buy a bigger box.", "ask": "What was the last bottleneck that turned out to be a design problem?"},
+    {"key": "idempotency", "hook": "Idempotency keys are cheaper than refunds.",
+     "points": ["every retry, timeout and double tap is a duplicate waiting to happen", "a unique key per operation lets the server say 'already done' instead of doing it twice",
+                "it matters most in payments, bookings and anything with a ledger"], "lesson": "Design for the retry, not the happy path.", "ask": "How do you test duplicate requests in your services?"},
+    {"key": "indexes", "hook": "The database will tell you what it needs, if you ask it.",
+     "points": ["EXPLAIN ANALYZE on the twenty slowest queries beats guessing", "composite indexes in the order of the WHERE clause", "partition and compress what is cold"],
+     "lesson": "Know your query shapes before you add an index.", "ask": "What is your favourite query tuning win?"},
+    {"key": "observability", "hook": "If it is not on a dashboard, it is not in production.",
+     "points": ["a metric per consumer, lag and error rate per queue", "alerts on what wakes you up, not on everything", "the dashboard gets reviewed in every incident"],
+     "lesson": "Observability is part of the release, not an afterthought.", "ask": "Which single metric do you always alert on?"},
+    {"key": "boundaries", "hook": "If you cannot explain the boundary, the boundary is wrong.",
+     "points": ["domain code with no framework imports", "adapters for the queue, the storage and the database behind interfaces", "layering strict enough to test, loose enough to ship"],
+     "lesson": "Boundaries are for testing first, purity second.", "ask": "How strict are you about layering in a small team?"},
     {"key": "dlq", "hook": "A dead-letter queue is not a trash can. It is a replay buffer.",
-     "facts": ["failed events isolated per topic", "replay after the fix, with no data loss", "alerts on DLQ depth in Grafana"],
-     "lesson": "Design the replay path before the first failure.", "ask": "How do you handle poison messages?"},
-    {"key": "bulk", "hook": "Bulk enrollment of 5,000+ records with live progress in the browser.",
-     "facts": ["server-side validation before anything is written", "progress streamed to the UI while the batch runs",
-               "government e-challan REST APIs integrated into the ANPR violation pipeline"],
-     "lesson": "Users forgive slow. They do not forgive silent.", "ask": "Server-sent events or WebSockets for progress?"},
-    {"key": "components", "hook": "10+ React component libraries on NPM, used across 200+ servers. Lessons in API design.",
-     "facts": ["one behaviour standard across products", "60+ concurrent users on the deployed apps", "versioning that did not break consumers"],
-     "lesson": "A component's props are a public API. Treat them like one.", "ask": "Monorepo or separate packages for shared UI?"},
-    {"key": "postgres-tuning", "hook": "35% lower query latency without touching application code.",
-     "facts": ["EXPLAIN ANALYZE on the top 20 queries", "composite indexes in column order of the WHERE clauses", "partitioning and compression for the cold data"],
-     "lesson": "The database will tell you what it needs if you ask it.", "ask": "What is your favourite Postgres tuning win?"},
-    {"key": "clean-arch", "hook": "Clean Architecture in a Spring Boot service: what we kept and what we dropped.",
-     "facts": ["domain code with no framework imports", "adapters for Kafka, S3 and Postgres behind interfaces", "SOLID where it paid for itself"],
-     "lesson": "Boundaries are for testing first, purity second.", "ask": "How strict are you about layering?"},
-    {"key": "dotnet-java", "hook": "Shipping in both Java/Spring and C#/ASP.NET Core. The differences that matter.",
-     "facts": ["Hibernate/JPA and EF Core solve the same problems differently", "both run fine in Docker on Linux", "the patterns transfer; the tooling does not"],
-     "lesson": "Learn the second stack. It makes the first one clearer.", "ask": "Which stack do you reach for on a new service?"},
-    {"key": "observability", "hook": "Every production service here has a Grafana dashboard and an alert. That was not always true.",
-     "facts": ["Prometheus metrics per consumer group", "alerts on lag, error rate and DLQ depth", "dashboards reviewed in every incident"],
-     "lesson": "If it is not on a dashboard, it is not in production.", "ask": "What is the one metric you always alert on?"},
-    {"key": "api-design", "hook": "Integrating government e-challan APIs taught me what a good REST API looks like, by contrast.",
-     "facts": ["retries with idempotency on our side", "clear error contracts", "versioned endpoints"],
-     "lesson": "Design the error responses first.", "ask": "What is the worst external API you have integrated?"},
-    {"key": "s3-nas", "hook": "The same storage code writes to local disk, NAS and S3. Here is how.",
-     "facts": ["one interface, three adapters", "config decides the backend per deployment", "tests run against the disk adapter"],
-     "lesson": "Abstract storage early. Customers change their minds about where data lives.", "ask": "Do you abstract storage or go all-in on one cloud?"},
-    {"key": "interviews", "hook": "Three weeks into a focused job search. What is working on LinkedIn, honestly.",
-     "facts": ["applying where I am a top applicant beats applying everywhere", "a specific message to the hiring manager gets replies",
-               "posting about real work brings recruiters to the profile"],
-     "lesson": "Fewer, better applications.", "ask": "Recruiters: what makes you open a profile?"},
-    {"key": "ci", "hook": "GitHub Actions for a C++ project with vcpkg and MSI packaging. It can be done cleanly.",
-     "facts": ["cached vcpkg dependencies", "one-command deployment via MSI", "Docker image and Windows installer from the same pipeline"],
-     "lesson": "Make the build boring.", "ask": "How do you cache native dependencies in CI?"},
-    {"key": "thanks", "hook": "Two years at I2V Systems: the numbers I am proudest of.",
-     "facts": ["16x event throughput", "92% faster exports", "75% less vector memory", "40% faster releases"],
-     "lesson": "Every one of these started as a complaint from a user.", "ask": "What is the metric you are proudest of this year?"},
+     "points": ["poison messages isolated instead of blocking the stream", "replay after the fix, with no data loss", "alert on its depth"],
+     "lesson": "Design the replay path before the first failure.", "ask": "How do you handle poison messages today?"},
+    {"key": "streaming-exports", "hook": "Streaming reads beat clever caching for big exports.",
+     "points": ["read in bounded batches instead of one giant list", "write as you go, keep memory flat", "the slowest export sets the size of your biggest server"],
+     "lesson": "Bounded memory is a feature.", "ask": "What is your go-to pattern for exports over a few hundred thousand rows?"},
+    {"key": "progress", "hook": "Users forgive slow. They do not forgive silent.",
+     "points": ["validate server side before writing anything", "stream progress while a long job runs", "say what failed and what to do next"],
+     "lesson": "Feedback is part of the feature.", "ask": "Server-sent events or WebSockets for progress updates?"},
+    {"key": "second-stack", "hook": "Learn the second stack. It makes the first one clearer.",
+     "points": ["two ORMs solve the same problems differently", "the patterns transfer, the tooling does not", "you stop confusing the framework with the idea"],
+     "lesson": "Fluency in two stacks is worth more than mastery of one.", "ask": "Which stack do you reach for on a new service, and why?"},
+    {"key": "api-errors", "hook": "Design the error responses first.",
+     "points": ["a clear error contract saves every client a guess", "retries need idempotency on your side", "version the endpoint, not the client"],
+     "lesson": "Good APIs are judged on their worst day.", "ask": "What is the worst external API you have had to integrate?"},
+    {"key": "dsa-at-work", "hook": "Practice problems pay off when you recognise the shape in real code.",
+     "points": ["graphs and trees in dependency resolution and permissions", "sliding windows in stream processing", "hashing everywhere"],
+     "lesson": "The pattern matters more than the puzzle.", "ask": "Which algorithm pattern do you meet most at work?"},
+    {"key": "boring-builds", "hook": "Make the build boring.",
+     "points": ["cache the dependencies, pin the versions", "one command from commit to artifact", "the same pipeline for the container and the installer"],
+     "lesson": "A boring build is a fast team.", "ask": "What is the one thing that still breaks your CI?"},
+    {"key": "storage-abstraction", "hook": "Abstract storage early. Customers change their minds about where data lives.",
+     "points": ["one interface, several adapters: disk, NAS, object storage", "config decides the backend per deployment", "tests run on the cheapest adapter"],
+     "lesson": "Write the library after the second copy-paste.", "ask": "Do you abstract storage, or go all-in on one cloud?"},
+    {"key": "mentoring", "hook": "Explaining a pattern until someone can explain it back is the fastest way to learn it.",
+     "points": ["code review is teaching, not gatekeeping", "name the trade-off, not just the rule", "junior questions find the gaps in senior assumptions"],
+     "lesson": "Teams that teach ship with fewer regressions.", "ask": "What is the one thing you wish someone had told you in year one?"},
+    {"key": "vector-search", "hook": "Vector search is easy to start and hard to run.",
+     "points": ["index type and parameters change both accuracy and memory", "measure recall and RAM together", "deduplication is where it quietly earns its keep"],
+     "lesson": "Benchmark on your data, not the demo set.", "ask": "Which vector store are you using in production, and why?"},
+    {"key": "fewer-better", "hook": "Fewer, better applications beat more applications.",
+     "points": ["apply where you are a strong fit, not everywhere", "a specific message to a hiring manager gets replies", "post about real work and recruiters come to you"],
+     "lesson": "Job searching is a funnel, not a lottery.", "ask": "Recruiters: what makes you open a profile?"},
+    {"key": "latency-floor", "hook": "The transport layer decides your latency floor.",
+     "points": ["WebSockets and WebRTC are different tools, not alternatives", "measure end to end, not per hop", "sub-second needs a budget per stage"],
+     "lesson": "Pick the transport for the latency you promised.", "ask": "What is your real p99 for a live feature?"},
+    {"key": "release-cadence", "hook": "Ship smaller, more often, and the rollback stops being scary.",
+     "points": ["small diffs are reviewable diffs", "a changelog that writes itself from commits", "feature flags over long branches"],
+     "lesson": "Cadence is a reliability tool.", "ask": "How often does your team deploy, honestly?"},
+    {"key": "postgres-first", "hook": "Postgres first. Specialise only when it tells you to.",
+     "points": ["time-series, JSON, full text and queues all fit for a long while", "extensions before new infrastructure", "one database is one on-call"],
+     "lesson": "Boring infrastructure is a competitive advantage.", "ask": "What finally made you add a second datastore?"},
+    {"key": "incident-review", "hook": "The best incident review names a system, not a person.",
+     "points": ["timeline first, blame never", "one action item that removes the class of failure", "share it widely"],
+     "lesson": "Blameless is not consequence-free; it is system-focused.", "ask": "What is the most useful postmortem you have read?"},
 ]
 
+HASHTAGS_BY_KIND = {"hiring": ["#Hiring", "#SoftwareJobs", "#OpenToWork", "#Jobs", "#Freshers"],
+                    "tech": ["#SoftwareEngineering", "#Backend", "#SystemDesign", "#Scalability", "#Tech"],
+                    "news": ["#Tech", "#TechNews", "#SoftwareEngineering", "#Developers"]}
 
-def topic_for(day_index: int) -> dict:
-    return TOPICS[day_index % len(TOPICS)]
 
+def load_drafts(path: Path | None = None) -> list[dict]:
+    path = path or DRAFTS_PATH          # resolved at call time, so tests can point it elsewhere
+    try:
+        data = json.loads(path.read_text(encoding="utf-8"))
+        return [d for d in data if isinstance(d, dict)] if isinstance(data, list) else []
+    except (OSError, ValueError):
+        return []
+
+
+def save_drafts(drafts: list[dict], path: Path | None = None, now: datetime | None = None) -> None:
+    path = path or DRAFTS_PATH
+    now = now or datetime.now()
+    cutoff = (now - timedelta(days=DRAFT_KEEP_DAYS)).strftime("%Y-%m-%d")
+    keep = [d for d in drafts if str(d.get("date", "")) >= cutoff]
+    keep.sort(key=lambda d: (d.get("date", ""), d.get("time", "")), reverse=True)
+    path.parent.mkdir(parents=True, exist_ok=True)
+    tmp = path.with_suffix(".tmp")
+    tmp.write_text(json.dumps(keep, ensure_ascii=False, indent=1), encoding="utf-8")
+    tmp.replace(path)
+
+
+def drafts_for_day(drafts: list[dict], key: str) -> list[dict]:
+    return [d for d in drafts if d.get("date") == key and not d.get("deleted")]
+
+
+def draft_by_id(drafts: list[dict], did: str) -> dict | None:
+    return next((d for d in drafts if d.get("id") == did), None)
+
+
+def _dated_md(drafts: list[dict], key: str) -> str:
+    out = [f"# Post drafts for {key}", "", "Copy one into a LinkedIn post, or tap Post on the phone's Premium tab.",
+           "Best times: 8:30-10:00 or 17:30-19:00 IST, Tuesday to Thursday. Reply to every comment in the first hour.", ""]
+    for d in drafts_for_day(drafts, key):
+        out += [f"## {d.get('time', '')}  {d.get('kind', '')}: {d.get('topic', '')}  (by the {d.get('source', '')})", "", "---", "", d.get("text", ""), "", ""]
+    return "\n".join(out)
+
+
+# ---- hiring roundup
+
+def _recent_hiring_posts(hours: float = 48.0, now: datetime | None = None) -> list[dict]:
+    """Hiring posts the watchers kept (LinkedIn + the other platforms), newest first, within `hours`."""
+    now = now or datetime.now(timezone.utc)
+    out = []
+    for path in (ROOT / "data" / "posts" / "linkedin_posts.json", ROOT / "data" / "posts" / "social_posts.json"):
+        try:
+            store = json.loads(path.read_text(encoding="utf-8"))
+        except (OSError, ValueError):
+            continue
+        for p in store.get("posts") or []:
+            if not isinstance(p, dict) or not p.get("hiring") or p.get("seeker") or not p.get("roles"):
+                continue
+            try:
+                at = datetime.fromisoformat(str(p.get("posted_at") or p.get("first_seen")).replace("Z", "+00:00"))
+                at = at if at.tzinfo else at.replace(tzinfo=timezone.utc)
+            except (TypeError, ValueError):
+                continue
+            if (now - at).total_seconds() / 3600 > hours:
+                continue
+            out.append(dict(p, _at=at))
+    out.sort(key=lambda p: p["_at"], reverse=True)
+    return out
+
+
+def _roundup_lines(state: dict, now: datetime | None = None, want: int = 12) -> list[str]:
+    """'Company - Role (Location): link' lines: the Premium pass's ranked jobs, then the watchers' hiring posts."""
+    lines, seen = [], set()
+    key = today_key(now)
+    jobs = sorted(((jid, j) for jid, j in (state.get("jobs") or {}).items() if j.get("seen") == key and (j.get("score") or 0) > 0),
+                  key=lambda t: t[1].get("score") or 0, reverse=True)
+    for jid, j in jobs:
+        tag = (j.get("company") or "").strip().lower()
+        if not j.get("company") or tag in seen:
+            continue
+        seen.add(tag)
+        loc = (j.get("location") or "").split(",")[0].strip()
+        lines.append(f"• {j['company']} - {j.get('title') or 'Software Engineer'}" + (f" ({loc})" if loc else "") + f": https://www.linkedin.com/jobs/view/{jid}/")
+        if len(lines) >= want:
+            return lines
+    for p in _recent_hiring_posts(now=now):
+        who = (p.get("author") or "").strip()
+        role = ", ".join((p.get("roles") or [])[:2]) or "software roles"
+        tag = who.lower()
+        if not who or tag in seen or not p.get("url"):
+            continue
+        seen.add(tag)
+        where = ", ".join((p.get("locations") or [])[:1])
+        exp = (p.get("exp") or {}).get("text") or ("freshers" if (p.get("exp") or {}).get("entry") else "")
+        lines.append(f"• {who} - hiring {role}" + (f" ({where})" if where else "") + (f", {exp}" if exp else "") + f": {p['url']}")
+        if len(lines) >= want:
+            break
+    return lines
+
+
+def hiring_roundup(state: dict, now: datetime | None = None) -> tuple[str, str] | None:
+    """A roundup post with at least 10 openings, or None when there are not enough yet."""
+    now = now or datetime.now()
+    lines = _roundup_lines(state, now, want=14)
+    if len(lines) < 10:
+        return None
+    body = "\n".join(lines)
+    while len(body) > 2600 and len(lines) > 10:
+        lines.pop()
+        body = "\n".join(lines)
+    intro = None
+    ai = _localai()
+    if ai is not None:
+        try:
+            intro = ai.ask(
+                "Write the opening of a LinkedIn post that shares a list of software job openings for 0-3 years of experience "
+                "(the list is added after your text). Two or three short lines, plain text, no emojis, no hashtags, no company names, "
+                "no claims about the writer. Encourage people to apply directly and to share the post for someone who needs it.",
+                system="You write short, warm, specific LinkedIn posts. Reply with the text only.", max_tokens=140, temperature=0.6, timeout=90)
+            if not (intro and isinstance(intro, str) and 8 <= len(intro.split()) <= 70):
+                intro = None
+        except Exception as exc:  # noqa: BLE001
+            log.debug("roundup intro via model failed: %s", exc)
+    intro = (intro or f"{len(lines)} software openings I came across today, for 0-3 years of experience. Apply directly on each link, "
+                      "and share this with someone who is looking.").strip()
+    outro = "\n\nI will post a fresh list regularly. Hiring and not on here? Comment the role and the link.\n\n" + " ".join(HASHTAGS_BY_KIND["hiring"])
+    return intro + "\n\n" + body + outro, f"{len(lines)} openings"
+
+
+# ---- tech
 
 def template_post(topic: dict, hashtags: list[str]) -> str:
     lines = [topic["hook"], ""]
-    lines += [f"• {f}" for f in topic["facts"]]
+    lines += [f"• {f}" for f in topic.get("points") or topic.get("facts") or []]
     lines += ["", topic["lesson"], "", topic["ask"], "", " ".join(hashtags[:5])]
     return "\n".join(lines)
 
 
-def draft_post(topic: dict, me: dict, hashtags: list[str]) -> tuple[str, str]:
-    """(text, source) - the local model's draft when it is there, else the template."""
+def tech_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
+    """(text, source): the local model's draft when it is there, else the template. Never about one employer."""
     ai = _localai()
     if ai is not None:
         try:
             out = ai.ask(
-                "Write a LinkedIn post (120-180 words, plain text, short lines, no emojis, no hashtags in the body) for the engineer "
-                f"below. Topic hook: {topic['hook']}\nFacts to use (only these, with their numbers): " + "; ".join(topic["facts"]) +
+                "Write a LinkedIn post (110-170 words, plain text, short lines, no emojis, no hashtags in the body) for a backend "
+                f"software engineer's audience.\nHook: {topic['hook']}\nPoints to make: " + "; ".join(topic.get("points") or []) +
                 f"\nLesson to land: {topic['lesson']}\nEnd with this question: {topic['ask']}\n"
-                "First person, concrete, no buzzwords, no 'thrilled to share'. Return the post only.\n\n"
-                f"RESUME FOR CONTEXT:\n{me.get('resume', '')[:3000]}",
-                system="You write clear, specific LinkedIn posts for a backend engineer. Reply with the post only.",
-                max_tokens=420, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 60 <= len(out.split()) <= 260:
+                "Generic and useful to any engineer: no company names, no personal metrics, no 'at my company', no 'thrilled to share'. "
+                "Return the post only.",
+                system="You write clear, specific LinkedIn posts about software engineering. Reply with the post only.",
+                max_tokens=400, temperature=0.6, timeout=150)
+            if out and isinstance(out, str) and 60 <= len(out.split()) <= 240:
                 return out.strip() + "\n\n" + " ".join(hashtags[:5]), "local model"
         except Exception as exc:  # noqa: BLE001
-            log.debug("draft via model failed: %s", exc)
+            log.debug("tech post via model failed: %s", exc)
     return template_post(topic, hashtags), "template"
 
 
-def write_draft(cfg: dict, state: dict, me: dict, now: datetime | None = None) -> Path:
+# ---- news
+
+def tech_headlines(limit: int = 12) -> list[dict]:
+    """What is on the Hacker News front page right now (and r/programming), newest first. [{title, url, points}]"""
+    out: list[dict] = []
+    try:
+        import requests
+        r = requests.get("https://hn.algolia.com/api/v1/search", params={"tags": "front_page", "hitsPerPage": limit},
+                         headers={"User-Agent": "Mozilla/5.0"}, timeout=20)
+        for h in (r.json().get("hits") or []) if r.status_code == 200 else []:
+            if h.get("title"):
+                out.append({"title": h["title"], "url": h.get("url") or f"https://news.ycombinator.com/item?id={h.get('objectID')}", "points": h.get("points") or 0})
+    except Exception as exc:  # noqa: BLE001
+        log.debug("HN front page not read: %s", exc)
+    if len(out) < 5:
+        try:
+            import requests
+            import xml.etree.ElementTree as ET
+            r = requests.get("https://www.reddit.com/r/programming/hot.rss", params={"limit": 15},
+                             headers={"User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/130.0"}, timeout=20)
+            if r.status_code == 200 and r.text.lstrip().startswith("<?xml"):
+                ns = "{http://www.w3.org/2005/Atom}"
+                for e in ET.fromstring(r.text).findall(f"{ns}entry"):
+                    link = e.find(f"{ns}link")
+                    out.append({"title": (e.findtext(f"{ns}title") or "").strip(), "url": link.get("href") if link is not None else "", "points": 0})
+        except Exception as exc:  # noqa: BLE001
+            log.debug("r/programming not read: %s", exc)
+    return [h for h in out if h.get("title")][:limit]
+
+
+def news_post(hashtags: list[str]) -> tuple[str, str, str] | None:
+    """(text, source, topic) - a light post on today's tech headlines, or None when nothing was read."""
+    heads = tech_headlines()
+    if len(heads) < 3:
+        return None
+    picks = heads[:5]
+    ai = _localai()
+    if ai is not None:
+        try:
+            out = ai.ask(
+                "Write a light, slightly funny LinkedIn post (90-150 words, plain text, short lines, no emojis, no hashtags in the body) "
+                "reacting to today's tech headlines below. Pick two or three, connect them with one observation an engineer would make, "
+                "keep it kind (no mocking people), no company bashing, and end with a question to the reader. Do not invent facts beyond "
+                "the headlines. Return the post only.\n\nHEADLINES:\n" + "\n".join(f"- {h['title']}" for h in picks),
+                system="You write witty, kind, short LinkedIn posts for software engineers. Reply with the post only.",
+                max_tokens=360, temperature=0.8, timeout=150)
+            if out and isinstance(out, str) and 50 <= len(out.split()) <= 220:
+                links = "\n".join(f"• {h['title']}: {h['url']}" for h in picks[:3] if h.get("url"))
+                return out.strip() + ("\n\nThe stories:\n" + links if links else "") + "\n\n" + " ".join(hashtags[:4]), "local model", picks[0]["title"][:60]
+        except Exception as exc:  # noqa: BLE001
+            log.debug("news post via model failed: %s", exc)
+    lines = ["What engineers are reading today:", ""]
+    lines += [f"• {h['title']}" + (f"\n  {h['url']}" if h.get("url") else "") for h in picks]
+    lines += ["", "Which of these actually changes how you work this week?", "", " ".join(hashtags[:4])]
+    return "\n".join(lines), "template", picks[0]["title"][:60]
+
+
+# ---- the day's drafts
+
+def write_drafts(cfg: dict, state: dict, me: dict | None = None, now: datetime | None = None, want: int | None = None) -> list[dict]:
+    """Write today's drafts until the day has `drafts_per_day` of them. Returns the drafts written now."""
     now = now or datetime.now()
-    idx = int(state.get("draft_index") or 0)
-    topic = topic_for(idx)
-    text, source = draft_post(topic, me, list(cfg.get("hashtags") or DEFAULTS["hashtags"]))
+    key = today_key(now)
+    drafts = load_drafts()
+    have = drafts_for_day(drafts, key)
+    want = int(want if want is not None else cfg.get("drafts_per_day") or cfg.get("draft_per_day") or 2)
+    if len(have) >= want:
+        return []
+    kinds_today = [d.get("kind") for d in have]
+    cursor = int(state.get("draft_index") or 0)
+    written: list[dict] = []
+    tries = 0
+    while len(have) + len(written) < want and tries < 6:
+        tries += 1
+        # the kind rotates day by day and draft by draft, so every day has different kinds in a different order
+        kind = KINDS[(cursor + len(kinds_today) + len(written)) % len(KINDS)]
+        if kind in kinds_today or kind in [w["kind"] for w in written]:
+            kind = next((k for k in KINDS if k not in kinds_today and k not in [w["kind"] for w in written]), kind)
+        text = source = topic = None
+        if kind == "hiring":
+            got = hiring_roundup(state, now)
+            if got:
+                text, topic = got
+                source = "watchers"
+        elif kind == "news":
+            got = news_post(HASHTAGS_BY_KIND["news"])
+            if got:
+                text, source, topic = got
+        if text is None:          # tech is the kind that always works
+            kind = "tech"
+            if "tech" in kinds_today or "tech" in [w["kind"] for w in written]:
+                cursor += 1       # a second tech post that day: the next topic
+            t = TECH_TOPICS[(cursor + len(written)) % len(TECH_TOPICS)]
+            text, source = tech_post(t, HASHTAGS_BY_KIND["tech"])
+            topic = t["key"]
+            cursor += 1
+        did = f"{key}-{now.strftime('%H%M%S')}-{len(have) + len(written) + 1}"
+        written.append({"id": did, "date": key, "time": now.strftime("%H:%M"), "kind": kind, "topic": topic or "", "text": text,
+                        "source": source or "", "posted": None, "deleted": False, "created": now.isoformat(timespec="seconds")})
+        log.info("draft written (%s, %s, by the %s): %d chars", kind, topic, source, len(text))
+    if not written:
+        return []
+    drafts = written + drafts
+    save_drafts(drafts, now=now)
+    state["draft_index"] = cursor + 1
     DRAFTS_DIR.mkdir(parents=True, exist_ok=True)
-    path = DRAFTS_DIR / f"{today_key(now)}.md"
-    body = (f"# Post draft for {today_key(now)}  (topic: {topic['key']}, written by the {source})\n\n"
-            f"Copy the text below into a LinkedIn post. Best times: 8:30-10:00 or 17:30-19:00 IST, Tuesday to Thursday.\n"
-            f"Reply to every comment within the first hour; that is what the feed rewards.\n\n---\n\n{text}\n")
-    path.write_text(body, encoding="utf-8")
-    (DRAFTS_DIR / "TODAY.md").write_text(body, encoding="utf-8")
-    state["draft_index"] = idx + 1
+    (DRAFTS_DIR / f"{key}.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+    (DRAFTS_DIR / "TODAY.md").write_text(_dated_md(drafts, key), encoding="utf-8")
     d = day(state, now)
-    d["drafted"] += 1
-    d["draft_path"] = str(path)
-    d["draft_topic"] = topic["key"]
-    log.info("post draft written (%s, topic %s): %s", source, topic["key"], path)
-    return path
+    d["drafted"] = len(drafts_for_day(drafts, key))
+    d["draft_path"] = str(DRAFTS_DIR / f"{key}.md")
+    d["draft_topic"] = ", ".join(f"{w['kind']}: {w['topic']}" for w in drafts_for_day(drafts, key))
+    return written
+
+
+def mark_draft(did: str, **fields) -> dict | None:
+    drafts = load_drafts()
+    d = draft_by_id(drafts, did)
+    if d is None:
+        return None
+    d.update(fields)
+    save_drafts(drafts)
+    return d
+
+
+def delete_drafts(ids: list[str]) -> int:
+    drafts = load_drafts()
+    n = 0
+    for d in drafts:
+        if d.get("id") in ids and not d.get("deleted"):
+            d["deleted"] = True
+            n += 1
+    if n:
+        save_drafts(drafts)
+    return n
 
 
 # ----------------------------------------------------------------------------- about you
@@ -882,8 +1119,15 @@ def write_report(cfg: dict, state: dict, now: datetime | None = None) -> Path:
             rows.append([r.get("date", ""), r.get("profile_views", "-"), r.get("post_impressions", "-"), r.get("search_appearances", "-")])
         lines.append(_md_table(rows, ["day", "profile views (90d)", "post impressions (7d)", "search appearances (7d)"]))
         lines.append("")
-    if d.get("draft_path"):
-        lines.append(f"## Today's post to publish yourself\n\n`{d['draft_path']}`  (topic: {d.get('draft_topic')}). Also in drafts/TODAY.md.\n")
+    todays = drafts_for_day(load_drafts(), key)
+    if todays:
+        lines.append("## Today's post drafts (post them yourself, or from the phone's Premium tab)")
+        lines.append(f"All in `{DRAFTS_DIR / f'{key}.md'}` (and TODAY.md).\n")
+        for x in todays:
+            p = x.get("posted") or {}
+            lines.append(f"- **{x.get('time')} {x.get('kind')}**: {x.get('topic')} ({x.get('source')}, {len(x.get('text') or '')} chars)"
+                         + (f" · {p.get('status')} {p.get('at', '')[:16]}" if p else ""))
+        lines.append("")
     if d["applied_jobs"]:
         lines.append("## Applied this day (Easy Apply, by this module)")
         lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", ""), j.get("location", ""),
@@ -992,13 +1236,9 @@ def phone_payload(cfg: dict, state: dict, now: datetime | None = None) -> dict:
     now = now or datetime.now()
     key = today_key(now)
     d = day(state, now)
-    draft = None
-    for p in (DRAFTS_DIR / f"{key}.md", DRAFTS_DIR / "TODAY.md"):
-        if p.exists():
-            text = p.read_text(encoding="utf-8")
-            body = text.split("\n---\n", 1)[1].strip() if "\n---\n" in text else text
-            draft = {"date": key, "topic": d.get("draft_topic") or "", "text": body, "posted": d.get("posted") or None}
-            break
+    drafts = [{k: x.get(k) for k in ("id", "date", "time", "kind", "topic", "text", "source", "posted")}
+              for x in load_drafts() if not x.get("deleted")][:120]
+    draft = next((x for x in drafts if x["date"] == key and not x.get("posted")), None)
     report = ""
     rp = DAILY_DIR / f"{key}.md"
     if rp.exists():
@@ -1007,7 +1247,8 @@ def phone_payload(cfg: dict, state: dict, now: datetime | None = None) -> dict:
             "days_left": days_left(cfg, now.date()), "host": os.environ.get("COMPUTERNAME", ""),
             "day": {k: d.get(k) for k in ("passes", "applied", "liked", "connected", "drafted", "viewers_new", "opened", "posted")},
             "counts": {"leads": len(d["leads"]), "inmails": len(d["inmails"]), "offsite": len(d["offsite"]), "errors": len(d["errors"])},
-            "reach": (state.get("reach") or [])[-14:], "draft": draft, "report_md": report[:120000],
+            "reach": (state.get("reach") or [])[-14:], "draft": draft, "drafts": drafts, "drafts_per_day": int(cfg.get("drafts_per_day") or cfg.get("draft_per_day") or 2),
+            "report_md": report[:120000],
             "tasks": tasks_status(), "connect_per_day": int(cfg.get("connect_per_day", 0)), "apply_per_day": int(cfg.get("apply_per_day", 8))}
 
 
@@ -1111,8 +1352,8 @@ def post_to_linkedin(page, text: str) -> tuple[str, str]:
         return "error", str(exc)[:200]
 
 
-def post_draft(text: str, headless: bool = True, cfg: dict | None = None) -> tuple[str, str]:
-    """Open the saved LinkedIn session, publish the text, remember it in the day's state, republish the phone file."""
+def post_draft(text: str, headless: bool = True, cfg: dict | None = None, draft_id: str | None = None) -> tuple[str, str]:
+    """Open the saved LinkedIn session, publish the text, remember it (on the draft and the day), republish the phone file."""
     from playwright.sync_api import sync_playwright
     from . import linkedin as linkedin_mod
     cfg = cfg or load_config()
@@ -1127,7 +1368,10 @@ def post_draft(text: str, headless: bool = True, cfg: dict | None = None) -> tup
                 browser.close()
             except Exception:  # noqa: BLE001
                 pass
-    d["posted"] = {"at": datetime.now().isoformat(timespec="seconds"), "status": status, "note": note, "chars": len(text)}
+    posted = {"at": datetime.now().isoformat(timespec="seconds"), "status": status, "note": note, "chars": len(text)}
+    if draft_id:
+        mark_draft(draft_id, posted=posted)
+    d["posted"] = posted
     if status == "posted":
         d["errors"] = [e for e in d["errors"] if not e.startswith("post:")]
     else:
@@ -1159,13 +1403,12 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
              " (dry run)" if dry_run else "")
 
     # the daily draft needs no browser, so it never waits on one
-    if d["drafted"] < int(cfg.get("draft_per_day", 1)):
-        try:
-            write_draft(cfg, state, me, now)
-        except Exception as exc:  # noqa: BLE001
-            log.exception("draft failed: %s", exc)
-            d["errors"].append(f"draft: {str(exc)[:120]}")
-        save_state(state, state_path)
+    try:
+        write_drafts(cfg, state, me, now)
+    except Exception as exc:  # noqa: BLE001
+        log.exception("drafts failed: %s", exc)
+        d["errors"].append(f"drafts: {str(exc)[:120]}")
+    save_state(state, state_path)
 
     profile = config_mod.load_profile()
     config = config_mod.load(profile=profile)
@@ -1477,11 +1720,13 @@ def main(argv=None) -> int:
 
     if args.draft:
         state = load_state()
-        path = write_draft(cfg, state, about_me())
+        written = write_drafts(cfg, state, about_me())
         save_state(state)
         write_report(cfg, state)
         publish_phone(cfg, state)
-        print(f"\n  {path}\n")
+        print(f"\n  {len(written)} new draft(s) today; all of today's are in {DRAFTS_DIR / 'TODAY.md'}\n")
+        for w in written:
+            print(f"  - {w['kind']}: {w['topic']} ({w['source']}, {len(w['text'])} chars)")
         return 0
     if args.report:
         state = load_state()

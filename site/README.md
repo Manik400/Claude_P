@@ -59,6 +59,10 @@ publishes `data/premium/latest.json` after every pass: days of Premium left, the
 leads, InMail drafts), **today's post draft**, the reach numbers, the whole daily report (leads with drafted notes, InMail
 drafts, jobs to apply to by hand, the abroad checklist) and the state of every scheduled task on the PC.
 
+* **Post drafts**: at least two new ones a day (`drafts_per_day`), never about your own work: a **hiring roundup** of 10+
+  openings the watchers found (with links), a **generic engineering** post, a light **tech-news** post from the Hacker News
+  front page / r/programming. Kept by date for 45 days (`data/premium/drafts/drafts.json`), grouped by day on the tab with
+  day / kind / time-of-day filters; **Delete** hides one here at once and removes it on the PC (action `drafts`).
 * **Post on LinkedIn (via PC)** sends the draft through the apply queue (`apply.yml`, action `post`); the PC's queue worker
   publishes it from your saved LinkedIn session on its next check-in (every 30 minutes, 2 minutes after logon) and the
   tab shows *posted*. **Open in LinkedIn, prefilled** opens LinkedIn's composer with the text so you tap Post yourself

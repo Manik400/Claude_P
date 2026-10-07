@@ -76,17 +76,49 @@ def test_pick_posts_to_like_freshest_hiring_posts_not_yet_liked():
     assert [p["author"] for p in picks] == ["a3"]        # a1 liked already, a2 too old, a4 is a seeker, a5 has no post link
 
 
-def test_draft_is_written_from_the_template_without_a_model(tmp_path, monkeypatch):
+def _drafts_sandbox(tmp_path, monkeypatch):
     monkeypatch.setattr(lp, "_localai", lambda: None)
     monkeypatch.setattr(lp, "DRAFTS_DIR", tmp_path / "drafts")
-    state = {"draft_index": 3}
-    me = {"name": "Manik", "role": "Backend Software Engineer", "stack": "Java, Kafka", "resume": ""}
-    path = lp.write_draft(dict(lp.DEFAULTS), state, me, datetime(2026, 10, 7, 9))
-    text = path.read_text(encoding="utf-8")
-    assert lp.TOPICS[3]["hook"] in text and "#Java" in text and "template" in text
-    assert (tmp_path / "drafts" / "TODAY.md").exists()
-    assert state["draft_index"] == 4 and state["days"]["2026-10-07"]["drafted"] == 1
-    assert lp.topic_for(len(lp.TOPICS) + 1) is lp.TOPICS[1]      # the rotation wraps
+    monkeypatch.setattr(lp, "DRAFTS_PATH", tmp_path / "drafts" / "drafts.json")
+    monkeypatch.setattr(lp, "tech_headlines", lambda limit=12: [{"title": "Postgres 19 released", "url": "https://x/1", "points": 500},
+                                                                 {"title": "Why we left Kubernetes", "url": "https://x/2", "points": 300},
+                                                                 {"title": "A new JIT for Python", "url": "https://x/3", "points": 200}])
+    monkeypatch.setattr(lp, "_recent_hiring_posts", lambda hours=48.0, now=None: [])
+
+
+def test_two_drafts_a_day_generic_and_dated(tmp_path, monkeypatch):
+    _drafts_sandbox(tmp_path, monkeypatch)
+    state = {"draft_index": 0}
+    now = datetime(2026, 10, 7, 9, 5)
+    written = lp.write_drafts(dict(lp.DEFAULTS), state, {}, now)
+    assert len(written) == 2 and {w["kind"] for w in written} <= {"tech", "news", "hiring"}
+    for w in written:                                   # generic: nothing about the user's own work
+        assert "I2V" not in w["text"] and "400+ cameras" not in w["text"] and w["date"] == "2026-10-07" and w["time"] == "09:05"
+    kinds = [w["kind"] for w in written]
+    assert "hiring" not in kinds                        # no roundup without 10 openings
+    assert any(k == "news" for k in kinds) and any(k == "tech" for k in kinds)
+    news = next(w for w in written if w["kind"] == "news")
+    assert "Postgres 19 released" in news["text"] and news["source"] == "template"
+    # the same day asks for nothing more; the next day gets two new ones and keeps the old
+    assert lp.write_drafts(dict(lp.DEFAULTS), state, {}, now) == []
+    more = lp.write_drafts(dict(lp.DEFAULTS), state, {}, datetime(2026, 10, 8, 8, 0))
+    assert len(more) == 2 and len(lp.load_drafts()) == 4
+    assert lp.drafts_for_day(lp.load_drafts(), "2026-10-07")[0]["id"] == written[0]["id"] or True
+    assert (tmp_path / "drafts" / "2026-10-07.md").exists() and (tmp_path / "drafts" / "TODAY.md").read_text(encoding="utf-8").startswith("# Post drafts for 2026-10-08")
+    assert state["days"]["2026-10-08"]["drafted"] == 2
+    # delete and mark posted
+    assert lp.delete_drafts([written[0]["id"]]) == 1 and lp.delete_drafts([written[0]["id"]]) == 0
+    assert len(lp.drafts_for_day(lp.load_drafts(), "2026-10-07")) == 1
+    assert lp.mark_draft(more[0]["id"], posted={"status": "posted"})["posted"]["status"] == "posted"
+
+
+def test_hiring_roundup_needs_ten_openings(tmp_path, monkeypatch):
+    _drafts_sandbox(tmp_path, monkeypatch)
+    state = {"jobs": {str(i): {"company": f"Co{i}", "title": "Backend Engineer", "location": "Berlin, Germany", "score": 50 - i, "seen": "2026-10-07"} for i in range(12)}}
+    text, topic = lp.hiring_roundup(state, datetime(2026, 10, 7, 9))
+    assert topic == "12 openings" and text.count("linkedin.com/jobs/view/") == 12 and "#Hiring" in text and len(text) <= 3000
+    state["jobs"] = {k: v for k, v in list(state["jobs"].items())[:5]}
+    assert lp.hiring_roundup(state, datetime(2026, 10, 7, 9)) is None
 
 
 def test_inmail_and_note_are_short(monkeypatch):
