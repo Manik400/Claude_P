@@ -354,6 +354,29 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
             elif kind == "reports":
                 n = remove_reports(pages, payload.get("remove") or [])
                 log("reports: %d removed from the index" % n)
+            elif kind == "post":
+                # the phone's Post button: publish the day's draft (or the text it sent) on LinkedIn from this PC's session
+                from naukri.jobs import linkedin_premium
+                text = str(payload.get("text") or "").strip()
+                if not text:
+                    draft = (linkedin_premium.DRAFTS_DIR / "TODAY.md")
+                    raw = draft.read_text(encoding="utf-8") if draft.exists() else ""
+                    text = raw.split("\n---\n", 1)[1].strip() if "\n---\n" in raw else raw.strip()
+                if len(text) < 40:
+                    log("post: nothing to post (no text sent and no draft on this PC)")
+                else:
+                    status, note = linkedin_premium.post_draft(text, headless=True)
+                    log("post: %s (%s)" % (status, note))
+            elif kind == "control":
+                # Start / stop the PC's scheduled tasks from the phone (Premium tab)
+                from naukri.jobs import linkedin_premium
+                result = linkedin_premium.control_task(str(payload.get("task") or ""), str(payload.get("do") or ""))
+                log("control: " + result)
+                try:
+                    cfg_p = linkedin_premium.load_config()
+                    linkedin_premium.publish_phone(cfg_p, linkedin_premium.load_state())
+                except Exception as exc:  # noqa: BLE001
+                    log("control: phone file not republished: %s" % exc)
             else:
                 log("unknown request %s in %s" % (kind, name))
         except Exception as exc:

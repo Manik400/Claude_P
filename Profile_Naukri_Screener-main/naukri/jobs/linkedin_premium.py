@@ -930,6 +930,185 @@ def write_report(cfg: dict, state: dict, now: datetime | None = None) -> Path:
     return path
 
 
+# ----------------------------------------------------------------------------- the phone: report, draft, tasks, posting
+
+PHONE_PATH = "data/premium/latest.json"
+# The scheduled tasks the phone may show and start / stop (scripts\schedule_*.ps1 register them).
+TASKS = ["LinkedInPremium", "SocialPostsWatch", "LinkedInPostsWatch", "JobHuntApply", "PhoneApplyQueue", "NaukriProfileRefresh"]
+TASK_PREFIXES = ["NaukriJobAgent"]
+
+
+def tasks_status() -> list[dict]:
+    """[{name, state, enabled, last_run, last_result, next_run}] from Task Scheduler (Windows only)."""
+    if os.name != "nt":
+        return []
+    import subprocess
+    names = ", ".join(f"'{n}'" for n in TASKS + [f"{p}*" for p in TASK_PREFIXES])
+    script = (f"$t = Get-ScheduledTask -TaskName {names} -ErrorAction SilentlyContinue | ForEach-Object {{ $i = $_ | Get-ScheduledTaskInfo; "
+              "[pscustomobject]@{ name = $_.TaskName; state = [string]$_.State; enabled = $_.Settings.Enabled; "
+              "last_run = $(if ($i.LastRunTime) { $i.LastRunTime.ToString('s') } else { '' }); last_result = $i.LastTaskResult; "
+              "next_run = $(if ($i.NextRunTime) { $i.NextRunTime.ToString('s') } else { '' }); description = $_.Description } }; "
+              "if ($t -eq $null) { '[]' } else { ConvertTo-Json @($t) -Compress }")
+    try:
+        out = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", script],
+                             capture_output=True, text=True, timeout=60, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        data = json.loads(out.stdout.strip() or "[]")
+        rows = data if isinstance(data, list) else [data]
+    except Exception as exc:  # noqa: BLE001
+        log.debug("tasks not read: %s", exc)
+        return []
+    order = {n: i for i, n in enumerate(TASKS)}
+    rows.sort(key=lambda r: (order.get(r.get("name"), 99), r.get("name") or ""))
+    return [{k: r.get(k) for k in ("name", "state", "enabled", "last_run", "last_result", "next_run", "description")} for r in rows]
+
+
+def control_task(name: str, do: str) -> str:
+    """start = enable + start now; stop = stop + disable (so the 30-min check does not restart it);
+    run = start now (keep enabled); enable / disable. Returns a one-line result."""
+    if os.name != "nt":
+        return "not Windows"
+    import subprocess
+    known = name in TASKS or any(name.startswith(p) for p in TASK_PREFIXES)
+    if not known or not re.match(r"^[\w\-]+$", name or ""):
+        return f"unknown task {name!r}"
+    cmds = {"start": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null; Start-ScheduledTask -TaskName '{name}'",
+            "run": f"Start-ScheduledTask -TaskName '{name}'",
+            "stop": f"Stop-ScheduledTask -TaskName '{name}' -ErrorAction SilentlyContinue; Disable-ScheduledTask -TaskName '{name}' | Out-Null",
+            "enable": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null",
+            "disable": f"Disable-ScheduledTask -TaskName '{name}' | Out-Null"}
+    if do not in cmds:
+        return f"unknown action {do!r}"
+    try:
+        out = subprocess.run(["powershell", "-NoProfile", "-ExecutionPolicy", "Bypass", "-Command", cmds[do] + "; 'ok'"],
+                             capture_output=True, text=True, timeout=60, creationflags=getattr(subprocess, "CREATE_NO_WINDOW", 0))
+        err = (out.stderr or "").strip()
+        return f"{do} {name}: " + ("ok" if "ok" in (out.stdout or "") and not err else (err[:200] or f"exit {out.returncode}"))
+    except Exception as exc:  # noqa: BLE001
+        return f"{do} {name}: {str(exc)[:200]}"
+
+
+def phone_payload(cfg: dict, state: dict, now: datetime | None = None) -> dict:
+    """What the phone's Premium tab shows: the day's numbers, the draft to post, the report, the PC's tasks."""
+    now = now or datetime.now()
+    key = today_key(now)
+    d = day(state, now)
+    draft = None
+    for p in (DRAFTS_DIR / f"{key}.md", DRAFTS_DIR / "TODAY.md"):
+        if p.exists():
+            text = p.read_text(encoding="utf-8")
+            body = text.split("\n---\n", 1)[1].strip() if "\n---\n" in text else text
+            draft = {"date": key, "topic": d.get("draft_topic") or "", "text": body, "posted": d.get("posted") or None}
+            break
+    report = ""
+    rp = DAILY_DIR / f"{key}.md"
+    if rp.exists():
+        report = rp.read_text(encoding="utf-8")
+    return {"updated": datetime.now(timezone.utc).isoformat(timespec="seconds"), "date": key, "until": str(cfg.get("until")),
+            "days_left": days_left(cfg, now.date()), "host": os.environ.get("COMPUTERNAME", ""),
+            "day": {k: d.get(k) for k in ("passes", "applied", "liked", "connected", "drafted", "viewers_new", "opened", "posted")},
+            "counts": {"leads": len(d["leads"]), "inmails": len(d["inmails"]), "offsite": len(d["offsite"]), "errors": len(d["errors"])},
+            "reach": (state.get("reach") or [])[-14:], "draft": draft, "report_md": report[:120000],
+            "tasks": tasks_status(), "connect_per_day": int(cfg.get("connect_per_day", 0)), "apply_per_day": int(cfg.get("apply_per_day", 8))}
+
+
+def publish_phone(cfg: dict, state: dict, now: datetime | None = None) -> bool:
+    """data/premium/latest.json on gh-pages, through the GitHub API (no clone, like the posts watchers)."""
+    tools = ROOT.parent / "site" / "tools"
+    if not (tools / "pages_git.py").exists():
+        return False
+    if str(tools) not in sys.path:
+        sys.path.insert(0, str(tools))
+    try:
+        import pages_git  # type: ignore
+        repo_url = None
+        try:
+            from phone_publish import load_config as _phone_cfg  # type: ignore
+            repo_url = (_phone_cfg() or {}).get("repo_url")
+        except (SystemExit, Exception):  # noqa: BLE001
+            repo_url = None
+        payload = phone_payload(cfg, state, now)
+        pages_git.put_file(repo_url or pages_git.default_repo_url(), PHONE_PATH,
+                           json.dumps(payload, ensure_ascii=False, separators=(",", ":")),
+                           "premium: %s, %d day(s) left, applied %s" % (payload["date"], payload["days_left"], payload["day"].get("applied")))
+        return True
+    except (SystemExit, Exception) as exc:  # noqa: BLE001
+        log.warning("phone publish failed: %s", str(exc)[:300])
+        return False
+
+
+_START_POST = ("button:has-text('Start a post'), button[aria-label*='Start a post' i], "
+               "div[role='button']:has-text('Start a post'), button:has-text('Create a post')")
+_POST_BOX = "div[role='textbox'][contenteditable='true'], div.ql-editor[contenteditable='true']"
+_POST_BUTTON = "button.share-actions__primary-action, button:has-text('Post')[class*='share'], div[role='dialog'] button:has-text('Post')"
+
+
+def post_to_linkedin(page, text: str) -> tuple[str, str]:
+    """Publish `text` as a LinkedIn post from the feed. Returns (status, note): posted | error."""
+    from . import human
+    if not _goto(page, "https://www.linkedin.com/feed/", settle=5):
+        return "error", "feed did not open"
+    try:
+        human.wander(page)
+        start = page.locator(_START_POST).first
+        if not start.count():
+            return "error", "no 'Start a post' control on the feed"
+        human.click(page, start)
+        page.wait_for_timeout(random.uniform(2500, 4000))
+        box = page.locator(_POST_BOX).first
+        if not box.count():
+            return "error", "post editor did not open"
+        human.click(page, box)
+        page.wait_for_timeout(random.uniform(500, 900))
+        # typed line by line: the editor turns Enter into paragraphs, insert_text keeps the line breaks
+        page.keyboard.type(text[:40], delay=random.uniform(40, 90))
+        page.keyboard.insert_text(text[40:])
+        page.wait_for_timeout(random.uniform(1500, 2500))
+        typed = (box.inner_text(timeout=3000) or "").strip()
+        if len(typed) < min(60, len(text) // 2):
+            return "error", "the editor did not take the text"
+        btn = page.locator(_POST_BUTTON).first
+        if not btn.count():
+            return "error", "no Post button"
+        human.click(page, btn)
+        page.wait_for_timeout(random.uniform(4000, 6000))
+        body = _body(page, 3000)
+        if page.locator(_POST_BOX).count() and page.locator("div[role='dialog']").count():
+            return "error", "the post dialog is still open (LinkedIn did not accept it)"
+        if re.search(r"post successful|your post was published|post published", body, re.I):
+            return "posted", "LinkedIn confirmed the post"
+        return "posted", "dialog closed after Post"
+    except Exception as exc:  # noqa: BLE001
+        return "error", str(exc)[:200]
+
+
+def post_draft(text: str, headless: bool = True, cfg: dict | None = None) -> tuple[str, str]:
+    """Open the saved LinkedIn session, publish the text, remember it in the day's state, republish the phone file."""
+    from playwright.sync_api import sync_playwright
+    from . import linkedin as linkedin_mod
+    cfg = cfg or load_config()
+    state = load_state()
+    d = day(state)
+    with sync_playwright() as p:
+        browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
+        try:
+            status, note = post_to_linkedin(page, text)
+        finally:
+            try:
+                browser.close()
+            except Exception:  # noqa: BLE001
+                pass
+    d["posted"] = {"at": datetime.now().isoformat(timespec="seconds"), "status": status, "note": note, "chars": len(text)}
+    if status == "posted":
+        d["errors"] = [e for e in d["errors"] if not e.startswith("post:")]
+    else:
+        d["errors"].append(f"post: {note}")
+    save_state(state)
+    write_report(cfg, state)
+    publish_phone(cfg, state)
+    log.info("post from the phone: %s (%s)", status, note)
+    return status, note
+
+
 # ----------------------------------------------------------------------------- a pass
 
 def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path: Path = STATE_PATH) -> dict:
@@ -1175,6 +1354,8 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
     state["updated"] = now.isoformat(timespec="seconds")
     save_state(state, state_path)
     path = write_report(cfg, state, now)
+    if state_path == STATE_PATH:
+        publish_phone(cfg, state, now)
     log.info("pass done in %.0fs: applied %d, liked %d, leads %d, inmail drafts %d, offsite %d, opened %d. Report: %s",
              time.time() - t0, d["applied"], d["liked"], len(d["leads"]), len(d["inmails"]), len(d["offsite"]), d["opened"], path)
     return d
@@ -1246,7 +1427,8 @@ def main(argv=None) -> int:
     mode.add_argument("--once", action="store_true", help="one pass now, then the report")
     mode.add_argument("--loop", action="store_true", help="a pass every `every_minutes` until `until`")
     mode.add_argument("--draft", action="store_true", help="only write today's post draft (no browser)")
-    mode.add_argument("--report", action="store_true", help="only rebuild today's report from the saved state")
+    mode.add_argument("--report", action="store_true", help="only rebuild today's report from the saved state (and republish it to the phone)")
+    mode.add_argument("--post-file", dest="post_file", metavar="FILE", help="publish this text file as a LinkedIn post now (what the phone's Post button does through the PC)")
     ap.add_argument("--show", action="store_true", help="visible browser (default: headless)")
     ap.add_argument("--dry-run", action="store_true", dest="dry_run", help="read and rank everything; apply to nothing, like nothing")
     ap.add_argument("--config", default=str(CONFIG_PATH), help=f"settings file (default {CONFIG_PATH})")
@@ -1268,11 +1450,19 @@ def main(argv=None) -> int:
         path = write_draft(cfg, state, about_me())
         save_state(state)
         write_report(cfg, state)
+        publish_phone(cfg, state)
         print(f"\n  {path}\n")
         return 0
     if args.report:
-        print(f"\n  {write_report(cfg, load_state())}\n")
+        state = load_state()
+        path = write_report(cfg, state)
+        print(f"\n  {path}  (phone: {'published' if publish_phone(cfg, state) else 'not published'})\n")
         return 0
+    if args.post_file:
+        text = Path(args.post_file).read_text(encoding="utf-8").strip()
+        status, note = post_draft(text, headless=not args.show, cfg=cfg)
+        print(f"\n  {status}: {note}\n")
+        return 0 if status == "posted" else 1
     if premium_over(cfg):
         log.info("Premium period is over (until %s); nothing to do", cfg.get("until"))
         return 0

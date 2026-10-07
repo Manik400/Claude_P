@@ -25,7 +25,7 @@ from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 
-ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes", "reports"}
+ACTIONS = {"queue", "apply", "remove", "retry", "pause", "resume", "settings", "answers", "profile", "notes", "reports", "post", "control"}
 
 
 def env(name, default=""):
@@ -68,7 +68,7 @@ def main():
             raise SystemExit("answers must be a non-empty JSON object")
         payload = {str(k): str(v) for k, v in payload.items()}
         request["answers"] = payload
-    elif action in ("remove", "retry", "settings", "profile", "notes", "reports") and not payload:
+    elif action in ("remove", "retry", "settings", "profile", "notes", "reports", "control") and not payload:
         raise SystemExit("%s needs a payload" % action)
     request["payload"] = payload
 

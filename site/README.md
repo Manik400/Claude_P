@@ -52,6 +52,20 @@ Set up once on the PC (after `python main.py --linkedin-login` in `Profile_Naukr
 LinkedInPostsWatch runs the watcher (`naukri\jobs\linkedin_posts.py --loop`) at logon with no time limit, restarts it if
 it stops, and logs to `logs\linkedin_posts.log`. It only reads LinkedIn: nothing is liked, commented on or messaged.
 
+## Premium tab (`#premium`): the LinkedIn Premium runner, the post to publish, the PC's tasks
+
+The PC's LinkedIn Premium runner (`Profile_Naukri_Screener-main\naukri\jobs\linkedin_premium.py`, task LinkedInPremium)
+publishes `data/premium/latest.json` after every pass: days of Premium left, the day's numbers (applied, liked, recruiter
+leads, InMail drafts), **today's post draft**, the reach numbers, the whole daily report (leads with drafted notes, InMail
+drafts, jobs to apply to by hand, the abroad checklist) and the state of every scheduled task on the PC.
+
+* **Post on LinkedIn (via PC)** sends the draft through the apply queue (`apply.yml`, action `post`); the PC's queue worker
+  publishes it from your saved LinkedIn session on its next check-in (every 30 minutes, 2 minutes after logon) and the
+  tab shows *posted*. **Open in LinkedIn, prefilled** opens LinkedIn's composer with the text so you tap Post yourself
+  right now; **Copy text** copies it.
+* **What runs on the PC**: each task with its state and **Start / Stop / Run now** (action `control`): Stop also disables
+  the task so the 30-minute check does not restart it, Start enables and starts it. Applied on the PC's next check-in.
+
 ## Auto-apply from the phone: the one queue
 
 Full walkthrough: [AUTO_APPLY.md](../AUTO_APPLY.md).
