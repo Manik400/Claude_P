@@ -60,6 +60,7 @@ MAX_ITEMS = 1500
 BASE_INTERVAL = 90           # seconds between ticks when LinkedIn answers normally
 MAX_INTERVAL = 900
 DETAILS_PER_TICK = 4
+MAX_PAGES = 4                # pages of 10 a search may read in one tick when every posting on them is new
 AI_PER_TICK = 2               # local-model checks per tick; a tick never waits long on the model
 PUBLISH_MIN_GAP = 45         # seconds; never publish more often than this
 
@@ -372,21 +373,35 @@ def tick(feed: dict, now: datetime | None = None) -> dict:
     combos = [(r, p, wt) for p, wt in PLACES for r in ROLES]
     rot = combos[int(feed.get("cursor") or 0) % len(combos)]
     feed["cursor"] = int(feed.get("cursor") or 0) + 1
-    for kw, loc, wt, secs in ((hot[0], hot[1], hot[2], 1800), (rot[0], rot[1], rot[2], 3600)):
-        jobs, status = search(kw, loc, wt, secs, now)
-        stats["queries"].append(f"{kw} / {loc}{' remote' if wt == '2' else ''}: {len(jobs) if status == 200 else status}")
+    # Each search looks back to the last time it ran (plus a margin), so a rotation that comes round
+    # every few hours still sees every posting in between; a page that is all new is followed by the next.
+    last = feed.setdefault("last_checked", {})
+    for kw, loc, wt, floor in ((hot[0], hot[1], hot[2], 1800), (rot[0], rot[1], rot[2], 3600)):
+        key = f"{kw}|{loc}|{wt or ''}"
+        prev = lp._parse_iso(last.get(key))
+        secs = int(min(86400, max(floor, (now - prev).total_seconds() + 300 if prev else floor)))
+        got, status, page = 0, 200, 0
+        new: list[dict] = []
+        while page < MAX_PAGES:
+            jobs, status = search(kw, loc, wt, secs, now, start=page * 10)
+            if status != 200:
+                break
+            fresh = merge_jobs(feed, jobs, now)
+            new += fresh
+            got += len(jobs)
+            page += 1
+            if len(jobs) < 10 or len(fresh) < 8:
+                break               # reached postings we already have, or the end of the results
+            time.sleep(random.uniform(1.5, 3.5))
+        stats["queries"].append(f"{kw} / {loc}{' remote' if wt == '2' else ''} ({secs // 60} min, {page} page{'s' if page != 1 else ''}): "
+                                f"{got if status == 200 else status}")
+        stats["new_jobs"] += len(new)
         if status != 200:
             stats["status"] = status
             if status == 429:
                 break
             continue
-        new = merge_jobs(feed, jobs, now)
-        # a full page of new postings: there may be more just behind it
-        if len(jobs) >= 10 and len(new) >= 9:
-            more, st2 = search(kw, loc, wt, secs, now, start=10)
-            if st2 == 200:
-                new += merge_jobs(feed, more, now)
-        stats["new_jobs"] += len(new)
+        last[key] = now.isoformat(timespec="seconds")
         time.sleep(random.uniform(2, 5))
     if stats["status"] != 429:
         pending = [it for it in feed["items"] if it.get("kind") == "job" and not it.get("detailed")]
