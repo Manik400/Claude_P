@@ -59,10 +59,10 @@ X_PROMPT_EVERY_H = 12                                       # at most one automa
 LOG_PATH = ROOT / "logs" / "social_posts.log"
 PUBLISH_PATH = "data/posts/social_posts.json"
 
-WINDOW_HOURS = 12
+WINDOW_HOURS = 48
 KEEP_HOURS = 7 * 24
 EVERY_MINUTES = 30
-MAX_PUBLISHED = 500
+MAX_PUBLISHED = 900
 UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/130.0 Safari/537.36"
 
 DEFAULTS: dict = {

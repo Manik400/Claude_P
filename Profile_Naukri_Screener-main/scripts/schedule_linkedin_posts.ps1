@@ -21,7 +21,7 @@ param(
     [switch]$Remove,
     [switch]$Show,
     [int]$Every = 30,
-    [int]$Hours = 12,
+    [int]$Hours = 48,
     [int]$PerPass = 8
 )
 

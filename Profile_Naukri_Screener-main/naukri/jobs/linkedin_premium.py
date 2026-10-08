@@ -1327,7 +1327,7 @@ def write_report(cfg: dict, state: dict, now: datetime | None = None) -> Path:
 
 PHONE_PATH = "data/premium/latest.json"
 # The scheduled tasks the phone may show and start / stop (scripts\schedule_*.ps1 register them).
-TASKS = ["LinkedInPremium", "SocialPostsWatch", "LinkedInPostsWatch", "JobHuntApply", "PhoneApplyQueue", "NaukriProfileRefresh"]
+TASKS = ["LiveFeed", "LinkedInPremium", "SocialPostsWatch", "LinkedInPostsWatch", "JobHuntApply", "PhoneApplyQueue", "NaukriProfileRefresh"]
 TASK_PREFIXES = ["NaukriJobAgent"]
 
 
@@ -1357,7 +1357,8 @@ def tasks_status() -> list[dict]:
     # started. Their own stores know when the last pass actually finished; the phone shows that.
     passes = {"LinkedInPremium": lambda: (load_state().get("updated") or ""),
               "SocialPostsWatch": lambda: ((json.loads((ROOT / "data" / "posts" / "social_posts.json").read_text(encoding="utf-8")).get("pc") or {}).get("last_pass") or ""),
-              "LinkedInPostsWatch": lambda: ((json.loads((ROOT / "data" / "posts" / "linkedin_posts.json").read_text(encoding="utf-8")).get("pc") or {}).get("last_pass") or "")}
+              "LinkedInPostsWatch": lambda: ((json.loads((ROOT / "data" / "posts" / "linkedin_posts.json").read_text(encoding="utf-8")).get("pc") or {}).get("last_pass") or ""),
+              "LiveFeed": lambda: ((json.loads((ROOT / "data" / "live" / "feed.json").read_text(encoding="utf-8")).get("pc") or {}).get("last_tick") or "")}
     for t in out:
         fn = passes.get(t["name"])
         if fn:

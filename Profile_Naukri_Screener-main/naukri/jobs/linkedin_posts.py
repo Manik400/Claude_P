@@ -45,11 +45,11 @@ DEBUG_DIR = ROOT / "data" / "posts"
 LOG_PATH = ROOT / "logs" / "linkedin_posts.log"
 PUBLISH_PATH = "data/posts/linkedin_posts.json"
 
-WINDOW_HOURS = 12          # what the phone shows: posts from the last 12 hours (fixed, as asked)
+WINDOW_HOURS = 48          # what the phone shows: posts from the last 2 days
 KEEP_HOURS = 7 * 24        # what the local store remembers, so a post seen again is not a new one
 EVERY_MINUTES = 30
 PER_PASS = 8               # queries per pass; the list is rotated so every query runs every second pass
-MAX_PUBLISHED = 400
+MAX_PUBLISHED = 900
 
 SEARCH_URL = "https://www.linkedin.com/search/results/content/"
 
@@ -222,6 +222,9 @@ def experience_of(text) -> dict:
     return {"min": lo, "max": hi, "text": found.strip(), "entry": entry, "senior": senior}
 
 
+MAX_MIN_YEARS = 3          # a post asking for at most this many years (min) is shown: SWE / SDE posts up to "3+ years"
+
+
 def fits_entry(exp: dict) -> bool:
     """Is this a post someone with 0-2 years can answer?
 
@@ -231,7 +234,7 @@ def fits_entry(exp: dict) -> bool:
     decides.
     """
     lo = exp.get("min")
-    if lo is not None and lo > 2:
+    if lo is not None and lo > MAX_MIN_YEARS:
         return False
     if exp.get("entry"):
         return True
