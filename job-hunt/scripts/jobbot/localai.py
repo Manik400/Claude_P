@@ -46,6 +46,7 @@ Environment (all optional; <repo>/.env is read through jobbot.dotenv):
     LOCAL_AI_EMBED_MODEL=<name>      fastembed model name (default BAAI/bge-small-en-v1.5)
     LOCAL_AI_CACHE=<dir>             where the files live
     LOCAL_AI_BUDGET_SECONDS=N        generation budget per process (default 600)
+    LOCAL_AI_TIME_SCALE=N            multiply every call's time limit (3 for a big model on a CPU)
     LOCAL_AI_THREADS=N               default min(4, cpu_count)
     LOCAL_AI_CTX=N                   context window (default 4096)
     LOCAL_AI_SUMMARY_TOP=N           how many top jobs get the "why it fits" line (30)
@@ -567,7 +568,9 @@ def ask(prompt: str, *, system: str = "", max_tokens: int = 200, json: bool = Fa
     """
     if budget_left() <= 0:
         return None
-    limit = min(timeout or 60.0, budget_left())
+    # LOCAL_AI_TIME_SCALE stretches every caller's time limit: a 35B model on a laptop CPU needs
+    # 60-120 s a call where the 2B needed 10, and the callers' limits were written for the 2B.
+    limit = min((timeout or 60.0) * _float_env("LOCAL_AI_TIME_SCALE", 1.0), budget_left())
     sys_text = (NO_THINK + " " + system).strip()
     if ollama_ready():
         return _ask_ollama(prompt, sys_text, max_tokens, json, temperature, limit,
