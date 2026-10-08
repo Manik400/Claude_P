@@ -53,6 +53,9 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 STORE_PATH = ROOT / "data" / "posts" / "social_posts.json"
 CONFIG_PATH = ROOT / "data" / "posts" / "social.yaml"
 X_STATE_PATH = ROOT / "data" / "x_state.json"
+X_PROFILE_DIR = ROOT / "data" / "x-chrome-profile"        # the Chrome profile X is signed in to (gitignored under data/)
+X_PROMPT_PATH = ROOT / "data" / "posts" / "x_login_prompt.json"
+X_PROMPT_EVERY_H = 12                                       # at most one automatic sign-in window per 12 h
 LOG_PATH = ROOT / "logs" / "social_posts.log"
 PUBLISH_PATH = "data/posts/social_posts.json"
 
@@ -334,7 +337,9 @@ def login_x(state_path: Path = X_STATE_PATH, timeout_sec: int = 420, port: int =
             with urllib.request.urlopen(f"http://127.0.0.1:{port}/json", timeout=2) as resp:
                 return json.loads(resp.read())
 
-        profile_dir = state_path.parent / "chrome-login-profile"
+        # X's own profile: the watcher reads X with this same profile afterwards, so the cookies X
+        # rotates stay current and the sign-in lasts (a one-time cookie snapshot is logged out in a day)
+        profile_dir = X_PROFILE_DIR
         proc = subprocess.Popen([chrome, f"--remote-debugging-port={port}", f"--user-data-dir={profile_dir}",
                                  "--no-first-run", "--no-default-browser-check", "--new-window", "https://x.com/login"])
         print("\n  A Chrome window is open. Sign in to X there (email/password, Apple or Google all work).")
@@ -388,13 +393,23 @@ def read_x(queries: list[str], headless: bool = True, now: datetime | None = Non
     """X's search, Latest tab, for each query. Returns (records, errors)."""
     from playwright.sync_api import sync_playwright
     from ..session import launch_browser, new_context
-    if not state_path.exists():
+    use_profile = (X_PROFILE_DIR / "Default").is_dir()
+    if not use_profile and not state_path.exists():
         raise RuntimeError(f"No saved X session at {state_path}. Run: python -m naukri.jobs.social_posts --login-x")
     out, errors = [], []
     with sync_playwright() as p:
-        browser = launch_browser(p, headless=headless)
-        ctx = new_context(browser, storage_state=str(state_path), viewport={"width": 1280, "height": 900})
-        page = ctx.new_page()
+        if use_profile:
+            # the signed-in Chrome profile itself: X's rotated cookies are written back to it on every run
+            probe = launch_browser(p, headless=headless)
+            ua = new_context(probe).new_page().evaluate("navigator.userAgent").replace("HeadlessChrome", "Chrome")
+            probe.close()
+            ctx = p.chromium.launch_persistent_context(str(X_PROFILE_DIR), channel="chrome", headless=headless, user_agent=ua,
+                                                       viewport={"width": 1280, "height": 900}, args=["--no-first-run"])
+            browser = ctx
+        else:
+            browser = launch_browser(p, headless=headless)
+            ctx = new_context(browser, storage_state=str(state_path), viewport={"width": 1280, "height": 900})
+        page = ctx.pages[0] if use_profile and ctx.pages else ctx.new_page()
         try:
             for i, q in enumerate(queries):
                 try:
@@ -420,9 +435,36 @@ def read_x(queries: list[str], headless: bool = True, now: datetime | None = Non
                 log.info("  x %-44s %2d post(s)", q, len(cards))
                 if i < len(queries) - 1:
                     time.sleep(random.uniform(4, 9))
+            try:
+                ctx.storage_state(path=str(state_path))      # keep the snapshot fresh too, for the fallback path
+            except Exception:  # noqa: BLE001
+                pass
         finally:
             browser.close()
     return out, errors
+
+
+def prompt_x_login(reason: str) -> bool:
+    """X signed us out: open the sign-in window by itself (a normal Chrome window on X's profile), at most
+    once every X_PROMPT_EVERY_H hours, so the only thing left to do is click 'Continue with ...'.
+    Returns True when a window was opened now."""
+    try:
+        last = json.loads(X_PROMPT_PATH.read_text(encoding="utf-8")).get("at")
+        if last and (datetime.now() - datetime.fromisoformat(last)).total_seconds() < X_PROMPT_EVERY_H * 3600:
+            return False
+    except (OSError, ValueError, TypeError):
+        pass
+    import subprocess
+    X_PROMPT_PATH.parent.mkdir(parents=True, exist_ok=True)
+    X_PROMPT_PATH.write_text(json.dumps({"at": datetime.now().isoformat(timespec="seconds"), "reason": reason[:200]}), encoding="utf-8")
+    try:
+        subprocess.Popen([sys.executable, "-m", "naukri.jobs.social_posts", "--login-x"], cwd=str(ROOT),
+                         creationflags=getattr(subprocess, "DETACHED_PROCESS", 0) | getattr(subprocess, "CREATE_NEW_PROCESS_GROUP", 0))
+        log.warning("  x: signed out - opened the X sign-in window on the desktop (next automatic one in %d h at the earliest)", X_PROMPT_EVERY_H)
+        return True
+    except Exception as exc:  # noqa: BLE001
+        log.warning("  x: signed out, and the sign-in window could not be opened: %s", exc)
+        return False
 
 
 # ----------------------------------------------------------------------------- config, store, publish
@@ -534,8 +576,9 @@ def run_once(cfg: dict, hours: float = WINDOW_HOURS, headless: bool = True, sour
             take("bluesky", lambda q=q: read_bluesky(q, now), q)
     if on("x"):
         qs = _rotate(store, "x", list(cfg["x"].get("queries") or []), int(cfg["x"].get("per_pass") or 4))
-        if not X_STATE_PATH.exists():
+        if not X_STATE_PATH.exists() and not (X_PROFILE_DIR / "Default").is_dir():
             log.info("  x: no saved session (python -m naukri.jobs.social_posts --login-x); skipped")
+            prompt_x_login("no saved session")
         elif qs:
             try:
                 recs, errs = read_x(qs, headless=headless, now=now)
@@ -545,6 +588,8 @@ def run_once(cfg: dict, hours: float = WINDOW_HOURS, headless: bool = True, sour
             except Exception as exc:  # noqa: BLE001
                 errors.append(f"x: {str(exc)[:160]}")
                 log.warning("  x failed: %s", str(exc)[:200])
+                if "session expired" in str(exc):
+                    prompt_x_login(str(exc))
 
     new = lp.merge(store, read, now, KEEP_HOURS)
     store["updated"] = _iso(now)

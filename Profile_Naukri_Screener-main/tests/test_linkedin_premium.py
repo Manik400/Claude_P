@@ -91,14 +91,13 @@ def test_two_drafts_a_day_generic_and_dated(tmp_path, monkeypatch):
     state = {"draft_index": 0}
     now = datetime(2026, 10, 7, 9, 5)
     written = lp.write_drafts(dict(lp.DEFAULTS), state, {}, now)
-    assert len(written) == 2 and {w["kind"] for w in written} <= {"tech", "news", "hiring"}
+    assert len(written) == 2 and {w["kind"] for w in written} <= {"tech", "news", "hiring", "study"}
     for w in written:                                   # generic: nothing about the user's own work
         assert "I2V" not in w["text"] and "400+ cameras" not in w["text"] and w["date"] == "2026-10-07" and w["time"] == "09:05"
     kinds = [w["kind"] for w in written]
     assert "hiring" not in kinds                        # no roundup without 10 openings
-    assert any(k == "news" for k in kinds) and any(k == "tech" for k in kinds)
-    news = next(w for w in written if w["kind"] == "news")
-    assert "Postgres 19 released" in news["text"] and news["source"] == "template"
+    news = lp._make("news", state, now, 0, 0, set(), [])
+    assert news[0] == "news" and "Postgres 19 released" in news[1] and news[2] == "template"
     # the same day asks for nothing more; the next day gets two new ones and keeps the old
     assert lp.write_drafts(dict(lp.DEFAULTS), state, {}, now) == []
     more = lp.write_drafts(dict(lp.DEFAULTS), state, {}, datetime(2026, 10, 8, 8, 0))
@@ -116,7 +115,7 @@ def test_hiring_roundup_needs_ten_openings(tmp_path, monkeypatch):
     _drafts_sandbox(tmp_path, monkeypatch)
     state = {"jobs": {str(i): {"company": f"Co{i}", "title": "Backend Engineer", "location": "Berlin, Germany", "score": 50 - i, "seen": "2026-10-07"} for i in range(12)}}
     text, topic = lp.hiring_roundup(state, datetime(2026, 10, 7, 9))
-    assert topic == "12 openings" and text.count("linkedin.com/jobs/view/") == 12 and "#Hiring" in text and len(text) <= 3000
+    assert topic.endswith("12 openings") and text.count("linkedin.com/jobs/view/") == 12 and "#Hiring" in text and len(text) <= 3000
     state["jobs"] = {k: v for k, v in list(state["jobs"].items())[:5]}
     assert lp.hiring_roundup(state, datetime(2026, 10, 7, 9)) is None
 
@@ -144,3 +143,20 @@ def test_report_is_written(tmp_path, monkeypatch):
     assert "23 day(s) of Premium left" in text and "Backend Engineer" in text and "Priya" in text and "Hi Raj" in text
     assert "Abroad" in text and (tmp_path / "LATEST.md").exists()
     assert json.loads(json.dumps(state))    # the state stays JSON-serialisable
+
+
+def test_daily_mix_seven_hiring_three_study_no_opening_twice(tmp_path, monkeypatch):
+    _drafts_sandbox(tmp_path, monkeypatch)
+    cities = ["Bengaluru", "Hyderabad", "Pune", "Remote", "Berlin, Germany", "Noida", "Amsterdam, Netherlands"]
+    titles = ["Backend Engineer", "Full Stack Developer", "Java Developer", "Frontend Engineer", "Software Engineer - Freshers"]
+    state = {"jobs": {str(i): {"company": f"Co{i}", "title": titles[i % len(titles)], "location": cities[i % len(cities)],
+                               "score": 100 - i % 50, "seen": "2026-10-08"} for i in range(90)}}
+    cfg = dict(lp.DEFAULTS, drafts_mix={"hiring": 7, "study": 3})
+    written = lp.write_drafts(cfg, state, {}, datetime(2026, 10, 8, 12, 0))
+    kinds = [w["kind"] for w in written]
+    assert len(written) == 10 and kinds.count("hiring") == 7 and kinds.count("study") == 3
+    links = [ln for w in written if w["kind"] == "hiring" for ln in w["text"].split(chr(10)) if "jobs/view/" in ln]
+    assert len(links) >= 70 and len(links) == len(set(links))           # 10+ each, never the same opening twice
+    assert all(len(w["text"]) <= 3000 for w in written)                 # LinkedIn's post limit
+    assert {w["topic"] for w in written if w["kind"] == "study"} <= {t["key"] for t in lp.STUDY_TOPICS}
+    assert lp.write_drafts(cfg, state, {}, datetime(2026, 10, 8, 16, 0)) == []     # the day's mix is complete

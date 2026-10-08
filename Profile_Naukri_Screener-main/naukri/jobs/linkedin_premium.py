@@ -693,7 +693,7 @@ def like_post(page, url: str) -> str:
 
 DRAFTS_PATH = DRAFTS_DIR / "drafts.json"
 DRAFT_KEEP_DAYS = 45
-KINDS = ["hiring", "tech", "news"]
+KINDS = ["hiring", "tech", "news"]          # the rotation without `drafts_mix`; "study" comes with the mix
 
 TECH_TOPICS = [
     {"key": "scale-topology", "hook": "Most throughput problems are topology problems, not hardware problems.",
@@ -758,7 +758,47 @@ TECH_TOPICS = [
      "lesson": "Blameless is not consequence-free; it is system-focused.", "ask": "What is the most useful postmortem you have read?"},
 ]
 
+STUDY_TOPICS = [
+    {"key": "dsa-patterns", "hook": "Stop solving random problems. Learn the 15 patterns instead.",
+     "points": ["two pointers, sliding window, prefix sums", "BFS / DFS, topological sort, union-find", "binary search on the answer, heaps, monotonic stack, DP on subsequences"],
+     "lesson": "Recognising the pattern is most of the solution.", "ask": "Which pattern took you longest to really get?"},
+    {"key": "system-design-start", "hook": "Where to start with system design if it feels overwhelming.",
+     "points": ["learn five building blocks first: load balancer, cache, queue, database replica, CDN", "design one system end to end a week: URL shortener, chat, feed",
+                "always say the numbers out loud: users, requests per second, storage"], "lesson": "Breadth first, then depth on what interviewers probe.", "ask": "Which design question do you find hardest?"},
+    {"key": "spaced-repetition", "hook": "You forget 70% of what you solved last week. Here is the fix.",
+     "points": ["re-solve a problem after 1 day, 3 days, 7 days, 21 days", "keep a one-line note: the trick that cracked it", "review the notes, not the code"],
+     "lesson": "Revision beats volume.", "ask": "How do you keep old problems fresh?"},
+    {"key": "learn-a-stack-fast", "hook": "How to pick up a new tech stack in a week.",
+     "points": ["build the smallest real thing on day one, not a tutorial", "read the official docs' concepts page end to end", "rebuild something you already know in the new stack"],
+     "lesson": "Shipping something small teaches more than finishing a course.", "ask": "What is the fastest you have learned a new stack, and how?"},
+    {"key": "sql-practice", "hook": "SQL is the most underrated interview skill for backend roles.",
+     "points": ["window functions: ROW_NUMBER, RANK, LAG", "GROUP BY with HAVING, and joins you can draw on paper", "read the query plan for every slow query you write"],
+     "lesson": "Twenty minutes of SQL a day compounds fast.", "ask": "What is your favourite SQL interview question?"},
+    {"key": "cs-fundamentals", "hook": "The CS fundamentals that keep coming up in backend interviews.",
+     "points": ["OS: processes vs threads, deadlocks, virtual memory", "networks: what happens when you type a URL, TCP vs UDP, HTTP/2", "DBMS: indexes, isolation levels, normalisation"],
+     "lesson": "One page of notes per topic is enough to revise the night before.", "ask": "Which fundamental do interviewers ask you most?"},
+    {"key": "mock-interviews", "hook": "Solving alone is not the same as solving while talking.",
+     "points": ["do one timed mock a week with a friend or a recording", "say your approach before you code", "end every answer with complexity and edge cases"],
+     "lesson": "Communication is half of the coding round.", "ask": "Have mock interviews helped you? What changed?"},
+    {"key": "read-code", "hook": "Reading good code is the fastest way to write better code.",
+     "points": ["pick one well-known open-source project in your language", "trace one request from entry point to database", "copy one idea into your own project"],
+     "lesson": "Every senior engineer reads more code than they write.", "ask": "Which open-source codebase taught you the most?"},
+    {"key": "study-plan", "hook": "A study plan that fits around a full-time job.",
+     "points": ["45 minutes before work: one DSA problem and one revision", "lunch: one system design concept", "weekend: one mock and one small project feature"],
+     "lesson": "Consistency over intensity.", "ask": "How do you fit preparation around work?"},
+    {"key": "notes-system", "hook": "Your interview notes are only useful if you can find them in two minutes.",
+     "points": ["one file per topic, one line per insight", "tag problems by pattern, not by platform", "a 'mistakes I made' list you read before every interview"],
+     "lesson": "Good notes turn practice into memory.", "ask": "Notion, paper, or plain Markdown for your notes?"},
+    {"key": "llm-basics", "hook": "The five GenAI ideas every backend engineer should be able to explain.",
+     "points": ["embeddings and similarity search", "retrieval-augmented generation (RAG)", "structured output, tool calling, and how to evaluate answers"],
+     "lesson": "You do not need ML theory to ship an LLM feature well.", "ask": "Which of these would you like a deeper post on?"},
+    {"key": "resume-review", "hook": "Three resume fixes that get more callbacks.",
+     "points": ["lead every bullet with a verb and end it with a number", "match the job's exact keywords where they are true for you", "one page until you have five years of experience"],
+     "lesson": "Recruiters skim; make the skim work.", "ask": "What resume advice changed your callback rate?"},
+]
+
 HASHTAGS_BY_KIND = {"hiring": ["#Hiring", "#SoftwareJobs", "#OpenToWork", "#Jobs", "#Freshers"],
+                    "study": ["#InterviewPrep", "#DSA", "#SystemDesign", "#LearningInPublic", "#SoftwareEngineering"],
                     "tech": ["#SoftwareEngineering", "#Backend", "#SystemDesign", "#Scalability", "#Tech"],
                     "news": ["#Tech", "#TechNews", "#SoftwareEngineering", "#Developers"]}
 
@@ -826,63 +866,95 @@ def _recent_hiring_posts(hours: float = 48.0, now: datetime | None = None) -> li
     return out
 
 
-def _roundup_lines(state: dict, now: datetime | None = None, want: int = 12) -> list[str]:
-    """'Company - Role (Location): link' lines: the Premium pass's ranked jobs, then the watchers' hiring posts."""
-    lines, seen = [], set()
-    key = today_key(now)
-    jobs = sorted(((jid, j) for jid, j in (state.get("jobs") or {}).items() if j.get("seen") == key and (j.get("score") or 0) > 0),
+NL, NL2 = chr(10), chr(10) * 2
+
+HIRING_THEMES = [
+    ("freshers", "Freshers and 0-1 year", r"\bfreshers?\b|entry[- ]level|new ?grad|graduate|trainee|\bintern|0\s*-\s*1|0-2|20(?:2[4-7])\s*batch|junior"),
+    ("backend", "Backend, Java, Python and Node", r"back-?end|\bjava\b|spring|python|django|node|golang|\.net|c#|kafka|microservice"),
+    ("fullstack", "Full stack and frontend", r"full[- ]?stack|front-?end|react|angular|\bvue\b|mern|typescript|javascript"),
+    ("remote", "Remote", r"\bremote\b|work from home|\bwfh\b"),
+    ("abroad", "Outside India, some with visa sponsorship", r"visa|relocat|germany|netherlands|ireland|united kingdom|\buk\b|canada|singapore|dubai|\buae\b|australia|japan|europe|\busa\b|united states|berlin|amsterdam|london|utrecht"),
+    ("metros", "Bengaluru, Hyderabad, Pune, NCR, Mumbai, Chennai", r"bengaluru|bangalore|hyderabad|pune|gurgaon|gurugram|noida|delhi|\bncr\b|mumbai|chennai"),
+    ("mixed", "Software roles", None),
+]
+
+
+def _opening_pool(state: dict, now: datetime | None = None, days: int = 3) -> list[dict]:
+    """Every opening a roundup may list: the Premium pass's ranked jobs from the last `days`, then the
+    watchers' hiring posts from the same window. [{tag, line, text}] - tag is the company / poster,
+    so one roundup (and one day's roundups together) never lists the same one twice."""
+    now = now or datetime.now()
+    since = (now - timedelta(days=days - 1)).strftime("%Y-%m-%d")
+    out, seen = [], set()
+    jobs = sorted(((jid, j) for jid, j in (state.get("jobs") or {}).items() if str(j.get("seen") or "") >= since and (j.get("score") or 0) > 0),
                   key=lambda t: t[1].get("score") or 0, reverse=True)
     for jid, j in jobs:
         tag = (j.get("company") or "").strip().lower()
-        if not j.get("company") or tag in seen:
+        if not tag or tag in seen:
             continue
         seen.add(tag)
         loc = (j.get("location") or "").split(",")[0].strip()
-        lines.append(f"• {j['company']} - {j.get('title') or 'Software Engineer'}" + (f" ({loc})" if loc else "") + f": https://www.linkedin.com/jobs/view/{jid}/")
-        if len(lines) >= want:
-            return lines
-    for p in _recent_hiring_posts(now=now):
+        title = j.get("title") or "Software Engineer"
+        out.append({"tag": tag, "text": f"{title} {j.get('location') or ''} {' '.join(j.get('why') or [])}",
+                    "line": f"• {j['company']} - {title}" + (f" ({loc})" if loc else "") + f": https://www.linkedin.com/jobs/view/{jid}/"})
+    for p in _recent_hiring_posts(hours=days * 24, now=now.astimezone(timezone.utc) if now.tzinfo else None):
         who = (p.get("author") or "").strip()
-        role = ", ".join((p.get("roles") or [])[:2]) or "software roles"
         tag = who.lower()
         if not who or tag in seen or not p.get("url"):
             continue
         seen.add(tag)
+        role = ", ".join((p.get("roles") or [])[:2]) or "software roles"
         where = ", ".join((p.get("locations") or [])[:1])
         exp = (p.get("exp") or {}).get("text") or ("freshers" if (p.get("exp") or {}).get("entry") else "")
-        lines.append(f"• {who} - hiring {role}" + (f" ({where})" if where else "") + (f", {exp}" if exp else "") + f": {p['url']}")
+        out.append({"tag": tag, "text": " ".join([role, " ".join(p.get("locations") or []), exp, (p.get("text") or "")[:600]]),
+                    "line": f"• {who} - hiring {role}" + (f" ({where})" if where else "") + (f", {exp}" if exp else "") + f": {p['url']}"})
+    return out
+
+
+def _roundup_lines(state: dict, now: datetime | None = None, want: int = 12, theme: str | None = None,
+                   used: set | None = None, pool: list[dict] | None = None) -> list[str]:
+    """Up to `want` lines for one roundup: openings matching the theme's pattern, none in `used` (updated)."""
+    used = used if used is not None else set()
+    rx = next((re.compile(t[2], re.I) for t in HIRING_THEMES if t[0] == theme and t[2]), None)
+    lines = []
+    for o in (pool if pool is not None else _opening_pool(state, now)):
+        if o["tag"] in used or (rx is not None and not rx.search(o["text"])):
+            continue
+        lines.append(o["line"])
+        used.add(o["tag"])
         if len(lines) >= want:
             break
     return lines
 
 
-def hiring_roundup(state: dict, now: datetime | None = None) -> tuple[str, str] | None:
-    """A roundup post with at least 10 openings, or None when there are not enough yet."""
+def hiring_roundup(state: dict, now: datetime | None = None, theme: str | None = None, used: set | None = None,
+                   pool: list[dict] | None = None) -> tuple[str, str] | None:
+    """A roundup post with 10-12 openings (of `theme`, none already in `used`), or None when there are not enough."""
     now = now or datetime.now()
-    lines = _roundup_lines(state, now, want=14)
+    used = used if used is not None else set()
+    trial = set(used)
+    lines = _roundup_lines(state, now, want=12, theme=theme, used=trial, pool=pool)
     if len(lines) < 10:
         return None
-    body = "\n".join(lines)
-    while len(body) > 2600 and len(lines) > 10:
-        lines.pop()
-        body = "\n".join(lines)
+    used |= trial
+    label = next((t[1] for t in HIRING_THEMES if t[0] == theme), "Software roles")
     intro = None
     ai = _localai()
     if ai is not None:
         try:
             intro = ai.ask(
-                "Write the opening of a LinkedIn post that shares a list of software job openings for 0-3 years of experience "
-                "(the list is added after your text). Two or three short lines, plain text, no emojis, no hashtags, no company names, "
-                "no claims about the writer. Encourage people to apply directly and to share the post for someone who needs it.",
-                system="You write short, warm, specific LinkedIn posts. Reply with the text only.", max_tokens=140, temperature=0.6, timeout=90)
+                f"Write the opening of a LinkedIn post that shares a list of job openings: {label.lower()}, mostly for 0-3 years "
+                "of experience (the list is added after your text). Two or three short lines, plain text, no emojis, no hashtags, "
+                "no company names, no claims about the writer. Encourage people to apply directly and to share it with someone who needs it.",
+                system="You write short, warm, specific LinkedIn posts. Reply with the text only.", max_tokens=140, temperature=0.7, timeout=90)
             if not (intro and isinstance(intro, str) and 8 <= len(intro.split()) <= 70):
                 intro = None
         except Exception as exc:  # noqa: BLE001
             log.debug("roundup intro via model failed: %s", exc)
-    intro = (intro or f"{len(lines)} software openings I came across today, for 0-3 years of experience. Apply directly on each link, "
+    intro = (intro or f"{label}: {len(lines)} openings I came across, mostly for 0-3 years of experience. Apply directly on each link, "
                       "and share this with someone who is looking.").strip()
-    outro = "\n\nI will post a fresh list regularly. Hiring and not on here? Comment the role and the link.\n\n" + " ".join(HASHTAGS_BY_KIND["hiring"])
-    return intro + "\n\n" + body + outro, f"{len(lines)} openings"
+    outro = NL2 + "I post fresh lists regularly. Hiring and not on here? Comment the role and the link." + NL2 + " ".join(HASHTAGS_BY_KIND["hiring"])
+    return intro + NL2 + NL.join(lines) + outro, f"{label}: {len(lines)} openings"
 
 
 # ---- tech
@@ -911,6 +983,25 @@ def tech_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 return out.strip() + "\n\n" + " ".join(hashtags[:5]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("tech post via model failed: %s", exc)
+    return template_post(topic, hashtags), "template"
+
+
+def study_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
+    """(text, source): a study / interview-preparation post, by the local model when it is there, else the template."""
+    ai = _localai()
+    if ai is not None:
+        try:
+            out = ai.ask(
+                "Write a LinkedIn post (110-170 words, plain text, short lines, no emojis, no hashtags in the body) with practical "
+                f"study advice for software engineers preparing for interviews.\nHook: {topic['hook']}\nPoints: " + "; ".join(topic["points"]) +
+                f"\nLesson: {topic['lesson']}\nEnd with this question: {topic['ask']}\n"
+                "Concrete and encouraging, no personal story, no company names, no 'thrilled to share'. Return the post only.",
+                system="You write clear, practical LinkedIn posts about learning and interview preparation. Reply with the post only.",
+                max_tokens=400, temperature=0.6, timeout=150)
+            if out and isinstance(out, str) and 60 <= len(out.split()) <= 240:
+                return out.strip() + NL2 + " ".join(hashtags[:5]), "local model"
+        except Exception as exc:  # noqa: BLE001
+            log.debug("study post via model failed: %s", exc)
     return template_post(topic, hashtags), "template"
 
 
@@ -973,49 +1064,96 @@ def news_post(hashtags: list[str]) -> tuple[str, str, str] | None:
 
 # ---- the day's drafts
 
+def _plan(cfg: dict) -> list[str] | None:
+    """The day's kinds from `drafts_mix` ({hiring: 7, study: 3, ...}), or None for the plain rotation."""
+    mix = cfg.get("drafts_mix")
+    if not isinstance(mix, dict) or not mix:
+        return None
+    plan: list[str] = []
+    for kind in ("hiring", "study", "tech", "news"):
+        try:
+            plan += [kind] * max(0, int(mix.get(kind) or 0))
+        except (TypeError, ValueError):
+            continue
+    return plan or None
+
+
+def _make(kind: str, state: dict, now: datetime, cursor: int, n_kind: int, used: set, pool: list[dict]) -> tuple | None:
+    """(kind, text, source, topic) for one draft of `kind`, or None when that kind has nothing today."""
+    if kind == "hiring":
+        # each roundup of the day takes the next theme that still has 10 unused openings
+        order = [t[0] for t in HIRING_THEMES]
+        start = (cursor + n_kind) % (len(order) - 1)
+        for theme in order[start:-1] + order[:start] + ["mixed"]:
+            got = hiring_roundup(state, now, theme=theme, used=used, pool=pool)
+            if got:
+                return "hiring", got[0], "watchers", got[1]
+        return None
+    if kind == "news":
+        got = news_post(HASHTAGS_BY_KIND["news"])
+        return ("news", got[0], got[1], got[2]) if got else None
+    if kind == "study":
+        t = STUDY_TOPICS[(cursor + n_kind) % len(STUDY_TOPICS)]
+        text, source = study_post(t, HASHTAGS_BY_KIND["study"])
+        return "study", text, source, t["key"]
+    t = TECH_TOPICS[(cursor + n_kind) % len(TECH_TOPICS)]
+    text, source = tech_post(t, HASHTAGS_BY_KIND["tech"])
+    return "tech", text, source, t["key"]
+
+
 def write_drafts(cfg: dict, state: dict, me: dict | None = None, now: datetime | None = None, want: int | None = None) -> list[dict]:
-    """Write today's drafts until the day has `drafts_per_day` of them. Returns the drafts written now."""
+    """Write today's drafts: the `drafts_mix` counts per kind when set (e.g. 7 hiring + 3 study),
+    else `drafts_per_day` from the rotation. Kinds that already have their count today are skipped.
+    Returns the drafts written now."""
     now = now or datetime.now()
     key = today_key(now)
     drafts = load_drafts()
     have = drafts_for_day(drafts, key)
-    want = int(want if want is not None else cfg.get("drafts_per_day") or cfg.get("draft_per_day") or 2)
-    if len(have) >= want:
-        return []
-    kinds_today = [d.get("kind") for d in have]
     cursor = int(state.get("draft_index") or 0)
-    written: list[dict] = []
-    tries = 0
-    while len(have) + len(written) < want and tries < 6:
-        tries += 1
-        # the kind rotates day by day and draft by draft, so every day has different kinds in a different order
-        kind = KINDS[(cursor + len(kinds_today) + len(written)) % len(KINDS)]
-        if kind in kinds_today or kind in [w["kind"] for w in written]:
-            kind = next((k for k in KINDS if k not in kinds_today and k not in [w["kind"] for w in written]), kind)
-        text = source = topic = None
-        if kind == "hiring":
-            got = hiring_roundup(state, now)
-            if got:
-                text, topic = got
-                source = "watchers"
-        elif kind == "news":
-            got = news_post(HASHTAGS_BY_KIND["news"])
-            if got:
-                text, source, topic = got
-        if text is None:          # tech is the kind that always works
-            kind = "tech"
-            if "tech" in kinds_today or "tech" in [w["kind"] for w in written]:
-                cursor += 1       # a second tech post that day: the next topic
-            t = TECH_TOPICS[(cursor + len(written)) % len(TECH_TOPICS)]
-            text, source = tech_post(t, HASHTAGS_BY_KIND["tech"])
-            topic = t["key"]
-            cursor += 1
-        did = f"{key}-{now.strftime('%H%M%S')}-{len(have) + len(written) + 1}"
-        written.append({"id": did, "date": key, "time": now.strftime("%H:%M"), "kind": kind, "topic": topic or "", "text": text,
-                        "source": source or "", "posted": None, "deleted": False, "created": now.isoformat(timespec="seconds")})
-        log.info("draft written (%s, %s, by the %s): %d chars", kind, topic, source, len(text))
-    if not written:
+    plan = _plan(cfg) if want is None else None
+    if plan is None:
+        total = int(want if want is not None else cfg.get("drafts_per_day") or cfg.get("draft_per_day") or 2)
+        kinds_today = [d.get("kind") for d in have]
+        plan = []
+        for i in range(total):
+            k = KINDS[(cursor + i) % len(KINDS)]
+            plan.append(k)
+        # what the day already has counts against the rotation
+        for k in kinds_today:
+            if k in plan:
+                plan.remove(k)
+            elif plan:
+                plan.pop()
+    else:
+        for d in have:
+            if d.get("kind") in plan:
+                plan.remove(d.get("kind"))
+    if not plan:
         return []
+    # openings already listed in today's roundups are not listed again
+    pool = _opening_pool(state, now) if "hiring" in plan else []
+    used: set = set()
+    for d in have:
+        if d.get("kind") == "hiring":
+            for o in pool:
+                if o["line"].split(": http")[-1] and o["line"] in (d.get("text") or ""):
+                    used.add(o["tag"])
+    written: list[dict] = []
+    counts: dict = {}
+    for k in [d.get("kind") for d in have]:
+        counts[k] = counts.get(k, 0) + 1
+    for kind in plan:
+        got = _make(kind, state, now, cursor, counts.get(kind, 0), used, pool)
+        if got is None:
+            # not enough openings / headlines today: a study post keeps the day's count
+            got = _make("study", state, now, cursor, counts.get("study", 0), used, pool)
+            log.info("draft: no %s post possible today - a study post instead", kind)
+        kind2, text, source, topic = got
+        counts[kind2] = counts.get(kind2, 0) + 1
+        did = f"{key}-{now.strftime('%H%M%S')}-{len(have) + len(written) + 1}"
+        written.append({"id": did, "date": key, "time": now.strftime("%H:%M"), "kind": kind2, "topic": topic or "", "text": text,
+                        "source": source or "", "posted": None, "deleted": False, "created": now.isoformat(timespec="seconds")})
+        log.info("draft written (%s, %s, by the %s): %d chars", kind2, topic, source, len(text))
     drafts = written + drafts
     save_drafts(drafts, now=now)
     state["draft_index"] = cursor + 1
