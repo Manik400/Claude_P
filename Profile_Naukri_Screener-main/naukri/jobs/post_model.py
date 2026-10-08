@@ -43,13 +43,11 @@ LOG_PATH = ROOT / "logs" / "post_model.log"
 TEACHER = "unsloth/Qwen3.6-35B-A3B-GGUF:Qwen3.6-35B-A3B-UD-IQ4_XS.gguf"
 EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 
-SYSTEM = "You label social media posts for a software engineer's job search. Reply with JSON only."
-PROMPT = """POST (from {platform}):
-{text}
+# The instructions come FIRST and never change, the post comes last: llama.cpp keeps the computed state of
+# the longest common prefix between calls, so the instructions cost compute once per process, not per post.
+SYSTEM = """You label social media posts for a software engineer's job search. Reply with JSON only.
 
-AUTHOR HEADLINE: {headline}
-
-Answer about this post:
+For the post given by the user, decide:
 - is_hiring: true only if the author, their company or their client is offering a job or internship now and invites candidates
   (apply, send a CV, DM, referral form). False for: a person looking for work, "I got hired / joined", layoffs or news,
   course or bootcamp ads, generic career advice, event invitations.
@@ -58,7 +56,11 @@ Answer about this post:
   frontend, full stack, mobile, DevOps / cloud / SRE, data or ML engineer, QA / SDET. False for sales, HR, recruiter roles,
   mechanical / civil / electrical engineering, support or BPO. False when nothing is offered.
 - min_years: the minimum years of experience asked; 0 for freshers or interns; -1 if not stated.
-Return JSON: {{"is_hiring": bool, "is_job_seeker": bool, "software_role": bool, "min_years": int}}"""
+Return JSON: {"is_hiring": bool, "is_job_seeker": bool, "software_role": bool, "min_years": int}"""
+PROMPT = """PLATFORM: {platform}
+AUTHOR HEADLINE: {headline}
+POST:
+{text}"""
 
 SCHEMA = {"type": "object", "properties": {"is_hiring": {"type": "boolean"}, "is_job_seeker": {"type": "boolean"},
                                            "software_role": {"type": "boolean"}, "min_years": {"type": "integer"}},
@@ -127,6 +129,8 @@ def _localai(model: str | None):
     if model:
         os.environ["LOCAL_AI_MODEL"] = model            # read when the model is first loaded in this process
     os.environ.setdefault("LOCAL_AI_BUDGET_SECONDS", str(10 ** 7))   # labeling runs for hours, not one budget
+    os.environ.setdefault("LOCAL_AI_CTX", "2048")                     # a post and the answer; a smaller KV cache leaves RAM for the weights
+    os.environ.setdefault("LOCAL_AI_THREADS", str(max(4, (os.cpu_count() or 8) - 2)))
     from jobbot import localai  # type: ignore
     return localai
 
@@ -143,19 +147,45 @@ def teacher_label(ai, rec: dict, timeout: float = 240) -> dict | None:
     return lab
 
 
-def label(limit: int | None = None, model: str = TEACHER) -> dict:
-    """Label every dataset post the teacher has not labeled yet. Safe to stop and start again."""
+REVIEW_IDS = DIR / "review_ids.json"
+
+
+def _priority(rec: dict, review: set) -> tuple:
+    """Label order: the posts you are labeling on the phone first (so teacher and you can be compared soon),
+    then the ones the rules are least sure about, then the rest."""
+    r = rec.get("rules") or {}
+    unsure = (r.get("hiring") and r.get("seeker")) or (r.get("hiring") and not r.get("software")) or (not r.get("hiring") and r.get("software"))
+    return (0 if rec["id"] in review else 1, 0 if unsure else 1)
+
+
+def label(limit: int | None = None, model: str = TEACHER, stop_at: str | None = None) -> dict:
+    """Label dataset posts the teacher has not labeled yet, most useful first. Safe to stop and start again.
+    `stop_at` ("07:00") ends the run at that local time, so an overnight task gives the PC back in the morning."""
+    from datetime import datetime
     ai = _localai(model)
     if not ai.available("llm"):
         raise SystemExit("the local model is not available (llama-cpp-python missing?)")
     done = {r["id"] for r in _read_jsonl(LABELS) if r.get("model") == model}
-    todo = [r for r in _read_jsonl(DATASET) if r["id"] not in done]
+    try:
+        review = set(json.loads(REVIEW_IDS.read_text(encoding="utf-8")))
+    except (OSError, ValueError):
+        review = set()
+    todo = sorted((r for r in _read_jsonl(DATASET) if r["id"] not in done), key=lambda r: _priority(r, review))
     if limit:
         todo = todo[:limit]
+    deadline = None
+    if stop_at:
+        h, m = (int(x) for x in stop_at.split(":"))
+        deadline = datetime.now().replace(hour=h, minute=m, second=0, microsecond=0)
+        if deadline <= datetime.now():
+            deadline = deadline.replace(day=deadline.day) + __import__("datetime").timedelta(days=1)
     log.info("teacher %s: %d to label (%d done before)", model.split(":")[-1], len(todo), len(done))
     n = failed = 0
     t0 = time.time()
     for rec in todo:
+        if deadline and datetime.now() >= deadline:
+            log.info("  stop time %s reached", stop_at)
+            break
         t = time.time()
         lab = teacher_label(ai, rec)
         if lab is None:
@@ -274,6 +304,8 @@ def review_set(n: int = 200, seed: int = 11) -> int:
     rnd.shuffle(pool)
     pick = [{"id": r["id"], "platform": r.get("platform"), "headline": r.get("headline") or "", "text": r["text"][:1800]} for r in pool[:n]]
     payload = {"updated": time.strftime("%Y-%m-%dT%H:%M:%S"), "count": len(pick), "labeled": len(human), "posts": pick}
+    DIR.mkdir(parents=True, exist_ok=True)
+    REVIEW_IDS.write_text(json.dumps([p["id"] for p in pick]), encoding="utf-8")
     tools = ROOT.parent / "site" / "tools"
     if str(tools) not in sys.path:
         sys.path.insert(0, str(tools))
@@ -318,14 +350,15 @@ def main(argv=None) -> int:
     mode.add_argument("--predict", metavar="TEXT")
     mode.add_argument("--review-set", type=int, dest="review_set", metavar="N", help="publish N random posts for you to label on the phone")
     ap.add_argument("--limit", type=int)
-    ap.add_argument("--model", default=TEACHER, help="the teacher GGUF as <hf repo>:<file>")
+    ap.add_argument("--model", default=os.environ.get("POST_MODEL_TEACHER") or TEACHER, help="the teacher GGUF as <hf repo>:<file>")
+    ap.add_argument("--stop-at", dest="stop_at", metavar="HH:MM", help="--label: stop at this local time (overnight runs)")
     args = ap.parse_args(argv)
     _setup_logging()
     if args.build:
         n = build_dataset()
         print(f"\n  {n} new post(s); dataset: {len(_read_jsonl(DATASET))} in {DATASET}\n")
     elif args.label:
-        print(json.dumps(label(args.limit, args.model), indent=1))
+        print(json.dumps(label(args.limit, args.model, args.stop_at), indent=1))
     elif args.train:
         print(json.dumps(train(args.model), indent=1))
     elif args.eval:
