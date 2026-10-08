@@ -400,7 +400,7 @@ def read_x(queries: list[str], headless: bool = True, now: datetime | None = Non
                 try:
                     page.goto(f"{X_SEARCH}?q={q}&src=typed_query&f=live", wait_until="domcontentloaded", timeout=60000)
                     page.wait_for_timeout(random.uniform(5000, 8000))
-                    if "/login" in page.url or "/i/flow/login" in page.url:
+                    if re.search(r"/login|/i/flow/login|/i/jf/onboarding|mode=login", page.url) or page.locator("text=Continue with Google").count() and not page.locator('article[data-testid="tweet"]').count():
                         raise RuntimeError(f"X session expired: run python -m naukri.jobs.social_posts --login-x")
                     for _ in range(3):
                         page.mouse.wheel(0, 1500)

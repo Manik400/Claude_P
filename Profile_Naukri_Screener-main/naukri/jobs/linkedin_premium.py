@@ -641,7 +641,8 @@ def pick_posts_to_like(store: dict, liked: dict, want: int, hours: float = 36.0,
     return [p for _, _, p in posts[:want]]
 
 
-_LIKE_BUTTON = "button[aria-label*='React Like' i], button[aria-label^='Like' i][aria-pressed], button.react-button__trigger"
+_LIKE_BUTTON = ("button[aria-label^='Reaction button state' i], button[aria-label*='React Like' i], "
+                "button[aria-label^='Like' i][aria-pressed], button.react-button__trigger")
 
 
 def like_post(page, url: str) -> str:
@@ -654,12 +655,20 @@ def like_post(page, url: str) -> str:
         btn = page.locator(_LIKE_BUTTON).first
         if not btn.count():
             return "no-button"
-        if (btn.get_attribute("aria-pressed") or "").lower() == "true":
+
+        def reacted() -> bool | None:
+            # Oct 2026: aria-label "Reaction button state: no reaction" / "...: Like"; older builds: aria-pressed
+            label = (btn.get_attribute("aria-label") or "").lower()
+            if label.startswith("reaction button state"):
+                return "no reaction" not in label
+            pressed = (btn.get_attribute("aria-pressed") or "").lower()
+            return {"true": True, "false": False}.get(pressed)
+
+        if reacted():
             return "already"
         human.click(page, btn)
-        page.wait_for_timeout(random.uniform(1200, 2200))
-        pressed = (btn.get_attribute("aria-pressed") or "").lower()
-        return "liked" if pressed in ("true", "") else "error"
+        page.wait_for_timeout(random.uniform(1500, 2500))
+        return "liked" if reacted() in (True, None) else "error"
     except Exception as exc:  # noqa: BLE001
         log.warning("like failed at %s: %s", url, str(exc)[:140])
         return "error"
