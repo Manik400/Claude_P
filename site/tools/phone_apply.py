@@ -367,6 +367,10 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                 else:
                     status, note = linkedin_premium.post_draft(text, headless=True, draft_id=str(payload.get("id") or "") or None)
                     log("post: %s (%s)" % (status, note))
+            elif kind == "labels":
+                # the phone's labeling card: {answers: {post id: true/false}} -> data/model/human.jsonl
+                from naukri.jobs import post_model
+                log("labels: %d answer(s) saved" % post_model.save_human(payload.get("answers") or {}))
             elif kind == "drafts":
                 # the phone's Delete on a draft: {delete: [ids]}
                 from naukri.jobs import linkedin_premium
