@@ -1390,7 +1390,7 @@
   // Read through the GitHub API with the token (fresh to the second); without a token, raw.githubusercontent
   // (cached for a few minutes). Refreshed every 30 s while the tab is open.
   var live = null, liveErr = "", liveWait = null, liveTimer = null, liveAt = 0;
-  var LF = { show: store.get("lv.show", "all"), within: +store.get("lv.within", "24") || 24, where: store.get("lv.where", ""), loc: store.get("lv.loc", ""),
+  var LF = { show: store.get("lv.show2", "job"), within: +store.get("lv.within", "24") || 24, where: store.get("lv.where", ""), loc: store.get("lv.loc", ""),
              exp: store.get("lv.exp", ""), q: store.get("lv.q", ""), senior: store.get("lv.senior", "1"), sort: store.get("lv.sort", "posted"),
              limit: 60, showRemoved: false, notify: store.get("lv.notify", "") };
   var liveSeen = store.get("lv.seen", "");                 // first_seen of the newest item already looked at
@@ -1471,7 +1471,10 @@
     var list = all.filter(function (it) { return (!marks.removed["l:" + it.id] || LF.showRemoved) && liveOk(it); });
     if (LF.sort === "found") list.sort(function (a, b) { return String(b.first_seen || "").localeCompare(String(a.first_seen || "")); });
     var jobs = all.filter(function (x) { return x.kind === "job"; }).length;
-    h += '<div class="card"><div><b>' + jobs + " jobs · " + (all.length - jobs) + " hiring posts · last " + (d.hours || 48) + " h</b></div>" +
+    h += '<div class="card"><div><b>' + jobs + " LinkedIn job listings · " + (all.length - jobs) + " hiring posts · last " + (d.hours || 48) + " h</b></div>" +
+      '<div class="chips" style="margin:8px 0 2px">' + [["job", "LinkedIn jobs (" + jobs + ")"], ["post", "Hiring posts (" + (all.length - jobs) + ")"], ["all", "Both"]].map(function (o) {
+        return '<button type="button" data-lfs="' + o[0] + '"' + (LF.show === o[0] ? ' class="on"' : "") + ">" + esc(o[1]) + "</button>"; }).join("") + "</div>" +
+      '<div class="hint">Job listings come straight from LinkedIn\'s Jobs section (its public job search, not your feed), newest first; hiring posts are what people write on LinkedIn, X, Telegram, Reddit and HN.</div>' +
       '<div class="muted">Checked ' + esc(ago(pc.last_tick || d.updated)) + (pc.host ? " on " + esc(pc.host) : "") + " · every " + Math.round((pc.interval_s || 90) / 60 * 10) / 10 + " min" +
       (pc.last_status === 429 ? " · LinkedIn asked us to slow down" : "") + " · this page refreshes every 30 s</div>" +
       (age > 0.25 ? '<div class="msg warn">The live feed has not checked in for ' + (age < 2 ? Math.round(age * 60) + " min" : Math.round(age) + " h") + ". Is the PC on? It restarts by itself after logon (task LiveFeed).</div>" : "") +
@@ -1479,7 +1482,6 @@
     var chips = function (attr, opts, cur) { return '<div class="chips small">' + opts.map(function (o) { return '<button type="button" data-' + attr + '="' + esc(o[0]) + '"' + (String(cur) === String(o[0]) ? ' class="on"' : "") + ">" + esc(o[1]) + "</button>"; }).join("") + "</div>"; };
     h += acc("lf", "Filters", list.length + " shown",
       '<input id="lf-q" placeholder="title, company, skill…" value="' + esc(LF.q) + '" autocapitalize="none" style="margin-top:10px">' +
-      "<label>Show</label>" + chips("lfs", [["all", "Jobs + posts"], ["job", "Jobs"], ["post", "Posts"]], LF.show) +
       "<label>Posted within</label>" + chips("lfw", [["0.25", "15 min"], ["1", "1 h"], ["6", "6 h"], ["24", "24 h"], ["48", "48 h"]], LF.within) +
       "<label>Where</label>" + chips("lfp", [["", "Anywhere"], ["india", "India"], ["remote", "Remote"], ["notremote", "Not remote"], ["abroad", "Outside India"]], LF.where) +
       '<input id="lf-loc" placeholder="or a city / country" value="' + esc(LF.loc) + '" autocapitalize="none" style="margin-top:8px">' +
@@ -1493,7 +1495,7 @@
     h += removedHint(all.filter(function (it) { return marks.removed["l:" + it.id]; }).length, LF.showRemoved);
     var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top; bindAcc(box);
     bindMarks(box, function (toggle) { if (toggle === true) LF.showRemoved = !LF.showRemoved; renderLive(); updateLiveDot(); });
-    var set = function (k, v) { LF[k] = v; store.set("lv." + k, String(v)); LF.limit = 60; renderLive(); updateLiveDot(); };
+    var set = function (k, v) { LF[k] = v; store.set("lv." + (k === "show" ? "show2" : k), String(v)); LF.limit = 60; renderLive(); updateLiveDot(); };
     [["lfs", "show"], ["lfw", "within"], ["lfp", "where"], ["lfe", "exp"], ["lfn", "senior"], ["lfo", "sort"]].forEach(function (p) {
       box.querySelectorAll("[data-" + p[0] + "]").forEach(function (b) { b.addEventListener("click", function () { set(p[1], p[1] === "within" ? +b.dataset[p[0]] : b.dataset[p[0]]); }); });
     });
