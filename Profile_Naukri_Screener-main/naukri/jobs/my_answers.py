@@ -123,7 +123,7 @@ def save(data: dict) -> Path:
 
 
 def _number(value):
-    match = re.search(r"\d+(?:\.\d+)?", str(value or ""))
+    match = re.search(r"\d+(?:\.\d+)?", str("" if value is None else value))   # 0 is a value ("notice period 0")
     return float(match.group()) if match else None
 
 
@@ -141,7 +141,8 @@ def overlay(config: dict) -> dict:
     skill_years.update(data["skill_years"])
     config["skill_years"] = skill_years
 
-    overrides = {}
+    # jobs.yaml's fact_overrides stay unless the dashboard has a value for the same key
+    overrides = dict(config.get("fact_overrides") or {})
     for key in OVERRIDE_KEYS:
         value = data["facts"].get(key)
         if value in (None, ""):

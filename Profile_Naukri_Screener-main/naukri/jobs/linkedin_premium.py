@@ -391,7 +391,15 @@ def read_reach(page) -> dict:
     out: dict = {}
     if not _goto(page, ME_URL):
         return out
-    text = _body(page)
+    text = _body(page, 30000)
+    # your profile's own text (About, Experience, Education, Skills), for the form answers' context
+    try:
+        start = max(text.find("About"), 0)
+        cleaned = re.sub(r"\n{3,}", NL2, text[start:start + 12000]).strip()
+        if len(cleaned) > 400:
+            (ROOT / "data" / "linkedin_profile.txt").write_text(cleaned, encoding="utf-8")
+    except OSError as exc:
+        log.debug("linkedin profile text not saved: %s", exc)
     for key, rx in REACH_RX.items():
         m = rx.search(text)
         if m:
@@ -799,6 +807,7 @@ STUDY_TOPICS = [
 
 HASHTAGS_BY_KIND = {"hiring": ["#Hiring", "#SoftwareJobs", "#OpenToWork", "#Jobs", "#Freshers"],
                     "study": ["#InterviewPrep", "#DSA", "#SystemDesign", "#LearningInPublic", "#SoftwareEngineering"],
+                    "general": ["#DidYouKnow", "#Technology", "#Learning", "#Curiosity"],
                     "tech": ["#SoftwareEngineering", "#Backend", "#SystemDesign", "#Scalability", "#Tech"],
                     "news": ["#Tech", "#TechNews", "#SoftwareEngineering", "#Developers"]}
 
@@ -986,6 +995,92 @@ def tech_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
     return template_post(topic, hashtags), "template"
 
 
+GENERAL_TOPICS = [
+    {"key": "url-to-page", "hook": "What actually happens in the second between typing a URL and seeing the page.",
+     "points": ["DNS turns the name into an address", "a TCP handshake, then TLS agrees on keys", "the server answers, the browser parses, lays out and paints"],
+     "lesson": "Every layer is a chance for latency.", "ask": "Which step do you think costs the most time?"},
+    {"key": "cpu-cache", "hook": "Your CPU spends most of its time waiting for memory, not computing.",
+     "points": ["L1 cache answers in about a nanosecond; main memory takes a hundred", "data that sits together is fetched together", "that is why arrays beat linked lists in practice"],
+     "lesson": "Memory layout is a performance feature.", "ask": "Have you ever sped something up just by reordering data?"},
+    {"key": "unix-history", "hook": "A 1969 operating system written for a spare machine still runs most of the internet.",
+     "points": ["Unix gave us files as streams, pipes and small tools", "Linux reimplemented the ideas in 1991", "your phone, your router and the cloud run its descendants"],
+     "lesson": "Simple ideas outlive hardware.", "ask": "Which Unix idea do you use every day without noticing?"},
+    {"key": "git-internals", "hook": "Git is not storing diffs. It is storing snapshots, addressed by their hash.",
+     "points": ["every commit points at a full tree", "unchanged files are shared, not copied", "a branch is just a pointer to a commit"],
+     "lesson": "Once you see the graph, every command makes sense.", "ask": "What git command confused you longest?"},
+    {"key": "https-locks", "hook": "The padlock in the browser means two things, and people only know one.",
+     "points": ["the traffic is encrypted between you and the server", "the server proved it owns that domain name", "it says nothing about whether the site is honest"],
+     "lesson": "Encryption is not trust.", "ask": "Do you check certificates when something feels off?"},
+    {"key": "floating-point", "hook": "0.1 + 0.2 is not 0.3 in most programming languages, and it is not a bug.",
+     "points": ["binary cannot represent 0.1 exactly", "the error is tiny but it compounds", "money is counted in integers of the smallest unit for this reason"],
+     "lesson": "Know what your numbers really are.", "ask": "What was your first floating-point surprise?"},
+    {"key": "timezones", "hook": "Time is the hardest simple thing in software.",
+     "points": ["some days have 23 or 25 hours", "countries change their rules with weeks of notice", "store UTC, show local, never do date math by hand"],
+     "lesson": "Use the library, every time.", "ask": "What is the worst time-zone bug you have seen?"},
+    {"key": "how-search-works", "hook": "A web search returns results in under a second from billions of pages. Here is roughly how.",
+     "points": ["crawlers fetch pages and an inverted index maps words to pages", "ranking combines hundreds of signals", "the index is sharded across thousands of machines"],
+     "lesson": "Scale is mostly indexing and partitioning.", "ask": "Which part of this would you want to build?"},
+    {"key": "undersea-cables", "hook": "Most of the world's internet traffic travels under the sea in cables about as thick as a garden hose.",
+     "points": ["hundreds of cables link the continents", "light pulses in glass carry the data", "ships repair breaks caused by anchors and earthquakes"],
+     "lesson": "The cloud is a physical place.", "ask": "Did you picture satellites instead?"},
+    {"key": "sleep-and-code", "hook": "The best debugging tool is a night of sleep, and there is science behind it.",
+     "points": ["sleep consolidates what you learned during the day", "tired brains make more off-by-one errors", "a walk resets attention faster than more coffee"],
+     "lesson": "Rest is part of the work.", "ask": "What is your trick for getting unstuck?"},
+    {"key": "open-source-economy", "hook": "A huge share of the software economy runs on code maintained by volunteers.",
+     "points": ["core libraries used by millions are maintained by a few people", "funding and sponsorship are slowly catching up", "contributing back is the fairest thanks"],
+     "lesson": "Say thank you with a pull request.", "ask": "Which open-source project would you fund first?"},
+    {"key": "why-qwerty", "hook": "The keyboard you type on was designed for a machine from 1873.",
+     "points": ["QWERTY spread typewriter keys to reduce jams", "alternatives exist and are faster for some", "muscle memory wins over efficiency"],
+     "lesson": "Standards persist because switching costs are real.", "ask": "Would you switch layouts for a 10% speedup?"},
+    {"key": "how-gps-works", "hook": "Your phone knows where you are because of relativity.",
+     "points": ["satellites broadcast their time; distance is the delay", "four satellites fix a position", "clocks in orbit tick differently, and the system corrects for it"],
+     "lesson": "Everyday tech rests on deep physics.", "ask": "Which everyday device surprises you most when you learn how it works?"},
+    {"key": "passwords", "hook": "A long passphrase beats a short complex password, and your password manager knows it.",
+     "points": ["length grows the search space fastest", "reuse is the real risk; one leak opens everything", "two-factor stops most account takeovers"],
+     "lesson": "Length, uniqueness, second factor.", "ask": "Do you use a password manager yet?"},
+    {"key": "compression", "hook": "A ZIP file works because language repeats itself.",
+     "points": ["repeated phrases become short references", "common symbols get shorter codes", "random data cannot be compressed at all"],
+     "lesson": "Compression is a measure of predictability.", "ask": "What is the biggest compression ratio you have seen?"},
+    {"key": "rate-limits", "hook": "Why every API you use says 'slow down' sometimes.",
+     "points": ["one fast client can starve everyone else", "limits protect the service and the honest users", "retry with backoff is the polite answer"],
+     "lesson": "A 429 is a request to be fair.", "ask": "How do you handle rate limits in your clients?"},
+    {"key": "moore-ends", "hook": "Chips stopped getting faster the easy way years ago. Software got the bill.",
+     "points": ["clock speeds plateaued around 2005", "we got more cores instead", "parallel code is how you keep getting faster"],
+     "lesson": "Free lunches end; learn concurrency.", "ask": "What was the last thing you parallelised?"},
+    {"key": "ascii-unicode", "hook": "An emoji is just a number, and that number can break your database.",
+     "points": ["ASCII covers 128 characters, Unicode over 140,000", "UTF-8 stores common letters in one byte, emoji in four", "declare the encoding everywhere or pay later"],
+     "lesson": "Text is bytes with an agreement.", "ask": "What was your worst encoding bug?"},
+    {"key": "cookies", "hook": "A website remembers you because of a tiny note it asked your browser to keep.",
+     "points": ["the server sets it, the browser sends it back", "sessions, preferences and tracking all use it", "flags like Secure and HttpOnly decide how safe it is"],
+     "lesson": "Know what you are storing on other people's machines.", "ask": "First-party or third-party: do you know which cookies your site sets?"},
+    {"key": "estimates", "hook": "Software estimates are late because the work is discovery, not construction.",
+     "points": ["the unknowns are found while building", "small, shippable slices shrink the error", "confidence ranges beat single numbers"],
+     "lesson": "Estimate ranges, deliver slices.", "ask": "What is your most accurate estimation trick?"},
+    {"key": "ai-basics", "hook": "A language model predicts the next word. Everything impressive is built on that.",
+     "points": ["training is learning patterns from text at huge scale", "it has no memory between questions unless you give it one", "it can be confidently wrong, so verify"],
+     "lesson": "Powerful tool, not an oracle.", "ask": "Where has an AI tool actually saved you time?"},
+]
+
+
+def general_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
+    """(text, source): a general-knowledge post, tech-adjacent, for a wide audience."""
+    ai = _localai()
+    if ai is not None:
+        try:
+            out = ai.ask(
+                "Write a LinkedIn post (100-160 words, plain text, short lines, no emojis, no hashtags in the body) that explains one "
+                "interesting piece of general knowledge for a broad audience." + NL + "Hook: " + topic["hook"] + NL + "Points: " + "; ".join(topic["points"]) +
+                NL + "Lesson: " + topic["lesson"] + NL + "End with this question: " + topic["ask"] + NL +
+                "Accurate, simple, no made-up numbers beyond the points given, no company names, no 'thrilled to share'. Return the post only.",
+                system="You write clear, accurate, curious LinkedIn posts for a general audience. Reply with the post only.",
+                max_tokens=380, temperature=0.6, timeout=150)
+            if out and isinstance(out, str) and 55 <= len(out.split()) <= 240:
+                return out.strip() + NL2 + " ".join(hashtags[:4]), "local model"
+        except Exception as exc:  # noqa: BLE001
+            log.debug("general post via model failed: %s", exc)
+    return template_post(topic, hashtags), "template"
+
+
 def study_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
     """(text, source): a study / interview-preparation post, by the local model when it is there, else the template."""
     ai = _localai()
@@ -1070,7 +1165,7 @@ def _plan(cfg: dict) -> list[str] | None:
     if not isinstance(mix, dict) or not mix:
         return None
     plan: list[str] = []
-    for kind in ("hiring", "study", "tech", "news"):
+    for kind in ("hiring", "tech", "general", "study", "news"):
         try:
             plan += [kind] * max(0, int(mix.get(kind) or 0))
         except (TypeError, ValueError):
@@ -1092,6 +1187,10 @@ def _make(kind: str, state: dict, now: datetime, cursor: int, n_kind: int, used:
     if kind == "news":
         got = news_post(HASHTAGS_BY_KIND["news"])
         return ("news", got[0], got[1], got[2]) if got else None
+    if kind == "general":
+        t = GENERAL_TOPICS[(cursor + n_kind) % len(GENERAL_TOPICS)]
+        text, source = general_post(t, HASHTAGS_BY_KIND["general"])
+        return "general", text, source, t["key"]
     if kind == "study":
         t = STUDY_TOPICS[(cursor + n_kind) % len(STUDY_TOPICS)]
         text, source = study_post(t, HASHTAGS_BY_KIND["study"])
@@ -1164,6 +1263,45 @@ def write_drafts(cfg: dict, state: dict, me: dict | None = None, now: datetime |
     d["drafted"] = len(drafts_for_day(drafts, key))
     d["draft_path"] = str(DRAFTS_DIR / f"{key}.md")
     d["draft_topic"] = ", ".join(f"{w['kind']}: {w['topic']}" for w in drafts_for_day(drafts, key))
+    return written
+
+
+def write_more(cfg: dict, state: dict, n: int = 6, now: datetime | None = None) -> list[dict]:
+    """The phone's 'Generate more': n extra drafts for today, in the mix's proportions, on top of what the day has."""
+    now = now or datetime.now()
+    key = today_key(now)
+    drafts = load_drafts()
+    have = drafts_for_day(drafts, key)
+    base = _plan(cfg) or ["hiring", "tech", "general"]
+    plan = [base[i % len(base)] for i in range(max(1, n))]
+    cursor = int(state.get("draft_index") or 0) + len(have)
+    pool = _opening_pool(state, now) if "hiring" in plan else []
+    used: set = set()
+    for d in have:
+        if d.get("kind") == "hiring":
+            for o in pool:
+                if o["line"] in (d.get("text") or ""):
+                    used.add(o["tag"])
+    counts: dict = {}
+    for k in [d.get("kind") for d in have]:
+        counts[k] = counts.get(k, 0) + 1
+    written: list[dict] = []
+    for kind in plan:
+        got = _make(kind, state, now, cursor, counts.get(kind, 0), used, pool) or _make("general", state, now, cursor, counts.get("general", 0), used, pool)
+        kind2, text, source, topic = got
+        counts[kind2] = counts.get(kind2, 0) + 1
+        did = f"{key}-{now.strftime('%H%M%S')}-{len(have) + len(written) + 1}"
+        written.append({"id": did, "date": key, "time": now.strftime("%H:%M"), "kind": kind2, "topic": topic or "", "text": text,
+                        "source": source or "", "posted": None, "deleted": False, "created": now.isoformat(timespec="seconds")})
+        log.info("extra draft (%s, %s, by the %s): %d chars", kind2, topic, source, len(text))
+    if written:
+        drafts = written + drafts
+        save_drafts(drafts, now=now)
+        state["draft_index"] = cursor + len(written) + 1
+        (DRAFTS_DIR / f"{key}.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+        (DRAFTS_DIR / "TODAY.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+        d = day(state, now)
+        d["drafted"] = len(drafts_for_day(drafts, key))
     return written
 
 

@@ -292,6 +292,8 @@ def build_facts(profile: dict, config: dict) -> dict:
     # ...and write answers to open questions from your resume (`ai_written_answers: false` stops it)
     facts["_ai_write"] = bool(config.get("ai_written_answers", True))
     facts["_applicant"] = dict(config.get("applicant") or {})
+    # everything your Naukri profile says (headline, summary, employment, projects, skills) for the model's context
+    facts["_profile_evidence"] = str(config.get("profile_evidence") or "")[:6000]
     facts["_facts_sheet"] = facts_sheet(facts)
     return facts
 
@@ -742,6 +744,23 @@ def _fits(question: str, answer: str, options: list[str]) -> bool:
     return True
 
 
+def _linkedin_text(facts: dict) -> str:
+    """Your LinkedIn profile as text (About, Experience, Skills...), saved by the Premium runner on every pass."""
+    if "_linkedin_text" not in facts:
+        try:
+            from pathlib import Path
+            path = Path(__file__).resolve().parent.parent.parent / "data" / "linkedin_profile.txt"
+            facts["_linkedin_text"] = path.read_text(encoding="utf-8", errors="ignore")[:6000]
+        except OSError:
+            facts["_linkedin_text"] = ""
+    return facts["_linkedin_text"]
+
+
+def _history_text(facts: dict) -> str:
+    """Your Naukri profile's own words: what you did at each employer, your projects, your summary."""
+    return re.sub(r"\s+", " ", str(facts.get("_profile_evidence") or "")).strip()
+
+
 def _resume_text(facts: dict) -> str:
     """Your resume's text, read once per run (for the model only)."""
     if "_resume_text" not in facts:
@@ -782,6 +801,12 @@ def _resolve_local_ai(question: str, options: list[str], facts: dict) -> tuple[s
     resume = re.sub(r"\s+", " ", _resume_text(facts))[:2500]
     if resume:
         extra.append("resume: " + resume)
+    history = _history_text(facts)[:1500]
+    if history:
+        extra.append("naukri profile: " + history)
+    linkedin = re.sub(r"\s+", " ", _linkedin_text(facts))[:1500]
+    if linkedin:
+        extra.append("linkedin profile: " + linkedin)
     sheet = "\n".join([sheet] + extra)
     try:
         threshold = float(os.environ.get("LOCAL_AI_ANSWER_MIN_CONFIDENCE") or AI_MIN_CONFIDENCE)
@@ -862,6 +887,8 @@ def _resolve_written(question: str, options: list[str], facts: dict, job: dict |
     posting = re.sub(r"\s+", " ", str(job.get("description") or ""))[:1500]
     context = "\n\n".join(filter(None, [
         "RESUME:\n" + resume[:3500],
+        ("NAUKRI PROFILE (your own words about each job and project):\n" + _history_text(facts)[:2500]) if _history_text(facts) else "",
+        ("LINKEDIN PROFILE:\n" + re.sub(r"\s+", " ", _linkedin_text(facts))[:2000]) if _linkedin_text(facts) else "",
         "FACTS:\n" + (facts.get("_facts_sheet") or facts_sheet(facts)),
         ("THE JOB: %s at %s\n%s" % (job.get("title") or "", job.get("company") or "", posting)) if job else "",
     ]))

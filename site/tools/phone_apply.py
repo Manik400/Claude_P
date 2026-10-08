@@ -372,10 +372,18 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                 from naukri.jobs import post_model
                 log("labels: %d answer(s) saved" % post_model.save_human(payload.get("answers") or {}))
             elif kind == "drafts":
-                # the phone's Delete on a draft: {delete: [ids]}
+                # the phone's Delete on a draft: {delete: [ids]}; its Generate more: {more: N}
                 from naukri.jobs import linkedin_premium
                 n = linkedin_premium.delete_drafts([str(i) for i in (payload.get("delete") or [])])
-                log("drafts: %d deleted" % n)
+                if n:
+                    log("drafts: %d deleted" % n)
+                more = int(payload.get("more") or 0)
+                if more:
+                    cfg_p = linkedin_premium.load_config()
+                    st = linkedin_premium.load_state()
+                    written = linkedin_premium.write_more(cfg_p, st, min(more, 12))
+                    linkedin_premium.save_state(st)
+                    log("drafts: %d more generated (%s)" % (len(written), ", ".join(w["kind"] for w in written)))
                 try:
                     linkedin_premium.publish_phone(linkedin_premium.load_config(), linkedin_premium.load_state())
                 except Exception as exc:  # noqa: BLE001

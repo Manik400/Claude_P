@@ -236,6 +236,12 @@ answer_rules:
   # join" rule below and answers Yes, which is a promise you cannot keep.
   - match: "join immediately|immediate join(ing|er)?|joining immediately|zero days notice"
     answer: "yes"
+  # Serving notice now - asked as a yes/no it is Yes; "what is your notice
+  # period?" still answers from the profile. Set it to "No" once your notice
+  # period is over and you are immediately available. Whole question only:
+  # "if serving notice, mention your last working day" wants a date.
+  - match: '^(are you )?(currently )?serving (your |the )?notice( period)?\W*$'
+    answer: "Yes"
 
   # `skip: true` means "do not answer this one" - the question is abandoned and
   # the job goes to your queue, exactly as if no rule existed. That is NOT the

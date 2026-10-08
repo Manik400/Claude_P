@@ -120,6 +120,10 @@ DEFAULTS = {
     # day's one Easy Apply turn) opens and follows to the company's form. 0 = only on the
     # day's LinkedIn turn.
     "linkedin_offsite_per_run": 15,
+    # Facts that override the Naukri profile in screening answers (answers.py build_facts),
+    # e.g. {notice_period_months: 0}; and whether the local model writes open answers on forms.
+    "fact_overrides": {},
+    "ai_written_answers": True,
 }
 
 

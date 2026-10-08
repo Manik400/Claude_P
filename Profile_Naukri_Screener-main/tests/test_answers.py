@@ -142,7 +142,8 @@ def test_expected_ctc_requires_you_to_have_stated_it():
 
 def _shipped_rules() -> list[dict]:
     import yaml
-    path = Path(__file__).resolve().parent.parent / "jobs.yaml"
+    # the SHIPPED rules (the template), not the user's own jobs.yaml, which says what is true for them today
+    path = Path(__file__).resolve().parent.parent / "jobs.example.yaml"
     return (yaml.safe_load(path.read_text(encoding="utf-8")) or {}).get("answer_rules") or []
 
 
