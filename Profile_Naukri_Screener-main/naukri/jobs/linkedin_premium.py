@@ -55,6 +55,8 @@ from datetime import date, datetime, timedelta, timezone
 from pathlib import Path
 from types import SimpleNamespace
 
+from .linkedin_posts import code_changed as lp_code_changed, code_stamp as lp_code_stamp, nap as lp_nap  # noqa: E402
+
 log = logging.getLogger("naukri.jobs.linkedin_premium")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -1203,7 +1205,20 @@ def tasks_status() -> list[dict]:
         return []
     order = {n: i for i, n in enumerate(TASKS)}
     rows.sort(key=lambda r: (order.get(r.get("name"), 99), r.get("name") or ""))
-    return [{k: r.get(k) for k in ("name", "state", "enabled", "last_run", "last_result", "next_run", "description")} for r in rows]
+    out = [{k: r.get(k) for k in ("name", "state", "enabled", "last_run", "last_result", "next_run", "description")} for r in rows]
+    # The all-day loops start once and keep going, so Task Scheduler's "last run" is when the process
+    # started. Their own stores know when the last pass actually finished; the phone shows that.
+    passes = {"LinkedInPremium": lambda: (load_state().get("updated") or ""),
+              "SocialPostsWatch": lambda: ((json.loads((ROOT / "data" / "posts" / "social_posts.json").read_text(encoding="utf-8")).get("pc") or {}).get("last_pass") or ""),
+              "LinkedInPostsWatch": lambda: ((json.loads((ROOT / "data" / "posts" / "linkedin_posts.json").read_text(encoding="utf-8")).get("pc") or {}).get("last_pass") or "")}
+    for t in out:
+        fn = passes.get(t["name"])
+        if fn:
+            try:
+                t["last_pass"] = fn()
+            except Exception:  # noqa: BLE001
+                t["last_pass"] = ""
+    return out
 
 
 def control_task(name: str, do: str) -> str:
@@ -1639,7 +1654,11 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
     every = int(cfg.get("every_minutes", 240))
     log.info("LinkedIn Premium runner: a pass every %d min until %s (%d day(s) left), %s",
              every, cfg.get("until"), days_left(cfg), "headless" if headless else "visible browser")
+    stamp = lp_code_stamp()
     while True:
+        if lp_code_changed(stamp):
+            log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
+            return 0
         if premium_over(cfg):
             log.info("Premium period is over (until %s). Stopping; remove the task with scripts\\schedule_linkedin_premium.ps1 -Remove",
                      cfg.get("until"))
@@ -1657,7 +1676,7 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
             log.exception("pass failed: %s", exc)
         sleep_for = max(300, wait - (time.time() - started) + random.uniform(-600, 600))
         log.info("next pass in %.0f min", sleep_for / 60)
-        time.sleep(sleep_for)
+        lp_nap(sleep_for, stamp)
 
 
 def _setup_logging(verbose: bool) -> None:

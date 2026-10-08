@@ -782,6 +782,39 @@ def publish(payload: dict) -> bool:
         return False
 
 
+
+# ----------------------------------------------------------------------------- staying on the current code
+
+_CODE_DIRS = (ROOT / "naukri", ROOT.parent / "job-hunt" / "scripts" / "jobbot", ROOT.parent / "site" / "tools")
+
+
+def code_stamp() -> float:
+    """Newest modification time of the code these all-day loops run. A loop started before a code
+    change keeps running the old code in memory; comparing this stamp lets it notice and exit, and
+    Task Scheduler (which checks every 30 minutes) starts it again on the new code."""
+    newest = 0.0
+    for d in _CODE_DIRS:
+        try:
+            for p in d.rglob("*.py"):
+                newest = max(newest, p.stat().st_mtime)
+        except OSError:
+            continue
+    return newest
+
+
+def code_changed(since: float) -> bool:
+    return code_stamp() > since + 1
+
+
+def nap(seconds: float, stamp: float, check_every: float = 120.0) -> None:
+    """Sleep `seconds`, waking early when the code changes (the loop then exits and is restarted)."""
+    end = time.time() + max(0.0, seconds)
+    while time.time() < end:
+        time.sleep(min(check_every, max(0.0, end - time.time())))
+        if code_changed(stamp):
+            return
+
+
 # ----------------------------------------------------------------------------- a pass, and the loop
 
 def run_once(hours: float = WINDOW_HOURS, headless: bool = True, per_pass: int = PER_PASS, debug: bool = False,
@@ -864,7 +897,11 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
     from . import linkedin as linkedin_mod
     log.info("LinkedIn hiring-posts watcher: every %d min, posts from the last %gh, %d queries a pass, %s",
              every_minutes, hours, per_pass, "headless" if headless else "visible browser")
+    stamp = code_stamp()
     while True:
+        if code_changed(stamp):
+            log.info("the code changed since this watcher started - exiting so Task Scheduler restarts it on the new code")
+            return 0
         started = time.time()
         wait = every_minutes * 60
         try:
@@ -881,7 +918,7 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
         # the gap is measured from the START of the pass, with a little jitter so it never looks like clockwork
         sleep_for = max(60, wait - (time.time() - started) + random.uniform(-180, 180))
         log.info("next pass in %.0f min", sleep_for / 60)
-        time.sleep(sleep_for)
+        nap(sleep_for, stamp)
 
 
 def _setup_logging(verbose: bool) -> None:

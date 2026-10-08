@@ -45,6 +45,8 @@ from pathlib import Path
 
 from . import linkedin_posts as lp
 
+from .linkedin_posts import code_changed as lp_code_changed, code_stamp as lp_code_stamp, nap as lp_nap  # noqa: E402
+
 log = logging.getLogger("naukri.jobs.social_posts")
 
 ROOT = Path(__file__).resolve().parent.parent.parent
@@ -567,7 +569,11 @@ def run_once(cfg: dict, hours: float = WINDOW_HOURS, headless: bool = True, sour
 
 def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headless: bool = True) -> int:
     log.info("social hiring-posts watcher: every %d min, posts from the last %gh", every_minutes, hours)
+    stamp = lp_code_stamp()
     while True:
+        if lp_code_changed(stamp):
+            log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
+            return 0
         started = time.time()
         try:
             run_once(cfg, hours=hours, headless=headless)
@@ -577,7 +583,7 @@ def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HO
             log.exception("pass failed: %s", exc)
         sleep_for = max(60, every_minutes * 60 - (time.time() - started) + random.uniform(-120, 120))
         log.info("next pass in %.0f min", sleep_for / 60)
-        time.sleep(sleep_for)
+        lp_nap(sleep_for, stamp)
 
 
 def _setup_logging(verbose: bool) -> None:

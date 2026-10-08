@@ -4,12 +4,12 @@ No network here."""
 from __future__ import annotations
 
 import json
-from datetime import datetime, timezone
+from datetime import datetime, timedelta, timezone
 
 from naukri.jobs import linkedin_posts as lp
 from naukri.jobs import social_posts as sp
 
-NOW = datetime(2026, 10, 7, 6, tzinfo=timezone.utc)
+NOW = datetime.now(timezone.utc).replace(microsecond=0) - timedelta(hours=1)   # relative: the 12 h window is measured from the real clock
 HIRING = ("We are hiring Software Engineer (Backend) - freshers / 0-2 years, Java or Python, Bengaluru. "
           "CTC 6-8 LPA. Send your CV to careers@acme.example https://acme.example/apply #hiring")
 
@@ -30,7 +30,7 @@ def test_record_has_the_phone_shape_and_the_platform():
                          headline="Telegram channel @chan", reactions=120, query="@chan", now=NOW)
     assert rec["id"] == "telegram:chan-12" and rec["platform"] == "telegram" and rec["link_kind"] == "post"
     assert rec["hiring"] and lp.wanted(rec) and "careers@acme.example" in rec["emails"]
-    assert rec["links"] == ["https://acme.example/apply"] and rec["posted_at"].startswith("2026-10-07T06:00")
+    assert rec["links"] == ["https://acme.example/apply"] and rec["posted_at"] == NOW.isoformat(timespec="seconds")
     assert sp.make_record("x", "1", "u", "   ", NOW) is None
 
 

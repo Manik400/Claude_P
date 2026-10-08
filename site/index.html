@@ -1491,7 +1491,8 @@
       var running = /running/i.test(t.state || ""), off = t.enabled === false || /disabled/i.test(t.state || "");
       h += '<div class="job" style="padding:10px 0;border-top:1px solid var(--line)"><div><b>' + esc(taskLabel(t.name)) + "</b> " +
         chip(running ? "ok" : off ? "bad" : "", running ? "running" : off ? "stopped" : esc(t.state || "?")) + "</div>" +
-        '<div class="muted" style="font-size:0.85rem">' + esc(t.name) + (t.last_run ? " · last " + esc(ago(t.last_run)) : "") + (t.next_run && !off ? " · next " + esc(ago(t.next_run).replace(" ago", "")) : "") + "</div>" +
+        '<div class="muted" style="font-size:0.85rem">' + esc(t.name) + (t.last_pass ? " · last pass " + esc(ago(t.last_pass)) + (t.last_run ? " · started " + esc(ago(t.last_run)) : "")
+          : (t.last_run ? " · last run " + esc(ago(t.last_run)) : "") + (t.next_run && !off ? " · next " + esc(ago(t.next_run).replace(" ago", "")) : "")) + "</div>" +
         '<div class="acts">' + (off ? '<button class="btn2" data-ctl="start" data-task="' + esc(t.name) + '">Start</button>' :
           '<button class="btn2" data-ctl="stop" data-task="' + esc(t.name) + '">Stop</button><button class="btn2" data-ctl="run" data-task="' + esc(t.name) + '">Run now</button>') + "</div></div>";
     });
