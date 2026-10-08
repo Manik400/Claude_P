@@ -1323,10 +1323,13 @@ def rewrite_templates(cfg: dict, day_key: str | None = None) -> int:
             d["text"], d["source"] = text, source
             n += 1
             log.info("rewritten by the model: %s %s (%d chars)", d["kind"], d["topic"], len(text))
-    if n:
-        save_drafts(drafts)
-        (DRAFTS_DIR / f"{key}.md").write_text(_dated_md(drafts, key), encoding="utf-8")
-        (DRAFTS_DIR / "TODAY.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+            save_drafts(drafts)              # after every one: a run cut short keeps what it did
+            (DRAFTS_DIR / f"{key}.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+            (DRAFTS_DIR / "TODAY.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+            try:
+                publish_phone(cfg, load_state())
+            except Exception as exc:  # noqa: BLE001
+                log.debug("phone publish after rewrite failed: %s", exc)
     return n
 
 
