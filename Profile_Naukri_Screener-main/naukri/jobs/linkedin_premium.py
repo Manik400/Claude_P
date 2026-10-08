@@ -988,7 +988,7 @@ def tech_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 "Return the post only.",
                 system="You write clear, specific LinkedIn posts about software engineering. Reply with the post only.",
                 max_tokens=400, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 60 <= len(out.split()) <= 240:
+            if out and isinstance(out, str) and 60 <= len(out.split()) <= 330 and len(out) <= 2700:
                 return out.strip() + "\n\n" + " ".join(hashtags[:5]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("tech post via model failed: %s", exc)
@@ -1074,7 +1074,7 @@ def general_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 "Accurate, simple, no made-up numbers beyond the points given, no company names, no 'thrilled to share'. Return the post only.",
                 system="You write clear, accurate, curious LinkedIn posts for a general audience. Reply with the post only.",
                 max_tokens=380, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 55 <= len(out.split()) <= 240:
+            if out and isinstance(out, str) and 55 <= len(out.split()) <= 330 and len(out) <= 2700:
                 return out.strip() + NL2 + " ".join(hashtags[:4]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("general post via model failed: %s", exc)
@@ -1093,7 +1093,7 @@ def study_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 "Concrete and encouraging, no personal story, no company names, no 'thrilled to share'. Return the post only.",
                 system="You write clear, practical LinkedIn posts about learning and interview preparation. Reply with the post only.",
                 max_tokens=400, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 60 <= len(out.split()) <= 240:
+            if out and isinstance(out, str) and 60 <= len(out.split()) <= 330 and len(out) <= 2700:
                 return out.strip() + NL2 + " ".join(hashtags[:5]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("study post via model failed: %s", exc)
@@ -1146,7 +1146,7 @@ def news_post(hashtags: list[str]) -> tuple[str, str, str] | None:
                 "the headlines. Return the post only.\n\nHEADLINES:\n" + "\n".join(f"- {h['title']}" for h in picks),
                 system="You write witty, kind, short LinkedIn posts for software engineers. Reply with the post only.",
                 max_tokens=360, temperature=0.8, timeout=150)
-            if out and isinstance(out, str) and 50 <= len(out.split()) <= 220:
+            if out and isinstance(out, str) and 50 <= len(out.split()) <= 330 and len(out) <= 2500:
                 links = "\n".join(f"• {h['title']}: {h['url']}" for h in picks[:3] if h.get("url"))
                 return out.strip() + ("\n\nThe stories:\n" + links if links else "") + "\n\n" + " ".join(hashtags[:4]), "local model", picks[0]["title"][:60]
         except Exception as exc:  # noqa: BLE001
@@ -1303,6 +1303,31 @@ def write_more(cfg: dict, state: dict, n: int = 6, now: datetime | None = None) 
         d = day(state, now)
         d["drafted"] = len(drafts_for_day(drafts, key))
     return written
+
+
+def rewrite_templates(cfg: dict, day_key: str | None = None) -> int:
+    """Drafts of `day_key` (today) that fell back to the template get written again by the model. Returns how many changed."""
+    key = day_key or today_key()
+    drafts = load_drafts()
+    n = 0
+    for d in drafts:
+        if d.get("date") != key or d.get("deleted") or d.get("source") != "template" or d.get("posted"):
+            continue
+        topics = {"tech": TECH_TOPICS, "study": STUDY_TOPICS, "general": GENERAL_TOPICS}.get(d.get("kind"))
+        topic = next((t for t in (topics or []) if t["key"] == d.get("topic")), None)
+        if topic is None:
+            continue
+        writer = {"tech": tech_post, "study": study_post, "general": general_post}[d["kind"]]
+        text, source = writer(topic, HASHTAGS_BY_KIND[d["kind"]])
+        if source != "template":
+            d["text"], d["source"] = text, source
+            n += 1
+            log.info("rewritten by the model: %s %s (%d chars)", d["kind"], d["topic"], len(text))
+    if n:
+        save_drafts(drafts)
+        (DRAFTS_DIR / f"{key}.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+        (DRAFTS_DIR / "TODAY.md").write_text(_dated_md(drafts, key), encoding="utf-8")
+    return n
 
 
 def mark_draft(did: str, **fields) -> dict | None:
@@ -2006,6 +2031,7 @@ def main(argv=None) -> int:
     mode.add_argument("--loop", action="store_true", help="a pass every `every_minutes` until `until`")
     mode.add_argument("--draft", action="store_true", help="only write today's post draft (no browser)")
     mode.add_argument("--report", action="store_true", help="only rebuild today's report from the saved state (and republish it to the phone)")
+    mode.add_argument("--rewrite-templates", action="store_true", dest="rewrite_templates", help="today's template-written drafts get written by the model")
     mode.add_argument("--post-file", dest="post_file", metavar="FILE", help="publish this text file as a LinkedIn post now (what the phone's Post button does through the PC)")
     ap.add_argument("--show", action="store_true", help="visible browser (default: headless)")
     ap.add_argument("--dry-run", action="store_true", dest="dry_run", help="read and rank everything; apply to nothing, like nothing")
@@ -2037,6 +2063,12 @@ def main(argv=None) -> int:
         state = load_state()
         path = write_report(cfg, state)
         print(f"\n  {path}  (phone: {'published' if publish_phone(cfg, state) else 'not published'})\n")
+        return 0
+    if args.rewrite_templates:
+        n = rewrite_templates(cfg)
+        state = load_state()
+        publish_phone(cfg, state)
+        print(NL + "  %d draft(s) rewritten by the model and republished" % n + NL)
         return 0
     if args.post_file:
         text = Path(args.post_file).read_text(encoding="utf-8").strip()
