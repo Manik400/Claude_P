@@ -1672,7 +1672,8 @@
         '<a class="btn2" target="_blank" rel="noopener" href="https://www.linkedin.com/feed/?shareActive=true&text=' + encodeURIComponent(x.text || "") + '">Open in LinkedIn, prefilled</a>' +
         '<button class="btn2" data-pmcopy="' + esc(x.id) + '">Copy</button><button class="btn2" data-pmdel="' + esc(x.id) + '">Delete</button></div></div>';
     });
-    h += '<div class="hint">"Post on LinkedIn (via PC)" sends the text to your PC, which publishes it from your saved LinkedIn session on its next check-in (within 30 minutes while the PC is on). "Open in LinkedIn, prefilled" opens LinkedIn here with the text in the composer, so you tap Post yourself right now. Delete hides it here at once and removes it on the PC at its next check-in.</div></div>';
+    h += '<div class="acts" style="margin-top:10px"><button class="primary" id="pm-more">Generate 6 more posts</button></div>' +
+      '<div class="hint">"Post on LinkedIn (via PC)" sends the text to your PC, which publishes it from your saved LinkedIn session on its next check-in (within 30 minutes while the PC is on). "Open in LinkedIn, prefilled" opens LinkedIn here with the text in the composer, so you tap Post yourself right now. Delete hides it here at once and removes it on the PC at its next check-in. "Generate more" asks the PC for 6 extra drafts in the usual mix; they appear here after its next check-in (the model writes each one in about a minute).</div></div>';
     // the PC's tasks
     var tasks = d.tasks || [];
     h += '<div class="card"><h2>What runs on the PC</h2>';
@@ -1716,6 +1717,10 @@
         var x = draftOf(b.dataset.pmcopy); if (!x) return;
         (navigator.clipboard ? navigator.clipboard.writeText(x.text) : Promise.reject()).then(function () { toast("Copied."); }, function () { toast("Copy blocked by the browser; select the text and copy it."); });
       });
+    });
+    if ($("pm-more")) $("pm-more").addEventListener("click", function () {
+      $("pm-more").disabled = true;
+      request("drafts", { more: 6 }, "Asked the PC for 6 more drafts; they appear after its next check-in.").then(function (ok) { if (!ok) $("pm-more").disabled = false; });
     });
     box.querySelectorAll("[data-pmdel]").forEach(function (b) {
       b.addEventListener("click", function () {
