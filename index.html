@@ -431,6 +431,7 @@
     <button data-tab="home" class="on"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 11l9-8 9 8v9a2 2 0 0 1-2 2h-4v-6H9v6H5a2 2 0 0 1-2-2z"/></svg>Home<span class="dot" id="dot-home" hidden></span></button>
     <button data-tab="search"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M20 20l-3.5-3.5"/></svg>Search</button>
     <button data-tab="jobs"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2M3 12h18"/></svg>Jobs</button>
+    <button data-tab="live"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="2"/><path d="M16.2 7.8a6 6 0 0 1 0 8.4M7.8 16.2a6 6 0 0 1 0-8.4M19.1 4.9a10 10 0 0 1 0 14.2M4.9 19.1a10 10 0 0 1 0-14.2"/></svg>Live<span class="dot" id="dot-live" hidden></span></button>
     <button data-tab="posts"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12a8 8 0 0 1-8 8H8l-5 3 1.5-4.5A8 8 0 1 1 21 12z"/><path d="M8 11h8M8 15h5"/></svg>Posts<span class="dot" id="dot-posts" hidden></span></button>
     <button data-tab="premium"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2l3 7h7l-5.5 4.5L18.5 21 12 16.5 5.5 21l2-7.5L2 9h7z"/></svg>Premium<span class="dot" id="dot-premium" hidden></span></button>
     <button data-tab="queue"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M13 2L4 14h7l-1 8 9-12h-7z"/></svg>Queue<span class="dot" id="dot-queue" hidden></span></button>
@@ -578,6 +579,12 @@
   <!-- ----------------------------------------------------------------- Posts -->
   <!-- LinkedIn "we are hiring" posts from the last 12 h, read every 30 min on the PC
        (Profile_Naukri_Screener-main\naukri\jobs\linkedin_posts.py -> data/posts/linkedin_posts.json) -->
+  <!-- ----------------------------------------------------------------- Live: new LinkedIn postings within minutes + hiring posts
+       (Profile_Naukri_Screener-main\naukri\jobs\live_feed.py -> feed.json on the `live` branch) -->
+  <section id="tab-live" hidden>
+    <div id="live-body"><div class="card"><span class="spin"></span> Loading…</div></div>
+  </section>
+
   <section id="tab-posts" hidden>
     <div id="posts-body"><div class="card"><span class="spin"></span> Loading…</div></div>
   </section>
@@ -1017,11 +1024,12 @@
   }
 
   // ---- tabs
-  var TABS = ["home", "search", "jobs", "posts", "premium", "queue", "track", "plan", "settings"];
+  var TABS = ["home", "search", "jobs", "live", "posts", "premium", "queue", "track", "plan", "settings"];
   var tabs = document.querySelectorAll("nav.tabs button");
   var TITLES = { home: ["Home", "what is happening right now"], search: ["Search", "start a run on GitHub; results land under Jobs"],
     jobs: ["Jobs", "every report, newest first"], posts: ["Posts", "hiring posts from LinkedIn, X, Telegram, Reddit, HN - last 12 h, read by your PC"],
     premium: ["Premium", "the LinkedIn Premium runner: today's post, leads, InMail drafts, the PC's tasks"],
+    live: ["Live", "new LinkedIn postings within minutes, and hiring posts - newest first"],
     queue: ["Queue", "what your PC applies to, and the rules"],
     track: ["Track", "applications, replies and your answers"], plan: ["Plan", "75-day SDE plan - calendar, daily tasks, progress"],
     settings: ["Settings", "this phone only"] };
@@ -1050,6 +1058,7 @@
     if (name === "jobs") { loadIndex(); loadCompanies(); }
     if (name === "posts") loadPosts(true).then(renderPosts);
     if (name === "premium") loadPremium(true).then(renderPremium);
+    if (name === "live") { loadLive(true).then(renderLive); startLive(); } else stopLive();
     if (name === "search") { loadRuns("jobhunt.yml", "runs"); loadRuns("careers.yml", "c-runs"); loadCompanies(); }
     if (name === "queue") loadQueue(true).then(renderQueue);
     if (name === "track") loadTrack();
@@ -1377,6 +1386,130 @@
     return s;
   }
 
+  // ---- Live: feed.json on the `live` branch, rewritten by the PC's live feed every minute or two.
+  // Read through the GitHub API with the token (fresh to the second); without a token, raw.githubusercontent
+  // (cached for a few minutes). Refreshed every 30 s while the tab is open.
+  var live = null, liveErr = "", liveWait = null, liveTimer = null, liveAt = 0;
+  var LF = { show: store.get("lv.show", "all"), within: +store.get("lv.within", "24") || 24, where: store.get("lv.where", ""), loc: store.get("lv.loc", ""),
+             exp: store.get("lv.exp", ""), q: store.get("lv.q", ""), senior: store.get("lv.senior", "1"), sort: store.get("lv.sort", "posted"),
+             limit: 60, showRemoved: false, notify: store.get("lv.notify", "") };
+  var liveSeen = store.get("lv.seen", "");                 // first_seen of the newest item already looked at
+  function loadLive(force) {
+    if (!force && live && Date.now() - liveAt < 20000) return Promise.resolve(live);
+    if (liveWait) return liveWait;
+    var s = settings(), repo = s.repo || guessRepo();
+    var req = s.token
+      ? fetch(API + "/repos/" + repo + "/contents/feed.json?ref=live&t=" + Date.now(), { headers: { "Accept": "application/vnd.github.raw", "Authorization": "Bearer " + s.token, "X-GitHub-Api-Version": "2022-11-28" } })
+      : fetch("https://raw.githubusercontent.com/" + repo + "/live/feed.json?t=" + Date.now());
+    liveWait = req.then(function (r) { if (!r.ok) throw new Error("HTTP " + r.status); return r.json(); })
+      .then(function (d) {
+        var before = live ? (live.items || []).length : 0, newest = ((d.items || [])[0] || {});
+        live = d; liveAt = Date.now(); liveErr = ""; liveWait = null; updateLiveDot();
+        if (LF.notify && before && liveSeen) notifyLive(d);
+        if (!$("tab-live").hidden) renderLive();
+        return d;
+      }, function (e) { liveWait = null; liveErr = errText(e); if (!$("tab-live").hidden) renderLive(); return live; });
+    return liveWait;
+  }
+  function startLive() { stopLive(); liveTimer = setInterval(function () { if (!document.hidden) loadLive(true); }, 30000); }
+  function stopLive() { if (liveTimer) clearInterval(liveTimer); liveTimer = null; if (live && !$("tab-live").hidden) markLiveSeen(); }
+  function liveNewItems() { return ((live || {}).items || []).filter(function (it) { return liveSeen && (it.first_seen || "") > liveSeen && !marks.removed["l:" + it.id]; }); }
+  function markLiveSeen() { var top = ((live || {}).items || []).reduce(function (m, it) { return (it.first_seen || "") > m ? it.first_seen : m; }, ""); if (top) { liveSeen = top; store.set("lv.seen", top); } updateLiveDot(); }
+  function updateLiveDot() { var n = liveNewItems().filter(liveOk).length; $("dot-live").hidden = !n; $("dot-live").textContent = n > 99 ? "99+" : n; }
+  function notifyLive(d) {
+    try {
+      if (!("Notification" in window) || Notification.permission !== "granted") return;
+      var fresh = liveNewItems().filter(liveOk).filter(function (it) { return hoursSince(it.first_seen) < 0.05; });
+      if (fresh.length) new Notification(fresh.length + " new on the live feed", { body: fresh.slice(0, 3).map(function (it) { return (it.title || "") + " · " + (it.company || ""); }).join("\n") });
+    } catch (e) {}
+  }
+  var SENIOR_TITLE = /\b(senior|sr\.?|lead|principal|staff|architect|manager|director|head|vp|iii|iv)\b/i;
+  function liveOk(it) {
+    if (LF.show !== "all" && it.kind !== LF.show) return false;
+    if (hoursSince(it.posted_at || it.first_seen) > LF.within) return false;
+    var l = (it.location || "") + " " + (it.workplace || "");
+    if (LF.where === "india" && !INDIA_CITY.test(it.location || "")) return false;
+    if (LF.where === "remote" && !/remote/i.test(l)) return false;
+    if (LF.where === "notremote" && /remote/i.test(l)) return false;
+    if (LF.where === "abroad" && (INDIA_CITY.test(it.location || "") || !(it.location || "").trim())) return false;
+    if (LF.loc && l.toLowerCase().indexOf(LF.loc.toLowerCase()) < 0) return false;
+    if (LF.exp && it.years_min != null && it.years_min > +LF.exp) return false;
+    if (LF.senior && it.kind === "job" && (SENIOR_TITLE.test(it.title || "") || /mid-senior|director|executive/i.test(it.seniority || ""))) return false;
+    if (LF.q && ((it.title || "") + " " + (it.company || "") + " " + (it.snippet || "")).toLowerCase().indexOf(LF.q.toLowerCase()) < 0) return false;
+    return true;
+  }
+  function liveCard(it) {
+    var mk = "l:" + it.id, seen = !!marks.applied[mk], isNew = liveSeen && (it.first_seen || "") > liveSeen, t = [];
+    if (isNew) t.push(chip("bad", "NEW"));
+    t.push(chip(it.kind === "job" ? "acc" : "warn", it.kind === "job" ? "Job" : platName(it.platform || "post") + " post"));
+    if (it.workplace) t.push(chip(/remote/.test(it.workplace) ? "ok" : "", it.workplace));
+    if (it.years_min != null) t.push(chip(it.years_min <= 2 ? "ok" : "", it.years_min + "+ yrs"));
+    else if (it.entry) t.push(chip("ok", "freshers"));
+    else if (it.kind === "job" && !it.detailed) t.push(chip("", "checking…"));
+    if (it.seniority) t.push(chip("", it.seniority));
+    if (it.employment && it.employment !== "Full-time") t.push(chip("", it.employment));
+    if (it.applicants != null) t.push(chip(it.applicants < 25 ? "ok" : "", it.applicants + " applicants"));
+    if (it.easy_apply) t.push(chip("ok", "Easy Apply"));
+    if (it.visa === "yes") t.push(chip("ok", "visa sponsorship"));
+    var lag = it.posted_at && it.first_seen ? Math.max(0, (new Date(it.first_seen) - new Date(it.posted_at)) / 60000) : null;
+    var when = "posted " + ago(it.posted_at || it.first_seen) + (lag != null && it.kind === "job" ? " · found " + (lag < 1 ? "within a minute" : Math.round(lag) + " min later") : "");
+    return '<div class="job post' + (seen ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(it.title || "(untitled)") + "</h3>" +
+      '<div class="sub">' + esc(it.company || "") + (it.location ? " · " + esc(it.location) : "") + " · " + esc(when) + "</div>" +
+      '<div class="tags">' + t.join("") + "</div>" +
+      (it.snippet ? '<div class="ptext clip">' + esc(it.snippet) + "</div>" : "") +
+      ((it.emails || []).length ? '<div class="hint">' + it.emails.map(function (m) { return '<a href="mailto:' + esc(m) + '">✉ ' + esc(m) + "</a>"; }).join(" · ") + "</div>" : "") +
+      '<div class="acts">' + openLink(it.url, it.kind === "job" ? "Open job" : "Open post", "btn", mk) + markBtns(mk, seen) + "</div></div>";
+  }
+  function renderLive() {
+    var box = $("live-body"), d = live, h = "";
+    if (!d) {
+      box.innerHTML = '<div class="card">' + (liveErr && !/HTTP 404/.test(liveErr) ? '<div class="msg bad">' + esc(liveErr) + "</div>" :
+        '<div class="msg info">The live feed has not published yet. On the PC run <code>Profile_Naukri_Screener-main\\scripts\\schedule_live_feed.ps1</code> once; it then runs all day and after every restart.</div>') + "</div>";
+      return;
+    }
+    var pc = d.pc || {}, age = hoursSince(pc.last_tick || d.updated), all = d.items || [];
+    var list = all.filter(function (it) { return (!marks.removed["l:" + it.id] || LF.showRemoved) && liveOk(it); });
+    if (LF.sort === "found") list.sort(function (a, b) { return String(b.first_seen || "").localeCompare(String(a.first_seen || "")); });
+    var jobs = all.filter(function (x) { return x.kind === "job"; }).length;
+    h += '<div class="card"><div><b>' + jobs + " jobs · " + (all.length - jobs) + " hiring posts · last " + (d.hours || 48) + " h</b></div>" +
+      '<div class="muted">Checked ' + esc(ago(pc.last_tick || d.updated)) + (pc.host ? " on " + esc(pc.host) : "") + " · every " + Math.round((pc.interval_s || 90) / 60 * 10) / 10 + " min" +
+      (pc.last_status === 429 ? " · LinkedIn asked us to slow down" : "") + " · this page refreshes every 30 s</div>" +
+      (age > 0.25 ? '<div class="msg warn">The live feed has not checked in for ' + (age < 2 ? Math.round(age * 60) + " min" : Math.round(age) + " h") + ". Is the PC on? It restarts by itself after logon (task LiveFeed).</div>" : "") +
+      (!settings().token ? '<div class="msg info">Add your GitHub token in Settings for a feed that is current to the second; without it GitHub serves a copy up to 5 minutes old.</div>' : "") + "</div>";
+    var chips = function (attr, opts, cur) { return '<div class="chips small">' + opts.map(function (o) { return '<button type="button" data-' + attr + '="' + esc(o[0]) + '"' + (String(cur) === String(o[0]) ? ' class="on"' : "") + ">" + esc(o[1]) + "</button>"; }).join("") + "</div>"; };
+    h += acc("lf", "Filters", list.length + " shown",
+      '<input id="lf-q" placeholder="title, company, skill…" value="' + esc(LF.q) + '" autocapitalize="none" style="margin-top:10px">' +
+      "<label>Show</label>" + chips("lfs", [["all", "Jobs + posts"], ["job", "Jobs"], ["post", "Posts"]], LF.show) +
+      "<label>Posted within</label>" + chips("lfw", [["0.25", "15 min"], ["1", "1 h"], ["6", "6 h"], ["24", "24 h"], ["48", "48 h"]], LF.within) +
+      "<label>Where</label>" + chips("lfp", [["", "Anywhere"], ["india", "India"], ["remote", "Remote"], ["notremote", "Not remote"], ["abroad", "Outside India"]], LF.where) +
+      '<input id="lf-loc" placeholder="or a city / country" value="' + esc(LF.loc) + '" autocapitalize="none" style="margin-top:8px">' +
+      "<label>Experience asked (not stated is always shown)</label>" + chips("lfe", [["", "Any"], ["1", "≤ 1 yr"], ["2", "≤ 2 yrs"], ["3", "≤ 3 yrs"], ["5", "≤ 5 yrs"]], LF.exp) +
+      "<label>Seniority</label>" + chips("lfn", [["1", "Hide senior / lead titles"], ["", "Show all"]], LF.senior) +
+      "<label>Sort</label>" + chips("lfo", [["posted", "Posted, newest first"], ["found", "Found, newest first"]], LF.sort) +
+      '<label style="margin-top:10px"><input type="checkbox" id="lf-notify"' + (LF.notify ? " checked" : "") + "> Notify me on this device while this page is open</label>");
+    var shown = list.slice(0, LF.limit);
+    h += shown.length ? '<div class="jobs">' + shown.map(liveCard).join("") + "</div>" : '<div class="card muted">Nothing matches these filters right now.</div>';
+    if (list.length > LF.limit) h += '<button class="primary" id="lf-more">Show more (' + (list.length - LF.limit) + " left)</button>";
+    h += removedHint(all.filter(function (it) { return marks.removed["l:" + it.id]; }).length, LF.showRemoved);
+    var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top; bindAcc(box);
+    bindMarks(box, function (toggle) { if (toggle === true) LF.showRemoved = !LF.showRemoved; renderLive(); updateLiveDot(); });
+    var set = function (k, v) { LF[k] = v; store.set("lv." + k, String(v)); LF.limit = 60; renderLive(); updateLiveDot(); };
+    [["lfs", "show"], ["lfw", "within"], ["lfp", "where"], ["lfe", "exp"], ["lfn", "senior"], ["lfo", "sort"]].forEach(function (p) {
+      box.querySelectorAll("[data-" + p[0] + "]").forEach(function (b) { b.addEventListener("click", function () { set(p[1], p[1] === "within" ? +b.dataset[p[0]] : b.dataset[p[0]]); }); });
+    });
+    ["q", "loc"].forEach(function (k) {
+      var el = $("lf-" + k), tm; el.addEventListener("input", function () { clearTimeout(tm); tm = setTimeout(function () { var pos = el.selectionStart; set(k, el.value.trim()); var e2 = $("lf-" + k); if (e2) { e2.focus(); try { e2.setSelectionRange(pos, pos); } catch (e) {} } }, 350); });
+    });
+    $("lf-notify").addEventListener("change", function () {
+      var on = $("lf-notify").checked;
+      if (on && "Notification" in window && Notification.permission !== "granted") Notification.requestPermission();
+      LF.notify = on ? "1" : ""; store.set("lv.notify", LF.notify);
+    });
+    if ($("lf-more")) $("lf-more").addEventListener("click", function () { LF.limit += 60; renderLive(); });
+    if (!liveSeen) markLiveSeen();
+    else setTimeout(function () { if (!$("tab-live").hidden) markLiveSeen(); }, 8000);   // what was on screen for a moment counts as seen
+  }
+
   // ---- Premium: data/premium/latest.json, written by the PC's LinkedIn Premium runner after every pass.
   // The Post button and the task Start / Stop buttons go through the apply queue (apply.yml -> the PC).
   var premium = null, premiumAt = 0, premiumErr = "", premiumWait = null;
@@ -1443,7 +1576,7 @@
     return out.join("\n");
   }
   function taskLabel(n) {
-    return { LinkedInPremium: "LinkedIn Premium runner (every 4 h)", SocialPostsWatch: "Hiring posts: X, Telegram, Reddit, HN (every 30 min)",
+    return { LiveFeed: "Live feed: new LinkedIn postings (every 1-2 min)", LinkedInPremium: "LinkedIn Premium runner (every 4 h)", SocialPostsWatch: "Hiring posts: X, Telegram, Reddit, HN (every 30 min)",
              LinkedInPostsWatch: "Hiring posts: LinkedIn (every 30 min)", JobHuntApply: "Job hunt rounds: search + apply (every 30 min)",
              PhoneApplyQueue: "This phone's queue worker (every 30 min)", NaukriProfileRefresh: "Naukri profile refresh" }[n] || n;
   }
@@ -2535,7 +2668,7 @@
   // watcher (Profile_Naukri_Screener-main/naukri/jobs/linkedin_posts.py -> data/posts/linkedin_posts.json).
   // Everything here is a filter over that file; nothing is sent anywhere.
   var posts = null, postsAt = 0, postsErr = "", postsWait = null;
-  var PF = { q: store.get("p.q", ""), role: store.get("p.role", ""), exp: store.get("p.exp", ""), hours: +store.get("p.hours", "12") || 12,
+  var PF = { q: store.get("p.q", ""), role: store.get("p.role", ""), exp: store.get("p.exp", ""), hours: +store.get("p.hours2", "48") || 48,
              loc: store.get("p.loc", ""), need: store.get("p.need", ""), plat: store.get("p.plat", ""), sort: store.get("p.sort", "new"), limit: 40, open: {}, showRemoved: false };
   var P_ROLES = [["", "Any role"], ["swe", "SWE / SDE"], ["backend", "Backend"], ["frontend", "Frontend"], ["fullstack", "Full stack"], ["java", "Java"],
     ["python", "Python"], ["dotnet", ".NET / C#"], ["mobile", "Mobile"], ["devops", "DevOps / Cloud"], ["qa", "QA / Test"], ["data", "Data / ML / AI"]];
@@ -2651,7 +2784,7 @@
       return;
     }
     var pc = d.pc || {}, age = hoursSince(d.updated), list = postsFiltered(), all = d.posts || [];
-    h += '<div class="card"><div><b>' + all.length + " hiring post" + (all.length !== 1 ? "s" : "") + " for 0–2 yrs · last " + (d.window_hours || 12) + " h</b></div>" +
+    h += '<div class="card"><div><b>' + all.length + " software hiring post" + (all.length !== 1 ? "s" : "") + " · up to 3 yrs asked · last " + (d.window_hours || 12) + " h</b></div>" +
       '<div class="muted">LinkedIn' + (d.social ? " + " + esc((d.social.platforms || []).map(platName).join(", ") || "social") : "") + " posts, read every " + (d.every_minutes || 30) + " min on your PC" + (pc.host ? " (" + esc(pc.host) + ")" : "") + " · updated " + esc(ago(d.updated)) +
       (pc.passes ? " · " + pc.passes + " passes" : "") + (d.seen_total ? " · " + d.seen_total + " posts read this week" : "") + "</div>" +
       (pc.last_error ? '<div class="msg bad">' + esc(pc.last_error) + "</div>" : "") +
@@ -2664,7 +2797,7 @@
                PF.need ? named(P_NEED, PF.need) : "", PF.q ? '"' + PF.q + '"' : ""].filter(Boolean).join(" · ") + " · " + list.length + " shown";
     h += acc("pf", "Filters", sum,
       '<input id="pf-q" placeholder="search text, company, skill, email…" value="' + esc(PF.q) + '" autocapitalize="none" style="margin-top:10px">' +
-      "<label>Posted within</label>" + chips("ph", [["3", "3 h"], ["6", "6 h"], ["12", "12 h"]], String(PF.hours)) +
+      "<label>Posted within</label>" + chips("ph", [["3", "3 h"], ["6", "6 h"], ["12", "12 h"], ["24", "24 h"], ["48", "48 h"]], String(PF.hours)) +
       (d.social ? "<label>Platform</label>" + chips("pp", P_PLAT, PF.plat) : "") +
       "<label>Role</label>" + chips("pr", P_ROLES, PF.role) +
       "<label>Experience</label>" + chips("pe", P_EXP, PF.exp) +
@@ -2680,7 +2813,7 @@
     var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top; bindAcc(box);
     bindMarks(box, function (toggle) { if (toggle === true) PF.showRemoved = !PF.showRemoved; renderPosts(); updatePostsDot(); });
     var set = function (k, v) { PF[k] = v; store.set("p." + k, String(v)); PF.limit = 40; renderPosts(); };
-    box.querySelectorAll("[data-ph]").forEach(function (b) { b.addEventListener("click", function () { set("hours", +b.dataset.ph); }); });
+    box.querySelectorAll("[data-ph]").forEach(function (b) { b.addEventListener("click", function () { PF.hours = +b.dataset.ph; store.set("p.hours2", b.dataset.ph); PF.limit = 40; renderPosts(); }); });
     box.querySelectorAll("[data-pp]").forEach(function (b) { b.addEventListener("click", function () { set("plat", b.dataset.pp); }); });
     box.querySelectorAll("[data-pr]").forEach(function (b) { b.addEventListener("click", function () { set("role", b.dataset.pr); }); });
     box.querySelectorAll("[data-pe]").forEach(function (b) { b.addEventListener("click", function () { set("exp", b.dataset.pe); }); });
