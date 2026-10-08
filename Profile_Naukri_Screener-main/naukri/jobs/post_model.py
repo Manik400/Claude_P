@@ -40,7 +40,7 @@ HUMAN = DIR / "human.jsonl"
 MODEL_PATH = DIR / "post_clf.joblib"
 LOG_PATH = ROOT / "logs" / "post_model.log"
 
-TEACHER = "unsloth/Qwen3.6-35B-A3B-GGUF:Qwen3.6-35B-A3B-UD-IQ4_XS.gguf"
+TEACHER = "unsloth/Qwen3.6-35B-A3B-GGUF:Qwen3.6-35B-A3B-UD-IQ3_XXS.gguf"   # same labels as IQ4_XS in tests, 4.5 GB less RAM, loads 3x faster
 EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 
 # The instructions come FIRST and never change, the post comes last: llama.cpp keeps the computed state of
