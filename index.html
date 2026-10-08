@@ -586,6 +586,7 @@
   </section>
 
   <section id="tab-posts" hidden>
+    <div id="label-box"></div>
     <div id="posts-body"><div class="card"><span class="spin"></span> Loading…</div></div>
   </section>
 
@@ -1056,7 +1057,7 @@
     try { history.replaceState(history.state, "", "#" + name); } catch (e) {}
     if (name === "home") { loadIndex(); loadQueue().then(renderHome); loadRuns("jobhunt.yml", null); loadRuns("careers.yml", null); loadPremium(); }
     if (name === "jobs") { loadIndex(); loadCompanies(); }
-    if (name === "posts") loadPosts(true).then(renderPosts);
+    if (name === "posts") { loadPosts(true).then(renderPosts); loadLabelSet().then(renderLabel); }
     if (name === "premium") loadPremium(true).then(renderPremium);
     if (name === "live") { loadLive(true).then(renderLive); startLive(); } else stopLive();
     if (name === "search") { loadRuns("jobhunt.yml", "runs"); loadRuns("careers.yml", "c-runs"); loadCompanies(); }
@@ -1385,6 +1386,60 @@
       " · up to " + (pc.limit || 5) + " each on Naukri / LinkedIn per run, company sites unlimited" + (pc.platform_summary ? " · " + esc(pc.platform_summary) : "") + (queue.paused ? " · " + chip("warn", "PAUSED") : "") + (pc.dry_run ? " · " + chip("bad", "dry run - nothing sent") : "") + (pc.linkedin_easy_apply_paused ? " · " + chip("warn", esc(pc.linkedin_easy_apply_paused)) : "") + "</div>";
     return s;
   }
+
+  // ---- Labeling: 200 random posts (data/model/review.json, published by post_model.py --review-set) that you
+  // mark "software hiring post" or not. Your answers are the answer key every model is scored against; they
+  // are kept in this browser until sent, then go to the PC through the queue (action `labels`).
+  var labelSet = null, labelOpen = false, labelIdx = +store.get("lb.idx", "0") || 0;
+  var lbAns = (function () { try { return JSON.parse(store.get("lb.answers", "") || "{}"); } catch (e) { return {}; } })();
+  var lbSent = (function () { try { return JSON.parse(store.get("lb.sent", "") || "{}"); } catch (e) { return {}; } })();
+  function loadLabelSet() {
+    if (labelSet) return Promise.resolve(labelSet);
+    return fetchEnc("data/model/review.json?t=" + Date.now()).then(JSON.parse).then(function (d) { labelSet = d; return d; }, function () { return null; });
+  }
+  function lbSave() { store.set("lb.answers", JSON.stringify(lbAns)); store.set("lb.sent", JSON.stringify(lbSent)); store.set("lb.idx", String(labelIdx)); }
+  function renderLabel() {
+    var box = $("label-box"), d = labelSet; if (!box) return;
+    if (!d || !(d.posts || []).length) { box.innerHTML = ""; return; }
+    var posts = d.posts, answered = posts.filter(function (p) { return p.id in lbAns; }).length;
+    var unsent = Object.keys(lbAns).filter(function (k) { return !lbSent[k]; });
+    if (!labelOpen) {
+      box.innerHTML = '<div class="card"><div><b>Teach the model: label posts</b> · ' + answered + " of " + posts.length + " done" + (unsent.length ? " · " + unsent.length + " not sent yet" : "") + "</div>" +
+        '<div class="muted" style="font-size:0.875rem">One tap each: is it a post by someone hiring for a software role? Your answers are the answer key the AI is graded against, so a fair accuracy number needs about 200.</div>' +
+        '<div class="acts"><button class="primary" id="lb-open">' + (answered ? "Continue labeling" : "Start labeling") + "</button>" +
+        (unsent.length ? '<button class="btn2" id="lb-send">Send ' + unsent.length + " answers to the PC</button>" : "") + "</div></div>";
+    } else {
+      while (labelIdx < posts.length && posts[labelIdx].id in lbAns && !labelBack) labelIdx++;
+      labelBack = false;
+      if (labelIdx >= posts.length) { labelOpen = false; lbSave(); renderLabel(); toast("All done - send your answers to the PC."); return; }
+      var p = posts[labelIdx], cur = lbAns[p.id];
+      box.innerHTML = '<div class="card"><div class="muted">' + (labelIdx + 1) + " of " + posts.length + " · " + esc(platName(p.platform || "") || p.platform || "") + (p.headline ? " · " + esc(p.headline) : "") +
+        (cur != null ? " · " + chip(cur ? "ok" : "bad", cur ? "you said: hiring" : "you said: not") : "") + "</div>" +
+        '<pre style="white-space:pre-wrap;font-size:0.9rem;line-height:1.45;max-height:22em;overflow:auto;margin:10px 0">' + esc(p.text) + "</pre>" +
+        '<div class="hint">Yes = someone is offering a software / IT engineering job or internship now (any experience level). No = a job seeker, another kind of role, news, ads, advice.</div>' +
+        '<div class="acts"><button class="primary" data-lb="1">Yes, software hiring post</button><button class="btn2" data-lb="0">No</button>' +
+        '<button class="btn2" data-lb="skip">Skip</button><button class="btn2" data-lb="back"' + (labelIdx ? "" : " disabled") + '>Back</button><button class="btn2" data-lb="close">Pause</button></div></div>';
+    }
+    box.querySelectorAll("[data-lb]").forEach(function (b) {
+      b.addEventListener("click", function () {
+        var v = b.dataset.lb, p = labelSet.posts[labelIdx];
+        if (v === "close") { labelOpen = false; }
+        else if (v === "back") { labelIdx = Math.max(0, labelIdx - 1); labelBack = true; }
+        else if (v === "skip") { labelIdx++; }
+        else { lbAns[p.id] = v === "1"; delete lbSent[p.id]; labelIdx++; }
+        lbSave(); renderLabel();
+      });
+    });
+    if ($("lb-open")) $("lb-open").addEventListener("click", function () { labelOpen = true; labelIdx = 0; renderLabel(); });
+    if ($("lb-send")) $("lb-send").addEventListener("click", function () {
+      var send = {}; Object.keys(lbAns).forEach(function (k) { if (!lbSent[k]) send[k] = lbAns[k]; });
+      $("lb-send").disabled = true;
+      request("labels", { answers: send }, "Sent " + Object.keys(send).length + " answers; the PC saves them on its next check-in.").then(function (ok) {
+        if (ok) { Object.keys(send).forEach(function (k) { lbSent[k] = 1; }); lbSave(); } renderLabel();
+      });
+    });
+  }
+  var labelBack = false;
 
   // ---- Live: feed.json on the `live` branch, rewritten by the PC's live feed every minute or two.
   // Read through the GitHub API with the token (fresh to the second); without a token, raw.githubusercontent
