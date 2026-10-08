@@ -332,6 +332,31 @@ def save_human(answers: dict) -> int:
     return n
 
 
+TRAIN_EVERY = 100            # retrain the classifier after this many new labels
+
+
+def run_continuous(model: str = TEACHER) -> dict:
+    """What the all-day task does: gather new posts, label everything unlabeled (most useful first), retrain
+    the classifier when there are enough new labels, exit. The task starts it again every 15 minutes, so
+    posts the watchers add later are labeled within the hour. Needs no network: the model is local."""
+    added = build_dataset()
+    log.info("dataset: +%d new post(s), %d in all", added, len(_read_jsonl(DATASET)))
+    before = len([r for r in _read_jsonl(LABELS) if r.get("model") == model])
+    res = label(None, model)
+    now = len([r for r in _read_jsonl(LABELS) if r.get("model") == model])
+    res["dataset_added"] = added
+    try:
+        last = int(json.loads((DIR / "train_state.json").read_text(encoding="utf-8")).get("labels") or 0)
+    except (OSError, ValueError):
+        last = 0
+    if now >= 60 and (now - last >= TRAIN_EVERY or not MODEL_PATH.exists()):
+        rep = train(model)
+        (DIR / "train_state.json").write_text(json.dumps({"labels": now, "at": time.strftime("%Y-%m-%dT%H:%M:%S"), "report": rep}), encoding="utf-8")
+        log.info("classifier retrained on %d labels: accuracy vs teacher %.3f (rules alone %.3f)", now, rep["classifier"]["accuracy"], rep["rules_alone"]["accuracy"])
+        res["trained"] = rep
+    return res
+
+
 def _setup_logging() -> None:
     LOG_PATH.parent.mkdir(parents=True, exist_ok=True)
     handlers: list[logging.Handler] = [logging.FileHandler(LOG_PATH, encoding="utf-8")]
@@ -349,11 +374,17 @@ def main(argv=None) -> int:
     mode.add_argument("--eval", action="store_true")
     mode.add_argument("--predict", metavar="TEXT")
     mode.add_argument("--review-set", type=int, dest="review_set", metavar="N", help="publish N random posts for you to label on the phone")
+    mode.add_argument("--run", action="store_true", help="build + label everything + retrain when due (the all-day task)")
     ap.add_argument("--limit", type=int)
     ap.add_argument("--model", default=os.environ.get("POST_MODEL_TEACHER") or TEACHER, help="the teacher GGUF as <hf repo>:<file>")
     ap.add_argument("--stop-at", dest="stop_at", metavar="HH:MM", help="--label: stop at this local time (overnight runs)")
     args = ap.parse_args(argv)
     _setup_logging()
+    if args.run:
+        lp._guard_children()
+        lp._keep_awake()
+        print(json.dumps(run_continuous(args.model), indent=1))
+        return 0
     if args.build:
         n = build_dataset()
         print(f"\n  {n} new post(s); dataset: {len(_read_jsonl(DATASET))} in {DATASET}\n")
