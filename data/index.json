@@ -1,6 +1,26 @@
 {
- "updated": "2026-10-10T15:43:03Z",
+ "updated": "2026-10-10T17:44:04Z",
  "items": [
+  {
+   "id": "careers-20261010-174404-software-engineer-software-developer-bac",
+   "kind": "careers",
+   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, SWE, SDE",
+   "when": "2026-10-10T17:44:04Z",
+   "file": "data/careers/careers-20261010-174404-software-engineer-software-developer-bac.json",
+   "bytes": 2681567,
+   "meta": {
+    "jobs": "21",
+    "relocation": "18",
+    "countries": "DE,AE,IE,AU,CA,FI,US,GB",
+    "experience": "0-2",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "10 LPA",
+    "list_sha": "2183c287bec4",
+    "list_count": "8948"
+   }
+  },
   {
    "id": "applications-20261010-154303-applications-sent",
    "kind": "applications",
