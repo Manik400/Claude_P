@@ -128,10 +128,14 @@ $settings = New-ScheduledTaskSettingsSet `
 # min in that window, and 1-2 min after the laptop wakes, you log on or unlock,
 # or the network comes back. It never wakes a sleeping laptop.
 if ($Mode -eq "scan3") {
+    # No per-run cap: each scan applies to every match it has time for, 60 min
+    # of applying per scan (APPLY_MAX_MINUTES), under the daily caps in
+    # jobs.yaml. JOBGUARD_MAX_MINUTES is the wall-clock hard stop (jobguard.py)
+    # - Task Scheduler's own limit stands still while the laptop sleeps.
     $settings.ExecutionTimeLimit = "PT4H"
     $scanAction = New-ScheduledTaskAction `
         -Execute "$env:SystemRoot\System32\wscript.exe" `
-        -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=5" `
+        -Argument "//B //Nologo `"$launcher`" `"$batch`" APPLY_MAX_MINUTES=60 JOBGUARD_MAX_MINUTES=240" `
         -WorkingDirectory $root
     $daily = New-ScheduledTaskTrigger -Daily -At "10:00"
     $daily.Repetition = (New-ScheduledTaskTrigger -Once -At "10:00" `

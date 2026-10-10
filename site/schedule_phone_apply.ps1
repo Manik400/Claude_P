@@ -15,7 +15,7 @@
 param(
     [switch]$Remove,
     [int]$Every = 30,
-    [int]$Limit = 5,
+    [int]$Limit = 0,         # applies per board per run; 0 = every queued posting the run has time for (daily caps still hold)
     [int]$Minutes = 100      # a run keeps applying for this long (APPLY_MAX_MINUTES); the task is stopped at +20
 )
 
@@ -50,9 +50,14 @@ $settings = New-ScheduledTaskSettingsSet `
     -ExecutionTimeLimit (New-TimeSpan -Minutes ($Minutes + 20)) `
     -MultipleInstances IgnoreNew
 
+# JOBGUARD_MAX_MINUTES: the wall-clock hard stop (scripts\jobguard.py) - Task
+# Scheduler's own limit stands still while the laptop sleeps.
+$argument = "//B //Nologo `"$launcher`" `"$batch`" APPLY_MAX_MINUTES=$Minutes JOBGUARD_MAX_MINUTES=$($Minutes + 20)"
+if ($Limit -gt 0) { $argument += " NAUKRI_APPLY_LIMIT=$Limit" }
+$capText = if ($Limit -gt 0) { "up to $Limit applies per board per run" } else { "every queued posting a run has time for" }
 $action = New-ScheduledTaskAction `
     -Execute "$env:SystemRoot\System32\wscript.exe" `
-    -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=$Limit APPLY_MAX_MINUTES=$Minutes" `
+    -Argument $argument `
     -WorkingDirectory $PSScriptRoot
 
 # Repeats every -Every minutes, indefinitely, starting a few minutes from now -
@@ -73,9 +78,9 @@ Register-ScheduledTask `
     -Action $action `
     -Trigger @($trigger, $logon) `
     -Settings $settings `
-    -Description "Auto-apply queue: every $Every min and after logon, up to $Limit applies per board per run." | Out-Null
+    -Description "Auto-apply queue: every $Every min and after logon, $capText." | Out-Null
 
-Write-Host "Scheduled $name every $Every minutes (and 2 min after each logon), up to $Limit applies per board per run."
+Write-Host "Scheduled $name every $Every minutes (and 2 min after each logon), $capText."
 Write-Host "Check it with:   Get-ScheduledTask -TaskName '$name'"
 Write-Host "Run it now with: Start-ScheduledTask -TaskName '$name'"
 Write-Host "Stop it with:    ...\schedule_phone_apply.ps1 -Remove"

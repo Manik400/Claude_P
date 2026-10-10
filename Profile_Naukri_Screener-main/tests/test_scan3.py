@@ -31,7 +31,7 @@ def _run(monkeypatch, tmp_path, now, done=None, pages=(), force=False):
 
     def call(cmd, cwd=None):
         for kind, flags in scan3.SCANS:
-            if "--jobs-export" in cmd and cmd[cmd.index("60") + 1:-2] == flags:
+            if "--jobs-export" in cmd and cmd[cmd.index("150") + 1:-2] == flags:
                 started.append(kind)
         return 0
     monkeypatch.setattr(scan3.subprocess, "call", call)

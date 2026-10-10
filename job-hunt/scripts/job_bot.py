@@ -488,7 +488,10 @@ def cmd_render(args):
 
 
 def cmd_merge(args):
-    run_dir, meta, statuses, jobs = load_run(args.run)
+    run_dir = args.run or latest_run_dir(getattr(args, "out_root", None))
+    if not run_dir:
+        raise SystemExit("no run found; pass --run <dir>")
+    run_dir, meta, statuses, jobs = load_run(run_dir)
     log = Logger(os.path.join(run_dir, "run.log"), quiet=args.quiet)
     items = load_extra_file(args.file)
     added = merge_extra(jobs, items, meta.get("experience_years"))
@@ -695,9 +698,11 @@ def main(argv=None):
     p.add_argument("--open", action="store_true")
     p.set_defaults(fn=cmd_render)
 
-    p = sub.add_parser("merge", help="merge extra jobs (JSON list) into a run")
-    p.add_argument("--run", required=True)
-    p.add_argument("--file", required=True, help="JSON list of {title, company, url, country, location, source, snippet, posted}")
+    p = sub.add_parser("merge", help="merge extra jobs (JSON list, or a careers_bot report) into a run")
+    p.add_argument("--run", help="run directory (default: the newest run)")
+    p.add_argument("--out-root", help="parent directory of runs, for the default")
+    p.add_argument("--file", required=True, help="JSON list of {title, company, url, country, location, source, snippet, posted}, "
+                                                 "or a careers_bot.py report ({jobs: [...]})")
     p.add_argument("--resume", help="re-score with this resume (defaults to the run's resume)")
     p.add_argument("--open", action="store_true")
     p.add_argument("--quiet", action="store_true")

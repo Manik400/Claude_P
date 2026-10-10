@@ -140,14 +140,16 @@ def merge_extra(jobs, extra_items, user_years=None):
     for it in extra_items:
         if not isinstance(it, dict) or not it.get("url") or not it.get("title"):
             continue
-        cc = it.get("country") or ""
+        # A careers_bot report row carries `countries` (a list) and no source.
+        from_careers = "countries" in it and not it.get("source")
+        cc = it.get("country") or (it.get("countries") or [""])[0] or ""
         code = cc if cc in COUNTRIES or cc == REMOTE else resolve_country(cc)
         if not code:
             continue
-        src = (it.get("source") or "web").lower().replace(" ", "")
+        src = ("careers" if from_careers else (it.get("source") or "web")).lower().replace(" ", "")
         j = Job(
             source=src,
-            source_name=it.get("source_name") or it.get("source") or "Web search",
+            source_name=it.get("source_name") or it.get("source") or ("Company career page" if from_careers else "Web search"),
             title=it.get("title", ""),
             company=it.get("company", ""),
             url=it.get("url", ""),

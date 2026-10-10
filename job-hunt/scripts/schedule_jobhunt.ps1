@@ -28,10 +28,10 @@ param(
     [switch]$Rearm,
     [switch]$Backstop,
     [switch]$Show,
-    [int]$Gap = 30,
-    [int]$Limit = 5,
-    [int]$ApplyMinutes = 25,
-    [int]$MaxMinutes = 120
+    [int]$Gap = 10,
+    [int]$Limit = 0,           # applies per board per round; 0 = every posting the round has time for (daily caps in jobs.yaml still hold)
+    [int]$ApplyMinutes = 75,   # a round keeps applying for this long, then leaves the rest to the next round
+    [int]$MaxMinutes = 240     # hard stop for the whole round (search + careers + apply), wall clock
 )
 
 $ErrorActionPreference = "Stop"
@@ -94,9 +94,15 @@ $settings = New-ScheduledTaskSettingsSet `
     -ExecutionTimeLimit (New-TimeSpan -Minutes $MaxMinutes) `
     -MultipleInstances IgnoreNew
 
+# JOBGUARD_MAX_MINUTES: the wall-clock hard stop (..\Profile_Naukri_Screener-main\scripts\jobguard.py).
+# Task Scheduler's own -ExecutionTimeLimit stands still while the laptop sleeps, so a round
+# that slept through its limit came back as a hung run holding the apply lock for hours.
+$argument = "//B //Nologo `"$launcher`" `"$batch`" APPLY_MAX_MINUTES=$ApplyMinutes JOBGUARD_MAX_MINUTES=$MaxMinutes"
+if ($Limit -gt 0) { $argument += " NAUKRI_APPLY_LIMIT=$Limit" }
+$capText = if ($Limit -gt 0) { "up to $Limit per board" } else { "every posting it has time for" }
 $action = New-ScheduledTaskAction `
     -Execute "$env:SystemRoot\System32\wscript.exe" `
-    -Argument "//B //Nologo `"$launcher`" `"$batch`" NAUKRI_APPLY_LIMIT=$Limit APPLY_MAX_MINUTES=$ApplyMinutes" `
+    -Argument $argument `
     -WorkingDirectory $root
 
 $first = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds(30)
@@ -108,10 +114,10 @@ Register-ScheduledTask `
     -Action $action `
     -Trigger @($first, $logon) `
     -Settings $settings `
-    -Description "Job hunt: worldwide search + Naukri scan, apply up to $Limit per board (Naukri, LinkedIn Easy Apply, company sites without login), then again $Gap min after it finishes. gap=$Gap max=$MaxMinutes" | Out-Null
+    -Description "Job hunt: worldwide search + top-paying company career pages, apply to $capText (Naukri, LinkedIn Easy Apply, company sites without login), then again $Gap min after it finishes. gap=$Gap max=$MaxMinutes" | Out-Null
 
 Write-Host "Scheduled ${name}: first round in 30 s, then $Gap min after each round finishes (and 5 min after logon)."
-Write-Host "Up to $Limit applies per board per round, no new applies after $ApplyMinutes min, hard stop at $MaxMinutes min."
+Write-Host "Applies to $capText per round, no new applies after $ApplyMinutes min, hard stop at $MaxMinutes min."
 Write-Host ""
 Write-Host "Next round:  ...\schedule_jobhunt.ps1 -Show"
 Write-Host "Run now:     Start-ScheduledTask -TaskName '$name'"

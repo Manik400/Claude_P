@@ -176,7 +176,9 @@ def main():
         failed = 0
         for i, (kind, flags) in enumerate(todo, 1):
             print("----- scan %d of %d: %s -----" % (i, len(todo), kind), flush=True)
-            cmd = [python(), "main.py", "--jobs-export", "--top", "60", *flags, "--apply-found", "--yes"]
+            # --top 150: every scored match goes on the page and into the apply pass, which
+            # works through them for APPLY_MAX_MINUTES and leaves the rest to the next scan.
+            cmd = [python(), "main.py", "--jobs-export", "--top", "150", *flags, "--apply-found", "--yes"]
             rc = 1
             # Wi-Fi drops mid-run are common on the laptop: a scan that fails is
             # retried once the network is back, instead of losing that page.

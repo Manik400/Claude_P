@@ -1,0 +1,194 @@
+# India's top-paying early-career employers: big tech / product MNCs, consumer & fintech
+# unicorns, finance, HFT and quant - the places that pay 30-50 LPA for SDE-1 / new-grad roles.
+# Read on every hourly round (job-hunt/jobhunt_apply.bat -> careers_bot.py --companies-file)
+# before the apply pass, so a fresh posting at one of these is applied to within the hour.
+#
+# Same format as companies.txt:   Name | ats | board | note
+# A row copied from companies.txt keeps its resolved board; `auto` rows are resolved on the
+# first run (jobbot.careers.resolve, cached in assets/boards_cache.json). A company with no
+# public job-board API (Google, Amazon, Microsoft, Goldman ...) stays `auto` and is skipped
+# here - those are covered by the Naukri searches in jobs.yaml and the LinkedIn pass.
+#
+# Written by hand from public pay data (levels.fyi, Glassdoor) on 2026-10-10; edit freely.
+
+# ---- Big tech / product MNCs (India engineering centres)
+Google                                                       | recruitee       | google | India, global · 1 open job(s) when added
+Microsoft | auto | - | India
+Amazon                                      | personio        | amazon | India, global · 3 open job(s) when added
+Apple | auto | - | India
+Meta | auto | - | https://www.metacareers.com/ | Menlo Park, New York, London, Singapore, India
+Adobe                    | workday         | adobe.wd5.myworkdayjobs.com/adobe/external_experienced     | San Jose, Bengaluru, Noida, London
+Salesforce               | workday         | salesforce.wd12.myworkdayjobs.com/salesforce/External_Career_Site | US, India, Europe, Singapore
+Oracle | auto | - | India
+Atlassian | auto | - | https://www.atlassian.com/company/careers | Sydney, Bengaluru, Austin, Remote
+Uber                     | smartrecruiters | uber                                                       | San Francisco, New York, Bengaluru, Amsterdam, London
+NVIDIA                   | workday         | nvidia.wd5.myworkdayjobs.com/nvidia/NVIDIAExternalCareerSite | US, India, Europe, Asia; Santa Clara, Bengaluru, Pune, Taipei
+Intuit | auto | - | India
+Paypal                                                       | workday         | paypal.wd1.myworkdayjobs.com/paypal/jobs | public workday list · 20 software role(s) open when added
+Walmart                                                      | workday         | walmart.wd504.myworkdayjobs.com/walmart/WalmartExternal | new-grad / 0-2 YOE list · 2000 open job(s) when added
+Cisco                    | workday         | cisco.wd5.myworkdayjobs.com/cisco/Cisco_Careers            | US, India, Europe, Singapore
+Qualcomm | auto | - | India
+Samsung                                                      | greenhouse      | samsungsemiconductor | new-grad / 0-2 YOE list · 63 open job(s) when added
+Intel                    | workday         | intel.wd1.myworkdayjobs.com/intel/External                 | US, India, Europe, Israel; Santa Clara, Bengaluru, Israel
+AMD | auto | - | India
+Texas Instruments | auto | - | India
+Broadcom                 | workday         | broadcom.wd1.myworkdayjobs.com/broadcom/External_Career    | US, India, Europe, Singapore; Palo Alto, Bengaluru, Munich
+ServiceNow               | workday         | snc.wd1.myworkdayjobs.com/snc/Snc_External_Career_Site     | Santa Clara, Bengaluru, Amsterdam, London
+Snowflake                | ashby           | snowflake                                                  | San Mateo, New York, London, Bengaluru
+Databricks               | greenhouse      | databricks                                                 | Amsterdam, Tokyo, Bengaluru; San Francisco, New York, Amsterdam, London, Bengaluru
+Confluent                | ashby           | confluent                                                  | Mountain View, London, Bengaluru, Remote
+Rubrik                   | greenhouse      | rubrik                                                     | Palo Alto, Bengaluru, New York
+Nutanix | auto | - | https://www.linkedin.com/jobs/search/?keywords=Nutanix | San Jose, Bengaluru, Durham
+Cohesity | auto | - | https://www.cohesity.com/careers/ | San Jose, Bengaluru, London
+Pure Storage             | greenhouse      | purestorage
+Palo Alto Networks                                           | workday         | paloaltonetworks.wd5.myworkdayjobs.com/paloaltonetworks/panwexternalcareers | new-grad / 0-2 YOE list · 1507 open job(s) when added
+CrowdStrike              | workday         | crowdstrike.wd5.myworkdayjobs.com/crowdstrike/CrowdstrikeCareers | Austin, Sunnyvale, Bengaluru, Remote
+Zscaler                                                      | greenhouse      | zscaler | new-grad / 0-2 YOE list · 380 open job(s) when added
+Okta                     | greenhouse      | okta                                                       | San Francisco, Bellevue, Bengaluru; San Francisco, Bengaluru, London
+Cloudflare               | greenhouse      | cloudflare                                                 | Lisbon, London; San Francisco, Austin, London, Lisbon, Singapore, Remote; Global / Remote
+Twilio                   | greenhouse      | twilio                                                     | San Francisco, Bengaluru, London, Remote
+MongoDB                  | greenhouse      | mongodb                                                    | New York, London, Dublin, Bengaluru, Remote
+Elastic                  | greenhouse      | elastic                                                    | Amsterdam, Mountain View, Bangalore, Remote
+HashiCorp | auto | - | https://www.hashicorp.com/careers | US, Canada, Europe, Remote
+GitLab                   | greenhouse      | gitlab                                                     | remote-first; Remote-first, India, Europe, Americas
+GitHub | auto | - | https://www.github.careers/ | Remote, US, Europe, India
+Datadog                  | greenhouse      | datadog                                                    | Paris, Dublin; New York, Boston, Paris, Amsterdam, Tokyo
+Stripe                   | greenhouse      | stripe                                                     | Dublin; San Francisco, New York, Dublin, London, Singapore, Bengaluru
+Coinbase                 | greenhouse      | coinbase                                                   | Remote India, US, UK, Ireland, Singapore
+Airbnb                   | greenhouse      | airbnb                                                     | San Francisco, New York, Dublin, London
+DoorDash                 | greenhouse      | doordashusa                                                | San Francisco, New York, Toronto
+Expedia Group                                                | workday         | expedia.wd108.myworkdayjobs.com/expedia/search | new-grad / 0-2 YOE list · 156 open job(s) when added
+Booking.com | auto | - | https://careers.booking.com/ | Amsterdam, London, Bengaluru
+Agoda                    | greenhouse      | agoda                                                      | Bangkok hub; many roles say "relocation provided" + visa; Bangkok, Singapore
+LinkedIn                 | greenhouse      | linkedin
+Dropbox                  | greenhouse      | dropbox                                                    | San Francisco, New York, Austin, Dublin, Remote
+Pinterest                | greenhouse      | pinterest                                                  | San Francisco, New York, Seattle, London, Tokyo
+Roblox                   | greenhouse      | roblox                                                     | San Mateo, San Francisco, London, Remote
+Sprinklr                 | workday         | sprinklr.wd1.myworkdayjobs.com/sprinklr/careers            | New York, Gurugram, London | https://www.sprinklr.com/careers/
+ThoughtSpot                                                  | workday         | thoughtspot.wd5.myworkdayjobs.com/thoughtspot/careers | new-grad / 0-2 YOE list · 0 open job(s) when added
+Arista Networks                                              | smartrecruiters | aristanetworks | new-grad / 0-2 YOE list · 244 open job(s) when added
+Juniper Networks | auto | - | India
+Autodesk                                                     | workday         | autodesk.wd1.myworkdayjobs.com/autodesk/uni | public workday list · 20 software role(s) open when added
+Cadence                  | workday         | cadence.wd1.myworkdayjobs.com/cadence/External_Careers     | San Jose, Noida, Bengaluru
+Synopsys | auto | - | India
+MathWorks | auto | - | India
+SAP Labs India | auto | - | India
+Siemens | auto | - | India
+Bosch Global Software Technologies | auto | - | India
+Micron                   | workday         | micron.wd1.myworkdayjobs.com/micron/External               | Boise, Bengaluru, Hyderabad
+Western Digital                                              | smartrecruiters | westerndigital | new-grad / 0-2 YOE list · 335 open job(s) when added
+Dell Technologies | auto | - | India
+Media.net                                                    | smartrecruiters | medianet | India · 1 open job(s) when added
+Yahoo                                                        | workday         | ouryahoo.wd5.myworkdayjobs.com/ouryahoo/careers | new-grad / 0-2 YOE list · 107 open job(s) when added
+Zoho | auto | - | India
+Freshworks               | smartrecruiters | freshworks                                                 | San Mateo, Chennai, Bengaluru
+Postman | auto | - | https://www.postman.com/company/careers/ | Bengaluru, San Francisco, Remote
+BrowserStack             | workday         | browserstack.wd3.myworkdayjobs.com/browserstack/External   | Mumbai, Bengaluru, New York, Amsterdam | https://www.browserstack.com/careers
+Chargebee | auto | - | https://www.chargebee.com/careers/ | San Francisco, Chennai, Bengaluru
+Hasura | auto | - | https://hasura.io/careers/
+Atlan                                                        | ashby           | atlan | India unicorn, remote · 8 open job(s) when added
+Rippling | auto | - | https://www.rippling.com/careers
+Harness                  | greenhouse      | harnessinc                                                 | San Francisco, Bengaluru, Remote
+CleverTap | auto | - | https://clevertap.com/careers/ | Mountain View, Mumbai, Bengaluru
+Innovaccer | auto | - | https://innovaccer.com/careers/ | San Francisco, Noida, Bengaluru
+Netskope                                                     | greenhouse      | netskope | public greenhouse list · 16 software role(s) open when added
+Flexport                                                     | greenhouse      | flexport | new-grad / 0-2 YOE list · 199 open job(s) when added
+Instacart                | greenhouse      | instacart                                                  | San Francisco, Toronto, Remote
+Lyft                     | greenhouse      | lyft                                                       | San Francisco, New York, Remote
+Scale AI                 | greenhouse      | scaleai                                                    | San Francisco, New York, London
+OpenAI                   | ashby           | openai                                                     | San Francisco, New York, London, Paris, Tokyo
+Anthropic                | greenhouse      | anthropic                                                  | San Francisco, Seattle, London, Tokyo
+Sarvam AI                                                    | ashby           | sarvam | India AI · 61 open job(s) when added
+
+# ---- India consumer / fintech (SDE-1 bands 30-50 LPA)
+Flipkart | auto | - | https://www.flipkartcareers.com/ | Bengaluru
+PhonePe | auto | - | https://www.phonepe.com/careers/ | Bengaluru
+CRED                     | lever           | cred                                                       | Bengaluru
+Razorpay                 | greenhouse      | razorpaysoftwareprivatelimited                             | Bengaluru | https://razorpay.com/jobs/
+Zepto | auto | - | https://www.zepto.in/careers | Bengaluru, Mumbai
+Meesho                   | lever           | meesho                                                     | Bengaluru
+Swiggy                   | smartrecruiters | swiggy                                                     | Bengaluru
+Zomato / Eternal | auto | - | https://www.eternal.com/careers/ | Gurugram
+Groww                    | greenhouse      | groww                                                      | Bengaluru
+Zerodha | auto | - | India
+Navi                     | ashby           | navi
+Juspay | auto | - | https://juspay.in/careers
+Slice                    | greenhouse      | slice
+Paytm                                                        | lever           | paytm | India · 174 open job(s) when added
+Dream11 / Dream Sports | auto | - | https://www.dreamsports.group/careers/ | also: Dream Sports
+Games24x7 | auto | - | India
+MPL | auto | - | India
+Ola | auto | - | https://www.olacabs.com/careers
+Nykaa | auto | - | India
+Myntra | auto | - | https://careers.myntra.com/
+Udaan | auto | - | https://udaan.com/careers
+ShareChat | auto | - | India
+Cars24                                                       | smartrecruiters | cars24 | India unicorn · 1 open job(s) when added
+Spinny | auto | - | India
+Delhivery | auto | - | India
+Urban Company | auto | - | India
+Policybazaar | auto | - | https://www.policybazaar.com/careers/
+Zeta                                                         | lever           | zeta | India unicorn · 22 open job(s) when added
+Setu | auto | - | India
+Pine Labs                | greenhouse      | pine
+Physics Wallah | auto | - | India
+Lenskart | auto | - | India
+Smallcase | auto | - | India
+Jar | auto | - | India
+Fi Money                 | lever           | epifi                                                      | https://fi.money/careers
+Jupiter | auto | - | https://jupiter.money/careers
+Khatabook | auto | - | India
+Rapido | auto | - | India
+Blinkit | auto | - | India
+Ather Energy | auto | - | https://www.atherenergy.com/careers | Bengaluru | also: Ather
+Ola Electric | auto | - | https://www.olaelectric.com/careers | Bengaluru
+InMobi                                                       | greenhouse      | inmobi | new-grad / 0-2 YOE list · 71 open job(s) when added
+Glance                                                       | greenhouse      | glance | India unicorn · 42 open job(s) when added
+Dunzo | auto | - | India
+Porter                   | greenhouse      | porter
+Licious | auto | - | India
+ACKO | auto | - | https://www.acko.com/careers/
+Digit Insurance | auto | - | https://www.godigit.com/careers
+
+# ---- Finance, HFT & quant (highest fresher pay in India)
+Goldman Sachs | auto | - | India
+Morgan Stanley                                               | workday         | ms.wd5.myworkdayjobs.com/ms/External | new-grad / 0-2 YOE list · 1342 open job(s) when added
+JPMorgan Chase | auto | - | India
+Deutsche Bank | auto | - | India
+Barclays                                                     | workday         | barclays.wd3.myworkdayjobs.com/barclays/external_career_site_barclays | public workday list · 15 software role(s) open when added
+Wells Fargo | auto | - | India
+American Express | auto | - | India
+Mastercard | auto | - | India
+Visa                     | workday         | visa.wd5.myworkdayjobs.com/visa/Visa                       | San Francisco, Singapore, Bengaluru
+Citi                                                         | workday         | citi.wd5.myworkdayjobs.com/citi/2 | new-grad / 0-2 YOE list · 2000 open job(s) when added
+HSBC | auto | - | India
+UBS | auto | - | India
+Nomura | auto | - | India
+BNY | auto | - | India
+State Street | auto | - | India
+Blackrock                                                    | workday         | blackrock.wd1.myworkdayjobs.com/blackrock/blackrock_professional | public workday list · 7 software role(s) open when added
+Fidelity National Information Services                       | workday         | fis.wd5.myworkdayjobs.com/fis/searchjobs | new-grad / 0-2 YOE list · 495 open job(s) when added
+Capital One                                                  | workday         | capitalone.wd12.myworkdayjobs.com/capitalone/Capital_One | new-grad / 0-2 YOE list · 1850 open job(s) when added
+D. E. Shaw | auto | - | India
+Arcesium                                                     | greenhouse      | arcesiumllc | new-grad / 0-2 YOE list · 47 open job(s) when added
+Tower Research Capital                                       | greenhouse      | towerresearchcapital | India, US · 91 open job(s) when added
+Quadeye | auto | - | India
+Graviton Research Capital                                    | greenhouse      | gravitonresearchcapital | India · 19 open job(s) when added
+AlphaGrep Securities                                         | greenhouse      | alphagrepsecurities | public greenhouse list · 4 software role(s) open when added
+NK Securities | auto | - | India
+Dolat Capital | auto | - | India
+Jane Street                                                  | greenhouse      | janestreet | new-grad / 0-2 YOE list · 228 open job(s) when added
+Optiver                                                      | greenhouse      | optiverprivate | new-grad / 0-2 YOE list · 10 open job(s) when added
+IMC Trading                                                  | greenhouse      | imc | new-grad / 0-2 YOE list · 175 open job(s) when added
+Hudson River Trading                                         | greenhouse      | wehrtyou | public greenhouse list · 20 software role(s) open when added
+Citadel Securities | auto | - | India
+Millennium | auto | - | India
+Two Sigma | auto | - | India
+Jump Trading                                                 | greenhouse      | jumptrading | global · 113 open job(s) when added
+WorldQuant                                                   | greenhouse      | worldquant | new-grad / 0-2 YOE list · 101 open job(s) when added
+Squarepoint Capital                                          | greenhouse      | squarepointcapital | global · 89 open job(s) when added
+Qube Research & Technologies                                 | greenhouse      | quberesearchandtechnologies | public greenhouse list · 68 software role(s) open when added
+Da Vinci                                                     | greenhouse      | davinciderivatives | new-grad / 0-2 YOE list · 16 open job(s) when added
+Flow Traders                                                 | greenhouse      | flowtraders | new-grad / 0-2 YOE list · 47 open job(s) when added
+Akuna Capital                                                | greenhouse      | akunacapital | global · 42 open job(s) when added
+Bloomberg Philanthropies                                     | greenhouse      | bloombergdotorg | new-grad / 0-2 YOE list · 0 open job(s) when added

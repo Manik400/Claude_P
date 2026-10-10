@@ -699,7 +699,9 @@ def main(argv=None) -> int:
     # One run at a time, maintenance commands included: --release / --retry-by-hand refresh
     # the gh-pages clone (reset --hard), which threw away a finishing run's queue once.
     from naukri.jobs.runlock import RunLock
-    lock = RunLock()
+    # "phone": a long apply pass of the hourly round or a scan sees this waiting
+    # and stops early - your own picks get the browser first (runlock.py).
+    lock = RunLock(project="phone")
     if not lock.try_acquire():
         # The phone only hears from the PC through pushes; without this a long
         # scan holding the lock made every queue run step aside silently and

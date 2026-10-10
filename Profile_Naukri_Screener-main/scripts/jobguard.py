@@ -119,6 +119,39 @@ def wait_for_turn() -> None:
               "starting anyway", file=sys.stderr)
 
 
+def stop_at_limit() -> None:
+    """Kill the whole run JOBGUARD_MAX_MINUTES of wall-clock time after it started.
+
+    Task Scheduler's own time limit is a timer that stands still while the PC
+    sleeps: a round that slept through its limit came back as a hung run that
+    held the apply lock for hours. This checks the clock every 30 s instead,
+    so a run past its limit is gone within a minute of the PC waking up.
+    """
+    raw = os.environ.get("JOBGUARD_MAX_MINUTES", "").strip()
+    minutes = float(raw) if raw.replace(".", "", 1).isdigit() else 0
+    if minutes <= 0:
+        return
+    import threading
+    import time
+    end = time.time() + minutes * 60
+
+    def watch() -> None:
+        while True:
+            time.sleep(30)
+            if time.time() < end:
+                continue
+            print(f"jobguard: run still going {minutes:g} min after it started - stopping it and everything it started",
+                  file=sys.stderr, flush=True)
+            job = getattr(kill_tree_on_exit, "handle", None)
+            if job:
+                k32 = ctypes.WinDLL("kernel32", use_last_error=True)
+                k32.TerminateJobObject.argtypes = [wintypes.HANDLE, wintypes.UINT]
+                k32.TerminateJobObject(job, 3)   # this process is in the job too
+            os._exit(3)
+
+    threading.Thread(target=watch, name="jobguard-limit", daemon=True).start()
+
+
 def main() -> int:
     cmd = os.environ.pop("JOBGUARD_CMD", "")
     if not cmd:
@@ -128,6 +161,7 @@ def main() -> int:
     if not kill_tree_on_exit():  # still run the task; only the cleanup is lost
         print(f"jobguard: no job object (error {ctypes.get_last_error()}) - "
               "processes may outlive this run", file=sys.stderr)
+    stop_at_limit()
     return subprocess.call(cmd)
 
 

@@ -152,17 +152,26 @@ def unblocked_waiting(ledger: Ledger, answerable, days: int = 21, limit: int = 8
 
 
 def _deadline() -> float | None:
-    """time.monotonic() after which no new application starts, or None."""
+    """Wall-clock time (epoch seconds) after which no new application starts, or None.
+
+    Wall clock, not a monotonic timer: a laptop that sleeps mid-run is past its
+    limit when it wakes, and the pass ends at once instead of `sleep time` later.
+    """
     raw = os.environ.get("APPLY_MAX_MINUTES", "").strip()
     minutes = float(raw) if raw.replace(".", "", 1).isdigit() else DEFAULT_MAX_MINUTES
-    return time.monotonic() + minutes * 60 if minutes > 0 else None
+    return time.time() + minutes * 60 if minutes > 0 else None
 
 
-def _out_of_time(deadline: float | None, board: str, left: int) -> bool:
-    if deadline is None or time.monotonic() < deadline:
-        return False
-    log.info("%s: run time limit reached; %d job(s) left for the next run", board, left)
-    return True
+def _out_of_time(deadline: float | None, board: str, left: int, waiter=None) -> bool:
+    """Stop starting applications: past the time limit, or - `waiter()` naming the
+    phone queue - because your own picks are waiting for the one browser."""
+    if deadline is not None and time.time() >= deadline:
+        log.info("%s: run time limit reached; %d job(s) left for the next run", board, left)
+        return True
+    if waiter is not None and waiter() == "phone":
+        log.info("%s: the phone queue is waiting for the browser - stopping here; %d job(s) left for the next run", board, left)
+        return True
+    return False
 
 
 def _card_job(card: dict) -> Job:
@@ -245,19 +254,31 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
 
     # One apply pass at a time on this PC: the phone queue and the hourly round share
     # one browser profile, and the second Chrome to open it dies at launch (runlock.py).
-    lock = RunLock()
+    # The limit starts counting once the browser is ours, not while waiting for it.
+    # Waiters read the announced end from apply.holder and stop this run if it is
+    # still around past it (hung), and this run stops for the phone queue when it
+    # sees it waiting (runlock.py).
+    lock = RunLock(project=project)
     if not lock.acquire():
         log.warning("another apply run (%s) is still going - this run steps aside; nothing was tried", lock.holder())
         return {"_summary": {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "per_run": per_run,
                              "questions_saved": 0, "retried": 0, "pending_questions": 0, "backlog": 0,
                              "busy": True, "note": "another apply run was in progress; nothing was tried"}}
-    dog = _watchdog()
+    deadline = _deadline()
+    if deadline is not None:
+        lock.ends_at = deadline + WATCHDOG_GRACE_MIN * 60
+        try:
+            lock.path.with_suffix(".holder").write_text(lock._stamp(), encoding="utf-8")
+        except OSError:
+            pass
+    dog = _watchdog(deadline)
     try:
         return _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,
-                    sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify)
+                    sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify,
+                    deadline=deadline, waiter=lock.wanted_by if project != "phone" else None)
     finally:
         if dog:
-            dog.cancel()
+            dog.set()
         lock.release()
 
 
@@ -268,39 +289,48 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
 WATCHDOG_GRACE_MIN = 30
 
 
-def _watchdog():
-    deadline = _deadline()
+def _watchdog(deadline: float | None):
+    """A thread that polls the wall clock and kills this run past deadline + grace.
+
+    Polling, not a one-shot timer: a timer does not run while the PC sleeps, so a
+    run that slept through its limit stayed hung for as long as the sleep lasted
+    (2 h once). Returns the Event that stops the thread, or None when there is no limit.
+    """
     if deadline is None:
         return None
     import threading
     from .runlock import _kill_tree
+    stop = threading.Event()
+    fire_at = deadline + WATCHDOG_GRACE_MIN * 60
 
-    def fire():
-        log.error("apply run still going %d min past its time limit - it is hung; stopping it and its browser",
-                  WATCHDOG_GRACE_MIN)
-        for h in logging.getLogger().handlers:
-            try:
-                h.flush()
-            except Exception:  # noqa: BLE001
-                pass
-        _kill_tree(os.getpid())
-        os._exit(3)
+    def watch():
+        while not stop.wait(20):
+            if time.time() < fire_at:
+                continue
+            log.error("apply run still going %d min past its time limit - it is hung; stopping it and its browser",
+                      WATCHDOG_GRACE_MIN)
+            for h in logging.getLogger().handlers:
+                try:
+                    h.flush()
+                except Exception:  # noqa: BLE001
+                    pass
+            _kill_tree(os.getpid())
+            os._exit(3)
 
-    t = threading.Timer(deadline - time.monotonic() + WATCHDOG_GRACE_MIN * 60, fire)
-    t.daemon = True
+    t = threading.Thread(target=watch, name="apply-watchdog", daemon=True)
     t.start()
-    return t
+    return stop
 
 
 def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backlog, project, web_jobs,
-         sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify) -> dict:
-    deadline = _deadline()
+         sync_playwright, S, DEFAULT_STATE, launch_browser, new_context, open_profile, simplify,
+         deadline: float | None = None, waiter=None) -> dict:
     # With company-site postings waiting, the boards' passes get 40% of the run and the
     # company sites the rest: a run of 95 Naukri re-checks once used the whole window and
     # the 137 company forms behind them never came up.
     board_deadline = deadline
     if web_jobs and deadline and project != "phone":
-        board_deadline = time.monotonic() + (deadline - time.monotonic()) * 0.4
+        board_deadline = time.time() + (deadline - time.time()) * 0.4
     # Applying runs on your PC, not a 45-minute runner: give the local model room for the
     # written answers (about a minute each on the CPU). LOCAL_AI_BUDGET_SECONDS still wins.
     os.environ.setdefault("LOCAL_AI_BUDGET_SECONDS", "2400")
@@ -358,7 +388,8 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
     prefill = simplify.autofill if use_simplify else None
 
     def career_ready() -> bool:
-        return career_on and (career_left[0] is None or career_left[0] > 0)             and not (deadline and time.monotonic() >= deadline)
+        return career_on and (career_left[0] is None or career_left[0] > 0) \
+            and not (deadline and time.time() >= deadline) and not (waiter is not None and waiter() == "phone")
 
     def career_untried(job_id: str) -> bool:
         entry = ledger.entries.get(job_id) or {}
@@ -475,7 +506,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                 try:
                     for n, job in enumerate(web):
                         if not career_ready():
-                            _out_of_time(deadline, "Company sites", len(web) - n)
+                            _out_of_time(deadline, "Company sites", len(web) - n, waiter)
                             break
                         # A board that wants its own account - unless you signed in to it once
                         # (python main.py --platform-login; data/platform_logins.json). The bare
@@ -554,7 +585,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                 browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
             try:
                 for n, job in enumerate(naukri_jobs):
-                    if _out_of_time(board_deadline, "Naukri", len(naukri_jobs) - n):
+                    if _out_of_time(board_deadline, "Naukri", len(naukri_jobs) - n, waiter):
                         break
                     company_site = getattr(job, "company_apply", False) or career_untried(job.job_id)
                     if budget <= 0 and not company_site:
@@ -681,7 +712,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                         browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
                     try:
                         for n, (card, job) in enumerate(li_cards):
-                            if _out_of_time(board_deadline, "LinkedIn", len(li_cards) - n):
+                            if _out_of_time(board_deadline, "LinkedIn", len(li_cards) - n, waiter):
                                 break
                             if li_budget <= 0 and not paused[0]:
                                 paused[0] = True
