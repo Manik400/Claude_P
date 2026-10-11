@@ -330,31 +330,34 @@ def build(data: dict) -> Path:
 
 # ---------------------------------------------------------------- .pdf
 
+# Measured off resume/Manik_Goyal.pdf (pdfTeX, 2026-10-11): name 24.9pt Helvetica bold, section
+# headings 12pt, title line 11.5pt italic sans, body 9.4pt Times, margins 25/38/28/39pt, justified,
+# links in the text colour with no underline, dates and sub-lines black.
 _CSS = """
-@page { size: A4; margin: 30pt 30pt 28pt 32pt; }
+@page { size: A4; margin: 25pt 38pt 26pt 39pt; }
 * { box-sizing: border-box; }
 html { -webkit-print-color-adjust: exact; }
-body { margin: 0; font-family: "Times New Roman", "Nimbus Roman", Times, serif; font-size: 9pt;
-       line-height: 1.19; color: #000; zoom: var(--scale, 1);
+body { margin: 0; font-family: "Times New Roman", "Nimbus Roman", Times, serif; font-size: 9.4pt;
+       line-height: 1.2; color: #000; zoom: var(--scale, 1); text-align: justify;
        letter-spacing: -.03pt; }   /* Chromium Times runs a hair wider than LaTeX; word-spacing would merge words for ATS */
-a { color: inherit; text-decoration: underline; text-decoration-thickness: .4pt; text-underline-offset: 1.5pt; }
-.name { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 19.5pt; color: #1f3a68;
-        line-height: 1.05; letter-spacing: .1pt; }
-.title { font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: 9.4pt; color: #555; margin-top: 1.5pt; }
-.contact { margin-top: 2pt; }
+a { color: inherit; text-decoration: none; }
+.name { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 24.9pt; color: #1f3a68;
+        line-height: 1.02; letter-spacing: .1pt; text-align: left; }
+.title { font-family: Arial, Helvetica, sans-serif; font-style: italic; font-size: 11.5pt; color: #222; margin-top: 0; text-align: left; }
+.contact { margin-top: 2pt; text-align: left; }
 .contact .sep { margin: 0 4pt; }
-.contact a { color: #1f3a68; }
-h2 { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 9pt; color: #1f3a68; margin: 5pt 0 4pt;
-     padding-bottom: 4.5pt; border-bottom: .6pt solid #1f3a68; text-transform: uppercase; letter-spacing: .1pt; }
-.row { display: flex; justify-content: space-between; gap: 12pt; margin-top: 2.5pt; }
-.row .l { font-weight: 700; } .row .r { white-space: nowrap; color: #555; }
-.sub { font-style: italic; color: #555; }
-ul { margin: 1pt 0 0; padding: 0; list-style: none; }
-li { padding-left: 17pt; text-indent: -7pt; margin-top: .5pt; }
-li::before { content: "\\2022"; display: inline-block; width: 7pt; text-indent: 0; }
-.skills div { margin-top: 1.6pt; }
+.contact a { color: inherit; }
+h2 { font-family: Arial, Helvetica, sans-serif; font-weight: 700; font-size: 12pt; color: #1f3a68; margin: 9pt 0 3pt;
+     padding-bottom: 1pt; border-bottom: .6pt solid #1f3a68; text-transform: uppercase; letter-spacing: .1pt; text-align: left; }
+.row { display: flex; justify-content: space-between; gap: 12pt; margin-top: 1pt; text-align: left; }
+.row .l { font-weight: 700; } .row .r { white-space: nowrap; color: #000; }
+.sub { font-style: italic; color: #000; text-align: left; }
+ul { margin: 5pt 0 0; padding: 0; list-style: none; }
+li { padding-left: 24pt; text-indent: -8pt; margin-top: 1pt; }
+li::before { content: "\\2022"; display: inline-block; width: 8pt; text-indent: 0; }
+.skills div { margin-top: 1.4pt; }
 .skills div:first-child { margin-top: 0; }
-.certs div { margin-top: .6pt; }
+.certs div { margin-top: .4pt; }
 """
 
 
