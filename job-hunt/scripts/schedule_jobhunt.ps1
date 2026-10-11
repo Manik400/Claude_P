@@ -60,8 +60,12 @@ if ($Rearm) {
     if ($task.Description -match "gap=(\d+) max=(\d+)") { $gapMin = [int]$Matches[1]; $maxMin = [int]$Matches[2] }
     $minutes = if ($Backstop) { $maxMin + $gapMin } else { $gapMin }
     $next    = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes($minutes)
-    $logon   = $task.Triggers | Where-Object { $_.CimClass.CimClassName -eq "MSFT_TaskLogonTrigger" }
-    Set-ScheduledTask -TaskName $name -Trigger @(@($next) + @($logon)) | Out-Null
+    # Keep the logon trigger and the repeating safety trigger (below); only the
+    # one-time "next round" trigger is replaced. On 2026-10-11 the one-time
+    # trigger vanished after a round and the chain stopped for 3 hours - the
+    # safety trigger starts a round within 30 min whenever none is running.
+    $keep    = $task.Triggers | Where-Object { $_.CimClass.CimClassName -eq "MSFT_TaskLogonTrigger" -or $_.Repetition.Interval }
+    Set-ScheduledTask -TaskName $name -Trigger @(@($next) + @($keep)) | Out-Null
     Write-Host ("[{0}] {1}: next round at {2}{3}" -f (Get-Date -Format HH:mm:ss), $name,
         (Get-Date).AddMinutes($minutes).ToString("HH:mm"), $(if ($Backstop) { " (backstop, moved when this round ends)" } else { "" }))
     return
@@ -108,11 +112,15 @@ $action = New-ScheduledTaskAction `
 $first = New-ScheduledTaskTrigger -Once -At (Get-Date).AddSeconds(30)
 $logon = New-ScheduledTaskTrigger -AtLogOn -User "$env:USERDOMAIN\$env:USERNAME"
 $logon.Delay = "PT5M"
+# Safety net: every 30 min, for good. A round already running makes it a no-op
+# (-MultipleInstances IgnoreNew); a chain whose one-time trigger was lost picks
+# up again within 30 min instead of waiting for the next logon.
+$safety = New-ScheduledTaskTrigger -Once -At (Get-Date).AddMinutes(30) -RepetitionInterval (New-TimeSpan -Minutes 30)
 
 Register-ScheduledTask `
     -TaskName $name `
     -Action $action `
-    -Trigger @($first, $logon) `
+    -Trigger @($first, $logon, $safety) `
     -Settings $settings `
     -Description "Job hunt: worldwide search + top-paying company career pages, apply to $capText (Naukri, LinkedIn Easy Apply, company sites without login), then again $Gap min after it finishes. gap=$Gap max=$MaxMinutes" | Out-Null
 
