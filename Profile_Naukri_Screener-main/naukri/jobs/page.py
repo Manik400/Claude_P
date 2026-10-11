@@ -127,6 +127,22 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
     """Flatten both boards into one row list, stamping first-seen dates."""
     rows = []
 
+    # pay (stated, else looked up) and MNC flag for every row - naukri/jobs/jobhunt_bridge.py
+    try:
+        from .jobhunt_bridge import pay_of
+    except Exception:  # noqa: BLE001
+        pay_of = None
+
+    def pay_fields(title: str, company: str, label: str = "") -> dict:
+        if pay_of is None:
+            return {}
+        try:
+            p = pay_of(title, company, label)
+        except Exception:  # noqa: BLE001
+            return {}
+        return {"lpa": p.get("lpa"), "lpa_kind": p.get("kind") or "", "lpa_source": p.get("source") or "",
+                "mnc": bool(p.get("mnc")), "mnc_tier": p.get("mnc_tier") or "", "mnc_name": p.get("mnc_name") or ""}
+
     for job in results.get("naukri") or []:
         job_id = f"naukri:{job.get('job_id')}"
         first = seen.setdefault(job_id, today)
@@ -141,6 +157,7 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
             "company": job.get("company") or "",
             "location": location,
             "salary": job.get("salary_label") or "",
+            **pay_fields(job.get("title") or "", job.get("company") or "", job.get("salary_label") or ""),
             "experience": job.get("experience_label") or "",
             "posted": job.get("posted_label") or "",
             "age": age,
@@ -168,6 +185,7 @@ def build_rows(results: dict, seen: dict, today: str) -> list[dict]:
             "company": card.get("company") or "",
             "location": location,
             "salary": _salary_of(card),
+            **pay_fields(card.get("title") or "", card.get("company") or "", _salary_of(card)),
             "experience": "",
             "posted": linkedin_posted(card) or "",
             "age": age_days(linkedin_posted(card)),
@@ -431,6 +449,8 @@ __KIT_HEAD__
       <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
       <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
       <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+      <button class="chip" data-filter="mnc" aria-pressed="false">MNC / big tech / unicorn</button>
+      <button class="chip" data-filter="pay" aria-pressed="false">&#8805; 10 LPA</button>
     </span></span>
     <span class="fgrp" data-grp="openings.posted"><span class="flabel">Posted</span><span class="fbody">
       <button class="chip" data-posted="any" aria-pressed="true">Any</button>
@@ -476,6 +496,8 @@ __KIT_HEAD__
     if (filter === 'remote' && !r.remote) return false;
     if (filter === 'easy' && !r.easy) return false;
     if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    if (filter === 'mnc' && !r.mnc) return false;
+    if (filter === 'pay' && !((r.lpa || 0) >= 10)) return false;
     // Posted is a separate axis, so "remote" and "2 days" combine rather than
     // replacing each other. A row with no readable date is excluded whenever a
     // date filter is on - it cannot be shown to satisfy it.
@@ -505,6 +527,9 @@ __KIT_HEAD__
       r.new ? '<span class="tag new">New</span>' : '',
       r.remote ? '<span class="tag remote">Remote</span>' : '',
       r.easy ? '<span class="tag easy">One-click</span>' : '',
+      r.mnc ? '<span class="tag new" title="' + esc(r.mnc_name || '') + '">MNC' + (r.mnc_tier ? ' · ' + esc(r.mnc_tier) : '') + '</span>' : '',
+      r.lpa ? '<span class="tag' + (r.lpa >= 10 ? ' easy' : '') + '" title="' + esc(r.lpa_source || '') + '">' +
+                (r.lpa_kind === 'stated' ? '' : '~') + '₹' + esc(r.lpa) + ' LPA' + (r.lpa_kind === 'stated' ? '' : ' (' + esc(r.lpa_kind) + ')') + '</span>' : '',
       '<span class="tag">' + esc(r.board) + '</span>',
       (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
     ].join('');

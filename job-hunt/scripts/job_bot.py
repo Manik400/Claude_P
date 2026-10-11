@@ -470,8 +470,12 @@ def cmd_run(args):
     save_run(run_dir, meta, statuses, jobs)
     if args.resume:
         do_score(run_dir, meta, jobs, args.resume, log)
-        jobs = sort_jobs(jobs)
-        save_run(run_dir, meta, statuses, jobs)
+    # what it pays (stated, else looked up) and whether the employer is an MNC / unicorn -
+    # on every row of the report, and a few score points for the well-paying ones
+    from jobbot import salary_lookup
+    salary_lookup.annotate_jobs(jobs, log=log)
+    jobs = sort_jobs(jobs)
+    save_run(run_dir, meta, statuses, jobs)
     if not getattr(args, "no_contacts", False):
         do_contacts(run_dir, meta, statuses, jobs, log)
     report = render(run_dir, meta, jobs, statuses)
@@ -544,6 +548,8 @@ def cmd_merge(args):
     resume = args.resume or meta.get("resume_path")
     if resume and os.path.exists(resume):
         do_score(run_dir, meta, jobs, resume, log)
+    from jobbot import salary_lookup
+    salary_lookup.annotate_jobs(jobs, log=log)
     jobs = sort_jobs(jobs)
     save_run(run_dir, meta, statuses, jobs)
     report = render(run_dir, meta, jobs, statuses)

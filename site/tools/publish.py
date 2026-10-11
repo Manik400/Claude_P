@@ -364,6 +364,18 @@ def publish_site(a):
         os.makedirs(os.path.join(a.pages, "plan"), exist_ok=True)
         for name in ("index.html", "plan.json", "qna.json"):
             shutil.copyfile(os.path.join(plan_src, name), os.path.join(a.pages, "plan", name))
+    # data/mnc.json: the MNC / big-tech / unicorn list with typical 0-2-year pay (job-hunt/assets/mnc.txt),
+    # read by every job list on the page for the "MNC only" filter and the "~₹ LPA" tag.
+    try:
+        scripts = os.path.join(os.path.dirname(SITE_DIR), "job-hunt", "scripts")
+        if scripts not in sys.path:
+            sys.path.insert(0, scripts)
+        from jobbot import mnc as mnc_mod  # noqa: E402
+        os.makedirs(os.path.join(a.pages, "data"), exist_ok=True)
+        with open(os.path.join(a.pages, "data", "mnc.json"), "w", encoding="utf-8") as f:
+            f.write(mnc_mod.as_json())
+    except Exception as exc:  # noqa: BLE001 - the page works without it (no MNC filter, no typical pay)
+        print("publish: mnc.json not written: %s" % exc)
     with open(os.path.join(a.pages, ".nojekyll"), "w") as f:
         f.write("")
     if not os.path.exists(os.path.join(a.pages, "data", "index.json")):

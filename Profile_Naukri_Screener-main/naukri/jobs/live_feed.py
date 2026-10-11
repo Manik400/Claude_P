@@ -146,6 +146,15 @@ def parse_detail(html: str) -> dict:
            "function": crit.get("job function", ""), "applicants": int(n.group(1).replace(",", "")) if n else None,
            "applicants_text": apps, "years_min": years_asked(desc), "snippet": desc[:300], "detailed": True}
     if desc:
+        # pay stated in the description ("₹12-18 LPA", "CTC 8 lakhs") - read here while the whole text is at hand
+        try:
+            from .jobhunt_bridge import jobbot
+            sal = jobbot("salary")
+            s = sal.find_in_text(desc) if sal else None
+            if s is not None and s.top_inr:
+                out["lpa"], out["lpa_kind"], out["lpa_source"] = round(s.top_inr / 100_000, 1), "stated", "the posting"
+        except Exception:  # noqa: BLE001
+            pass
         sp = sponsorship_of("", desc)
         out["visa"], out["relocation"] = sp.get("visa", "unclear"), sp.get("relocation", "unclear")
     if re.search(r"\b(remote|work from home|wfh)\b", desc[:2000], re.I) and not out.get("workplace"):
@@ -423,6 +432,16 @@ def tick(feed: dict, now: datetime | None = None) -> dict:
                 break
             if r.status_code == 200:
                 it.update(parse_detail(r.text))
+                # what it pays (stated in the description, else looked up) and whether it is an MNC
+                try:
+                    from .jobhunt_bridge import pay_of
+                    india = bool(re.search(r"\bindia\b|bengaluru|bangalore|hyderabad|pune|chennai|gurugram|gurgaon|noida|delhi|mumbai|kolkata", it.get("location") or "", re.I))
+                    stated = f"{it['lpa']} LPA" if it.get("lpa_kind") == "stated" and it.get("lpa") else ""
+                    p = pay_of(it.get("title") or "", it.get("company") or "", stated, "", allow_web=india)
+                    it.update({"lpa": p.get("lpa"), "lpa_kind": p.get("kind") or "", "lpa_source": p.get("source") or "",
+                               "mnc": bool(p.get("mnc")), "mnc_tier": p.get("mnc_tier") or "", "mnc_name": p.get("mnc_name") or ""})
+                except Exception as exc:  # noqa: BLE001 - a missing field, never a missing tick
+                    log.debug("pay/mnc for %s: %s", it.get("company"), exc)
                 if it.pop("remote_hint", False) and not it.get("workplace"):
                     it["workplace"] = "remote?"
                 stats["details"] += 1

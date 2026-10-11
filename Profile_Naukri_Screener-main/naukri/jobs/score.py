@@ -84,7 +84,49 @@ def hard_reject(job, config: dict) -> str | None:
     if years is not None and job.min_exp is not None and job.min_exp - years > gap:
         return f"needs {job.min_exp:g}y, looking for up to {years:g}y"
 
+    # jobs.yaml min_salary_lpa: a posting that STATES less a year is out; "Not disclosed" stays.
+    floor = config.get("min_salary_lpa")
+    if floor:
+        pay = _pay(job, config, allow_web=False)
+        if pay.get("kind") == "stated" and pay.get("lpa") and pay["lpa"] < float(floor):
+            return f"pays {pay['lpa']:g} LPA, looking for {float(floor):g}+"
+
     return None
+
+
+def _pay(job, config: dict, allow_web: bool = True) -> dict:
+    """What the posting pays (stated, else looked up) and whether the employer is an MNC -
+    read once per job and kept on it (naukri/jobs/jobhunt_bridge.py)."""
+    cached = getattr(job, "pay", None)
+    if cached is not None and (cached.get("kind") or not allow_web):
+        return cached
+    try:
+        from .jobhunt_bridge import pay_of
+        pay = pay_of(job.title, job.company, job.salary_label or "", "" if allow_web else "", allow_web=allow_web)
+    except Exception:  # noqa: BLE001 - job-hunt not next door: no pay field, no bonus
+        pay = {"lpa": None, "kind": "", "source": "", "mnc": False, "mnc_tier": ""}
+    job.pay = pay
+    return pay
+
+
+def _pay_company_score(job, config: dict) -> float:
+    """+ up to 8 for an MNC / unicorn / big-tech employer, + up to 8 for pay at or above
+    10 LPA (stated, else the estimate), - for pay stated under 6 LPA. What you are after."""
+    pay = _pay(job, config)
+    b = 0.0
+    if pay.get("mnc"):
+        b += {"bigtech": 8, "hft": 8, "unicorn": 7, "product": 6, "finance": 6, "gcc": 4, "consulting": 3, "itservices": 1}.get(pay.get("mnc_tier") or "", 4)
+    lpa, kind = pay.get("lpa"), pay.get("kind")
+    if lpa:
+        if lpa >= 20:
+            b += 8 if kind == "stated" else 5
+        elif lpa >= 10:
+            b += 6 if kind == "stated" else 3
+        elif kind == "stated" and lpa < 6:
+            b -= 10
+        elif kind == "typical" and lpa < 6:
+            b -= 4
+    return round(b, 1)
 
 
 def _skill_score(job, config: dict) -> tuple[float, list[str]]:
@@ -232,6 +274,9 @@ def score(job, config: dict) -> dict:
         "location": _location_score(job, config),
         "freshness": _freshness_score(job),
     })
+    pay = _pay_company_score(job, config)
+    if pay:
+        breakdown["pay & employer"] = pay
     # Self-learning: +/- a few points from what worked before (naukri/learning.py).
     # 0 until enough outcomes exist, and left out of the breakdown when 0.
     from naukri import learning

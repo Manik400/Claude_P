@@ -39,9 +39,11 @@ rem Any title, 0-2 years (2026-10-11): --experience 0-2 drops postings that ask 
 rem (the fit filter) and searches LinkedIn at entry/associate level; --loose keeps every
 rem software title the boards return, whatever it is called (other fields are still dropped);
 rem --exclude drops senior / lead / manager / intern titles on the title alone.
+rem --min-salary 10 LPA: a posting that states less a year is left out; one that states
+rem nothing stays and gets a looked-up estimate (jobbot/salary_lookup.py) on the page.
 "%PY%" scripts\job_bot.py run --like-last --experience 0-2 --loose ^
     --exclude "senior,sr.,sr ,principal,staff ,architect,manager,director,head of,intern" ^
-    --strict-undated --verify-dates 150 --max-minutes 40 %*
+    --min-salary "10 LPA" --strict-undated --verify-dates 150 --max-minutes 40 %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
 set "CAREERS_OUT=%TEMP%\jobhunt_careers.json"

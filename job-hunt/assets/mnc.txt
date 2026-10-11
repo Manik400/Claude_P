@@ -1,0 +1,357 @@
+# Companies that count as "MNC" on every job page (the MNC filter), with what each
+# typically pays a 0-2-year software engineer in India. Written 2026-10-12 from public
+# pay data (levels.fyi, AmbitionBox, Glassdoor, placement reports) - bands are typical
+# total CTC for SDE-1 / new-grad offers, not promises; a posting that states its own pay
+# wins over these.
+#
+#   Name | aliases (; separated) | tier | typical LPA lo-hi | careers page
+#   tier: bigtech, product, unicorn, finance, hft, gcc, itservices, consulting
+#
+# ---- Big tech
+Google | google india; alphabet; youtube; google cloud | bigtech | 18-32 | https://www.google.com/about/careers/applications/
+Microsoft | microsoft india; microsoft idc; linkedin corporation | bigtech | 15-28 | https://careers.microsoft.com/
+Amazon | amazon development centre; amazon web services; aws; amazon india | bigtech | 12-28 | https://www.amazon.jobs/en/
+Apple | apple india | bigtech | 18-35 | https://jobs.apple.com/
+Meta | facebook; instagram; whatsapp | bigtech | 25-45 | https://www.metacareers.com/
+Netflix | | bigtech | 30-60 | https://jobs.netflix.com/
+Nvidia | nvidia graphics | bigtech | 18-32 | https://www.nvidia.com/en-in/about-nvidia/careers/
+Adobe | adobe systems | bigtech | 14-26 | https://careers.adobe.com/
+Salesforce | salesforce.com; slack; tableau; mulesoft | bigtech | 12-24 | https://careers.salesforce.com/
+Oracle | oracle india; oracle financial services; ofss; netsuite | bigtech | 8-20 | https://careers.oracle.com/
+Uber | uber india | bigtech | 20-40 | https://www.uber.com/us/en/careers/
+Atlassian | | bigtech | 20-35 | https://www.atlassian.com/company/careers
+Intuit | intuit india | bigtech | 18-30 | https://jobs.intuit.com/
+LinkedIn | | bigtech | 20-35 | https://careers.linkedin.com/
+PayPal | paypal india | bigtech | 14-26 | https://careers.pypl.com/
+Cisco | cisco systems; cisco india | bigtech | 12-22 | https://jobs.cisco.com/
+Qualcomm | qualcomm india | bigtech | 14-26 | https://careers.qualcomm.com/
+Intel | intel india; intel technology | bigtech | 10-20 | https://jobs.intel.com/
+AMD | advanced micro devices | bigtech | 12-22 | https://careers.amd.com/
+Samsung | samsung r&d institute; samsung electronics; samsung research; sri-b; sri-n; srib | gcc | 10-22 | https://www.samsungcareers.com/
+Walmart Global Tech | walmart; walmart labs; flipkart group | bigtech | 15-30 | https://careers.walmart.com/technology
+Expedia Group | expedia | product | 14-24 | https://careers.expediagroup.com/
+Booking.com | booking holdings; booking | product | 14-24 | https://jobs.booking.com/
+Airbnb | | bigtech | 30-50 | https://careers.airbnb.com/
+Stripe | | bigtech | 30-55 | https://stripe.com/jobs
+Coinbase | | bigtech | 25-45 | https://www.coinbase.com/careers
+Dropbox | | bigtech | 20-35 | https://jobs.dropbox.com/
+Twitter | x corp; x.com | bigtech | 20-35 | https://careers.x.com/
+Pinterest | | bigtech | 20-35 | https://www.pinterestcareers.com/
+Snap | snapchat; snap inc | bigtech | 20-35 | https://careers.snap.com/
+Spotify | | bigtech | 15-28 | https://www.lifeatspotify.com/
+Shopify | | bigtech | 15-28 | https://www.shopify.com/careers
+Twilio | | product | 15-25 | https://www.twilio.com/en-us/company/jobs
+Databricks | | bigtech | 30-50 | https://www.databricks.com/company/careers
+Snowflake | | bigtech | 25-40 | https://careers.snowflake.com/
+Confluent | | product | 20-35 | https://www.confluent.io/careers/
+MongoDB | | product | 18-30 | https://www.mongodb.com/careers
+Elastic | elasticsearch | product | 18-30 | https://www.elastic.co/careers
+HashiCorp | | product | 20-32 | https://www.hashicorp.com/careers
+GitLab | | product | 20-32 | https://about.gitlab.com/jobs/
+GitHub | | bigtech | 20-35 | https://www.github.careers/
+Datadog | | product | 18-30 | https://careers.datadoghq.com/
+Cloudflare | | product | 18-30 | https://www.cloudflare.com/careers/
+Okta | | product | 15-26 | https://www.okta.com/company/careers/
+ServiceNow | service now | product | 15-28 | https://careers.servicenow.com/
+Workday | | product | 14-24 | https://www.workday.com/en-us/company/careers.html
+Autodesk | | product | 12-22 | https://www.autodesk.com/careers
+VMware | vmware india; broadcom | product | 12-24 | https://careers.broadcom.com/
+Broadcom | | product | 12-24 | https://careers.broadcom.com/
+Palo Alto Networks | palo alto | product | 16-30 | https://jobs.paloaltonetworks.com/
+CrowdStrike | | product | 16-28 | https://www.crowdstrike.com/careers/
+Zscaler | | product | 14-26 | https://www.zscaler.com/careers
+Fortinet | | product | 10-20 | https://www.fortinet.com/corporate/careers
+Netskope | | product | 14-26 | https://www.netskope.com/company/careers
+Rubrik | | product | 20-32 | https://www.rubrik.com/company/careers
+Nutanix | | product | 16-28 | https://www.nutanix.com/company/careers
+Cohesity | | product | 16-28 | https://www.cohesity.com/company/careers/
+Pure Storage | | product | 16-28 | https://www.purestorage.com/company/careers.html
+NetApp | | product | 12-22 | https://careers.netapp.com/
+Dell Technologies | dell; dell emc; emc | product | 8-16 | https://jobs.dell.com/
+HP | hewlett packard; hp inc; hewlett packard enterprise; hpe | product | 8-16 | https://jobs.hp.com/
+IBM | ibm india; ibm isl; red hat | itservices | 6-14 | https://www.ibm.com/careers
+SAP | sap labs; sap labs india; sap india | product | 10-22 | https://jobs.sap.com/
+Siemens | siemens healthineers; siemens technology | gcc | 8-16 | https://jobs.siemens.com/
+Bosch | bosch global software; robert bosch; bgsw | gcc | 7-14 | https://www.bosch.in/careers/
+Texas Instruments | ti india | product | 14-24 | https://careers.ti.com/
+Micron | micron technology | product | 12-22 | https://in.micron.com/careers
+Western Digital | sandisk | product | 10-18 | https://jobs.westerndigital.com/
+Seagate | | product | 10-18 | https://www.seagate.com/jobs/
+Arista Networks | arista | product | 20-35 | https://www.arista.com/en/careers
+Juniper Networks | juniper | product | 14-24 | https://careers.juniper.net/
+Cadence | cadence design systems | product | 14-24 | https://www.cadence.com/en_US/home/company/careers.html
+Synopsys | | product | 12-22 | https://www.synopsys.com/careers.html
+MathWorks | mathworks india | product | 12-22 | https://www.mathworks.com/company/jobs/
+Sony | sony india software centre; sony interactive; playstation | gcc | 10-18 | https://www.sony.com/en/SonyInfo/Careers/
+Roku | | product | 25-40 | https://www.weareroku.com/
+Zoom | zoom video | product | 15-28 | https://careers.zoom.us/
+DoorDash | | bigtech | 25-40 | https://careers.doordash.com/
+Instacart | | product | 20-35 | https://instacart.careers/
+Lyft | | product | 20-35 | https://www.lyft.com/careers
+Roblox | | product | 25-40 | https://corp.roblox.com/careers/
+Unity | unity technologies | product | 15-25 | https://careers.unity.com/
+Epic Games | epic games | product | 20-35 | https://www.epicgames.com/site/en-US/careers
+Zynga | | product | 12-22 | https://www.zynga.com/careers/
+Electronic Arts | ea games; ea | product | 10-20 | https://www.ea.com/careers
+Sprinklr | | product | 14-26 | https://www.sprinklr.com/careers/
+ThoughtSpot | | product | 18-30 | https://www.thoughtspot.com/careers
+Yahoo | | product | 14-26 | https://www.yahooinc.com/careers/
+Media.net | medianet | product | 20-35 | https://www.media.net/careers/
+Directi | zeta; radix | product | 20-35 | https://careers.directi.com/
+Zoho | zoho corporation | product | 6-12 | https://www.zoho.com/careers.html
+Freshworks | | product | 8-16 | https://www.freshworks.com/company/careers/
+Postman | | unicorn | 20-35 | https://www.postman.com/company/careers/
+BrowserStack | | unicorn | 15-28 | https://www.browserstack.com/careers
+Chargebee | | unicorn | 10-20 | https://www.chargebee.com/careers/
+Hasura | | unicorn | 15-28 | https://hasura.io/careers/
+Atlan | | unicorn | 15-28 | https://atlan.com/careers/
+Rippling | | unicorn | 25-40 | https://www.rippling.com/careers
+Harness | | unicorn | 18-30 | https://www.harness.io/company/careers
+CleverTap | | unicorn | 10-20 | https://clevertap.com/careers/
+Innovaccer | | unicorn | 12-22 | https://innovaccer.com/careers/
+Druva | | unicorn | 14-24 | https://www.druva.com/company/careers/
+Icertis | | unicorn | 10-18 | https://www.icertis.com/company/careers/
+Mindtickle | | unicorn | 10-18 | https://www.mindtickle.com/careers/
+Whatfix | | unicorn | 10-18 | https://whatfix.com/careers/
+Amagi | | unicorn | 10-18 | https://www.amagi.com/careers
+Uniphore | | unicorn | 10-18 | https://www.uniphore.com/careers/
+LeadSquared | | unicorn | 8-14 | https://www.leadsquared.com/careers/
+Darwinbox | | unicorn | 8-16 | https://darwinbox.com/careers
+Zenoti | | unicorn | 10-18 | https://www.zenoti.com/careers
+Gupshup | | unicorn | 10-18 | https://www.gupshup.io/careers
+MoEngage | | unicorn | 10-18 | https://www.moengage.com/careers/
+Capillary | capillary technologies | unicorn | 8-16 | https://www.capillarytech.com/careers/
+Netradyne | | unicorn | 12-22 | https://www.netradyne.com/careers
+Sarvam AI | sarvam | unicorn | 20-40 | https://www.sarvam.ai/careers
+Krutrim | | unicorn | 15-30 | https://www.olakrutrim.com/careers
+OpenAI | | bigtech | 40-80 | https://openai.com/careers/
+Anthropic | | bigtech | 40-80 | https://www.anthropic.com/careers
+Scale AI | | unicorn | 25-45 | https://scale.com/careers
+Palantir | | bigtech | 30-50 | https://www.palantir.com/careers/
+# ---- India consumer / fintech unicorns (SDE-1 bands)
+Flipkart | flipkart internet; myntra; cleartrip; phonepe group | unicorn | 18-32 | https://www.flipkartcareers.com/
+PhonePe | | unicorn | 18-32 | https://www.phonepe.com/careers/
+CRED | dreamplug; cred club | unicorn | 25-45 | https://careers.cred.club/
+Razorpay | razorpay software | unicorn | 18-30 | https://razorpay.com/jobs/
+Zepto | kiranakart | unicorn | 18-32 | https://www.zepto.com/careers
+Meesho | fashnear | unicorn | 22-35 | https://www.meesho.io/jobs
+Swiggy | bundl technologies; instamart | unicorn | 18-32 | https://careers.swiggy.com/
+Zomato | eternal; blinkit; zomato media | unicorn | 15-30 | https://www.eternal.com/careers/
+Groww | nextbillion technology; billionbrains | unicorn | 18-32 | https://groww.in/careers
+Zerodha | | unicorn | 12-24 | https://zerodha.com/careers/
+Navi | navi technologies | unicorn | 20-35 | https://navi.com/careers
+Juspay | | unicorn | 15-28 | https://juspay.in/careers
+Slice | garagepreneurs; slice fintech | unicorn | 15-25 | https://www.sliceit.com/careers
+Paytm | one97 communications; paytm money; paytm payments bank | unicorn | 8-18 | https://paytm.com/careers/
+Dream11 | dream sports; dreamsports | unicorn | 18-32 | https://www.dreamsports.group/careers
+Games24x7 | games 24x7; rummycircle; my11circle | unicorn | 15-28 | https://www.games24x7.com/careers
+MPL | mobile premier league; galactus funware | unicorn | 15-28 | https://www.mpl.live/careers
+Ola | ola cabs; ani technologies; ola electric; ola krutrim | unicorn | 12-24 | https://www.olacabs.com/careers
+Nykaa | fsn e-commerce | unicorn | 10-18 | https://www.nykaa.com/careers
+Myntra | myntra designs; myntra jabong | unicorn | 15-28 | https://careers.myntra.com/
+Udaan | hiveloop technology | unicorn | 15-26 | https://udaan.com/careers
+ShareChat | mohalla tech; moj | unicorn | 18-32 | https://sharechat.com/careers
+Cars24 | | unicorn | 12-22 | https://www.cars24.com/careers/
+Spinny | | unicorn | 10-18 | https://www.spinny.com/careers
+Delhivery | | unicorn | 10-20 | https://www.delhivery.com/careers/
+Urban Company | urbanclap | unicorn | 15-26 | https://www.urbancompany.com/careers
+PolicyBazaar | policy bazaar; pb fintech; paisabazaar | unicorn | 8-16 | https://www.policybazaar.com/careers/
+Pine Labs | | unicorn | 10-20 | https://www.pinelabs.com/careers
+Physics Wallah | pw | unicorn | 8-16 | https://www.pw.live/careers
+Lenskart | | unicorn | 10-18 | https://www.lenskart.com/careers
+Smallcase | | unicorn | 12-22 | https://www.smallcase.com/careers
+Jar | jar app; changejar | unicorn | 12-22 | https://www.myjar.app/careers
+Fi Money | epifi | unicorn | 15-28 | https://fi.money/careers
+Jupiter | amica financial; jupiter money | unicorn | 15-28 | https://jupiter.money/careers
+Khatabook | | unicorn | 12-20 | https://khatabook.com/careers
+Rapido | roppen transportation | unicorn | 12-22 | https://rapido.bike/careers
+Ather Energy | ather | unicorn | 8-16 | https://www.atherenergy.com/careers
+InMobi | inmobi technology; glance | unicorn | 15-26 | https://www.inmobi.com/company/careers
+Porter | porter logistics; smartshift logistics | unicorn | 10-20 | https://porter.in/careers
+Licious | delightful gourmet | unicorn | 8-16 | https://www.licious.in/careers
+Acko | acko general insurance; acko technology | unicorn | 15-26 | https://www.acko.com/careers/
+Digit Insurance | go digit | unicorn | 8-16 | https://www.godigit.com/careers
+upGrad | | unicorn | 8-14 | https://www.upgrad.com/careers/
+Unacademy | sorting hat technologies | unicorn | 10-18 | https://unacademy.com/careers
+BYJU'S | byjus; think and learn | unicorn | 8-14 | https://byjus.com/careers/
+Vedantu | | unicorn | 8-14 | https://www.vedantu.com/careers
+Oyo | oravel stays; oyo rooms | unicorn | 10-18 | https://www.oyorooms.com/careers/
+MakeMyTrip | mmt; goibibo | unicorn | 10-18 | https://careers.makemytrip.com/
+Ixigo | le travenues | unicorn | 10-18 | https://www.ixigo.com/careers
+Cleartax | clear; defmacro software | unicorn | 10-18 | https://cleartax.in/s/careers
+Zeta | zeta suite; zeta india; directi zeta | unicorn | 12-22 | https://www.zeta.tech/careers
+Setu | | unicorn | 12-22 | https://setu.co/careers
+Open | open financial technologies; open money | unicorn | 10-18 | https://open.money/careers
+BharatPe | resilient innovations | unicorn | 12-22 | https://bharatpe.com/careers
+Mobikwik | one mobikwik systems | unicorn | 8-14 | https://www.mobikwik.com/careers
+Cashfree | cashfree payments | unicorn | 10-18 | https://www.cashfree.com/careers/
+Perfios | | unicorn | 8-16 | https://www.perfios.com/careers/
+Ninjacart | | unicorn | 8-14 | https://www.ninjacart.com/careers
+Blinkit | grofers | unicorn | 15-28 | https://blinkit.com/careers
+Dunzo | | unicorn | 10-18 | https://www.dunzo.com/careers
+Cure.fit | cult.fit; curefit | unicorn | 12-22 | https://www.cult.fit/careers
+PharmEasy | api holdings | unicorn | 8-16 | https://pharmeasy.in/careers
+Practo | | unicorn | 8-16 | https://www.practo.com/company/careers
+# ---- Finance / banks (technology roles)
+Goldman Sachs | goldman | finance | 18-30 | https://www.goldmansachs.com/careers/
+Morgan Stanley | | finance | 16-28 | https://www.morganstanley.com/careers
+JPMorgan Chase | jpmorgan; jp morgan; jpmc; j.p. morgan | finance | 14-24 | https://careers.jpmorgan.com/
+Deutsche Bank | db | finance | 12-22 | https://careers.db.com/
+Barclays | | finance | 12-20 | https://search.jobs.barclays/
+Wells Fargo | | finance | 10-18 | https://www.wellsfargojobs.com/
+American Express | amex | finance | 12-22 | https://www.americanexpress.com/en-us/careers/
+Mastercard | | finance | 14-24 | https://careers.mastercard.com/
+Visa | visa inc | finance | 16-28 | https://corporate.visa.com/en/jobs.html
+Citi | citibank; citigroup; citicorp | finance | 12-20 | https://jobs.citi.com/
+HSBC | hsbc software development; hsdi | finance | 8-16 | https://www.hsbc.com/careers
+UBS | | finance | 10-20 | https://www.ubs.com/global/en/careers.html
+Nomura | | finance | 12-22 | https://www.nomura.com/careers/
+BNY | bny mellon; bank of new york | finance | 10-18 | https://www.bny.com/corporate/global/en/careers.html
+State Street | | finance | 8-14 | https://www.statestreet.com/careers
+BlackRock | | finance | 14-24 | https://careers.blackrock.com/
+Fidelity | fidelity investments; fmr; fidelity international; fil | finance | 10-18 | https://jobs.fidelity.com/
+Capital One | | finance | 14-24 | https://www.capitalonecareers.com/
+Bank of America | bofa; bank of america merrill lynch | finance | 10-18 | https://careers.bankofamerica.com/
+Standard Chartered | | finance | 8-14 | https://www.sc.com/en/careers/
+Credit Suisse | | finance | 10-18 | https://www.ubs.com/global/en/careers.html
+Natwest | natwest group; rbs | finance | 10-18 | https://jobs.natwestgroup.com/
+Societe Generale | socgen | finance | 10-18 | https://careers.societegenerale.com/
+BNP Paribas | | finance | 8-14 | https://group.bnpparibas/en/careers
+Mastercard Payment Gateway | mpgs | finance | 10-18 | https://careers.mastercard.com/
+Bloomberg | | finance | 20-35 | https://www.bloomberg.com/company/careers/
+FIS | fidelity national information services | finance | 6-12 | https://www.fisglobal.com/careers
+Fiserv | | finance | 6-12 | https://www.fiserv.com/en/careers.html
+# ---- HFT / quant
+D. E. Shaw | de shaw; d e shaw; deshaw | hft | 30-60 | https://www.deshawindia.com/careers
+Arcesium | | hft | 20-32 | https://www.arcesium.com/careers
+Tower Research Capital | tower research | hft | 40-80 | https://www.tower-research.com/open-positions
+Quadeye | quadeye securities | hft | 30-60 | https://quadeye.com/careers
+Graviton Research Capital | graviton | hft | 40-80 | https://www.gravitontrading.com/careers.html
+AlphaGrep | alpha grep | hft | 30-60 | https://www.alpha-grep.com/careers
+NK Securities | nk securities research | hft | 25-50 | https://nksecurities.com/careers
+Dolat Capital | dolat | hft | 25-45 | https://www.dolatcapital.com/careers
+Jane Street | | hft | 60-120 | https://www.janestreet.com/join-jane-street/
+Optiver | | hft | 50-100 | https://optiver.com/working-at-optiver/career-opportunities/
+IMC Trading | imc | hft | 50-100 | https://www.imc.com/eu/careers
+Hudson River Trading | hrt | hft | 60-120 | https://www.hudsonrivertrading.com/careers/
+Citadel Securities | citadel | hft | 60-120 | https://www.citadelsecurities.com/careers/
+Millennium | millennium management | hft | 40-80 | https://www.mlp.com/careers/
+Two Sigma | | hft | 50-100 | https://www.twosigma.com/careers/
+Jump Trading | | hft | 50-100 | https://www.jumptrading.com/careers/
+WorldQuant | | hft | 25-45 | https://www.worldquant.com/career-listing/
+Squarepoint Capital | squarepoint | hft | 30-50 | https://www.squarepoint-capital.com/careers
+Qube Research & Technologies | qube rt; qrt | hft | 30-55 | https://www.qube-rt.com/careers
+Da Vinci Derivatives | da vinci | hft | 30-50 | https://davinciderivatives.com/careers
+Flow Traders | | hft | 30-50 | https://www.flowtraders.com/careers
+Akuna Capital | akuna | hft | 30-50 | https://akunacapital.com/careers
+Goldman Sachs Quantitative Strategies | gs quant | hft | 25-40 | https://www.goldmansachs.com/careers/
+# ---- MNC engineering centres (GCCs) and product arms
+Target | target corporation; target tech | gcc | 12-22 | https://india.target.com/
+Lowe's | lowes india | gcc | 12-20 | https://talent.lowes.com/
+Tesco | tesco bengaluru; tesco technology | gcc | 10-18 | https://www.tesco-careers.com/
+Walmart Labs | | gcc | 15-30 | https://careers.walmart.com/technology
+Wayfair | | gcc | 12-20 | https://www.aboutwayfair.com/careers
+Chewy | | gcc | 12-20 | https://careers.chewy.com/
+Nike | nike india technology | gcc | 12-20 | https://jobs.nike.com/
+Adidas | | gcc | 8-14 | https://careers.adidas-group.com/
+Shell | shell india markets; shell technology centre | gcc | 10-18 | https://www.shell.com/careers.html
+BP | bp india | gcc | 8-14 | https://www.bp.com/en/global/corporate/careers.html
+Schneider Electric | | gcc | 6-12 | https://www.se.com/ww/en/about-us/careers/
+Honeywell | | gcc | 7-14 | https://careers.honeywell.com/
+GE | general electric; ge healthcare; ge aerospace; ge vernova | gcc | 8-14 | https://www.gecareers.com/
+Philips | philips innovation campus | gcc | 8-14 | https://www.careers.philips.com/
+Boeing | boeing india | gcc | 10-18 | https://jobs.boeing.com/
+Airbus | | gcc | 8-14 | https://www.airbus.com/en/careers
+Mercedes-Benz | mercedes benz research and development india; mbrdi | gcc | 8-16 | https://www.mercedes-benz.com/en/careers/
+BMW | bmw techworks | gcc | 8-14 | https://www.bmwgroup.jobs/
+Volvo | volvo group | gcc | 7-12 | https://www.volvogroup.com/en/careers.html
+Caterpillar | | gcc | 7-12 | https://careers.caterpillar.com/
+John Deere | deere | gcc | 8-14 | https://www.deere.com/en/our-company/john-deere-careers/
+Rolls-Royce | rolls royce | gcc | 8-14 | https://careers.rolls-royce.com/
+Ericsson | | gcc | 7-12 | https://www.ericsson.com/en/careers
+Nokia | nokia networks; alcatel lucent | gcc | 7-12 | https://www.nokia.com/about-us/careers/
+Huawei | | gcc | 8-16 | https://career.huawei.com/
+Verizon | verizon data services | gcc | 8-16 | https://mycareer.verizon.com/
+AT&T | att | gcc | 8-14 | https://www.att.jobs/
+Comcast | | gcc | 10-18 | https://jobs.comcast.com/
+Vodafone | vodafone intelligent solutions; vois | gcc | 7-12 | https://careers.vodafone.com/
+Thomson Reuters | | gcc | 10-18 | https://www.thomsonreuters.com/en/careers.html
+LexisNexis | relx | gcc | 8-14 | https://www.lexisnexis.com/en-us/careers.page
+S&P Global | s&p; crisil | gcc | 8-16 | https://www.spglobal.com/en/careers
+Moody's | moodys | gcc | 8-14 | https://careers.moodys.com/
+MSCI | | gcc | 10-18 | https://www.msci.com/careers
+Nasdaq | | gcc | 12-20 | https://www.nasdaq.com/about/careers
+London Stock Exchange Group | lseg; refinitiv | gcc | 10-18 | https://www.lseg.com/en/careers
+Optum | unitedhealth; uhg; united health group | gcc | 8-14 | https://www.optum.in/careers.html
+Cerner | oracle health | gcc | 7-12 | https://careers.oracle.com/
+Epic Systems | | gcc | 12-20 | https://careers.epic.com/
+Medtronic | | gcc | 8-14 | https://jobs.medtronic.com/
+Athenahealth | | gcc | 10-18 | https://www.athenahealth.com/careers
+Pegasystems | pega | gcc | 10-18 | https://www.pega.com/about/careers
+Informatica | | gcc | 10-18 | https://www.informatica.com/careers.html
+Teradata | | gcc | 10-18 | https://careers.teradata.com/
+Qualys | | gcc | 10-18 | https://www.qualys.com/careers/
+Trellix | mcafee; fireeye | gcc | 10-18 | https://www.trellix.com/about/careers/
+Gen Digital | norton; nortonlifelock; avast | gcc | 10-18 | https://www.gendigital.com/us/en/careers/
+Commvault | | gcc | 10-18 | https://www.commvault.com/careers
+Veritas | veritas technologies | gcc | 10-18 | https://www.veritas.com/company/careers
+Citrix | cloud software group | gcc | 10-18 | https://www.cloud.com/careers
+Red Hat | | product | 10-20 | https://www.redhat.com/en/jobs
+Akamai | | product | 12-22 | https://www.akamai.com/careers
+F5 | f5 networks | product | 12-22 | https://www.f5.com/company/careers
+Nutanix India | | product | 16-28 | https://www.nutanix.com/company/careers
+PubMatic | | product | 10-18 | https://pubmatic.com/careers/
+Avalara | | product | 10-18 | https://careers.avalara.com/
+Zendesk | | product | 12-22 | https://jobs.zendesk.com/
+HubSpot | | product | 12-22 | https://www.hubspot.com/careers
+Freshdesk | | product | 8-16 | https://www.freshworks.com/company/careers/
+Guidewire | | product | 10-18 | https://careers.guidewire.com/
+Temenos | | product | 6-12 | https://www.temenos.com/careers/
+Amadeus | amadeus labs | product | 8-14 | https://jobs.amadeus.com/
+Sabre | | product | 8-14 | https://www.sabre.com/careers/
+Agoda | | product | 14-24 | https://careers.agoda.com/
+Grab | | product | 14-24 | https://www.grab.careers/
+Gojek | goto | product | 14-24 | https://www.gojek.io/careers
+Sea | sea limited; shopee; garena | product | 12-22 | https://career.sea.com/
+ByteDance | tiktok | bigtech | 25-45 | https://jobs.bytedance.com/
+Tencent | | bigtech | 20-35 | https://careers.tencent.com/
+Rakuten | rakuten india | product | 10-18 | https://rakuten.careers/
+Mercari | | product | 15-25 | https://careers.mercari.com/
+Mitsubishi Electric | | gcc | 6-10 | https://www.mitsubishielectric.com/en/careers/
+Hitachi | hitachi vantara; globallogic | itservices | 6-12 | https://www.hitachi.com/careers/
+# ---- IT services MNCs (in the MNC filter; typical pay is below 10 LPA)
+Tata Consultancy Services | tcs; tcs digital; tcs ninja | itservices | 3.5-7 | https://www.tcs.com/careers
+Infosys | infosys limited; infosys bpm | itservices | 3.6-9 | https://www.infosys.com/careers/
+Wipro | wipro limited; wipro technologies | itservices | 3.5-6.5 | https://careers.wipro.com/
+HCLTech | hcl technologies; hcl | itservices | 3.5-7 | https://www.hcltech.com/careers
+Tech Mahindra | techm | itservices | 3.5-6 | https://careers.techmahindra.com/
+Accenture | accenture solutions; accenture india | itservices | 4.5-8.5 | https://www.accenture.com/in-en/careers
+Capgemini | capgemini technology services | itservices | 4-7.5 | https://www.capgemini.com/careers/
+Cognizant | cognizant technology solutions; cts | itservices | 4-7.5 | https://careers.cognizant.com/
+LTIMindtree | lti; mindtree; l&t infotech | itservices | 4-7 | https://www.ltimindtree.com/careers/
+Mphasis | | itservices | 3.5-6 | https://careers.mphasis.com/
+Hexaware | hexaware technologies | itservices | 3.5-6 | https://hexaware.com/careers/
+Persistent Systems | persistent | itservices | 4-8 | https://www.persistent.com/careers/
+Coforge | niit technologies | itservices | 4-7 | https://www.coforge.com/careers
+Birlasoft | | itservices | 3.5-6 | https://www.birlasoft.com/careers
+Zensar | zensar technologies | itservices | 3.5-6 | https://www.zensar.com/careers
+Cyient | | itservices | 3.5-6 | https://www.cyient.com/careers
+Virtusa | | itservices | 4-7 | https://www.virtusa.com/careers
+EPAM | epam systems | itservices | 6-12 | https://www.epam.com/careers
+GlobalLogic | | itservices | 5-10 | https://www.globallogic.com/careers/
+Nagarro | | itservices | 5-10 | https://www.nagarro.com/en/careers
+Publicis Sapient | sapient | itservices | 6-12 | https://careers.publicissapient.com/
+ThoughtWorks | thoughtworks technologies | itservices | 8-16 | https://www.thoughtworks.com/careers
+Deloitte | deloitte usi; deloitte consulting | consulting | 6-12 | https://www2.deloitte.com/global/en/careers.html
+EY | ernst & young; ey gds | consulting | 5-10 | https://careers.ey.com/
+PwC | pricewaterhousecoopers; pwc india | consulting | 5-10 | https://www.pwc.in/careers.html
+KPMG | kpmg global services; kgs | consulting | 5-10 | https://kpmg.com/in/en/home/careers.html
+McKinsey | mckinsey & company; quantumblack | consulting | 15-30 | https://www.mckinsey.com/careers
+BCG | boston consulting group; bcg x | consulting | 15-30 | https://careers.bcg.com/
+Bain | bain & company | consulting | 15-30 | https://www.bain.com/careers/
+ZS Associates | zs | consulting | 10-16 | https://www.zs.com/careers
+Mu Sigma | | consulting | 6-10 | https://www.mu-sigma.com/careers
+Fractal | fractal analytics | consulting | 8-16 | https://fractal.ai/careers/
+Tiger Analytics | | consulting | 8-16 | https://www.tigeranalytics.com/careers/
+Oracle Financial Services Software | ofss | product | 8-14 | https://careers.oracle.com/
+Amazon India Development Centre | aidc | bigtech | 12-28 | https://www.amazon.jobs/en/
