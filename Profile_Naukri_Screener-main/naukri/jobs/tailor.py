@@ -297,18 +297,10 @@ def tailor(job: dict, jd: str, *, use_model: bool = True, one_page: bool = True)
     shrink = (lambda d: _drop_least_relevant(d, weight, vocab)) if one_page else None
     try:
         path, pages, dropped = br.build_pdf(new, stem.with_suffix(".pdf"), shrink=shrink)
-    except Exception as exc:  # noqa: BLE001 - no Chromium: the .docx in the same layout still works
-        log.warning("tailor: PDF failed (%s), uploading a .docx instead", exc)
-        saved_out = br.OUT
-        try:
-            br.OUT = OUT                       # build into data/jobs/tailored, never over your own resume
-            built = br.build(new)
-        finally:
-            br.OUT = saved_out
-        path, pages, dropped = stem.with_suffix(".docx"), None, 0
-        if path.exists():
-            path.unlink()
-        built.rename(path)
+    except Exception as exc:  # noqa: BLE001 - no Chromium / a layout error: never a .docx, your generic PDF goes instead
+        log.warning("tailor: PDF failed (%s) - the generic PDF resume is uploaded instead", exc)
+        return None, {"match": round(100 * len(matched) / len(ranked)), "matched": matched, "missing": missing,
+                      "why": f"pdf failed: {exc}"}
 
     info = {"match": round(100 * len(matched) / len(ranked)), "matched": matched, "missing": missing,
             "added_from_extra_skills": from_extra, "job_words_added": job_words,
@@ -316,6 +308,24 @@ def tailor(job: dict, jd: str, *, use_model: bool = True, one_page: bool = True)
     log.info("tailored resume %s: %d%% of the job's skills (%d/%d)%s", path.name, info["match"], len(matched), len(ranked),
              f"; not on your resume: {', '.join(missing[:6])}" if missing else "")
     return path, info
+
+
+def generic_pdf() -> Path | None:
+    """Your own resume as a PDF in the same layout (data/jobs/tailored/generic-resume.pdf),
+    rebuilt when resume/resume.yaml is newer. For forms when no tailored PDF could be
+    made and no PDF is stored for this computer - a .docx is never uploaded."""
+    br = _resume_module()
+    OUT.mkdir(parents=True, exist_ok=True)
+    out = OUT / "generic-resume.pdf"
+    try:
+        src = Path(br.__file__).parent / "resume.yaml"
+        if out.exists() and (not src.exists() or out.stat().st_mtime >= src.stat().st_mtime):
+            return out
+        path, _pages, _dropped = br.build_pdf(br.load(), out)
+        return path
+    except Exception as exc:  # noqa: BLE001
+        log.warning("generic PDF resume could not be built: %s", exc)
+        return out if out.exists() else None
 
 
 def main(argv=None) -> int:

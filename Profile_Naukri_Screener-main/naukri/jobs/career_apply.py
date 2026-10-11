@@ -404,29 +404,38 @@ SCAN_JS = r"""
 # ------------------------------------------------------------------ applicant
 
 def _resume_path(config: dict) -> str | None:
+    """The generic resume for forms - always a PDF. A .docx is never uploaded: when
+    only one of those is around, a PDF in the same layout is built from resume.yaml."""
     app = config.get("applicant") or {}
     for cand in [app.get("resume"), os.environ.get("APPLY_RESUME")]:
         if cand and os.path.exists(os.path.expanduser(str(cand))):
-            return os.path.abspath(os.path.expanduser(str(cand)))
-    # The resume stored for this computer (site\set_resume.bat): %LOCALAPPDATA%\JobHuntPhone\resume\current.*
+            if str(cand).lower().endswith(".pdf"):
+                return os.path.abspath(os.path.expanduser(str(cand)))
+            log.warning("resume %s is not a PDF - only PDFs are uploaded; looking for one", cand)
+    # The resume stored for this computer (site\set_resume.bat): %LOCALAPPDATA%\JobHuntPhone\resume\current.pdf
     device = Path(os.environ.get("JOBHUNT_DEVICE_DIR") or os.environ.get("LOCALAPPDATA") or os.path.expanduser("~")) / "JobHuntPhone" / "resume"
-    for ext in (".pdf", ".docx", ".txt", ".md"):
-        if (device / f"current{ext}").exists():
-            return str(device / f"current{ext}")
+    if (device / "current.pdf").exists():
+        return str(device / "current.pdf")
     # The resume the worldwide search last scored against.
     runs = Path(os.path.expanduser("~")) / "Documents" / "JobHunt"
     try:
         metas = sorted(runs.glob("*/run.json"), key=lambda p: p.stat().st_mtime, reverse=True)[:5]
         for meta in metas:
             path = (json.loads(meta.read_text(encoding="utf-8")).get("meta") or {}).get("resume_path")
-            if path and os.path.exists(path):
+            if path and str(path).lower().endswith(".pdf") and os.path.exists(path):
                 return path
     except OSError:
         pass
-    for pattern in ("*.pdf", "*.docx"):
-        found = sorted((ROOT / "resume").glob(pattern))
-        if found:
-            return str(found[0])
+    found = sorted((ROOT / "resume").glob("*.pdf"))
+    if found:
+        return str(found[0])
+    try:
+        from .tailor import generic_pdf
+        built = generic_pdf()
+        if built:
+            return str(built)
+    except Exception as exc:  # noqa: BLE001
+        log.warning("no PDF resume found and none could be built: %s", exc)
     return None
 
 

@@ -310,9 +310,18 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                     added += 1
                 log("queue: +%d from %s" % (added, report_id))
             elif kind == "remove":
+                removed = []
                 for key in payload.get("keys") or []:
                     if key in by_key and by_key[key]["status"] not in ("applied", "submitted"):
                         by_key[key].update(status="removed", note="removed from the phone", at=now_iso())
+                        removed.append(by_key[key])
+                if removed:
+                    # Removed means "not this job": no report lists it again and no run applies to it
+                    # (naukri/jobs/tracker.py) - on any board, under any link.
+                    from naukri.jobs import tracker
+                    tracker.reject([{"key": i.get("job_id") or i.get("key"), "url": i.get("url"),
+                                     "company": i.get("company"), "title": i.get("title")} for i in removed],
+                                   "removed from the phone")
             elif kind == "retry":
                 release_for_retry([by_key[k] for k in payload.get("keys") or [] if k in by_key])
             elif kind == "pause":
@@ -351,6 +360,9 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                         # only the fields sent: a Remove (hidden) must not wipe the status you set
                         dashboard.save_note(dict({k: note[k] for k in ("status", "note", "hidden") if k in note},
                                                  job_id=job_id))
+                        if note.get("hidden"):
+                            from naukri.jobs import tracker
+                            tracker.reject([{"key": job_id}], "hidden on the phone's Track tab")
             elif kind == "reports":
                 n = remove_reports(pages, payload.get("remove") or [])
                 log("reports: %d removed from the index" % n)

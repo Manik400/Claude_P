@@ -87,7 +87,7 @@ def _applied_today(ledger: Ledger, board: str) -> int:
     return count
 
 
-def backlog(days: int = 2) -> tuple[list[Job], list[dict]]:
+def backlog(days: int = 7) -> tuple[list[Job], list[dict]]:
     """Naukri jobs and LinkedIn cards from the last `days` scans.
 
     Read from data/jobs/results-<date>.json, oldest first so today's list
@@ -280,6 +280,13 @@ def run(kept: list, cards: list[dict], config: dict, profile: dict,
         if dog:
             dog.set()
         lock.release()
+        # Every application this run sent goes to your Google Sheet, and rows you added
+        # by hand come back - best effort, never in the way of the run (tracker.py).
+        try:
+            from . import tracker
+            tracker.sync_sheet(config)
+        except Exception as exc:  # noqa: BLE001
+            log.debug("tracker sheet sync skipped: %s", exc)
 
 
 # The run time limit is only checked between applications. One application once
@@ -338,6 +345,11 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
     facts["_bank"] = questions.load_bank()
     phone = str(facts.get("stated_phone") or "").strip() or None
     ledger = Ledger()
+    # Jobs you are done with on ANY board - applied to (by the agent or by hand, per the
+    # sheet) or removed on the phone - are never sent again, whatever list they came in on.
+    from . import tracker
+    memory = tracker.Memory.shared()
+    tracked = [0]
     outcomes: dict[str, dict] = {}
     summary = {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "career": {}, "questions_saved": 0,
                "retried": 0, "pending_questions": 0, "per_run": per_run, "backlog": 0}
@@ -475,6 +487,9 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
             if not url:
                 continue
             job_id = item.get("job_id") or "web:" + hashlib.sha1(url.split("#")[0].lower().encode("utf-8")).hexdigest()[:16]
+            if memory.blocked(key=job_id, url=url, company=item.get("company"), title=item.get("title")):
+                tracked[0] += 1
+                continue
             settled = ledger.entries.get(job_id) or {}
             if settled.get("status") in ("applied", "skipped") or "possibly submitted" in str(settled.get("note", "")):
                 # applied (or maybe applied) already: the queue's retry flag never re-sends an application
@@ -563,6 +578,9 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                       reverse=True):
         status = ledger.status(job.job_id)
         if (status in DONE or status == WAITING) and not (career_on and career_untried(job.job_id)):
+            continue
+        if memory.blocked(key=job.job_id, url=job.url, company=job.company, title=job.title):
+            tracked[0] += 1
             continue
         if (getattr(job, "score", 0) or 0) < min_score:
             continue
@@ -661,8 +679,14 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                 continue
             if status == WAITING and job.job_id not in {c["job_id"] for c in retry_cards}:
                 continue
+            if memory.blocked(key=job.job_id, url=job.url, company=job.company, title=job.title):
+                tracked[0] += 1
+                continue
             seen_ids.add(job.job_id)
             li_cards.append((card, job))
+        if tracked[0]:
+            log.info("%d posting(s) left out: already applied to or removed (tracker - any board, the sheet, the phone)",
+                     tracked[0])
         # Easy Apply stops for the day when our own cap is spent or LinkedIn
         # said its limit is reached (linkedin_limit.py, 24 h). The postings
         # are still opened when the career applier can use them: a plain

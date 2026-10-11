@@ -408,6 +408,9 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
                  len(already_listed))
 
     ledger = Ledger()
+    # Everything applied to or thrown away, on any board, by the agent or by you (tracker.py).
+    from . import tracker
+    memory = tracker.Memory.shared()
     with sync_playwright() as p:
         browser, _ctx, page = open_profile(p, DEFAULT_STATE, headless=headless)
         try:
@@ -430,7 +433,8 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
         text = (job.location or "").lower()
         if wanted and not any(city in text for city in wanted) and "remote" not in text:
             continue
-        if not include_applied and ledger.status(job.job_id) == "applied":
+        if not include_applied and (ledger.status(job.job_id) == "applied" or memory.blocked(
+                key=job.job_id, url=job.url, company=job.company, title=job.title)):
             continue
         # Both cuts happen before the top-N truncation, so the shortlist fills
         # with fresh, unseen jobs rather than being trimmed down to a handful.
@@ -468,6 +472,8 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
                                     posted_days=int(posted_days) if posted_days else 30,
                                     exclude_ids=already_listed, early=early)
             log.info("LinkedIn: %d card(s) after filtering", len(cards))
+            cards = memory.filter(cards, key=lambda c: f"linkedin:{c.get('job_id')}", url=lambda c: c.get("url"),
+                                  company=lambda c: c.get("company"), title=lambda c: c.get("title"), log_as="LinkedIn")
         except Exception as exc:
             # A LinkedIn failure must not cost you the Naukri sheet.
             log.warning("LinkedIn search skipped: %s", str(exc)[:200])

@@ -37,10 +37,13 @@ WINDOW = ("10:00", "23:00")
 MAX_TRIES = 3
 STALE_LOCK_S = 4 * 3600
 
+# --new-only on every scan: a posting already listed on an earlier day's page is
+# not listed again. Applying does not need the repeat - the apply pass carries
+# the last 7 days' unsettled listings itself (autoapply.backlog).
 SCANS = [
     ("Last 24h", ["--posted-days", "1", "--new-only"]),
-    ("Early", ["--early"]),
-    ("All jobs", []),
+    ("Early", ["--early", "--new-only"]),
+    ("All jobs", ["--new-only"]),
 ]
 
 

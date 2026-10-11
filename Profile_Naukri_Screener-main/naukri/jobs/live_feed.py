@@ -229,9 +229,13 @@ def _sort_key(it: dict):
 def merge_jobs(feed: dict, jobs: list[dict], now: datetime) -> list[dict]:
     """Add new postings; keep the earliest posting-time estimate for known ones. Returns the new ones."""
     by_id = {it["id"]: it for it in feed["items"]}
+    from . import tracker
+    memory = tracker.Memory.shared()      # applied / removed anywhere: not news
     new = []
     for j in jobs:
         if NON_SOFTWARE_RX.search(j.get("title") or "") or not SOFTWARE_RX.search(j.get("title") or ""):
+            continue
+        if memory.blocked(key=f"linkedin:{j.get('job_id') or ''}", url=j.get("url"), company=j.get("company"), title=j.get("title")):
             continue
         old = by_id.get(j["id"])
         if old is None:

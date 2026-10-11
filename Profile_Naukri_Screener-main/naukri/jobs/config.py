@@ -124,6 +124,13 @@ DEFAULTS = {
     # e.g. {notice_period_months: 0}; and whether the local model writes open answers on forms.
     "fact_overrides": {},
     "ai_written_answers": True,
+    # The job tracker (naukri/jobs/tracker.py): the Google Sheet every application is
+    # written to and read back from, so rows you add by hand count as applied too.
+    # {spreadsheet: <url or id>, worksheet: Applications, credentials: <service-account json>}
+    "tracker_sheet": {},
+    # A posting with the same title at the same company as one you applied to (or
+    # removed) is the same job, whichever board shows it - never shown or sent again.
+    "tracker_match_title": True,
 }
 
 

@@ -371,6 +371,40 @@ def apply_limit(args):
     return int(raw) if raw.isdigit() else None
 
 
+def backlog_jobs(run_dir, jobs, log, days: int = 3) -> list:
+    """Postings from the last `days` days' runs that are not in this run and not done
+    with (applied / removed), newest run first - so a round that ran out of time
+    leaves nothing behind for good."""
+    from jobbot import memory
+    have = {j.dedup_url() for j in jobs}
+    out = []
+    root = os.path.dirname(os.path.abspath(run_dir))
+    cutoff = time.time() - days * 86400
+    try:
+        dirs = [os.path.join(root, d) for d in os.listdir(root)]
+    except OSError:
+        return out
+    for d in sorted(dirs, key=os.path.getmtime, reverse=True):
+        if os.path.abspath(d) == os.path.abspath(run_dir) or not os.path.isfile(os.path.join(d, "jobs.json")):
+            continue
+        if os.path.getmtime(d) < cutoff:
+            break
+        try:
+            _d, _m, _s, old = load_run(d)
+        except Exception:  # noqa: BLE001 - a broken old run is not this run's problem
+            continue
+        for j in old:
+            u = j.dedup_url()
+            if u in have or (getattr(j, "extra", None) or {}).get("applied_status") == "applied":
+                continue
+            have.add(u)
+            out.append(j)
+    out = memory.drop_done(out, None)
+    if out and log:
+        log(f"apply: +{len(out)} unapplied posting(s) carried over from the last {days} days' runs")
+    return out
+
+
 def do_apply(run_dir, meta, statuses, jobs, args, log):
     from jobbot import autoapply
     try:
@@ -380,10 +414,13 @@ def do_apply(run_dir, meta, statuses, jobs, args, log):
         return None
     limit = apply_limit(args)
     dry = not getattr(args, "yes", False)
-    cards = autoapply.linkedin_cards(jobs, min_score=getattr(args, "min_score", None))
-    web = autoapply.web_postings(jobs, min_score=getattr(args, "min_score", None))
+    # This run's postings plus what earlier runs had no time for: the report shows each
+    # posting once, the apply pass keeps going until every one is applied to.
+    pool = list(jobs) + backlog_jobs(run_dir, jobs, log)
+    cards = autoapply.linkedin_cards(pool, min_score=getattr(args, "min_score", None))
+    web = autoapply.web_postings(pool, min_score=getattr(args, "min_score", None))
     log(f"apply: {len(cards)} LinkedIn + {len(web)} company-site / other-board posting(s) in this run{'' if limit is None else f', at most {limit} this run'}{' (dry run - add --yes to send)' if dry else ''}")
-    outcomes = autoapply.apply_run(jobs, per_run=limit, dry_run=dry, min_score=getattr(args, "min_score", None))
+    outcomes = autoapply.apply_run(pool, per_run=limit, dry_run=dry, min_score=getattr(args, "min_score", None))
     marked = autoapply.mark_jobs(jobs, outcomes)
     if marked:
         save_run(run_dir, meta, statuses, jobs)
@@ -426,6 +463,11 @@ def cmd_run(args):
     if args.resume:
         log(f"resume: {args.resume}")
     meta, statuses, jobs = do_search(args, run_dir, log)
+    # Never the same job twice: applied to / removed (the tracker) or listed by an
+    # earlier report (seen.json) - the report shows only what is new to you.
+    from jobbot import memory
+    jobs = memory.fresh_only(jobs, os.path.basename(run_dir), log)
+    save_run(run_dir, meta, statuses, jobs)
     if args.resume:
         do_score(run_dir, meta, jobs, args.resume, log)
         jobs = sort_jobs(jobs)
@@ -496,6 +538,8 @@ def cmd_merge(args):
     items = load_extra_file(args.file)
     added = merge_extra(jobs, items, meta.get("experience_years"))
     log(f"merge: {added} new jobs added from {args.file} ({len(items)} items read)")
+    from jobbot import memory
+    jobs = memory.fresh_only(jobs, os.path.basename(run_dir), log)
     statuses.append({"source": "web", "source_name": "Web search (fallback)", "country": "*", "status": "ok", "count": added, "seconds": 0})
     resume = args.resume or meta.get("resume_path")
     if resume and os.path.exists(resume):

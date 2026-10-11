@@ -28,13 +28,18 @@ cd /d "%~dp0"
 set "PY=python"
 if exist "..\Profile_Naukri_Screener-main\.venv\Scripts\python.exe" set "PY=..\Profile_Naukri_Screener-main\.venv\Scripts\python.exe"
 
-"%PY%" scripts\job_bot.py run --like-last %*
+rem Strict about time: a posting whose time cannot be shown to be inside the window
+rem (12 h, from your last run) is dropped, after its own page was read for a date
+rem (up to 150 pages). The report then lists only what is new - jobs already applied
+rem to, removed on the phone, or listed by an earlier report are left out
+rem (scripts\jobbot\memory.py); the apply pass still carries the earlier runs' unapplied ones.
+"%PY%" scripts\job_bot.py run --like-last --strict-undated --verify-dates 150 %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
 set "CAREERS_OUT=%TEMP%\jobhunt_careers.json"
 if exist "%CAREERS_OUT%" del /q "%CAREERS_OUT%"
 "%PY%" scripts\careers_bot.py run --role "software engineer,software developer,sde,backend engineer,full stack developer" ^
-    --experience 0-2 --countries IN --relocation any --days 14 --max-minutes 10 ^
+    --experience 0-2 --countries IN --relocation any --hours 48 --max-minutes 10 ^
     --companies-file assets\companies_top_india.txt --out "%CAREERS_OUT%"
 if exist "%CAREERS_OUT%" "%PY%" scripts\job_bot.py merge --file "%CAREERS_OUT%" --quiet
 

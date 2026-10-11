@@ -344,3 +344,30 @@ skill_years:
   dart : 2
   
 
+
+# ---------------------------------------------------------------------------
+# THE JOB TRACKER (Google Sheet)
+# ---------------------------------------------------------------------------
+#
+# Every application the agent sends is written to this sheet - date/time, link,
+# title, company, board, status, auto/manual, the resume file sent, the match %,
+# contact details found, notes - and the sheet is read back, so a row you add by
+# hand counts as applied too. Anything in it (or applied to / removed on the
+# phone) is never listed in a report or applied to again, on any board.
+#
+# Writing needs a Google service account: create one in Google Cloud (IAM ->
+# Service accounts -> key -> JSON), save the file under data/, and share the
+# sheet with the account's client_email as Editor. An API key can only read a
+# sheet shared "anyone with the link" (set api_key instead of credentials).
+#
+#   python -m naukri.jobs.tracker --test-sheet     reach it, write nothing
+#   python -m naukri.jobs.tracker --sync           write / read now
+#   python -m naukri.jobs.tracker --status
+#
+# tracker_sheet:
+#   spreadsheet: https://docs.google.com/spreadsheets/d/<id>/edit
+#   worksheet: Applications
+#   credentials: data/google_service_account.json
+#
+# Same title at the same company = the same job, whichever board shows it.
+tracker_match_title: true
