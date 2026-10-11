@@ -707,7 +707,14 @@ def main(argv=None) -> int:
     ap.add_argument("--release", action="store_true",
                     help="after a fix to the career applier: put every company-site posting it gave up on back in line "
                          "(the queue's 'by hand' items and the screener's ledger), then exit")
+    ap.add_argument("--heartbeat", metavar="NOTE", help="only tell the phone the PC is on (with this note), then exit - "
+                                                        "no lock, no queue; what scripts\\net_watch.ps1 sends every 10 min")
     args = ap.parse_args(argv)
+    if args.heartbeat is not None:
+        # Independent of the apply runs: a 100-minute pass used to mean 100 minutes of
+        # "PC not checked in" on the phone, because only a run's start or end pushed one.
+        heartbeat(args.heartbeat or "online")
+        return 0
     # One run at a time, maintenance commands included: --release / --retry-by-hand refresh
     # the gh-pages clone (reset --hard), which threw away a finishing run's queue once.
     from naukri.jobs.runlock import RunLock
