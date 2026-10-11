@@ -366,6 +366,8 @@ def _h(text) -> str:
 def to_html(data: dict) -> str:
     out = [f'<div class="name">{html.escape(data["name"])}</div>', f'<div class="title">{html.escape(plain(data["title"]))}</div>']
     contact = [html.escape(str(c)) for c in data.get("contact") or []]
+    # the e-mail address is a link, as on the original (same colour as the other links)
+    contact = [re.sub(r"([A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,})", r'<a href="mailto:\1">\1</a>', c) for c in contact]
     links = [f'<a href="{html.escape(str(l.get("url")))}">{html.escape(str(l.get("text") or l.get("url")))}</a>'
              for l in data.get("links") or []]
     if contact or links:

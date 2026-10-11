@@ -218,11 +218,15 @@ def _rewrite_summary(summary: str, allowed: set[str], wanted: list[str], title: 
         return None
     out = re.sub(r"\s+", " ", out).strip().strip('"')
     if len(out) < 60 or len(out) > len(own) * 1.25 or not out.endswith("."):
+        log.info("summary rewrite not used: cut off or too long (%d chars)", len(out))
         return None                                           # cut off or rambling
-    if any(s not in allowed for s in vocab.find(out)):
+    invented = [s for s in vocab.find(out) if s not in allowed]
+    if invented:
+        log.info("summary rewrite not used: it named skills not on your resume (%s)", ", ".join(invented[:5]))
         return None                                           # names a skill the resume does not have
     found = re.findall(r"\d[\d,.+%x]*", out)
     if any(n.rstrip(".,") not in resume_text for n in found) or any(n not in out for n in numbers):
+        log.info("summary rewrite not used: a number changed or went missing")
         return None                                           # a new number, or one of yours lost
     for phrase in re.findall(r"\*\*(.+?)\*\*", summary):      # your bold metrics stay bold
         if phrase in out:
@@ -259,21 +263,21 @@ def tailor(job: dict, jd: str, *, use_model: bool = True, one_page: bool = True)
     weight = {s: jd_sk[s] + (3 if s in in_title else 0) for s in matched}
 
     title = (job.get("title") or "").strip()
+    groups = new.get("skills") or []
+    # spoken languages are skills too, but "Java, English, Spring Boot" is not a headline
+    spoken = set(vocab.find(" ".join(str(g.get("items", "")) for g in groups
+                                     if str(g.get("label", "")).lower() == "spoken")))
     if matched:
-        shown = list(dict.fromkeys(_display(s, new, vocab) for s in matched))
+        shown = list(dict.fromkeys(_display(s, new, vocab) for s in matched if s not in spoken))
         new["title"] = f"{headline_role(title, data.get('title', ''), have, vocab)} | " + ", ".join(shown[:4])
 
-    # skills: what the job asks for first, inside each group and across groups ("Spoken" stays last)
+    # skills: what the job asks for first INSIDE each group. The groups themselves stay in
+    # your order - the page keeps the shape of your own resume, only the content moves.
     def order_items(items: str) -> str:
         parts = _split(items)
         return ", ".join(sorted(parts, key=lambda p: (-_hits(p, weight, vocab), parts.index(p))))
-    groups = new.get("skills") or []
     for g in groups:
         g["items"] = order_items(g.get("items", ""))
-    def top(items: str) -> int:                    # a group leads by its most wanted skill, not by its length
-        return max((_hits(p, weight, vocab) for p in _split(items)), default=0)
-    new["skills"] = sorted(groups, key=lambda g: (str(g.get("label", "")).lower() == "spoken", -top(g.get("items", "")),
-                                                  -_hits(g.get("items", ""), weight, vocab), groups.index(g)))
 
     # bullets and tech lines: the ones covering most of the job first (roles stay in date order)
     for key in ("experience", "projects"):
