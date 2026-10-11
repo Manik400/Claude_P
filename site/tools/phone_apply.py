@@ -719,8 +719,11 @@ def main(argv=None) -> int:
     # the gh-pages clone (reset --hard), which threw away a finishing run's queue once.
     from naukri.jobs.runlock import RunLock
     # "phone": a long apply pass of the hourly round or a scan sees this waiting
-    # and stops early - your own picks get the browser first (runlock.py).
-    lock = RunLock(project="phone")
+    # and stops early - your own picks get the browser first (runlock.py). The end
+    # announced here lets a waiter stop this run should it hang past its own limit.
+    import time as _time
+    apply_minutes = float(os.environ.get("APPLY_MAX_MINUTES") or 100)
+    lock = RunLock(project="phone", ends_at=_time.time() + (apply_minutes + 30) * 60)
     if not lock.try_acquire():
         # The phone only hears from the PC through pushes; without this a long
         # scan holding the lock made every queue run step aside silently and

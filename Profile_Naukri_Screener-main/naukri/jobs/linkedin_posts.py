@@ -901,12 +901,15 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
     log.info("LinkedIn hiring-posts watcher: every %d min, posts from the last %gh, %d queries a pass, %s",
              every_minutes, hours, per_pass, "headless" if headless else "visible browser")
     stamp = code_stamp()
+    from .stall_guard import StallGuard
+    guard = StallGuard("linkedin_posts")     # a pass that hangs ends this process; the task restarts it
     while True:
         if code_changed(stamp):
             log.info("the code changed since this watcher started - exiting so Task Scheduler restarts it on the new code")
             return 0
         started = time.time()
         wait = every_minutes * 60
+        guard.arm(60 * 60, "one pass")
         try:
             run_once(hours=hours, headless=headless, per_pass=per_pass, debug=debug)
         except linkedin_mod.NotLoggedIn as exc:
@@ -918,6 +921,7 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
         except Exception as exc:  # noqa: BLE001 - never let one bad pass end the watcher
             log.exception("pass failed: %s", exc)
             _note_error(f"pass failed: {str(exc)[:200]}", hours)
+        guard.disarm()
         # the gap is measured from the START of the pass, with a little jitter so it never looks like clockwork
         sleep_for = max(60, wait - (time.time() - started) + random.uniform(-180, 180))
         log.info("next pass in %.0f min", sleep_for / 60)

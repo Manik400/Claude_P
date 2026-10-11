@@ -615,17 +615,21 @@ def run_once(cfg: dict, hours: float = WINDOW_HOURS, headless: bool = True, sour
 def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headless: bool = True) -> int:
     log.info("social hiring-posts watcher: every %d min, posts from the last %gh", every_minutes, hours)
     stamp = lp_code_stamp()
+    from .stall_guard import StallGuard
+    guard = StallGuard("social_posts")       # a pass that hangs ends this process; the task restarts it
     while True:
         if lp_code_changed(stamp):
             log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
             return 0
         started = time.time()
+        guard.arm(60 * 60, "one pass")
         try:
             run_once(cfg, hours=hours, headless=headless)
         except KeyboardInterrupt:
             return 0
         except Exception as exc:  # noqa: BLE001
             log.exception("pass failed: %s", exc)
+        guard.disarm()
         sleep_for = max(60, every_minutes * 60 - (time.time() - started) + random.uniform(-120, 120))
         log.info("next pass in %.0f min", sleep_for / 60)
         lp_nap(sleep_for, stamp)

@@ -51,6 +51,8 @@ def save_config(cfg):
 
 
 def run(args, **kw):
+    # git has no network timeout of its own; a push on a dead hotspot waited for ever
+    kw.setdefault("timeout", 300)
     subprocess.run(args, check=True, **kw)
 
 

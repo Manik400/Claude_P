@@ -466,6 +466,8 @@ def loop() -> int:
     feed = load()
     interval = BASE_INTERVAL
     last_pub = 0.0
+    from .stall_guard import StallGuard
+    guard = StallGuard("live_feed")          # a tick that hangs (socket, page) ends this process; the task restarts it
     log.info("live feed: a tick every %ds (up to %ds when LinkedIn slows us down), last %dh kept", BASE_INTERVAL, MAX_INTERVAL, FEED_HOURS)
     while True:
         if lp.code_changed(stamp):
@@ -473,11 +475,13 @@ def loop() -> int:
             return 0
         started = time.time()
         now = datetime.now(timezone.utc)
+        guard.arm(20 * 60, "one tick")
         try:
             st = tick(feed, now)
         except Exception as exc:  # noqa: BLE001
             log.exception("tick failed: %s", exc)
             st = {"new_jobs": 0, "new_posts": 0, "details": 0, "status": 0, "queries": [], "error": str(exc)[:200]}
+        guard.disarm()
         interval = min(MAX_INTERVAL, interval * 2) if st.get("status") == 429 else max(BASE_INTERVAL, int(interval * 0.75))
         pc = feed.setdefault("pc", {})
         pc.update({"host": os.environ.get("COMPUTERNAME", ""), "last_tick": now.isoformat(timespec="seconds"), "ticks": int(pc.get("ticks") or 0) + 1,

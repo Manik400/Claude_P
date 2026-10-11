@@ -1998,6 +1998,8 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
     log.info("LinkedIn Premium runner: a pass every %d min until %s (%d day(s) left), %s",
              every, cfg.get("until"), days_left(cfg), "headless" if headless else "visible browser")
     stamp = lp_code_stamp()
+    from .stall_guard import StallGuard
+    guard = StallGuard("linkedin_premium")   # a pass that hangs ends this process; the 30-min task check restarts it
     while True:
         if lp_code_changed(stamp):
             log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
@@ -2008,6 +2010,7 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
             return 0
         started = time.time()
         wait = every * 60
+        guard.arm(150 * 60, "one pass")      # a full pass took 57 min once; past 2.5 h it is hung
         try:
             run_once(cfg, headless=headless, dry_run=dry_run)
         except linkedin_mod.NotLoggedIn as exc:
@@ -2023,6 +2026,7 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
                 # Try again soon; a pass that keeps failing keeps trying every ten minutes, cheaply.
                 wait = 10 * 60
                 log.info("network trouble - the next pass is in about 10 min instead of %d", every)
+        guard.disarm()
         sleep_for = max(300, wait - (time.time() - started) + random.uniform(-600, 600)) if wait >= every * 60 \
             else wait + random.uniform(0, 120)
         log.info("next pass in %.0f min", sleep_for / 60)

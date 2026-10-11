@@ -34,7 +34,7 @@ JOBS = ROOT / "data" / "jobs"
 LOCK = ROOT / "data" / "scan3.lock"
 STATE = JOBS / "scan3_done.json"
 WINDOW = ("10:00", "23:00")
-MAX_TRIES = 3
+MAX_TRIES = 6        # a flaky hotspot can fail a scan several times a day; 6 before giving up until tomorrow
 STALE_LOCK_S = 4 * 3600
 
 # --new-only on every scan: a posting already listed on an earlier day's page is

@@ -33,7 +33,9 @@ rem (12 h, from your last run) is dropped, after its own page was read for a dat
 rem (up to 150 pages). The report then lists only what is new - jobs already applied
 rem to, removed on the phone, or listed by an earlier report are left out
 rem (scripts\jobbot\memory.py); the apply pass still carries the earlier runs' unapplied ones.
-"%PY%" scripts\job_bot.py run --like-last --strict-undated --verify-dates 150 %*
+rem --max-minutes 40: no new source/country search starts after 40 min, so a crawling
+rem network cannot stretch the search phase into the apply window.
+"%PY%" scripts\job_bot.py run --like-last --strict-undated --verify-dates 150 --max-minutes 40 %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
 set "CAREERS_OUT=%TEMP%\jobhunt_careers.json"

@@ -23,8 +23,18 @@ if os.path.isfile(os.path.join(LOCAL_GH, "hosts.yml")):
     os.environ["GH_CONFIG_DIR"] = LOCAL_GH
 
 
+# git and gh have no network timeout of their own: a fetch or push on a hotspot that went
+# away mid-transfer sat for ever, holding the apply lock. Past this many seconds the call
+# is a failure like any other, and the next run tries again.
+NET_TIMEOUT_S = 240
+
+
 def sh(args, cwd=None, check=True, capture=False):
-    r = subprocess.run(args, cwd=cwd, text=True, encoding="utf-8", errors="replace", capture_output=capture)
+    try:
+        r = subprocess.run(args, cwd=cwd, text=True, encoding="utf-8", errors="replace", capture_output=capture,
+                           timeout=NET_TIMEOUT_S)
+    except subprocess.TimeoutExpired:
+        raise SystemExit("command timed out after %ds: %s" % (NET_TIMEOUT_S, " ".join(args)))
     if check and r.returncode != 0:
         err = (r.stderr or "") if capture else ""
         raise SystemExit("command failed (%d): %s\n%s" % (r.returncode, " ".join(args), err))
@@ -232,8 +242,11 @@ def put_file(repo_url, path, text, message):
         body = {"message": message, "content": content, "branch": BRANCH}
         if sha:
             body["sha"] = sha
-        r = subprocess.run([gh, "api", "-X", "PUT", api, "--input", "-"], input=json.dumps(body), text=True,
-                           encoding="utf-8", errors="replace", capture_output=True)
+        try:
+            r = subprocess.run([gh, "api", "-X", "PUT", api, "--input", "-"], input=json.dumps(body), text=True,
+                               encoding="utf-8", errors="replace", capture_output=True, timeout=NET_TIMEOUT_S)
+        except subprocess.TimeoutExpired:
+            raise SystemExit("pages_git: could not write %s: gh api timed out after %ds" % (path, NET_TIMEOUT_S))
         if r.returncode == 0:
             print("pages_git: %s written" % path)
             return
