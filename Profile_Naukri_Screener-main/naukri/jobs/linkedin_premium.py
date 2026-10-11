@@ -1987,6 +1987,11 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
     return d
 
 
+# A pass that died on the network, not on LinkedIn: Playwright's navigation errors and timeouts.
+_NETWORK_ERROR = re.compile(r"net::ERR_|Timeout \d+ms exceeded|ERR_INTERNET_DISCONNECTED|ERR_NAME_NOT_RESOLVED|"
+                            r"ERR_CONNECTION|ConnectionError|Connection reset|getaddrinfo", re.I)
+
+
 def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
     from . import linkedin as linkedin_mod
     every = int(cfg.get("every_minutes", 240))
@@ -2012,7 +2017,14 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
             return 0
         except Exception as exc:  # noqa: BLE001
             log.exception("pass failed: %s", exc)
-        sleep_for = max(300, wait - (time.time() - started) + random.uniform(-600, 600))
+            if _NETWORK_ERROR.search(str(exc)):
+                # The hotspot dropped or crawled (Page.goto timed out at 11:40 on 2026-10-11, minutes
+                # after the Wi-Fi came back at 20% signal) - that is not worth losing four hours over.
+                # Try again soon; a pass that keeps failing keeps trying every ten minutes, cheaply.
+                wait = 10 * 60
+                log.info("network trouble - the next pass is in about 10 min instead of %d", every)
+        sleep_for = max(300, wait - (time.time() - started) + random.uniform(-600, 600)) if wait >= every * 60 \
+            else wait + random.uniform(0, 120)
         log.info("next pass in %.0f min", sleep_for / 60)
         lp_nap(sleep_for, stamp)
 
