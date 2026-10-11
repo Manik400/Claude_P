@@ -615,13 +615,17 @@ def run_once(cfg: dict, hours: float = WINDOW_HOURS, headless: bool = True, sour
 def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headless: bool = True) -> int:
     log.info("social hiring-posts watcher: every %d min, posts from the last %gh", every_minutes, hours)
     stamp = lp_code_stamp()
+    from .netwait import NETWORK_ERROR_RX, online, wait_for_network
     from .stall_guard import StallGuard
     guard = StallGuard("social_posts")       # a pass that hangs ends this process; the task restarts it
     while True:
         if lp_code_changed(stamp):
             log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
             return 0
+        if not online() and not wait_for_network(stop=lambda: lp_code_changed(stamp), what="social-posts watcher"):
+            continue
         started = time.time()
+        gap = every_minutes * 60
         guard.arm(60 * 60, "one pass")
         try:
             run_once(cfg, hours=hours, headless=headless)
@@ -629,8 +633,10 @@ def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HO
             return 0
         except Exception as exc:  # noqa: BLE001
             log.exception("pass failed: %s", exc)
+            if NETWORK_ERROR_RX.search(str(exc)):
+                gap = 0            # the internet went away mid-pass: wait for it (top of the loop), then run again at once
         guard.disarm()
-        sleep_for = max(60, every_minutes * 60 - (time.time() - started) + random.uniform(-120, 120))
+        sleep_for = max(60, gap - (time.time() - started) + random.uniform(-120, 120)) if gap else 30
         log.info("next pass in %.0f min", sleep_for / 60)
         lp_nap(sleep_for, stamp)
 

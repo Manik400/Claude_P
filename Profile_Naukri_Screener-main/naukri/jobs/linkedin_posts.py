@@ -74,6 +74,14 @@ QUERIES = [
     "we are hiring software engineer immediate joiners",
     "hiring new grad software engineer",
     "hiring graduate engineer trainee software",
+    # any title, 0-2 years (2026-10-11)
+    "hiring junior developer",
+    "hiring associate software engineer",
+    "hiring developer 0-2 years",
+    "hiring entry level developer",
+    "hiring programmer freshers",
+    "hiring web developer freshers",
+    "hiring application developer 1 year experience",
 ]
 
 # ----------------------------------------------------------------------------- reading a post
@@ -901,12 +909,18 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
     log.info("LinkedIn hiring-posts watcher: every %d min, posts from the last %gh, %d queries a pass, %s",
              every_minutes, hours, per_pass, "headless" if headless else "visible browser")
     stamp = code_stamp()
+    from .netwait import NETWORK_ERROR_RX, offline_note, online, wait_for_network
     from .stall_guard import StallGuard
     guard = StallGuard("linkedin_posts")     # a pass that hangs ends this process; the task restarts it
     while True:
         if code_changed(stamp):
             log.info("the code changed since this watcher started - exiting so Task Scheduler restarts it on the new code")
             return 0
+        if not online():
+            # the hotspot is away: say so on the phone (once it can be said), wait, continue the moment it is back
+            _note_error(offline_note(), hours, do_publish=False)
+            if not wait_for_network(stop=lambda: code_changed(stamp), what="hiring-posts watcher"):
+                continue
         started = time.time()
         wait = every_minutes * 60
         guard.arm(60 * 60, "one pass")
@@ -920,7 +934,13 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
             return 0
         except Exception as exc:  # noqa: BLE001 - never let one bad pass end the watcher
             log.exception("pass failed: %s", exc)
-            _note_error(f"pass failed: {str(exc)[:200]}", hours)
+            if NETWORK_ERROR_RX.search(str(exc)):
+                # not a pass that failed: the internet went away under it. Back to the top of the
+                # loop at once, where the wait for the network lives; the pass runs again right after.
+                _note_error(offline_note(), hours, do_publish=False)
+                wait = 0
+            else:
+                _note_error(f"pass failed: {str(exc)[:200]}", hours)
         guard.disarm()
         # the gap is measured from the START of the pass, with a little jitter so it never looks like clockwork
         sleep_for = max(60, wait - (time.time() - started) + random.uniform(-180, 180))

@@ -201,6 +201,10 @@ def postfilter(ctx, jobs, log=print):
                 else:
                     dropped_rel += 1
                 continue
+        elif _off_field(j.title) and not _tech_title(j.title):
+            # --loose keeps every software title, whatever it is called - not sales or civil engineering
+            dropped_field += 1
+            continue
         kept.append(j)
     log(f"filter: kept {len(kept)}, dropped {dropped_rel} unrelated, {dropped_field} from other fields, "
         f"{dropped_excl} excluded by term, {dropped_old} outside the window"

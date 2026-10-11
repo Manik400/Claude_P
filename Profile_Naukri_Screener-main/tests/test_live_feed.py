@@ -48,13 +48,13 @@ def test_detail_page():
 def test_merge_keeps_software_only_no_duplicates_newest_first():
     feed = {"items": []}
     new = lf.merge_jobs(feed, lf.parse_search(SEARCH, NOW), NOW)
-    assert [j["job_id"] for j in new] == ["4477101573", "4477102000"]          # the sales job is not software
+    assert [j["job_id"] for j in new] == ["4477101573"]          # the sales job is not software; the senior one is not for 0-2 years
     # the next tick sees the same postings again: nothing new, earliest time kept
     again = lf.parse_search(SEARCH.replace("12 minutes ago", "14 minutes ago"), NOW + timedelta(minutes=2))
     assert lf.merge_jobs(feed, again, NOW + timedelta(minutes=2)) == []
-    assert len(feed["items"]) == 2
+    assert len(feed["items"]) == 1
     lf.prune(feed, NOW)
-    assert [it["job_id"] for it in feed["items"]] == ["4477101573", "4477102000"]   # posted 12 min ago before 1 h ago
+    assert [it["job_id"] for it in feed["items"]] == ["4477101573"]
     lf.prune(feed, NOW + timedelta(hours=lf.FEED_HOURS + 2))
     assert feed["items"] == []
 

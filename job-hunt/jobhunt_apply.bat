@@ -35,12 +35,19 @@ rem to, removed on the phone, or listed by an earlier report are left out
 rem (scripts\jobbot\memory.py); the apply pass still carries the earlier runs' unapplied ones.
 rem --max-minutes 40: no new source/country search starts after 40 min, so a crawling
 rem network cannot stretch the search phase into the apply window.
-"%PY%" scripts\job_bot.py run --like-last --strict-undated --verify-dates 150 --max-minutes 40 %*
+rem Any title, 0-2 years (2026-10-11): --experience 0-2 drops postings that ask for more
+rem (the fit filter) and searches LinkedIn at entry/associate level; --loose keeps every
+rem software title the boards return, whatever it is called (other fields are still dropped);
+rem --exclude drops senior / lead / manager / intern titles on the title alone.
+"%PY%" scripts\job_bot.py run --like-last --experience 0-2 --loose ^
+    --exclude "senior,sr.,sr ,principal,staff ,architect,manager,director,head of,intern" ^
+    --strict-undated --verify-dates 150 --max-minutes 40 %*
 if errorlevel 1 exit /b %ERRORLEVEL%
 
 set "CAREERS_OUT=%TEMP%\jobhunt_careers.json"
 if exist "%CAREERS_OUT%" del /q "%CAREERS_OUT%"
-"%PY%" scripts\careers_bot.py run --role "software engineer,software developer,sde,backend engineer,full stack developer" ^
+rem Career pages are read whole, so the roles here only decide which titles count: list them all.
+"%PY%" scripts\careers_bot.py run --role "software engineer,software developer,sde,swe,backend engineer,backend developer,full stack developer,full stack engineer,frontend developer,frontend engineer,web developer,application developer,java developer,python developer,platform engineer,devops engineer,site reliability engineer,qa engineer,sdet,data engineer,mobile developer,android developer,ios developer,junior developer,junior software engineer,graduate software engineer,associate software engineer,programmer,member of technical staff,software development engineer,new grad software engineer,early career software engineer" ^
     --experience 0-2 --countries IN --relocation any --hours 48 --max-minutes 10 ^
     --companies-file assets\companies_top_india.txt --out "%CAREERS_OUT%"
 if exist "%CAREERS_OUT%" "%PY%" scripts\job_bot.py merge --file "%CAREERS_OUT%" --quiet

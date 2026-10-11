@@ -70,7 +70,11 @@ UA = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like 
 
 HOT = [("software engineer", "India", None), ("software developer", "India", None), ("software engineer", "Worldwide", "2")]
 ROLES = ["software engineer", "software developer", "SDE", "backend developer", "java developer", "full stack developer",
-         "python developer", "frontend developer", "SWE", "backend engineer"]
+         "python developer", "frontend developer", "SWE", "backend engineer",
+         "junior developer", "graduate software engineer", "associate software engineer", "web developer", "programmer"]
+# Any title is fine at 0-2 years; a senior / lead / manager one is not news for this feed.
+SENIOR_RX = re.compile(r"\b(senior|sr\.?|lead|principal|staff|architect|manager|head of|director|vp|chief|"
+                       r"\bii\b|\biii\b|\biv\b|\d\s*\+?\s*(?:-\s*\d+\s*)?(?:years|yrs)|[3-9]\+?\s*yrs?)\b", re.I)
 PLACES = [("India", None), ("India", "2"), ("Worldwide", "2"), ("Germany", None), ("Netherlands", None), ("United Arab Emirates", None),
           ("Singapore", None), ("United Kingdom", None), ("Ireland", None), ("Canada", None)]
 
@@ -234,6 +238,8 @@ def merge_jobs(feed: dict, jobs: list[dict], now: datetime) -> list[dict]:
     new = []
     for j in jobs:
         if NON_SOFTWARE_RX.search(j.get("title") or "") or not SOFTWARE_RX.search(j.get("title") or ""):
+            continue
+        if SENIOR_RX.search(j.get("title") or ""):
             continue
         if memory.blocked(key=f"linkedin:{j.get('job_id') or ''}", url=j.get("url"), company=j.get("company"), title=j.get("title")):
             continue

@@ -2008,6 +2008,9 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
             log.info("Premium period is over (until %s). Stopping; remove the task with scripts\\schedule_linkedin_premium.ps1 -Remove",
                      cfg.get("until"))
             return 0
+        from .netwait import online, wait_for_network
+        if not online() and not wait_for_network(stop=lambda: lp_code_changed(stamp), what="Premium pass"):
+            continue
         started = time.time()
         wait = every * 60
         guard.arm(150 * 60, "one pass")      # a full pass took 57 min once; past 2.5 h it is hung
@@ -2021,14 +2024,14 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
         except Exception as exc:  # noqa: BLE001
             log.exception("pass failed: %s", exc)
             if _NETWORK_ERROR.search(str(exc)):
-                # The hotspot dropped or crawled (Page.goto timed out at 11:40 on 2026-10-11, minutes
-                # after the Wi-Fi came back at 20% signal) - that is not worth losing four hours over.
-                # Try again soon; a pass that keeps failing keeps trying every ten minutes, cheaply.
-                wait = 10 * 60
-                log.info("network trouble - the next pass is in about 10 min instead of %d", every)
+                # The hotspot dropped or crawled under the pass (Page.goto timed out at 11:40 on
+                # 2026-10-11, minutes after the Wi-Fi came back at 20% signal). Not a pass that
+                # failed: back to the top of the loop, wait for the network, run again at once.
+                wait = 0
+                log.info("network trouble - the pass runs again as soon as the internet is back")
         guard.disarm()
         sleep_for = max(300, wait - (time.time() - started) + random.uniform(-600, 600)) if wait >= every * 60 \
-            else wait + random.uniform(0, 120)
+            else (wait + random.uniform(0, 120) if wait else 30)
         log.info("next pass in %.0f min", sleep_for / 60)
         lp_nap(sleep_for, stamp)
 
