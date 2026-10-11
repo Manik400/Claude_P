@@ -613,7 +613,7 @@ def inmail_draft(card: dict, person: dict, me: dict) -> str:
                 f"CANDIDATE RESUME:\n{me.get('resume', '')[:3500]}",
                 system="You write short, specific recruiter messages for a software engineer. Reply with the message only.",
                 max_tokens=220, temperature=0.4, timeout=120)
-            if out and isinstance(out, str) and 20 < len(out.split()) <= 95:
+            if (out := _post_text(out)) and 20 < len(out.split()) <= 95:
                 return out.strip()
         except Exception as exc:  # noqa: BLE001
             log.debug("inmail via model failed: %s", exc)
@@ -956,7 +956,8 @@ def hiring_roundup(state: dict, now: datetime | None = None, theme: str | None =
                 "of experience (the list is added after your text). Two or three short lines, plain text, no emojis, no hashtags, "
                 "no company names, no claims about the writer. Encourage people to apply directly and to share it with someone who needs it.",
                 system="You write short, warm, specific LinkedIn posts. Reply with the text only.", max_tokens=140, temperature=0.7, timeout=90)
-            if not (intro and isinstance(intro, str) and 8 <= len(intro.split()) <= 70):
+            intro = _post_text(intro)
+            if not (intro and 8 <= len(intro.split()) <= 70):
                 intro = None
         except Exception as exc:  # noqa: BLE001
             log.debug("roundup intro via model failed: %s", exc)
@@ -967,6 +968,29 @@ def hiring_roundup(state: dict, now: datetime | None = None, theme: str | None =
 
 
 # ---- tech
+
+# A model reply that is not a post: its own planning ("Here's a thinking process: 1. **Analyze
+# User Input** ..."), markdown headings, the brief echoed back. 61 drafts once went to the
+# phone like that. Anything matching here is dropped and the template is used instead.
+_NOT_A_POST = re.compile(
+    r"thinking process|analy[sz]e (the )?(user )?(input|request)|deconstruct|word count check|return (the )?post only|"
+    r"\*\*(topic|audience|hook|constraints?|word count|format|length|points to make|lesson to land|ending|platform)\b|"
+    r"^\s*(okay|ok|alright|let me|first,? I|here'?s (a|my|the) (draft|post|thinking))\b|<\|im_start\|>|</?think>", re.I)
+
+
+def _post_text(out) -> str | None:
+    """The model's text when it reads as a post, else None (plan, markdown outline, echoed brief)."""
+    if not out or not isinstance(out, str):
+        return None
+    text = out.strip()
+    if _NOT_A_POST.search(text[:800]):
+        return None
+    if len(re.findall(r"^\s*(?:\d+\.\s+|[-*]\s+)?\*\*[^*]+\*\*", text, re.M)) >= 2:
+        return None                      # "**Hook:** ..." lines: an outline, not a post
+    if re.search(r"^\s*#{1,3}\s", text, re.M):
+        return None                      # markdown headings
+    return text
+
 
 def template_post(topic: dict, hashtags: list[str]) -> str:
     lines = [topic["hook"], ""]
@@ -988,7 +1012,7 @@ def tech_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 "Return the post only.",
                 system="You write clear, specific LinkedIn posts about software engineering. Reply with the post only.",
                 max_tokens=400, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 60 <= len(out.split()) <= 330 and len(out) <= 2700:
+            if (out := _post_text(out)) and 60 <= len(out.split()) <= 330 and len(out) <= 2700:
                 return out.strip() + "\n\n" + " ".join(hashtags[:5]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("tech post via model failed: %s", exc)
@@ -1074,7 +1098,7 @@ def general_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 "Accurate, simple, no made-up numbers beyond the points given, no company names, no 'thrilled to share'. Return the post only.",
                 system="You write clear, accurate, curious LinkedIn posts for a general audience. Reply with the post only.",
                 max_tokens=380, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 55 <= len(out.split()) <= 330 and len(out) <= 2700:
+            if (out := _post_text(out)) and 55 <= len(out.split()) <= 330 and len(out) <= 2700:
                 return out.strip() + NL2 + " ".join(hashtags[:4]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("general post via model failed: %s", exc)
@@ -1093,7 +1117,7 @@ def study_post(topic: dict, hashtags: list[str]) -> tuple[str, str]:
                 "Concrete and encouraging, no personal story, no company names, no 'thrilled to share'. Return the post only.",
                 system="You write clear, practical LinkedIn posts about learning and interview preparation. Reply with the post only.",
                 max_tokens=400, temperature=0.6, timeout=150)
-            if out and isinstance(out, str) and 60 <= len(out.split()) <= 330 and len(out) <= 2700:
+            if (out := _post_text(out)) and 60 <= len(out.split()) <= 330 and len(out) <= 2700:
                 return out.strip() + NL2 + " ".join(hashtags[:5]), "local model"
         except Exception as exc:  # noqa: BLE001
             log.debug("study post via model failed: %s", exc)
@@ -1146,7 +1170,7 @@ def news_post(hashtags: list[str]) -> tuple[str, str, str] | None:
                 "the headlines. Return the post only.\n\nHEADLINES:\n" + "\n".join(f"- {h['title']}" for h in picks),
                 system="You write witty, kind, short LinkedIn posts for software engineers. Reply with the post only.",
                 max_tokens=360, temperature=0.8, timeout=150)
-            if out and isinstance(out, str) and 50 <= len(out.split()) <= 330 and len(out) <= 2500:
+            if (out := _post_text(out)) and 50 <= len(out.split()) <= 330 and len(out) <= 2500:
                 links = "\n".join(f"• {h['title']}: {h['url']}" for h in picks[:3] if h.get("url"))
                 return out.strip() + ("\n\nThe stories:\n" + links if links else "") + "\n\n" + " ".join(hashtags[:4]), "local model", picks[0]["title"][:60]
         except Exception as exc:  # noqa: BLE001

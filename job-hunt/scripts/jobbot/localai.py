@@ -112,6 +112,41 @@ DEFAULT_EMBED_MODEL = "BAAI/bge-small-en-v1.5"
 # and the block is stripped anyway in case a model ignores the hint.
 NO_THINK = "/no_think"
 _THINK_RE = re.compile(r"<think>.*?</think>\s*", re.S)
+# Qwen 3.5 / 3.6 ignore /no_think: their chat template opens a <think> block for the
+# model, so what streams back is the reasoning itself, with no opening tag and -
+# past max_tokens - no closing one either. 61 "LinkedIn posts" once began with
+# "Here's a thinking process:". Two defences: the Qwen prompt is rendered here
+# with an EMPTY think block already closed (see _chatml), and a reply that still
+# reads like reasoning is thrown away instead of handed to the caller.
+_REASONING_RE = re.compile(
+    r"thinking process|analy[sz]e (the )?(user )?(input|request)|deconstruct|\*\*(topic|audience|hook|constraints?|word count|"
+    r"format|length|points to make|lesson to land|ending)\b|^\s*(okay|ok|alright|let me|first,? I)\b|word count check|"
+    r"return (the )?post only|<\|im_start\|>", re.I)
+
+
+def _clean_reply(text: str) -> str | None:
+    """The answer part of a reply, or None when it is reasoning rather than an answer."""
+    if not text:
+        return None
+    if "</think>" in text:
+        text = text.rsplit("</think>", 1)[1]          # a block with no opening tag: Qwen 3.5+ templates
+    text = _THINK_RE.sub("", text).strip()
+    if not text:
+        return None
+    head = text[:600]
+    if _REASONING_RE.search(head) or len(re.findall(r"^\s*(?:\d+\.\s+)?\*\*[^*]+\*\*", text, re.M)) >= 2:
+        return None
+    return text
+
+
+def _is_qwen(path: str) -> bool:
+    return "qwen" in os.path.basename(path or "").lower()
+
+
+def _chatml(sys_text: str, prompt: str) -> str:
+    """Qwen's ChatML turn, with the think block closed before the model starts: it answers at once."""
+    return (f"<|im_start|>system\n{sys_text}<|im_end|>\n<|im_start|>user\n{prompt}<|im_end|>\n"
+            f"<|im_start|>assistant\n<think>\n\n</think>\n\n")
 
 
 def _env(name, default=None):
@@ -226,6 +261,7 @@ def _ask_ollama(prompt, system, max_tokens, json_mode, temperature, limit, model
         "messages": [m for m in ({"role": "system", "content": system} if system else None,
                                  {"role": "user", "content": prompt}) if m],
         "stream": False,
+        "think": False,          # Qwen 3 / DeepSeek-R1 style models: answer, do not reason out loud
         "options": {"temperature": temperature, "num_predict": max_tokens},
     }
     if json_mode:
@@ -242,7 +278,7 @@ def _ask_ollama(prompt, system, max_tokens, json_mode, temperature, limit, model
         _charge(time.time() - started, ok)
     if not ok:
         return None
-    return extract_json(text) if json_mode else (_THINK_RE.sub("", text).strip() or None)
+    return extract_json(text) if json_mode else _clean_reply(text)
 
 
 
@@ -606,13 +642,21 @@ def _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, limit):
         if schema:
             fmt["schema"] = schema
         kwargs["response_format"] = fmt
+    # Plain-text answers from a Qwen model go through a prompt rendered here, with the
+    # think block already closed (_chatml); JSON answers keep the chat API, whose grammar
+    # leaves no room for reasoning in the first place.
+    prefilled = not json and _is_qwen(getattr(llm, "model_path", "") or model_path(download=False) or "")
+    if prefilled:
+        kwargs = dict(prompt=_chatml(sys_text, prompt), max_tokens=max_tokens, temperature=temperature, stream=True,
+                      stop=["<|im_end|>", "<|endoftext|>", "<|im_start|>"])
     started = time.time()
     pieces, ok, timed_out = [], True, False
     try:
-        for chunk in llm.create_chat_completion(**kwargs):
-            delta = (chunk.get("choices") or [{}])[0].get("delta") or {}
-            if delta.get("content"):
-                pieces.append(delta["content"])
+        for chunk in (llm.create_completion(**kwargs) if prefilled else llm.create_chat_completion(**kwargs)):
+            choice = (chunk.get("choices") or [{}])[0]
+            piece = choice.get("text") if prefilled else (choice.get("delta") or {}).get("content")
+            if piece:
+                pieces.append(piece)
             if time.time() - started > limit:
                 timed_out = True
                 break
@@ -627,7 +671,7 @@ def _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, limit):
         return None
     if json:
         return extract_json(text)
-    return _THINK_RE.sub("", text).strip() or None
+    return _clean_reply(text)
 
 
 # ------------------------------------------------------------ task helpers
