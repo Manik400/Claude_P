@@ -18,7 +18,7 @@
  "acko": {
   "ats": "",
   "board": "",
-  "checked": 1789950424.1744142,
+  "checked": 1791646654.4487307,
   "jobs": 0,
   "url": "https://www.acko.com/careers/",
   "via": "link"
@@ -95,6 +95,22 @@
   "url": "https://aiven.io/careers",
   "via": "link"
  },
+ "akuna capital": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653331.5603023,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Akuna%20Capital",
+  "via": "linkedin"
+ },
+ "alphagrep securities": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653214.3321106,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=AlphaGrep%20Securities",
+  "via": "linkedin"
+ },
  "amagi": {
   "ats": "",
   "board": "",
@@ -102,6 +118,30 @@
   "jobs": 0,
   "url": "https://www.amagi.com/careers/",
   "via": "link"
+ },
+ "amazon": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653068.5378742,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Amazon",
+  "via": "linkedin"
+ },
+ "amd": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637383.9454608,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=AMD",
+  "via": "linkedin"
+ },
+ "american express": {
+  "ats": "smartrecruiters",
+  "board": "americanexpressglobal",
+  "checked": 1791646592.3608873,
+  "jobs": 14,
+  "url": "https://jobs.smartrecruiters.com/americanexpressglobal",
+  "via": "name"
  },
  "amplitude": {
   "ats": "greenhouse",
@@ -135,6 +175,14 @@
   "url": "https://apna.co/careers",
   "via": "link"
  },
+ "apple": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637378.914546,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Apple",
+  "via": "linkedin"
+ },
  "applied materials": {
   "ats": "workday",
   "board": "amat.wd1.myworkdayjobs.com/amat/External",
@@ -142,6 +190,14 @@
   "jobs": 2000,
   "url": "https://amat.wd1.myworkdayjobs.com/External",
   "via": "companies.txt"
+ },
+ "arcesium": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653108.1717834,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Arcesium",
+  "via": "linkedin"
  },
  "archer aviation": {
   "ats": "greenhouse",
@@ -158,6 +214,14 @@
   "jobs": 107,
   "url": "https://arcticwolf.com/careers/",
   "via": "careers page"
+ },
+ "arista networks": {
+  "ats": "",
+  "board": "",
+  "checked": 1791652987.0296237,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Arista%20Networks",
+  "via": "linkedin"
  },
  "asana": {
   "ats": "greenhouse",
@@ -194,15 +258,23 @@
  "ather energy": {
   "ats": "",
   "board": "",
-  "checked": 1789950423.2602904,
+  "checked": 1791646691.6563513,
   "jobs": 0,
   "url": "https://www.atherenergy.com/careers",
   "via": "link"
  },
+ "atlan": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653054.195994,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Atlan",
+  "via": "linkedin"
+ },
  "atlassian": {
   "ats": "",
   "board": "",
-  "checked": 1789950423.8915405,
+  "checked": 1791637375.6232083,
   "jobs": 0,
   "url": "https://www.atlassian.com/company/careers",
   "via": "link"
@@ -239,6 +311,14 @@
   "url": "https://jobs.smartrecruiters.com/auto1",
   "via": "companies.txt"
  },
+ "autodesk": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653082.1781764,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Autodesk",
+  "via": "linkedin"
+ },
  "axiom space": {
   "ats": "workday",
   "board": "axiomspace.wd5.myworkdayjobs.com/axiomspace/External_Career_Site",
@@ -254,6 +334,14 @@
   "jobs": 31,
   "url": "https://jobs.ashbyhq.com/backmarket",
   "via": "name"
+ },
+ "barclays": {
+  "ats": "workday",
+  "board": "barclays.wd3.myworkdayjobs.com/barclays/external_career_site_barclays",
+  "checked": 1791646422.5866067,
+  "jobs": 765,
+  "url": "https://barclays.wd3.myworkdayjobs.com/external_career_site_barclays",
+  "via": "companies.txt"
  },
  "baseten": {
   "ats": "ashby",
@@ -287,6 +375,22 @@
   "url": "https://jobs.lever.co/blablacar",
   "via": "name"
  },
+ "blackrock": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653295.9932692,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Blackrock",
+  "via": "linkedin"
+ },
+ "blinkit": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646689.5977666,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Blinkit",
+  "via": "linkedin"
+ },
  "block / square": {
   "ats": "greenhouse",
   "board": "block",
@@ -295,13 +399,37 @@
   "url": "https://job-boards.greenhouse.io/block",
   "via": "companies.txt"
  },
+ "bloomberg philanthropies": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653373.034387,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Bloomberg%20Philanthropies",
+  "via": "linkedin"
+ },
+ "bny": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646834.1008403,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=BNY",
+  "via": "linkedin"
+ },
  "booking.com": {
   "ats": "",
   "board": "",
-  "checked": 1789950502.1098146,
+  "checked": 1791637392.5002542,
   "jobs": 0,
   "url": "https://careers.booking.com/",
   "via": "link"
+ },
+ "bosch global software technologies": {
+  "ats": "",
+  "board": "",
+  "checked": 1791639924.8054605,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Bosch%20Global%20Software%20Technologies",
+  "via": "linkedin"
  },
  "box": {
   "ats": "greenhouse",
@@ -399,6 +527,14 @@
   "url": "https://www.capillarytech.com/careers/",
   "via": "link"
  },
+ "capital one": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653348.6181848,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Capital%20One",
+  "via": "linkedin"
+ },
  "careem": {
   "ats": "greenhouse",
   "board": "careem",
@@ -406,6 +542,14 @@
   "jobs": 20,
   "url": "https://job-boards.greenhouse.io/careem",
   "via": "companies.txt"
+ },
+ "cars24": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653305.7433128,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Cars24",
+  "via": "linkedin"
  },
  "celonis": {
   "ats": "greenhouse",
@@ -434,7 +578,7 @@
  "chargebee": {
   "ats": "",
   "board": "",
-  "checked": 1789950479.7677498,
+  "checked": 1791639966.2248147,
   "jobs": 0,
   "url": "https://www.chargebee.com/careers/",
   "via": "link"
@@ -487,10 +631,26 @@
   "url": "https://cisco.wd5.myworkdayjobs.com/Cisco_Careers",
   "via": "companies.txt"
  },
+ "citadel securities": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646910.1420856,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Citadel%20Securities",
+  "via": "linkedin"
+ },
+ "citi": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653278.0259,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Citi",
+  "via": "linkedin"
+ },
  "clevertap": {
   "ats": "",
   "board": "",
-  "checked": 1789950480.0299861,
+  "checked": 1791639971.9644918,
   "jobs": 0,
   "url": "https://clevertap.com/careers/",
   "via": "link"
@@ -546,7 +706,7 @@
  "cohesity": {
   "ats": "",
   "board": "",
-  "checked": 1789950480.296473,
+  "checked": 1791637383.071454,
   "jobs": 0,
   "url": "https://www.cohesity.com/careers/",
   "via": "link"
@@ -655,6 +815,22 @@
   "url": "https://jobs.ashbyhq.com/cursor",
   "via": "name (unconfirmed)"
  },
+ "d. e. shaw": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646876.218571,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=D.%20E.%20Shaw",
+  "via": "linkedin"
+ },
+ "da vinci": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653304.9993007,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Da%20Vinci",
+  "via": "linkedin"
+ },
  "darktrace": {
   "ats": "workday",
   "board": "darktrace.wd3.myworkdayjobs.com/darktrace/DarktaceExternal",
@@ -735,6 +911,14 @@
   "url": "https://deepmind.google/careers/",
   "via": "link"
  },
+ "delhivery": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640239.1726387,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Delhivery",
+  "via": "linkedin"
+ },
  "deliveroo": {
   "ats": "ashby",
   "board": "deliveroo",
@@ -751,10 +935,26 @@
   "url": "https://jobs.smartrecruiters.com/deliveryhero",
   "via": "companies.txt"
  },
+ "dell technologies": {
+  "ats": "",
+  "board": "",
+  "checked": 1791639919.834916,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Dell%20Technologies",
+  "via": "linkedin"
+ },
+ "deutsche bank": {
+  "ats": "personio",
+  "board": "deutschebank",
+  "checked": 1791646440.1351717,
+  "jobs": 3,
+  "url": "https://deutschebank.jobs.personio.de",
+  "via": "name (unconfirmed)"
+ },
  "digit insurance": {
   "ats": "",
   "board": "",
-  "checked": 1789950548.0606525,
+  "checked": 1791646680.8597507,
   "jobs": 0,
   "url": "https://www.godigit.com/careers",
   "via": "link"
@@ -799,6 +999,14 @@
   "url": "https://careers.docusign.com/",
   "via": "link"
  },
+ "dolat capital": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646932.955757,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Dolat%20Capital",
+  "via": "linkedin"
+ },
  "doordash": {
   "ats": "greenhouse",
   "board": "doordashusa",
@@ -818,7 +1026,7 @@
  "dream11 / dream sports": {
   "ats": "",
   "board": "",
-  "checked": 1789950563.089206,
+  "checked": 1791639962.1247911,
   "jobs": 0,
   "url": "https://www.dreamsports.group/careers/",
   "via": "link"
@@ -838,6 +1046,14 @@
   "jobs": 38,
   "url": "https://job-boards.greenhouse.io/druva",
   "via": "companies.txt"
+ },
+ "dunzo": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646647.1706533,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Dunzo",
+  "via": "linkedin"
  },
  "elastic": {
   "ats": "greenhouse",
@@ -879,6 +1095,14 @@
   "url": "https://exotel.com/careers/",
   "via": "link"
  },
+ "expedia group": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653064.5542994,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Expedia%20Group",
+  "via": "linkedin"
+ },
  "facilio": {
   "ats": "",
   "board": "",
@@ -911,6 +1135,14 @@
   "url": "https://fi.money/careers",
   "via": "careers page"
  },
+ "fidelity national information services": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653314.7099478,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Fidelity%20National%20Information%20Services",
+  "via": "linkedin"
+ },
  "figma": {
   "ats": "greenhouse",
   "board": "figma",
@@ -935,10 +1167,18 @@
   "url": "https://fireworks.ai/careers",
   "via": "careers page"
  },
+ "flexport": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653073.366856,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Flexport",
+  "via": "linkedin"
+ },
  "flipkart": {
   "ats": "",
   "board": "",
-  "checked": 1789950617.2828414,
+  "checked": 1791639964.6971064,
   "jobs": 0,
   "url": "https://www.flipkartcareers.com/",
   "via": "link"
@@ -950,6 +1190,14 @@
   "jobs": 159,
   "url": "https://job-boards.greenhouse.io/flix",
   "via": "companies.txt"
+ },
+ "flow traders": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653323.4393425,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Flow%20Traders",
+  "via": "linkedin"
  },
  "forto": {
   "ats": "ashby",
@@ -975,6 +1223,14 @@
   "url": "https://careers.fubo.tv/",
   "via": "link"
  },
+ "games24x7": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640130.2225313,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Games24x7",
+  "via": "linkedin"
+ },
  "gemini": {
   "ats": "greenhouse",
   "board": "gemini",
@@ -994,7 +1250,7 @@
  "github": {
   "ats": "",
   "board": "",
-  "checked": 1789950603.4788115,
+  "checked": 1791637386.330636,
   "jobs": 0,
   "url": "https://www.github.careers/",
   "via": "link"
@@ -1006,6 +1262,14 @@
   "jobs": 216,
   "url": "https://job-boards.greenhouse.io/gitlab",
   "via": "companies.txt"
+ },
+ "glance": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653099.1456032,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Glance",
+  "via": "linkedin"
  },
  "glean": {
   "ats": "smartrecruiters",
@@ -1022,6 +1286,22 @@
   "jobs": 3,
   "url": "https://www.goat.com/careers",
   "via": "careers page"
+ },
+ "goldman sachs": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646701.5364733,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Goldman%20Sachs",
+  "via": "linkedin"
+ },
+ "google": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653067.539766,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Google",
+  "via": "linkedin"
  },
  "gopuff": {
   "ats": "lever",
@@ -1046,6 +1326,14 @@
   "jobs": 130,
   "url": "https://job-boards.greenhouse.io/grafanalabs",
   "via": "companies.txt"
+ },
+ "graviton research capital": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653174.9902966,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Graviton%20Research%20Capital",
+  "via": "linkedin"
  },
  "groww": {
   "ats": "greenhouse",
@@ -1090,7 +1378,7 @@
  "hashicorp": {
   "ats": "",
   "board": "",
-  "checked": 1789950605.0537958,
+  "checked": 1791637381.4588296,
   "jobs": 0,
   "url": "https://www.hashicorp.com/careers",
   "via": "link"
@@ -1098,7 +1386,7 @@
  "hasura": {
   "ats": "",
   "board": "",
-  "checked": 1789950627.069249,
+  "checked": 1791639974.0855713,
   "jobs": 0,
   "url": "https://hasura.io/careers/",
   "via": "link"
@@ -1127,6 +1415,14 @@
   "url": "https://hp.wd5.myworkdayjobs.com/ExternalCareerSite",
   "via": "companies.txt"
  },
+ "hsbc": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646763.3275273,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=HSBC",
+  "via": "linkedin"
+ },
  "hubspot": {
   "ats": "greenhouse",
   "board": "hubspotjobs",
@@ -1134,6 +1430,14 @@
   "jobs": 138,
   "url": "https://job-boards.greenhouse.io/hubspotjobs",
   "via": "name"
+ },
+ "hudson river trading": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653272.3882387,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Hudson%20River%20Trading",
+  "via": "linkedin"
  },
  "hugging face": {
   "ats": "workable",
@@ -1159,6 +1463,14 @@
   "url": "https://job-boards.greenhouse.io/imbue",
   "via": "companies.txt"
  },
+ "imc trading": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653264.0442884,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=IMC%20Trading",
+  "via": "linkedin"
+ },
  "indeed": {
   "ats": "",
   "board": "",
@@ -1175,10 +1487,18 @@
   "url": "https://infra.market/careers",
   "via": "link"
  },
+ "inmobi": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653090.8861334,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=InMobi",
+  "via": "linkedin"
+ },
  "innovaccer": {
   "ats": "",
   "board": "",
-  "checked": 1789950627.0968013,
+  "checked": 1791639956.5486815,
   "jobs": 0,
   "url": "https://innovaccer.com/careers/",
   "via": "link"
@@ -1207,6 +1527,14 @@
   "url": "https://job-boards.greenhouse.io/intercom",
   "via": "companies.txt"
  },
+ "intuit": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637380.0186026,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Intuit",
+  "via": "linkedin"
+ },
  "iterable": {
   "ats": "greenhouse",
   "board": "iterable",
@@ -1214,6 +1542,22 @@
   "jobs": 16,
   "url": "https://job-boards.greenhouse.io/iterable",
   "via": "companies.txt"
+ },
+ "jane street": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653235.4124165,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Jane%20Street",
+  "via": "linkedin"
+ },
+ "jar": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640263.2053285,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Jar",
+  "via": "linkedin"
  },
  "jetbrains": {
   "ats": "greenhouse",
@@ -1239,10 +1583,34 @@
   "url": "https://www.jobyaviation.com/careers/",
   "via": "link"
  },
+ "jpmorgan chase": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646696.806718,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=JPMorgan%20Chase",
+  "via": "linkedin"
+ },
+ "jump trading": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653280.5895512,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Jump%20Trading",
+  "via": "linkedin"
+ },
+ "juniper networks": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637400.348299,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Juniper%20Networks",
+  "via": "linkedin"
+ },
  "jupiter": {
   "ats": "",
   "board": "",
-  "checked": 1789950634.9098008,
+  "checked": 1791646682.0066988,
   "jobs": 0,
   "url": "https://jupiter.money/careers",
   "via": "link"
@@ -1250,7 +1618,7 @@
  "juspay": {
   "ats": "",
   "board": "",
-  "checked": 1789950647.9400837,
+  "checked": 1791639971.4493961,
   "jobs": 0,
   "url": "https://juspay.in/careers",
   "via": "link"
@@ -1262,6 +1630,14 @@
   "jobs": 74,
   "url": "https://job-boards.greenhouse.io/keepersecurity",
   "via": "companies.txt"
+ },
+ "khatabook": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646685.4524312,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Khatabook",
+  "via": "linkedin"
  },
  "kissflow": {
   "ats": "",
@@ -1310,6 +1686,22 @@
   "jobs": 0,
   "url": "https://www.leadsquared.com/careers/",
   "via": "link"
+ },
+ "lenskart": {
+  "ats": "recruitee",
+  "board": "lenskartcareers",
+  "checked": 1791640121.7277436,
+  "jobs": 86,
+  "url": "https://lenskartcareers.recruitee.com",
+  "via": "name"
+ },
+ "licious": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646688.6701021,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Licious",
+  "via": "linkedin"
  },
  "linear": {
   "ats": "ashby",
@@ -1375,6 +1767,14 @@
   "url": "https://marvell.wd1.myworkdayjobs.com/MarvellCareers",
   "via": "companies.txt"
  },
+ "mastercard": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646740.3146331,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Mastercard",
+  "via": "linkedin"
+ },
  "materialize": {
   "ats": "ashby",
   "board": "materialize",
@@ -1382,6 +1782,22 @@
   "jobs": 2,
   "url": "https://jobs.ashbyhq.com/materialize",
   "via": "name"
+ },
+ "mathworks": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637440.9304729,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=MathWorks",
+  "via": "linkedin"
+ },
+ "media.net": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653070.5463398,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Media.net",
+  "via": "linkedin"
  },
  "meesho": {
   "ats": "lever",
@@ -1418,7 +1834,7 @@
  "meta": {
   "ats": "",
   "board": "",
-  "checked": 1789950675.7583263,
+  "checked": 1791637301.47425,
   "jobs": 0,
   "url": "https://www.metacareers.com/",
   "via": "link"
@@ -1430,6 +1846,22 @@
   "jobs": 3041,
   "url": "https://micron.wd1.myworkdayjobs.com/External",
   "via": "companies.txt"
+ },
+ "microsoft": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637383.9454608,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Microsoft",
+  "via": "linkedin"
+ },
+ "millennium": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646924.8371065,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Millennium",
+  "via": "linkedin"
  },
  "milvus / zilliz": {
   "ats": "lever",
@@ -1527,10 +1959,26 @@
   "url": "https://job-boards.greenhouse.io/monzo",
   "via": "companies.txt"
  },
+ "morgan stanley": {
+  "ats": "workday",
+  "board": "ms.wd5.myworkdayjobs.com/ms/External",
+  "checked": 1791646423.0810153,
+  "jobs": 1307,
+  "url": "https://ms.wd5.myworkdayjobs.com/External",
+  "via": "companies.txt"
+ },
+ "mpl": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640120.4068568,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=MPL",
+  "via": "linkedin"
+ },
  "myntra": {
   "ats": "",
   "board": "",
-  "checked": 1789950690.8307078,
+  "checked": 1791640228.056542,
   "jobs": 0,
   "url": "https://careers.myntra.com/",
   "via": "link"
@@ -1567,6 +2015,14 @@
   "url": "https://jobs.ashbyhq.com/neon",
   "via": "name"
  },
+ "netskope": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640017.5412674,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Netskope",
+  "via": "linkedin"
+ },
  "new relic": {
   "ats": "greenhouse",
   "board": "newrelic",
@@ -1574,6 +2030,22 @@
   "jobs": 47,
   "url": "https://job-boards.greenhouse.io/newrelic",
   "via": "companies.txt"
+ },
+ "nk securities": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646928.468469,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=NK%20Securities",
+  "via": "linkedin"
+ },
+ "nomura": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646785.4206948,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Nomura",
+  "via": "linkedin"
  },
  "notion": {
   "ats": "ashby",
@@ -1602,7 +2074,7 @@
  "nutanix": {
   "ats": "",
   "board": "",
-  "checked": 1789950693.8391356,
+  "checked": 1791637345.8146036,
   "jobs": 0,
   "url": "https://www.linkedin.com/jobs/search/?keywords=Nutanix",
   "via": "link"
@@ -1614,6 +2086,14 @@
   "jobs": 2000,
   "url": "https://nvidia.wd5.myworkdayjobs.com/NVIDIAExternalCareerSite",
   "via": "link"
+ },
+ "nykaa": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640179.9468558,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Nykaa",
+  "via": "linkedin"
  },
  "observe.ai": {
   "ats": "greenhouse",
@@ -1658,7 +2138,7 @@
  "ola": {
   "ats": "",
   "board": "",
-  "checked": 1789950710.1297143,
+  "checked": 1791640160.1737092,
   "jobs": 0,
   "url": "https://www.olacabs.com/careers",
   "via": "link"
@@ -1666,7 +2146,7 @@
  "ola electric": {
   "ats": "",
   "board": "",
-  "checked": 1789950720.1294954,
+  "checked": 1791646636.8246384,
   "jobs": 0,
   "url": "https://www.olaelectric.com/careers",
   "via": "link"
@@ -1678,6 +2158,22 @@
   "jobs": 817,
   "url": "https://jobs.ashbyhq.com/openai",
   "via": "name"
+ },
+ "optiver": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653255.045685,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Optiver",
+  "via": "linkedin"
+ },
+ "oracle": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637370.5005054,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Oracle",
+  "via": "linkedin"
  },
  "ovhcloud": {
   "ats": "",
@@ -1711,6 +2207,14 @@
   "url": "https://www.palantir.com/careers/",
   "via": "careers page"
  },
+ "palo alto networks": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653011.2082467,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Palo%20Alto%20Networks",
+  "via": "linkedin"
+ },
  "papaya global": {
   "ats": "",
   "board": "",
@@ -1727,6 +2231,14 @@
   "url": "https://jobs.ashbyhq.com/patreon",
   "via": "name"
  },
+ "paypal": {
+  "ats": "",
+  "board": "",
+  "checked": 1791652936.5296602,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Paypal",
+  "via": "linkedin"
+ },
  "paypay": {
   "ats": "greenhouse",
   "board": "paypay",
@@ -1734,6 +2246,14 @@
   "jobs": 85,
   "url": "https://job-boards.greenhouse.io/paypay",
   "via": "companies.txt"
+ },
+ "paytm": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653073.3702965,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Paytm",
+  "via": "linkedin"
  },
  "perplexity": {
   "ats": "ashby",
@@ -1754,10 +2274,18 @@
  "phonepe": {
   "ats": "",
   "board": "",
-  "checked": 1789950724.2387657,
+  "checked": 1791639952.5831027,
   "jobs": 0,
   "url": "https://www.phonepe.com/careers/",
   "via": "link"
+ },
+ "physics wallah": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640257.747079,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Physics%20Wallah",
+  "via": "linkedin"
  },
  "pine labs": {
   "ats": "greenhouse",
@@ -1818,7 +2346,7 @@
  "policybazaar": {
   "ats": "",
   "board": "",
-  "checked": 1789950725.5348973,
+  "checked": 1791640204.5553384,
   "jobs": 0,
   "url": "https://www.policybazaar.com/careers/",
   "via": "link"
@@ -1850,7 +2378,7 @@
  "postman": {
   "ats": "",
   "board": "",
-  "checked": 1789950732.288792,
+  "checked": 1791639975.148808,
   "jobs": 0,
   "url": "https://www.postman.com/company/careers/",
   "via": "link"
@@ -1879,6 +2407,30 @@
   "url": "https://qonto.com/en/careers",
   "via": "careers page"
  },
+ "quadeye": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646899.7350428,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Quadeye",
+  "via": "linkedin"
+ },
+ "qualcomm": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637377.9503696,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Qualcomm",
+  "via": "linkedin"
+ },
+ "qube research & technologies": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653296.9889984,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Qube%20Research%20&%20Technologies",
+  "via": "linkedin"
+ },
  "quora": {
   "ats": "ashby",
   "board": "quora",
@@ -1902,6 +2454,14 @@
   "jobs": 148,
   "url": "https://jobs.ashbyhq.com/ramp",
   "via": "name"
+ },
+ "rapido": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646685.8150418,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Rapido",
+  "via": "linkedin"
  },
  "razorpay": {
   "ats": "greenhouse",
@@ -2002,7 +2562,7 @@
  "rippling": {
   "ats": "",
   "board": "",
-  "checked": 1789950762.9500594,
+  "checked": 1791639967.2791023,
   "jobs": 0,
   "url": "https://www.rippling.com/careers",
   "via": "link"
@@ -2079,6 +2639,30 @@
   "url": "https://salesforce.wd12.myworkdayjobs.com/External_Career_Site",
   "via": "link"
  },
+ "samsung": {
+  "ats": "",
+  "board": "",
+  "checked": 1791652949.5364597,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Samsung",
+  "via": "linkedin"
+ },
+ "sap labs india": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637460.4353344,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=SAP%20Labs%20India",
+  "via": "linkedin"
+ },
+ "sarvam ai": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653189.709617,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Sarvam%20AI",
+  "via": "linkedin"
+ },
  "scale ai": {
   "ats": "greenhouse",
   "board": "scaleai",
@@ -2143,6 +2727,22 @@
   "url": "https://jobs.smartrecruiters.com/servicetitan",
   "via": "name"
  },
+ "setu": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640229.9639304,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Setu",
+  "via": "linkedin"
+ },
+ "sharechat": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640248.81206,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=ShareChat",
+  "via": "linkedin"
+ },
  "shield ai": {
   "ats": "lever",
   "board": "shieldai",
@@ -2158,6 +2758,14 @@
   "jobs": 0,
   "url": "https://www.sea.com/careers",
   "via": "link"
+ },
+ "siemens": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637502.8100536,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Siemens",
+  "via": "linkedin"
  },
  "sierra": {
   "ats": "ashby",
@@ -2198,6 +2806,14 @@
   "jobs": 27,
   "url": "https://job-boards.greenhouse.io/slice",
   "via": "companies.txt"
+ },
+ "smallcase": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640266.8724685,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Smallcase",
+  "via": "linkedin"
  },
  "smartsheet": {
   "ats": "greenhouse",
@@ -2263,6 +2879,14 @@
   "url": "https://job-boards.greenhouse.io/spacex",
   "via": "companies.txt"
  },
+ "spinny": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640248.814066,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Spinny",
+  "via": "linkedin"
+ },
  "spotify": {
   "ats": "lever",
   "board": "spotify",
@@ -2278,6 +2902,22 @@
   "jobs": 81,
   "url": "https://www.sprinklr.com/careers/",
   "via": "careers page"
+ },
+ "squarepoint capital": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653297.5691042,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Squarepoint%20Capital",
+  "via": "linkedin"
+ },
+ "state street": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646862.8510633,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=State%20Street",
+  "via": "linkedin"
  },
  "stockx": {
   "ats": "greenhouse",
@@ -2351,6 +2991,14 @@
   "url": "https://jobs.smartrecruiters.com/swiggy",
   "via": "name"
  },
+ "synopsys": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637412.004978,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Synopsys",
+  "via": "linkedin"
+ },
  "tailscale": {
   "ats": "greenhouse",
   "board": "tailscale",
@@ -2391,6 +3039,14 @@
   "url": "https://www.tenable.com/careers",
   "via": "careers page"
  },
+ "texas instruments": {
+  "ats": "",
+  "board": "",
+  "checked": 1791637319.6380641,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Texas%20Instruments",
+  "via": "linkedin"
+ },
  "thinking machines": {
   "ats": "ashby",
   "board": "thinkingmachines",
@@ -2398,6 +3054,14 @@
   "jobs": 45,
   "url": "https://jobs.ashbyhq.com/thinkingmachines",
   "via": "name"
+ },
+ "thoughtspot": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653072.568995,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=ThoughtSpot",
+  "via": "linkedin"
  },
  "tiktok": {
   "ats": "",
@@ -2439,6 +3103,14 @@
   "url": "https://job-boards.greenhouse.io/togetherai",
   "via": "companies.txt"
  },
+ "tower research capital": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653154.9928582,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Tower%20Research%20Capital",
+  "via": "linkedin"
+ },
  "trivago": {
   "ats": "greenhouse",
   "board": "trivago",
@@ -2471,6 +3143,14 @@
   "url": "https://job-boards.greenhouse.io/twilio",
   "via": "companies.txt"
  },
+ "two sigma": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646924.8371065,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Two%20Sigma",
+  "via": "linkedin"
+ },
  "uber": {
   "ats": "smartrecruiters",
   "board": "uber",
@@ -2479,10 +3159,18 @@
   "url": "https://jobs.smartrecruiters.com/uber",
   "via": "name"
  },
+ "ubs": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646801.0084374,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=UBS",
+  "via": "linkedin"
+ },
  "udaan": {
   "ats": "",
   "board": "",
-  "checked": 1789950881.8426642,
+  "checked": 1791640266.8742166,
   "jobs": 0,
   "url": "https://udaan.com/careers",
   "via": "link"
@@ -2502,6 +3190,14 @@
   "jobs": 0,
   "url": "https://unity.com/careers",
   "via": "link"
+ },
+ "urban company": {
+  "ats": "",
+  "board": "",
+  "checked": 1791640229.9639304,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Urban%20Company",
+  "via": "linkedin"
  },
  "vanta": {
   "ats": "ashby",
@@ -2575,6 +3271,14 @@
   "url": "https://www.vymo.com/careers/",
   "via": "link"
  },
+ "walmart": {
+  "ats": "workday",
+  "board": "walmart.wd504.myworkdayjobs.com/walmart/WalmartExternal",
+  "checked": 1791637167.6524348,
+  "jobs": 2000,
+  "url": "https://walmart.wd504.myworkdayjobs.com/WalmartExternal",
+  "via": "companies.txt"
+ },
  "wayfair": {
   "ats": "smartrecruiters",
   "board": "wayfair",
@@ -2614,6 +3318,22 @@
   "jobs": 0,
   "url": "https://wandb.ai/site/careers",
   "via": "link"
+ },
+ "wells fargo": {
+  "ats": "",
+  "board": "",
+  "checked": 1791646696.6803617,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Wells%20Fargo",
+  "via": "linkedin"
+ },
+ "western digital": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653034.9842563,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Western%20Digital",
+  "via": "linkedin"
  },
  "whatfix": {
   "ats": "smartrecruiters",
@@ -2671,6 +3391,14 @@
   "url": "https://workday.wd5.myworkdayjobs.com/Workday",
   "via": "companies.txt"
  },
+ "worldquant": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653289.4358127,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=WorldQuant",
+  "via": "linkedin"
+ },
  "xai": {
   "ats": "greenhouse",
   "board": "xai",
@@ -2678,6 +3406,14 @@
   "jobs": 266,
   "url": "https://job-boards.greenhouse.io/xai",
   "via": "companies.txt"
+ },
+ "yahoo": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653096.5354908,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Yahoo",
+  "via": "linkedin"
  },
  "yellow.ai": {
   "ats": "",
@@ -2722,10 +3458,26 @@
  "zepto": {
   "ats": "",
   "board": "",
-  "checked": 1789950888.8091598,
+  "checked": 1791639976.5414793,
   "jobs": 0,
   "url": "https://www.zepto.in/careers",
   "via": "link"
+ },
+ "zerodha": {
+  "ats": "",
+  "board": "",
+  "checked": 1791639973.0551608,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Zerodha",
+  "via": "linkedin"
+ },
+ "zeta": {
+  "ats": "",
+  "board": "",
+  "checked": 1791653122.6019037,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Zeta",
+  "via": "linkedin"
  },
  "zetwerk": {
   "ats": "",
@@ -2751,10 +3503,18 @@
   "url": "https://www.flyzipline.com/careers",
   "via": "link"
  },
+ "zoho": {
+  "ats": "",
+  "board": "",
+  "checked": 1791639881.9228835,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Zoho",
+  "via": "linkedin"
+ },
  "zomato / eternal": {
   "ats": "",
   "board": "",
-  "checked": 1789950892.1755242,
+  "checked": 1791639970.4283404,
   "jobs": 0,
   "url": "https://www.eternal.com/careers/",
   "via": "link"
@@ -2766,6 +3526,14 @@
   "jobs": 237,
   "url": "https://jobs.lever.co/zoox",
   "via": "name"
+ },
+ "zscaler": {
+  "ats": "",
+  "board": "",
+  "checked": 1791652965.5398564,
+  "jobs": 0,
+  "url": "https://www.linkedin.com/jobs/search/?keywords=Zscaler",
+  "via": "linkedin"
  },
  "zynga": {
   "ats": "greenhouse",
