@@ -53,6 +53,11 @@ _cache: dict | None = None
 _budget = {"web": None, "role": None}
 
 
+class Unavailable(Exception):
+    """The source could not be asked (no budget, no network, rate limited) - unlike "it had
+    nothing", this is never cached: the next lookup asks again."""
+
+
 # ----------------------------------------------------------------------------- helpers
 
 def role_family(title: str) -> str:
@@ -82,25 +87,65 @@ def _load_env() -> None:
             continue
 
 
+_cache_mtime = 0.0
+
+
+def _read_disk() -> dict:
+    try:
+        with open(CACHE_PATH, encoding="utf-8") as f:
+            data = json.load(f)
+        return data if isinstance(data, dict) else {}
+    except (OSError, ValueError):
+        return {}
+
+
 def _cache_load() -> dict:
-    global _cache
-    if _cache is None:
-        try:
-            with open(CACHE_PATH, encoding="utf-8") as f:
-                _cache = json.load(f)
-        except (OSError, ValueError):
-            _cache = {}
+    """The shared cache, re-read when another process (live feed, Premium, a scan, the hourly
+    round all use it) has written it since this one last looked."""
+    global _cache, _cache_mtime
+    try:
+        mtime = os.path.getmtime(CACHE_PATH)
+    except OSError:
+        mtime = 0.0
+    if _cache is None or mtime > _cache_mtime:
+        disk = _read_disk()
+        if _cache:
+            disk = _merge(disk, _cache)
+        _cache, _cache_mtime = disk, mtime
     return _cache
 
 
+def _merge(a: dict, b: dict) -> dict:
+    """Both caches' entries; for a key in both, the newer one."""
+    out = dict(a)
+    for k, v in b.items():
+        if k not in out or (v.get("at") or 0) >= (out[k].get("at") or 0):
+            out[k] = v
+    return out
+
+
 def _cache_save() -> None:
+    """Merge with what is on disk now, then write - several processes share this file, and a
+    plain write of this process's copy wiped what the others had added (2026-10-12)."""
+    global _cache, _cache_mtime
     if _cache is None:
         return
     os.makedirs(os.path.dirname(CACHE_PATH), exist_ok=True)
-    tmp = CACHE_PATH + ".tmp"
+    merged = _merge(_read_disk(), _cache)
+    tmp = f"{CACHE_PATH}.{os.getpid()}.tmp"
     with open(tmp, "w", encoding="utf-8") as f:
-        json.dump(_cache, f, ensure_ascii=False)
-    os.replace(tmp, CACHE_PATH)
+        json.dump(merged, f, ensure_ascii=False)
+    for _attempt in range(5):
+        try:
+            os.replace(tmp, CACHE_PATH)
+            break
+        except PermissionError:                 # Windows: another process is replacing it this instant
+            time.sleep(0.2)
+    _cache = merged
+    try:
+        _cache_mtime = os.path.getmtime(CACHE_PATH)
+    except OSError:
+        pass
 
 
 _budget_window = {"start": 0.0}
@@ -164,17 +209,33 @@ def _web_figures(q: str, must_contain: str = "", min_trusted: int = 1, role_leve
     _load_env()
     key = os.environ.get("FIRECRAWL_API_KEY")
     if not key or not _budget_left("web"):
-        return None
+        raise Unavailable("web budget")
     import requests
     _spend("web")
-    try:
-        r = requests.post("https://api.firecrawl.dev/v1/search", json={"query": q, "limit": 6},
-                          headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"}, timeout=25)
+    data = None
+    for _attempt in range(2):
+        try:
+            r = requests.post("https://api.firecrawl.dev/v1/search", json={"query": q, "limit": 6},
+                              headers={"Authorization": f"Bearer {key}", "Content-Type": "application/json"}, timeout=25)
+        except Exception as exc:  # noqa: BLE001 - no network: not an answer, never cached
+            raise Unavailable(f"web search: {exc}") from exc
+        if r.status_code == 429:
+            # the plan allows ~18 searches a minute across every process on this PC
+            try:
+                wait = float((r.json() or {}).get("retry_after_seconds") or 3)
+            except ValueError:
+                wait = 3.0
+            time.sleep(min(10.0, wait + 0.5))
+            continue
         if r.status_code != 200:
-            return None
-        data = r.json().get("data") or []
-    except Exception:  # noqa: BLE001 - no network, odd JSON: just no estimate
-        return None
+            raise Unavailable(f"web search: HTTP {r.status_code}")
+        try:
+            data = r.json().get("data") or []
+        except ValueError as exc:
+            raise Unavailable("web search: bad JSON") from exc
+        break
+    if data is None:
+        raise Unavailable("web search: rate limited")
     cname = must_contain
     figures, urls = [], []
     for it in data:
@@ -267,7 +328,10 @@ def _role(title: str, country: str) -> dict | None:
     if hit and hit.get("at") and time.time() - hit["at"] < CACHE_DAYS * 86400 and hit.get("est"):
         return hit["est"]
     if cname.lower() == "india":
-        est = _web_figures(f"{role_family(title)} salary India fresher 0-2 years LPA ambitionbox", min_trusted=1, role_level=True)
+        try:
+            est = _web_figures(f"{role_family(title)} salary India fresher 0-2 years LPA ambitionbox", min_trusted=1, role_level=True)
+        except Unavailable:
+            return None                              # rate limited / offline: asked again next time
         if est:
             est.update(kind="role", source=f"market median for a {role_family(title)} in India, 0-2 yrs ({est['source']})")
             cache[rk] = {"at": time.time(), "est": est}
@@ -336,8 +400,11 @@ def estimate(title: str, company: str, country: str = "IN", allow_web: bool = Tr
     est = _typical(company) if india else None        # the bands in mnc.txt are India figures: TCS Amsterdam is not 5 LPA
     tried_web = False
     if est is None and allow_web and _budget_left("web"):
-        tried_web = True
-        est = _web(company, title, country)
+        try:
+            est = _web(company, title, country)
+            tried_web = True                                  # the search answered (with or without figures)
+        except Unavailable:
+            est = None                                        # rate limited / offline: not cached, asked again
     if est is not None or tried_web:
         cache[k] = {"at": time.time(), "est": est}           # a real answer, or a real "nothing found"
         _cache_save()
