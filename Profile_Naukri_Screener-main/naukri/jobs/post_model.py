@@ -130,7 +130,9 @@ def _localai(model: str | None):
         os.environ["LOCAL_AI_MODEL"] = model            # read when the model is first loaded in this process
     os.environ.setdefault("LOCAL_AI_BUDGET_SECONDS", str(10 ** 7))   # labeling runs for hours, not one budget
     os.environ.setdefault("LOCAL_AI_CTX", "2048")                     # a post and the answer; a smaller KV cache leaves RAM for the weights
-    os.environ.setdefault("LOCAL_AI_THREADS", str(max(4, (os.cpu_count() or 8) - 2)))
+    # 3 threads, not cpu_count-2 (10 on this PC): labeling is background work - it was taking the
+    # whole CPU around the clock. It only labels while the PC is free anyway (load_guard).
+    os.environ["LOCAL_AI_THREADS"] = os.environ.get("POST_LABEL_THREADS") or str(min(3, os.cpu_count() or 3))
     from jobbot import localai  # type: ignore
     return localai
 
@@ -182,10 +184,14 @@ def label(limit: int | None = None, model: str = TEACHER, stop_at: str | None = 
     log.info("teacher %s: %d to label (%d done before)", model.split(":")[-1], len(todo), len(done))
     n = failed = 0
     t0 = time.time()
+    from .load_guard import wait_until_free
     for rec in todo:
         if deadline and datetime.now() >= deadline:
             log.info("  stop time %s reached", stop_at)
             break
+        # The big model only while the PC can spare it: no job-hunt run in progress, 6 GB RAM free,
+        # and you away from the keyboard. Otherwise the model is unloaded and the labeler waits.
+        wait_until_free(release=ai.release, what="post labeler")
         t = time.time()
         lab = teacher_label(ai, rec)
         if lab is None:
@@ -383,6 +389,8 @@ def main(argv=None) -> int:
     if args.run:
         lp._guard_children()
         lp._keep_awake()
+        from .load_guard import background_priority
+        background_priority("idle")          # the CPU only when nothing else wants it
         print(json.dumps(run_continuous(args.model), indent=1))
         return 0
     if args.build:

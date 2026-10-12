@@ -618,6 +618,8 @@ def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HO
     from .netwait import NETWORK_ERROR_RX, online, wait_for_network
     from .stall_guard import StallGuard
     guard = StallGuard("social_posts")       # a pass that hangs ends this process; the task restarts it
+    from .load_guard import background_priority
+    background_priority("below")            # yields the CPU to whatever you are doing
     while True:
         if lp_code_changed(stamp):
             log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
@@ -636,6 +638,12 @@ def loop(cfg: dict, every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HO
             if NETWORK_ERROR_RX.search(str(exc)):
                 gap = 0            # the internet went away mid-pass: wait for it (top of the loop), then run again at once
         guard.disarm()
+        _mod = sys.modules.get("jobbot.localai")
+        if _mod is not None:
+            try:
+                _mod.release()               # the model is not held while the loop sleeps
+            except Exception:  # noqa: BLE001
+                pass
         sleep_for = max(60, gap - (time.time() - started) + random.uniform(-120, 120)) if gap else 30
         log.info("next pass in %.0f min", sleep_for / 60)
         lp_nap(sleep_for, stamp)

@@ -35,6 +35,21 @@ OFFSCREEN_ARGS = [
     "--disable-features=CalculateNativeWinOcclusion",
 ]
 
+# Every automated Chrome: a couple of renderer processes instead of one per site, no
+# background downloads (component updates, safe-browsing lists, metrics), no sound.
+# A run opens dozens of company pages; without the limit each one kept its own
+# renderer and a single apply pass reached 20+ chrome.exe processes.
+LEAN_ARGS = [
+    "--renderer-process-limit=3",
+    "--disable-background-networking",
+    "--disable-component-update",
+    "--disable-default-apps",
+    "--disable-sync",
+    "--metrics-recording-only",
+    "--mute-audio",
+    "--no-first-run",
+]
+
 
 def background() -> bool:
     """True when runs must never put a window on the screen - the default.
@@ -80,6 +95,8 @@ def launch_browser(p, headless: bool, interactive: bool = False, offscreen: bool
     if background() and not interactive:
         headless = True
     args = list(OFFSCREEN_ARGS) if (offscreen and not headless) else []
+    if not interactive:
+        args += LEAN_ARGS
     channel = os.environ.get("NAUKRI_BROWSER_CHANNEL", "chrome")
     if channel and channel.lower() != "none":
         try:

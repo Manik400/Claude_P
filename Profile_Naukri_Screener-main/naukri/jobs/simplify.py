@@ -227,7 +227,10 @@ def launch(p, headless: bool, states: list[Path] | None = None,
     # --enable-automation banner, and the webdriver flag off.
     args = ["--disable-extensions-except=" + ext, "--load-extension=" + ext, "--no-first-run",
             "--no-default-browser-check", "--disable-blink-features=AutomationControlled",
-            "--disable-features=CalculateNativeWinOcclusion"]
+            "--disable-features=CalculateNativeWinOcclusion",
+            # fewer chrome.exe processes and no background downloads (naukri/session.py LEAN_ARGS)
+            "--renderer-process-limit=3", "--disable-background-networking", "--disable-component-update",
+            "--disable-sync", "--mute-audio"]
     if headless:
         args.append("--headless=new")
     elif offscreen:

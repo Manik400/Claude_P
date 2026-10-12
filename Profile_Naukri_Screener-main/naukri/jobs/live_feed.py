@@ -185,6 +185,16 @@ def _ai():
         return None
 
 
+def _release_model() -> None:
+    """Unload the model if this process loaded one (jobbot.localai.release); a no-op otherwise."""
+    mod = sys.modules.get("jobbot.localai")
+    if mod is not None:
+        try:
+            mod.release()
+        except Exception:  # noqa: BLE001
+            pass
+
+
 def unsure(post: dict) -> bool:
     """Posts the rules may have wrong: a weak score, only a generic role, or seeker and hiring words together."""
     return (post.get("score") or 0) < 70 or post.get("roles") == ["software (general)"] or bool(post.get("seeker") and post.get("hiring"))
@@ -522,10 +532,19 @@ def _alive(pid: int) -> bool:
         return False
 
 
+# The feed's model work is a yes/no check on a few unsure posts a tick: the small model does it in
+# seconds. It used to load the 12 GB model and keep it all day (4 GB working set, 2.2 GB private).
+LIGHT_MODEL = "unsloth/Qwen3.5-2B-GGUF:Qwen3.5-2B-Q4_K_M.gguf"
+
+
 def loop() -> int:
     if not single_instance():
         log.info("another live-feed process is running - this one exits (no duplicates)")
         return 0
+    os.environ["LOCAL_AI_MODEL"] = os.environ.get("LIVE_FEED_MODEL") or LIGHT_MODEL
+    os.environ["LOCAL_AI_THREADS"] = os.environ.get("LIVE_FEED_THREADS") or "2"
+    from .load_guard import background_priority
+    background_priority("below")
     stamp = lp.code_stamp()
     feed = load()
     interval = BASE_INTERVAL
@@ -546,6 +565,7 @@ def loop() -> int:
             log.exception("tick failed: %s", exc)
             st = {"new_jobs": 0, "new_posts": 0, "details": 0, "status": 0, "queries": [], "error": str(exc)[:200]}
         guard.disarm()
+        _release_model()                         # nothing held between ticks
         interval = min(MAX_INTERVAL, interval * 2) if st.get("status") == 429 else max(BASE_INTERVAL, int(interval * 0.75))
         pc = feed.setdefault("pc", {})
         pc.update({"host": os.environ.get("COMPUTERNAME", ""), "last_tick": now.isoformat(timespec="seconds"), "ticks": int(pc.get("ticks") or 0) + 1,

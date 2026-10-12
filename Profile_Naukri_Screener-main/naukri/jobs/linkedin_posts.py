@@ -912,6 +912,8 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
     from .netwait import NETWORK_ERROR_RX, offline_note, online, wait_for_network
     from .stall_guard import StallGuard
     guard = StallGuard("linkedin_posts")     # a pass that hangs ends this process; the task restarts it
+    from .load_guard import background_priority
+    background_priority("below")            # yields the CPU to whatever you are doing
     while True:
         if code_changed(stamp):
             log.info("the code changed since this watcher started - exiting so Task Scheduler restarts it on the new code")
@@ -942,6 +944,12 @@ def loop(every_minutes: int = EVERY_MINUTES, hours: float = WINDOW_HOURS, headle
             else:
                 _note_error(f"pass failed: {str(exc)[:200]}", hours)
         guard.disarm()
+        _mod = sys.modules.get("jobbot.localai")
+        if _mod is not None:
+            try:
+                _mod.release()               # the model is not held while the loop sleeps
+            except Exception:  # noqa: BLE001
+                pass
         # the gap is measured from the START of the pass, with a little jitter so it never looks like clockwork
         sleep_for = max(60, wait - (time.time() - started) + random.uniform(-180, 180))
         log.info("next pass in %.0f min", sleep_for / 60)

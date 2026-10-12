@@ -470,6 +470,9 @@ def cmd_run(args):
     save_run(run_dir, meta, statuses, jobs)
     if args.resume:
         do_score(run_dir, meta, jobs, args.resume, log)
+    # Scoring and the fit lines are the only model work in a round: unload it now instead of
+    # holding ~9 GB through contacts, the report and an hour of applying. It reloads if needed.
+    localai.release()
     # what it pays (stated, else looked up) and whether the employer is an MNC / unicorn -
     # on every row of the report, and a few score points for the well-paying ones
     from jobbot import salary_lookup

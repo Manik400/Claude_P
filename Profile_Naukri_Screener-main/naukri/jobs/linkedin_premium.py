@@ -2028,6 +2028,8 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
     stamp = lp_code_stamp()
     from .stall_guard import StallGuard
     guard = StallGuard("linkedin_premium")   # a pass that hangs ends this process; the 30-min task check restarts it
+    from .load_guard import background_priority
+    background_priority("below")            # yields the CPU to whatever you are doing
     while True:
         if lp_code_changed(stamp):
             log.info("the code changed since this loop started - exiting so Task Scheduler restarts it on the new code")
@@ -2058,6 +2060,12 @@ def loop(cfg: dict, headless: bool = True, dry_run: bool = False) -> int:
                 wait = 0
                 log.info("network trouble - the pass runs again as soon as the internet is back")
         guard.disarm()
+        _mod = sys.modules.get("jobbot.localai")
+        if _mod is not None:
+            try:
+                _mod.release()               # the model is not held while the loop sleeps
+            except Exception:  # noqa: BLE001
+                pass
         sleep_for = max(300, wait - (time.time() - started) + random.uniform(-600, 600)) if wait >= every * 60 \
             else (wait + random.uniform(0, 120) if wait else 30)
         log.info("next pass in %.0f min", sleep_for / 60)
