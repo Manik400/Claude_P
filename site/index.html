@@ -929,7 +929,10 @@
     if (o && o.lpa) return { lpa: o.lpa, kind: o.lpa_kind || "est", src: o.lpa_source || "" };
     if (o && o.salary_lpa) return { lpa: o.salary_lpa, kind: "stated", src: "the posting" };
     if (o && o.salary && o.salary.lpa) return { lpa: o.salary.lpa, kind: "stated", src: "the post" };
-    var e = o && o.company ? mncOf(o.company) : null;
+    // the company bands are India figures: only for a posting in India (or one that names no place)
+    var india = !o || o.country === "IN" || (o.countries || []).indexOf("IN") >= 0 || !(o.location || "").trim() ||
+                (typeof INDIA_CITY !== "undefined" && INDIA_CITY.test(o.location || ""));
+    var e = o && o.company && india ? mncOf(o.company) : null;
     if (e && e.lo != null) return { lpa: Math.round(((e.lo + (e.hi == null ? e.lo : e.hi)) / 2) * 10) / 10, kind: "typical", src: "typical for " + e.n + " (" + tierName(e.t) + ", 0-2 yrs)", lo: e.lo, hi: e.hi };
     return { lpa: null, kind: "", src: "" };
   }

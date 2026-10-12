@@ -214,14 +214,34 @@ def _web_figures(q: str, must_contain: str = "", min_trusted: int = 1, role_leve
             "url": urls[0] if urls else ""}
 
 
+_PLACE_COUNTRY = {  # cities / areas LinkedIn writes instead of a country
+    "amsterdam": "Netherlands", "rotterdam": "Netherlands", "eindhoven": "Netherlands", "utrecht": "Netherlands", "the hague": "Netherlands",
+    "london": "United Kingdom", "manchester": "United Kingdom", "edinburgh": "United Kingdom", "england": "United Kingdom", "uk": "United Kingdom",
+    "dublin": "Ireland", "berlin": "Germany", "munich": "Germany", "münchen": "Germany", "hamburg": "Germany", "frankfurt": "Germany",
+    "dubai": "United Arab Emirates", "abu dhabi": "United Arab Emirates", "uae": "United Arab Emirates", "paris": "France",
+    "madrid": "Spain", "barcelona": "Spain", "lisbon": "Portugal", "zurich": "Switzerland", "stockholm": "Sweden", "helsinki": "Finland",
+    "tokyo": "Japan", "sydney": "Australia", "melbourne": "Australia", "toronto": "Canada", "vancouver": "Canada", "bangkok": "Thailand",
+    "kuala lumpur": "Malaysia", "new york": "United States", "san francisco": "United States", "seattle": "United States", "usa": "United States",
+}
+
+
 def _country_name(country: str) -> str:
-    c = (country or "IN").strip()
+    """A country name from a code ("DE"), a name, or a LinkedIn place ("Germany (Remote)", "Amsterdam Area (Hybrid)")."""
+    c = re.sub(r"\(.*?\)", " ", country or "IN")
+    c = re.sub(r"\b(area|region|metropolitan|greater|district|remote|hybrid|on-?site)\b", " ", c, flags=re.I)
+    c = re.sub(r"\s+", " ", c).strip(" ,-") or "IN"
     if len(c) == 2:
         try:
             from jobbot.config import COUNTRIES
             return (COUNTRIES.get(c.upper()) or {}).get("name") or c
         except Exception:  # noqa: BLE001
             return c
+    low = c.lower()
+    if low in _LOCAL_CURRENCY:
+        return c.title() if low != "united arab emirates" else "United Arab Emirates"
+    for place, name in _PLACE_COUNTRY.items():
+        if re.search(r"\b" + re.escape(place) + r"\b", low):
+            return name
     return c
 
 
@@ -271,6 +291,8 @@ def _role(title: str, country: str) -> dict | None:
         return None
     meds = []
     want_cur = _LOCAL_CURRENCY.get(cname.lower())
+    if not want_cur:
+        return None              # not a country we can check the currency of ("EMEA", "Worldwide"): no figure beats a wrong one
     for row in rows:
         cur = (row.get("salary_currency") or "").upper()
         med = row.get("median_base_salary") or row.get("median_salary")
@@ -310,7 +332,8 @@ def estimate(title: str, company: str, country: str = "IN", allow_web: bool = Tr
             return hit["est"]
         if not hit.get("est") and age < NONE_RETRY_DAYS * 86400:
             return _role(title, country)                     # known to have no company figure: the role one
-    est = _typical(company)
+    india = _country_name(country).lower() == "india"
+    est = _typical(company) if india else None        # the bands in mnc.txt are India figures: TCS Amsterdam is not 5 LPA
     tried_web = False
     if est is None and allow_web and _budget_left("web"):
         tried_web = True
