@@ -394,24 +394,29 @@ def _country_of(location: str) -> str:
     return loc.split(",")[-1].strip() or "IN"
 
 
-def _set_pay(it: dict) -> None:
+def _set_pay(it: dict, allow_web: bool = True) -> None:
     """lpa / lpa_kind / lpa_source / mnc fields on one feed job (jobhunt_bridge.pay_of)."""
     from .jobhunt_bridge import pay_of
     country = _country_of(it.get("location") or "")
     stated = f"{it['lpa']} LPA" if it.get("lpa_kind") == "stated" and it.get("lpa") else ""
-    p = pay_of(it.get("title") or "", it.get("company") or "", stated, "", country=country, allow_web=(country == "IN"))
+    p = pay_of(it.get("title") or "", it.get("company") or "", stated, "", country=country, allow_web=allow_web and country == "IN")
     it.update({"lpa": p.get("lpa"), "lpa_kind": p.get("kind") or "", "lpa_source": p.get("source") or "",
                "mnc": bool(p.get("mnc")), "mnc_tier": p.get("mnc_tier") or "", "mnc_name": p.get("mnc_name") or "",
                "pay_checked": datetime.now(timezone.utc).isoformat(timespec="seconds")})
 
 
-def _backfill_pay(feed: dict, limit: int = 40) -> int:
+def _backfill_pay(feed: dict, limit: int = 40, seconds: float = 15.0) -> int:
+    """Older postings: the company list, cached figures and the (cached) role median only - no new
+    company web search, and never more than `seconds` a tick, so the feed stays live."""
     todo = [it for it in feed["items"] if it.get("kind") == "job" and not it.get("lpa") and not it.get("pay_checked")]
     todo.sort(key=_sort_key, reverse=True)
     n = 0
+    end = time.time() + seconds
     for it in todo[:limit]:
+        if time.time() > end:
+            break
         try:
-            _set_pay(it)
+            _set_pay(it, allow_web=False)
             n += 1
         except Exception as exc:  # noqa: BLE001 - a missing field, never a missing tick
             log.debug("pay backfill for %s: %s", it.get("company"), exc)
