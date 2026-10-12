@@ -1469,15 +1469,15 @@ def write_report(cfg: dict, state: dict, now: datetime | None = None) -> Path:
         lines.append("")
     if d["applied_jobs"]:
         lines.append("## Applied this day (Easy Apply, by this module)")
-        lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", ""), j.get("location", ""),
+        lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", "") + _mnc_mark(j), _pay_label(j), j.get("location", ""),
                                  ", ".join(j.get("why") or []), f"[open]({j.get('url')})", j.get("status", "")] for j in d["applied_jobs"]],
-                               ["score", "title", "company", "location", "why", "link", "status"]))
+                               ["score", "title", "company", "pay", "location", "why", "link", "status"]))
         lines.append("")
     if d["offsite"]:
         lines.append("## Apply yourself (Apply leads off LinkedIn), best first")
-        lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", ""), j.get("location", ""),
+        lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", "") + _mnc_mark(j), _pay_label(j), j.get("location", ""),
                                  ", ".join(j.get("why") or []), f"[open]({j.get('url')})"] for j in d["offsite"][:25]],
-                               ["score", "title", "company", "location", "why", "link"]))
+                               ["score", "title", "company", "pay", "location", "why", "link"]))
         lines.append("")
     if d["inmails"]:
         lines.append("## InMail drafts (5 credits a month: send the best ones yourself)")
@@ -1874,6 +1874,8 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
                     rec = seen_jobs[str(c["job_id"])]
                     entry = {"score": score, "why": why, "title": c.get("title"), "company": c.get("company"), "location": c.get("location"),
                              "url": c.get("url"), "top_applicant": info.get("top_applicant", False)}
+                    entry.update(_pay_fields(c, info))
+                    rec.update({k: entry[k] for k in ("lpa", "lpa_kind", "mnc", "mnc_tier") if k in entry})
                     if score <= 0:
                         rec["status"] = "skipped"
                         d["skipped"].append(f"{c.get('title')} at {c.get('company')} ({c.get('location')}): {', '.join(why)}")
@@ -1985,6 +1987,32 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
     log.info("pass done in %.0fs: applied %d, liked %d, leads %d, inmail drafts %d, offsite %d, opened %d. Report: %s",
              time.time() - t0, d["applied"], d["liked"], len(d["leads"]), len(d["inmails"]), len(d["offsite"]), d["opened"], path)
     return d
+
+
+def _pay_fields(card: dict, info: dict) -> dict:
+    """What the posting pays (stated in its text, else looked up) and whether the employer is an MNC."""
+    try:
+        from .jobhunt_bridge import pay_of
+        from .live_feed import _country_of
+        country = _country_of(card.get("location") or "")
+        p = pay_of(card.get("title") or "", card.get("company") or "", "", info.get("text") or "", country=country,
+                   allow_web=(country == "IN"))
+    except Exception as exc:  # noqa: BLE001 - a missing field, never a missing pass
+        log.debug("pay for %s: %s", card.get("company"), exc)
+        return {}
+    return {"lpa": p.get("lpa"), "lpa_kind": p.get("kind") or "", "lpa_source": p.get("source") or "",
+            "mnc": bool(p.get("mnc")), "mnc_tier": p.get("mnc_tier") or ""}
+
+
+def _pay_label(j: dict) -> str:
+    if not j.get("lpa"):
+        return ""
+    fig = ("%.1f" % j["lpa"]).rstrip("0").rstrip(".")
+    return f"₹{fig} LPA" if j.get("lpa_kind") == "stated" else f"~₹{fig} LPA ({j.get('lpa_kind')})"
+
+
+def _mnc_mark(j: dict) -> str:
+    return f" · MNC ({j.get('mnc_tier')})" if j.get("mnc") else ""
 
 
 # A pass that died on the network, not on LinkedIn: Playwright's navigation errors and timeouts.

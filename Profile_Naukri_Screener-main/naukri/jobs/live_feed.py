@@ -383,6 +383,42 @@ def publish(feed: dict) -> bool:
 
 # ----------------------------------------------------------------------------- a tick, and the loop
 
+INDIA_RX = re.compile(r"\bindia\b|bengaluru|bangalore|hyderabad|pune|chennai|gurugram|gurgaon|noida|delhi|mumbai|kolkata|"
+                      r"ahmedabad|kochi|coimbatore|jaipur|chandigarh|indore|thiruvananthapuram|mohali|nagpur|vadodara", re.I)
+
+
+def _country_of(location: str) -> str:
+    loc = location or ""
+    if INDIA_RX.search(loc) or not loc.strip():
+        return "IN"
+    return loc.split(",")[-1].strip() or "IN"
+
+
+def _set_pay(it: dict) -> None:
+    """lpa / lpa_kind / lpa_source / mnc fields on one feed job (jobhunt_bridge.pay_of)."""
+    from .jobhunt_bridge import pay_of
+    country = _country_of(it.get("location") or "")
+    stated = f"{it['lpa']} LPA" if it.get("lpa_kind") == "stated" and it.get("lpa") else ""
+    p = pay_of(it.get("title") or "", it.get("company") or "", stated, "", country=country, allow_web=(country == "IN"))
+    it.update({"lpa": p.get("lpa"), "lpa_kind": p.get("kind") or "", "lpa_source": p.get("source") or "",
+               "mnc": bool(p.get("mnc")), "mnc_tier": p.get("mnc_tier") or "", "mnc_name": p.get("mnc_name") or "",
+               "pay_checked": datetime.now(timezone.utc).isoformat(timespec="seconds")})
+
+
+def _backfill_pay(feed: dict, limit: int = 40) -> int:
+    todo = [it for it in feed["items"] if it.get("kind") == "job" and not it.get("lpa") and not it.get("pay_checked")]
+    todo.sort(key=_sort_key, reverse=True)
+    n = 0
+    for it in todo[:limit]:
+        try:
+            _set_pay(it)
+            n += 1
+        except Exception as exc:  # noqa: BLE001 - a missing field, never a missing tick
+            log.debug("pay backfill for %s: %s", it.get("company"), exc)
+            it["pay_checked"] = datetime.now(timezone.utc).isoformat(timespec="seconds")
+    return n
+
+
 def tick(feed: dict, now: datetime | None = None) -> dict:
     """One round: the hot query, one rotation query, a few detail pages, the posts. Returns stats."""
     now = now or datetime.now(timezone.utc)
@@ -422,6 +458,9 @@ def tick(feed: dict, now: datetime | None = None) -> dict:
             continue
         last[key] = now.isoformat(timespec="seconds")
         time.sleep(random.uniform(2, 5))
+    # Pay + MNC on postings read before this existed, or whose lookup was skipped: a few a tick,
+    # newest first. Cached lookups and the company list cost nothing; new ones are budgeted per hour.
+    _backfill_pay(feed, limit=40)
     if stats["status"] != 429:
         pending = [it for it in feed["items"] if it.get("kind") == "job" and not it.get("detailed")]
         pending.sort(key=_sort_key, reverse=True)
@@ -434,12 +473,7 @@ def tick(feed: dict, now: datetime | None = None) -> dict:
                 it.update(parse_detail(r.text))
                 # what it pays (stated in the description, else looked up) and whether it is an MNC
                 try:
-                    from .jobhunt_bridge import pay_of
-                    india = bool(re.search(r"\bindia\b|bengaluru|bangalore|hyderabad|pune|chennai|gurugram|gurgaon|noida|delhi|mumbai|kolkata", it.get("location") or "", re.I))
-                    stated = f"{it['lpa']} LPA" if it.get("lpa_kind") == "stated" and it.get("lpa") else ""
-                    p = pay_of(it.get("title") or "", it.get("company") or "", stated, "", allow_web=india)
-                    it.update({"lpa": p.get("lpa"), "lpa_kind": p.get("kind") or "", "lpa_source": p.get("source") or "",
-                               "mnc": bool(p.get("mnc")), "mnc_tier": p.get("mnc_tier") or "", "mnc_name": p.get("mnc_name") or ""})
+                    _set_pay(it)
                 except Exception as exc:  # noqa: BLE001 - a missing field, never a missing tick
                     log.debug("pay/mnc for %s: %s", it.get("company"), exc)
                 if it.pop("remote_hint", False) and not it.get("workplace"):
