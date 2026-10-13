@@ -884,6 +884,65 @@
   new MutationObserver(applyFolds).observe(document.documentElement, { childList: true, subtree: true });
   document.addEventListener("DOMContentLoaded", applyFolds);
   function chip(cls, text) { return '<span class="chip ' + (cls || "") + '">' + esc(text) + "</span>"; }
+  // ---- MNC list + typical 0-2-year pay (data/mnc.json, from job-hunt/assets/mnc.txt): the "MNC only"
+  // filter and the "~₹ LPA" tag on every job list, matched here from the company name.
+  var MNC = null, MNC_TAIL = null, mncCache = {};
+  function loadMnc() {
+    if (MNC) return Promise.resolve(MNC);
+    return fetch("data/mnc.json?t=" + Math.floor(Date.now() / 3600000), { cache: "no-cache" }).then(function (r) { return r.ok ? r.json() : null; })
+      .then(function (j) { MNC = j && j.companies ? j : { companies: [], tiers: {} }; try { MNC_TAIL = new RegExp("^" + (MNC.tail || "$^") + "$"); } catch (e) { MNC_TAIL = null; } mncCache = {}; return MNC; })
+      .catch(function () { MNC = { companies: [], tiers: {} }; return MNC; });
+  }
+  function mncNorm(name) {
+    var s = String(name || "").toLowerCase().replace(/&amp;/g, "&").replace(/[^a-z0-9&+ ]+/g, " ").replace(/\s+/g, " ").trim(), w = s.split(" ");
+    while (w.length > 1 && MNC_TAIL && MNC_TAIL.test(w[w.length - 1])) w.pop();
+    return w.join(" ");
+  }
+  function mncOf(name) {
+    if (!MNC || !name) return null;
+    if (name in mncCache) return mncCache[name];
+    var c = mncNorm(name), best = null;
+    if (c) MNC.companies.forEach(function (e) {
+      (e.x || []).forEach(function (k) { if (k && c === k && (!best || k.length > best.k.length)) best = { k: k, e: e }; });   // generic / short names: exact only
+      (e.k || []).forEach(function (k) {
+        if (!k) return;
+        var hit = c === k || c.indexOf(k + " ") === 0 || (k.indexOf(" ") >= 0 && new RegExp("(^| )" + k.replace(/[.*+?^${}()|[\]\\]/g, "\\$&") + "( |$)").test(c));
+        if (hit && (!best || k.length > best.k.length)) best = { k: k, e: e };
+      });
+    });
+    return (mncCache[name] = best ? best.e : null);
+  }
+  function mncInText(text) {   // a post that names an MNC (whole word, names of 5+ letters only)
+    if (!MNC || !text) return null;
+    var t = " " + String(text).toLowerCase().replace(/[^a-z0-9&+ ]+/g, " ").replace(/\s+/g, " ") + " ", found = null;
+    MNC.companies.forEach(function (e) { if (found) return; (e.k || []).forEach(function (k) { if (!found && k.length >= 5 && t.indexOf(" " + k + " ") >= 0) found = e; }); });
+    return found;   // exact-only names (e.x) are never searched in free text
+  }
+  function tierName(t) { return (MNC && MNC.tiers && MNC.tiers[t]) || t || "MNC"; }
+  function mncChip(e) { return e ? '<span class="chip acc" title="' + esc(e.n) + '">MNC · ' + esc(tierName(e.t)) + "</span>" : ""; }
+  // {lpa, kind, src} for a job-hunt job (extra.lpa), a careers / live / Naukri row (lpa / salary_lpa), a post (salary.lpa);
+  // else the company's typical band from the list.
+  function lpaOf(o) {
+    var x = (o && o.extra) || {};
+    if (x.lpa) return { lpa: x.lpa, kind: x.lpa_kind || "est", src: x.lpa_source || "" };
+    if (x.salary_lpa) return { lpa: x.salary_lpa, kind: "stated", src: "the posting" };
+    if (o && o.lpa) return { lpa: o.lpa, kind: o.lpa_kind || "est", src: o.lpa_source || "" };
+    if (o && o.salary_lpa) return { lpa: o.salary_lpa, kind: "stated", src: "the posting" };
+    if (o && o.salary && o.salary.lpa) return { lpa: o.salary.lpa, kind: "stated", src: "the post" };
+    // the company bands are India figures: only for a posting in India (or one that names no place)
+    var india = !o || o.country === "IN" || (o.countries || []).indexOf("IN") >= 0 || !(o.location || "").trim() ||
+                (typeof INDIA_CITY !== "undefined" && INDIA_CITY.test(o.location || ""));
+    var e = o && o.company && india ? mncOf(o.company) : null;
+    if (e && e.lo != null) return { lpa: Math.round(((e.lo + (e.hi == null ? e.lo : e.hi)) / 2) * 10) / 10, kind: "typical", src: "typical for " + e.n + " (" + tierName(e.t) + ", 0-2 yrs)", lo: e.lo, hi: e.hi };
+    return { lpa: null, kind: "", src: "" };
+  }
+  function lpaChip(p) {
+    if (!p || !p.lpa) return "";
+    var fig = String(Math.round(p.lpa * 10) / 10), stated = p.kind === "stated";
+    var cls = p.lpa >= 10 ? "ok" : (stated && p.lpa < 6 ? "bad" : "");
+    return '<span class="chip ' + cls + '" title="' + esc(p.src || "") + (p.lo != null && p.hi != null ? " (" + p.lo + "–" + p.hi + " LPA)" : "") + '">' + (stated ? "" : "~") + "₹" + fig + " LPA" + (stated ? "" : " · " + esc(p.kind)) + "</span>";
+  }
+  loadMnc().then(function () { try { if (JV) renderJobs(); if (CV && CV.data) renderCareers(); if (live) renderLive(); if (posts) renderPosts(); } catch (e) {} });
   function safeUrl(u) { return /^https?:\/\//i.test(u || "") ? u : "#"; }
   // ---- accordions. Every filter block on the page is one of these: a title, a summary
   // line of what is currently on, and a body. Open / closed is remembered per block
@@ -1447,6 +1506,7 @@
   var live = null, liveErr = "", liveWait = null, liveTimer = null, liveAt = 0;
   var LF = { show: store.get("lv.show2", "job"), within: +store.get("lv.within", "24") || 24, where: store.get("lv.where", ""), loc: store.get("lv.loc", ""),
              exp: store.get("lv.exp", ""), q: store.get("lv.q", ""), senior: store.get("lv.senior", "1"), sort: store.get("lv.sort", "posted"),
+             mnc: store.get("lv.mnc", ""), pay: store.get("lv.pay", ""),
              limit: 60, showRemoved: false, notify: store.get("lv.notify", "") };
   var liveSeen = store.get("lv.seen", "");                 // first_seen of the newest item already looked at
   function loadLive(force) {
@@ -1491,6 +1551,8 @@
     if (LF.exp && it.years_min != null && it.years_min > +LF.exp) return false;
     if (LF.senior && it.kind === "job" && (SENIOR_TITLE.test(it.title || "") || /mid-senior|director|executive/i.test(it.seniority || ""))) return false;
     if (LF.q && ((it.title || "") + " " + (it.company || "") + " " + (it.snippet || "")).toLowerCase().indexOf(LF.q.toLowerCase()) < 0) return false;
+    if (LF.mnc && !(it.mnc || mncOf(it.company) || (it.kind !== "job" && mncInText((it.title || "") + " " + (it.snippet || "") + " " + (it.company || ""))))) return false;
+    if (LF.pay && !((lpaOf(it).lpa || 0) >= 10)) return false;
     return true;
   }
   function liveCard(it) {
@@ -1506,6 +1568,9 @@
     if (it.applicants != null) t.push(chip(it.applicants < 25 ? "ok" : "", it.applicants + " applicants"));
     if (it.easy_apply) t.push(chip("ok", "Easy Apply"));
     if (it.visa === "yes") t.push(chip("ok", "visa sponsorship"));
+    var pay = lpaOf(it); if (pay.lpa) t.push(lpaChip(pay));
+    var mnce = it.mnc ? { n: it.mnc_name, t: it.mnc_tier } : (mncOf(it.company) || (it.kind !== "job" ? mncInText((it.title || "") + " " + (it.snippet || "")) : null));
+    if (mnce) t.push(mncChip(mnce));
     var lag = it.posted_at && it.first_seen ? Math.max(0, (new Date(it.first_seen) - new Date(it.posted_at)) / 60000) : null;
     var when = "posted " + ago(it.posted_at || it.first_seen) + (lag != null && it.kind === "job" ? " · found " + (lag < 1 ? "within a minute" : Math.round(lag) + " min later") : "");
     return '<div class="job post' + (seen ? " applied" : "") + (marks.removed[mk] ? " removed" : "") + '"><h3>' + esc(it.title || "(untitled)") + "</h3>" +
@@ -1542,6 +1607,8 @@
       '<input id="lf-loc" placeholder="or a city / country" value="' + esc(LF.loc) + '" autocapitalize="none" style="margin-top:8px">' +
       "<label>Experience asked (not stated is always shown)</label>" + chips("lfe", [["", "Any"], ["1", "≤ 1 yr"], ["2", "≤ 2 yrs"], ["3", "≤ 3 yrs"], ["5", "≤ 5 yrs"]], LF.exp) +
       "<label>Seniority</label>" + chips("lfn", [["1", "Hide senior / lead titles"], ["", "Show all"]], LF.senior) +
+      "<label>Employer</label>" + chips("lfm", [["", "Any"], ["1", "MNC / big tech / unicorn only"]], LF.mnc) +
+      "<label>Pay</label>" + chips("lfy", [["", "Any"], ["1", "≥ 10 LPA (stated or typical)"]], LF.pay) +
       "<label>Sort</label>" + chips("lfo", [["posted", "Posted, newest first"], ["found", "Found, newest first"]], LF.sort) +
       '<label style="margin-top:10px"><input type="checkbox" id="lf-notify"' + (LF.notify ? " checked" : "") + "> Notify me on this device while this page is open</label>");
     var shown = list.slice(0, LF.limit);
@@ -1551,7 +1618,7 @@
     var top = box.scrollTop; box.innerHTML = h; box.scrollTop = top; bindAcc(box);
     bindMarks(box, function (toggle) { if (toggle === true) LF.showRemoved = !LF.showRemoved; renderLive(); updateLiveDot(); });
     var set = function (k, v) { LF[k] = v; store.set("lv." + (k === "show" ? "show2" : k), String(v)); LF.limit = 60; renderLive(); updateLiveDot(); };
-    [["lfs", "show"], ["lfw", "within"], ["lfp", "where"], ["lfe", "exp"], ["lfn", "senior"], ["lfo", "sort"]].forEach(function (p) {
+    [["lfs", "show"], ["lfw", "within"], ["lfp", "where"], ["lfe", "exp"], ["lfn", "senior"], ["lfm", "mnc"], ["lfy", "pay"], ["lfo", "sort"]].forEach(function (p) {
       box.querySelectorAll("[data-" + p[0] + "]").forEach(function (b) { b.addEventListener("click", function () { set(p[1], p[1] === "within" ? +b.dataset[p[0]] : b.dataset[p[0]]); }); });
     });
     ["q", "loc"].forEach(function (k) {
@@ -2063,7 +2130,7 @@
     Promise.all([fetchEnc(item.meta.jobs_file, { cache: "force-cache" }).then(JSON.parse), loadQueue(true)]).then(function (res) {
       var jobs = (res[0] || []).map(function (j) { var k = jobKey(j); j._key = k.key; j._board = k.board; j._src = srcKey(j); return j; });
       JV = { item: item, jobs: jobs, boards: {}, countries: {}, min: 0, sal: "any", floorLpa: parseFloat((item.meta || {}).min_salary) || 10,
-             sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
+             mnc: store.get("j.mnconly", "") === "1", sel: {}, open: {}, limit: 50, sort: "score", showRemoved: false, detail: null, tsort: null };
       renderJobs();
       $("j-box").scrollTop = 0;
       // the detail column shows the form the PC filled in; that lives in profile.json
@@ -2093,6 +2160,8 @@
       if (JV.sal === "stated" && !ex.salary_stated) return false;
       if (JV.sal === "unstated" && ex.salary_stated) return false;
       if (JV.sal === "floor" && !(ex.salary_stated && (ex.salary_lpa || 0) >= JV.floorLpa)) return false;
+      if (JV.sal === "high" && !((lpaOf(j).lpa || 0) >= JV.floorLpa)) return false;
+      if (JV.mnc && !(ex.is_mnc || mncOf(j.company))) return false;
       return true;
     }).sort(function (a, b) {
       if (JV.tsort) {  // a column heading was clicked: that wins over the Sort box
@@ -2136,8 +2205,8 @@
     var labelOf = function (list, k) { return (list.filter(function (b) { return b[0] === k; })[0] || [k, k])[1]; };
     var fsum = [fb.length === 0 ? "All boards" : fb.length === 1 ? labelOf(boards, fb[0]) : fb.length + " boards",
       fc.length === 0 ? "All countries" : fc.length === 1 ? ccLabel(fc[0]) : fc.length + " countries",
-      JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sal === "any" ? "" : { floor: "pay ≥ " + JV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated" }[JV.sal],
-      JV.sort === "new" ? "newest first" : "best match first"].filter(Boolean).join(" · ");
+      JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sal === "any" ? "" : { floor: "pay ≥ " + JV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated", high: "≥ " + JV.floorLpa + " LPA incl. estimates" }[JV.sal],
+      JV.mnc ? "MNC only" : "", JV.sort === "new" ? "newest first" : "best match first"].filter(Boolean).join(" · ");
     var fchip = function (attr, k, label, n, on) { return '<button type="button" data-' + attr + '="' + esc(k) + '" class="' + (on ? "on" : "") + (n ? "" : " zero") + '">' + label + " · " + n + "</button>"; };
     var jm = JV.item.meta || {}, jwin = windowLabel(jm);
     var h = '<div class="card"><div class="muted">' + JV.jobs.length + " postings · " + counts.linkedin + " LinkedIn · " + counts.naukri + " Naukri · " + counts.web + " other boards / company sites</div>" +
@@ -2155,9 +2224,10 @@
         ccs.map(function (c) { return fchip("cc", c, (flag(c) ? flag(c) + " " : "") + esc(ccLabel(c)), cc[c] || 0, JV.countries[c]); }).join("") + "</div>" +
       '<div class="row"><div><label>Resume match</label><select id="jf-min">' + [0, 35, 50, 60, 65, 80].map(function (v) { return '<option value="' + v + '"' + (JV.min === v ? " selected" : "") + ">" + (v ? v + "%+" : "any") + "</option>"; }).join("") + "</select></div>" +
       '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div>" +
-      '<div class="row"><div><label>Pay</label>' + sel("jf-sal", JV.sal, [["any", "any"], ["floor", "stated ≥ " + JV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div></div>" +
-      '<div class="hint">Pay is read from each posting\'s pay field or text. Postings that stated less than the search\'s floor were already left out.</div>' +
-      (fb.length || fc.length || JV.min || JV.sal !== "any" ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
+      '<div class="row"><div><label>Pay</label>' + sel("jf-sal", JV.sal, [["any", "any"], ["high", "≥ " + JV.floorLpa + " LPA (stated or estimated)"], ["floor", "stated ≥ " + JV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div>" +
+      '<div><label>Employer</label><div class="chips small"><button type="button" id="jf-mnc"' + (JV.mnc ? ' class="on"' : "") + '>MNC / big tech / unicorn only</button></div></div></div>' +
+      '<div class="hint">Pay is read from each posting\'s pay field or text; where a posting says nothing, "~₹" is an estimate (typical for the company, or looked up). Postings that stated less than the search\'s floor were already left out.</div>' +
+      (fb.length || fc.length || JV.min || JV.sal !== "any" || JV.mnc ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
     // the list itself: a table at >=1100px, the cards below that. The detail of the
     // selected posting is the second column (wide) or an accordion under its card.
     var shown = todo.slice(0, JV.limit), body = "";
@@ -2187,7 +2257,8 @@
     var toggleIn = function (set, k) { if (!k) Object.keys(set).forEach(function (x) { delete set[x]; }); else if (set[k]) delete set[k]; else set[k] = 1; JV.limit = 50; renderJobs(); };
     $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) toggleIn(JV.boards, b.dataset.b); });
     $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) toggleIn(JV.countries, b.dataset.cc); });
-    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.sal = "any"; JV.limit = 50; renderJobs(); });
+    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.sal = "any"; JV.mnc = false; store.set("j.mnconly", ""); JV.limit = 50; renderJobs(); });
+    if ($("jf-mnc")) $("jf-mnc").addEventListener("click", function () { JV.mnc = !JV.mnc; store.set("j.mnconly", JV.mnc ? "1" : ""); JV.limit = 50; renderJobs(); });
     $("jf-min").addEventListener("change", function (e) { JV.min = +e.target.value; renderJobs(); });
     if ($("jf-sal")) $("jf-sal").addEventListener("change", function (e) { JV.sal = e.target.value; JV.limit = 50; renderJobs(); });
     $("jf-sort").addEventListener("change", function (e) { JV.sort = e.target.value; renderJobs(); });
@@ -2255,8 +2326,8 @@
       '<td class="num ' + scCls + '">' + (sc == null ? "—" : sc + "%") + "</td>" +
       "<td>" + st + "</td>" +
       '<td class="dim">' + esc(j.source_name || j.source || "") + "</td>" +
-      "<td>" + esc(j.company || "") + "</td>" +
-      '<td class="pos">' + openLink(j.url, j.title || "(no title)", "", j._key) + "</td>" +
+      "<td>" + esc(j.company || "") + ((j.extra || {}).is_mnc || mncOf(j.company) ? ' <span class="chip acc" title="' + esc((j.extra || {}).mnc_name || "") + '">MNC</span>' : "") + "</td>" +
+      '<td class="pos">' + openLink(j.url, j.title || "(no title)", "", j._key) + (lpaOf(j).lpa ? " " + lpaChip(lpaOf(j)) : "") + "</td>" +
       '<td class="dim">' + (flag(j.country) ? flag(j.country) + " " : "") + esc(j.location || "") + "</td>" +
       '<td class="dim when">' + esc(j.posted ? ago(j.posted) : "") + "</td>" +
       '<td class="dim"><div class="clip">' + esc((j.matched_skills || []).join(", ")) + "</div></td>" +
@@ -2270,7 +2341,10 @@
     t.push(chip("", j.source_name || j.source || ""));
     if (j.fit && j.fit !== "unknown") t.push(chip(j.fit === "fit" ? "ok" : "warn", { fit: "experience fits", stretch: "stretch", over: "over-qualified" }[j.fit] || j.fit));
     if ((j.extra || {}).company_apply) t.push(chip("", "company site"));
-    if ((j.extra || {}).salary_lpa) t.push(chip("ok", "₹ " + j.extra.salary_lpa + " LPA")); else if (j.salary) t.push(chip("", j.salary.slice(0, 40)));
+    var pay = lpaOf(j);
+    if (pay.lpa) t.push(lpaChip(pay)); else if (j.salary) t.push(chip("", j.salary.slice(0, 40)));
+    var mnce = (j.extra || {}).is_mnc ? { n: j.extra.mnc_name, t: j.extra.mnc_tier } : mncOf(j.company);
+    if (mnce) t.push(mncChip(mnce));
     if (!(j.posted_at || j.posted)) t.push(chip("", "posting time not stated")); else if ((j.extra || {}).posted_source) t.push(chip("", "date from the page"));
     var qchip = q ? stChip(q.status, q.note) : "";
     var ex = j.extra || {}, c = ex.contacts, hasC = c && ((c.people || []).length || (c.emails || []).length);
@@ -2731,7 +2805,7 @@
   // Everything here is a filter over that file; nothing is sent anywhere.
   var posts = null, postsAt = 0, postsErr = "", postsWait = null;
   var PF = { q: store.get("p.q", ""), role: store.get("p.role", ""), exp: store.get("p.exp", ""), hours: +store.get("p.hours2", "48") || 48,
-             loc: store.get("p.loc", ""), need: store.get("p.need", ""), plat: store.get("p.plat", ""), sort: store.get("p.sort", "new"), limit: 40, open: {}, showRemoved: false };
+             loc: store.get("p.loc", ""), need: store.get("p.need", ""), plat: store.get("p.plat", ""), sort: store.get("p.sort", "new"), mnc: store.get("p.mnc", ""), limit: 40, open: {}, showRemoved: false };
   var P_ROLES = [["", "Any role"], ["swe", "SWE / SDE"], ["backend", "Backend"], ["frontend", "Frontend"], ["fullstack", "Full stack"], ["java", "Java"],
     ["python", "Python"], ["dotnet", ".NET / C#"], ["mobile", "Mobile"], ["devops", "DevOps / Cloud"], ["qa", "QA / Test"], ["data", "Data / ML / AI"]];
   var P_ROLE_RX = { swe: /software|\bsde\b|\bswe\b|developer|engineer/i, backend: /back-?end|\bjava\b|python|node|spring|django|\.net|golang|\bapi\b/i,
@@ -2807,6 +2881,7 @@
       if (hoursSince(p.posted_at) > PF.hours) return false;
       if (PF.plat && (p.platform || "linkedin") !== PF.plat) return false;
       if (q && postText(p).indexOf(q) < 0) return false;
+      if (PF.mnc && !mncInText((p.text || "") + " " + (p.headline || "") + " " + (p.author || ""))) return false;
       return postRoleOk(p) && postExpOk(p) && postLocOk(p) && postNeedOk(p);
     }).sort(function (a, b) {
       var newer = String(b.posted_at || "").localeCompare(String(a.posted_at || ""));
@@ -2822,7 +2897,10 @@
     t.push(chip(e.entry || (e.min != null && e.min <= 2) ? "ok" : "", expLabel(p)));
     (p.locations || []).slice(0, 3).forEach(function (l) { t.push(chip("", l)); });
     (p.batch || []).forEach(function (b) { t.push(chip("warn", b + " batch")); });
-    if (p.salary && p.salary.lpa) t.push(chip("ok", "₹ " + p.salary.lpa + " LPA"));
+    var mnce = mncInText((p.text || "") + " " + (p.headline || "") + " " + (p.author || ""));
+    if (p.salary && p.salary.lpa) t.push(lpaChip({ lpa: p.salary.lpa, kind: "stated", src: "the post" }));
+    else if (mnce && mnce.lo != null) t.push(lpaChip({ lpa: Math.round(((mnce.lo + (mnce.hi == null ? mnce.lo : mnce.hi)) / 2) * 10) / 10, kind: "typical", src: "typical for " + mnce.n + " (0-2 yrs)", lo: mnce.lo, hi: mnce.hi }));
+    if (mnce) t.push(mncChip(mnce));
     if (p.reactions) t.push(chip("", p.reactions + " reactions"));
     if (p.platform && p.platform !== "linkedin") t.unshift(chip("warn", platName(p.platform)));
     var open = !!PF.open[p.id], text = p.text || "", contact = [];
@@ -2866,6 +2944,7 @@
       "<label>Location</label>" + chips("pl", P_LOC, inList ? PF.loc : "") +
       '<input id="pf-loc" placeholder="or type a city / country" value="' + esc(inList ? "" : PF.loc) + '" autocapitalize="none" style="margin-top:8px">' +
       "<label>Must have</label>" + chips("pn", P_NEED, PF.need) +
+      "<label>Employer</label>" + chips("pm", [["", "Any"], ["1", "MNC / big tech / unicorn named"]], PF.mnc) +
       "<label>Sort</label>" + sel("pf-sort", PF.sort, [["new", "newest first"], ["score", "best match"], ["hot", "most reactions"]]));
     var shown = list.slice(0, PF.limit);
     h += list.length ? '<div class="jobs">' + shown.map(postCard).join("") + "</div>"
@@ -2881,6 +2960,7 @@
     box.querySelectorAll("[data-pe]").forEach(function (b) { b.addEventListener("click", function () { set("exp", b.dataset.pe); }); });
     box.querySelectorAll("[data-pl]").forEach(function (b) { b.addEventListener("click", function () { set("loc", b.dataset.pl); }); });
     box.querySelectorAll("[data-pn]").forEach(function (b) { b.addEventListener("click", function () { set("need", b.dataset.pn); }); });
+    box.querySelectorAll("[data-pm]").forEach(function (b) { b.addEventListener("click", function () { set("mnc", b.dataset.pm); }); });
     var typed = function (id, key) {   // re-render after a pause, keeping the cursor where it was
       var tm; $(id).addEventListener("input", function () {
         clearTimeout(tm); var v = $(id).value;
@@ -3027,7 +3107,7 @@
     $("j-box").hidden = true; $("j-box").innerHTML = "";
     var mm = data.meta || {};
     CV = { data: data, item: item || null, country: "", reloc: "any", min: 0, sal: "any", floorLpa: mm.min_salary_inr ? Math.round(mm.min_salary_inr / 10000) / 10 : 10,
-           sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false, keys: {} };
+           mnc: store.get("c.mnconly", "") === "1", sort: "chance", view: "jobs", open: {}, limit: 60, showRemoved: false, keys: {} };
     (data.jobs || []).forEach(function (j) { var k = jobKey({ url: j.url }); j._qk = k.key; });
     $("v-title").textContent = title; $("v-right").innerHTML = "";
     $("v-box").hidden = true; $("c-box").hidden = false;
@@ -3058,6 +3138,8 @@
       if (CV.sal === "stated" && !j.salary_stated) return false;
       if (CV.sal === "unstated" && j.salary_stated) return false;
       if (CV.sal === "floor" && !(j.salary_stated && (j.salary_lpa || 0) >= CV.floorLpa)) return false;
+      if (CV.sal === "high" && !((lpaOf(j).lpa || 0) >= CV.floorLpa)) return false;
+      if (CV.mnc && !mncOf(j.company)) return false;
       if (withCountry && CV.country) { var cs = j.countries && j.countries.length ? j.countries : ["??"]; if (cs.indexOf(CV.country) < 0) return false; }
       return true;
     });
@@ -3096,11 +3178,12 @@
       acc("crf-cc", "Country", CV.country ? cname(CV.country) : "All countries",
         '<div class="chips small" style="margin-top:10px">' + ccBtn("", "All · " + base.length) + rank.map(function (r) { return ccBtn(r.cc, (flag(r.cc) ? flag(r.cc) + " " : "") + cname(r.cc) + " · " + r.n); }).join("") + "</div>" +
         '<div class="hint">Ordered by best chance of getting hired first.</div>', "sub") +
-      acc("crf-opts", "Relocation · pay · sort · match", [CV.reloc, CV.sal === "any" ? "" : { floor: "pay ≥ " + CV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated" }[CV.sal], CV.sort, CV.min ? CV.min + "%+" : "any match", CV.view].filter(Boolean).join(" · "),
+      acc("crf-opts", "Relocation · pay · sort · match", [CV.reloc, CV.sal === "any" ? "" : { floor: "pay ≥ " + CV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated", high: "≥ " + CV.floorLpa + " LPA incl. estimates" }[CV.sal], CV.mnc ? "MNC only" : "", CV.sort, CV.min ? CV.min + "%+" : "any match", CV.view].filter(Boolean).join(" · "),
         '<div class="row"><div><label>Relocation</label>' + sel("cf-reloc", CV.reloc, [["any", "any"], ["visa", "relocation or visa"], ["yes", "relocation only"]]) + '</div><div><label>Sort</label>' + sel("cf-sort", CV.sort, [["chance", "best chance"], ["score", "best resume match"], ["new", "newest"]]) + "</div></div>" +
         '<div class="row"><div><label>Resume match</label>' + sel("cf-min", CV.min, [[0, "any"], [35, "35%+"], [50, "50%+"], [65, "65%+"]]) + '</div><div><label>Show</label>' + sel("cf-view", CV.view, [["jobs", "jobs"], ["companies", "companies & contacts"]]) + "</div></div>" +
-        '<div class="row"><div><label>Pay</label>' + sel("cf-sal", CV.sal, [["any", "any"], ["floor", "stated ≥ " + CV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div></div>" +
-        '<div class="hint">Pay is read from the posting\'s text (LPA, ₹, $, €...). Postings that state less than the floor were already left out of this report; the rest either state a figure or say nothing.</div>', "sub") +
+        '<div class="row"><div><label>Pay</label>' + sel("cf-sal", CV.sal, [["any", "any"], ["high", "≥ " + CV.floorLpa + " LPA (stated or typical)"], ["floor", "stated ≥ " + CV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div>" +
+        '<div><label>Employer</label><div class="chips small"><button type="button" id="cf-mnc"' + (CV.mnc ? ' class="on"' : "") + '>MNC / big tech / unicorn only</button></div></div></div>' +
+        '<div class="hint">Pay is read from the posting\'s text (LPA, ₹, $, €...); "~₹" is the company\'s typical 0-2-year band when the posting says nothing. Postings that state less than the floor were already left out of this report.</div>', "sub") +
       (CV.view === "jobs" && CV.item ? '<button class="primary" id="cq-all"' + (toQueue.length ? "" : " disabled") + ">Queue all shown (" + toQueue.length + ")</button>" +
         '<div class="hint">Your PC opens each career page, fills the form from your details and submits it; ones behind a login or CAPTCHA are marked "by hand" under Queue.</div>' : "") + "</div>";
     if (CV.view === "companies") h += companiesHtml(jobs);
@@ -3114,6 +3197,7 @@
     }
     box.innerHTML = h; box.scrollTop = top; bindAcc(box);
     bindMarks(box, function (toggle) { if (toggle === true) CV.showRemoved = !CV.showRemoved; renderCareers(); });
+    if ($("cf-mnc")) $("cf-mnc").addEventListener("click", function () { CV.mnc = !CV.mnc; store.set("c.mnconly", CV.mnc ? "1" : ""); CV.limit = 60; renderCareers(); });
     var rerun = $("c-rerun");
     if (rerun) rerun.addEventListener("click", function (e) { e.preventDefault(); prefillCareers(m); });
   }
@@ -3145,7 +3229,9 @@
     t.push(chip(j.chance >= 65 ? "ok" : j.chance >= 45 ? "warn" : "", "chance " + j.chance));
     if (typeof j.score === "number") t.push(chip(j.score >= 55 ? "ok" : j.score >= 35 ? "warn" : "bad", "match " + Math.round(j.score) + "%"));
     t.push(chip(R[0], R[1])); t.push(chip(F[0], F[1] + (j.exp && j.exp[0] !== null && j.exp[0] !== undefined ? " · asks " + expText(j.exp) : "")));
-    if (j.salary_lpa) t.push(chip("ok", "₹ " + j.salary_lpa + " LPA")); else if (j.salary) t.push(chip("", j.salary.slice(0, 40)));
+    var pay = lpaOf(j);
+    if (pay.lpa) t.push(lpaChip(pay)); else if (j.salary) t.push(chip("", j.salary.slice(0, 40)));
+    var mnce = mncOf(j.company); if (mnce) t.push(mncChip(mnce));
     var flags = (j.countries || []).map(flag).join(" "), skills = "";
     if (j.matched && j.matched.length) skills += '<div class="hint">✓ ' + esc(j.matched.join(", ")) + "</div>";
     if (j.missing && j.missing.length) skills += '<div class="hint">✗ ' + esc(j.missing.join(", ")) + "</div>";
