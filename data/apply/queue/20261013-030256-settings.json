@@ -1,0 +1,1 @@
+{"type": "settings", "requested_at": "2026-10-13T03:02:56Z", "note": "", "payload": {"auto": {"enabled": true, "min_score": 0, "boards": ["linkedin", "naukri", "web"]}, "limit": 10, "offsite": "career"}}
