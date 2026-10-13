@@ -1,0 +1,79 @@
+
+# ---------------------------------------------------------------------------
+# ANY TITLE, 0-2 YEARS (stated 2026-10-11)
+# ---------------------------------------------------------------------------
+# The job's name does not matter; what matters is that it is a software / IT
+# role for 0-2 years. So: the experience band is 0-2 (Naukri's facet searches
+# at 2, the gate drops postings asking 3+); the "is this my field" gate is wide
+# (any of these words anywhere in the posting); and senior / lead / manager /
+# intern titles are dropped on the title alone.
+experience_range: [0, 2]
+must_have_any:
+  - software
+  - developer
+  - development
+  - engineer
+  - engineering
+  - programmer
+  - programming
+  - sde
+  - swe
+  - information technology
+  - "it "
+  - technology
+  - application
+  - web
+  - backend
+  - frontend
+  - full stack
+  - fullstack
+  - java
+  - python
+  - javascript
+  - typescript
+  - ".net"
+  - c#
+  - c++
+  - node
+  - react
+  - angular
+  - spring
+  - sql
+  - database
+  - cloud
+  - aws
+  - azure
+  - devops
+  - sre
+  - qa
+  - testing
+  - automation
+  - data engineer
+  - analyst
+  - trainee
+  - graduate
+  - fresher
+  - associate
+  - member of technical staff
+exclude_title_keywords:
+  - sales
+  - recruiter
+  - business development
+  - mechanical
+  - civil
+  - electrical engineer
+  - site engineer
+  - senior
+  - "sr."
+  - "sr "
+  - "lead "
+  - "team lead"
+  - principal
+  - "staff "
+  - architect
+  - manager
+  - director
+  - "head of"
+  - vp
+  - intern
+  - internship

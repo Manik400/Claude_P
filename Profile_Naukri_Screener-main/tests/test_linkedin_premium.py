@@ -111,6 +111,31 @@ def test_two_drafts_a_day_generic_and_dated(tmp_path, monkeypatch):
     assert lp.mark_draft(more[0]["id"], posted={"status": "posted"})["posted"]["status"] == "posted"
 
 
+def test_no_draft_topic_or_link_is_ever_drafted_twice(tmp_path, monkeypatch):
+    _drafts_sandbox(tmp_path, monkeypatch)
+    state = {"draft_index": 0}
+    cfg = dict(lp.DEFAULTS, drafts_mix={"tech": 3, "study": 2, "news": 1})
+    seen_topics, seen_news = set(), 0
+    for day_n in range(12):
+        for w in lp.write_drafts(cfg, state, {}, datetime(2026, 10, 7 + day_n, 9)):
+            if w["kind"] == "news":
+                seen_news += 1
+                continue
+            mark = (w["kind"], w["topic"])
+            assert mark not in seen_topics, f"{mark} drafted again on day {day_n}"
+            seen_topics.add(mark)
+    assert seen_news == 1                               # the same three headlines are not drafted again
+    assert len(seen_topics) == len(lp.TECH_TOPICS) + len(lp.STUDY_TOPICS) + len(lp.GENERAL_TOPICS)
+    # deleted drafts stay used: deleting everything frees nothing
+    lp.delete_drafts([d["id"] for d in lp.load_drafts()])
+    assert lp.write_drafts(cfg, state, {}, datetime(2026, 10, 20, 9)) == []
+    # roundup links from an earlier day are not listed again
+    state["jobs"] = {str(i): {"company": f"Co{i}", "title": "Backend Engineer", "location": "Berlin", "score": 50, "seen": "2026-10-20"} for i in range(12)}
+    used = lp._used_before(state, lp.load_drafts())
+    assert lp.hiring_roundup(state, datetime(2026, 10, 20, 9), used=used) is not None
+    assert lp.hiring_roundup(state, datetime(2026, 10, 20, 9), used=used) is None
+
+
 def test_hiring_roundup_needs_ten_openings(tmp_path, monkeypatch):
     _drafts_sandbox(tmp_path, monkeypatch)
     state = {"jobs": {str(i): {"company": f"Co{i}", "title": "Backend Engineer", "location": "Berlin, Germany", "score": 50 - i, "seen": "2026-10-07"} for i in range(12)}}

@@ -56,6 +56,7 @@ Environment (all optional; <repo>/.env is read through jobbot.dotenv):
 from __future__ import annotations
 
 import json as _json
+import logging
 import math
 import os
 import re
@@ -99,6 +100,8 @@ try:
     from huggingface_hub import hf_hub_download as _hf_download
 except Exception:  # noqa: BLE001
     _hf_download = None
+
+_log = logging.getLogger("jobbot.localai")
 
 DEFAULT_MODEL = "unsloth/Qwen3.5-2B-GGUF:Qwen3.5-2B-Q4_K_M.gguf"
 # Bigger, for the PC (ai_setup.bat /big):
@@ -172,9 +175,9 @@ def cache_dir() -> str:
     return _env("LOCAL_AI_CACHE") or os.path.join(os.path.expanduser("~"), ".cache", "jobbot-ai")
 
 
-def model_spec() -> tuple[str, str]:
-    """(hf repo id, filename) of the GGUF in use."""
-    spec = _env("LOCAL_AI_MODEL", DEFAULT_MODEL)
+def model_spec(spec: str | None = None) -> tuple[str, str]:
+    """(hf repo id, filename) of the GGUF in use (or of `spec`)."""
+    spec = spec or _env("LOCAL_AI_MODEL", DEFAULT_MODEL)
     repo, _, name = spec.partition(":")
     if not name:
         raise ValueError("LOCAL_AI_MODEL must be '<hf repo>:<file.gguf>', got %r" % spec)
@@ -418,11 +421,11 @@ class _MachineLock:
 _machine_lock = _MachineLock()
 
 
-def model_path(download: bool = True) -> str | None:
-    """Local path of the GGUF; downloads it when asked and missing."""
+def model_path(download: bool = True, spec: str | None = None) -> str | None:
+    """Local path of the GGUF (the one in use, or `spec`); downloads it when asked and missing."""
     if _hf_download is None:
         return None
-    repo, name = model_spec()
+    repo, name = model_spec(spec)
     root = cache_dir()
     # huggingface_hub lays the file out under the repo's own folder; look
     # for it there first so no network call happens when it is present.
@@ -435,6 +438,46 @@ def model_path(download: bool = True) -> str | None:
     return _hf_download(repo_id=repo, filename=name, cache_dir=root)
 
 
+def free_ram_gb() -> float | None:
+    """Physical memory Windows (or Linux) can hand out right now, in GB; None when it cannot be read."""
+    try:
+        if os.name == "nt":
+            import ctypes
+            from ctypes import wintypes
+
+            class _MemStatus(ctypes.Structure):
+                _fields_ = [("dwLength", wintypes.DWORD), ("dwMemoryLoad", wintypes.DWORD)] + [
+                    (n, ctypes.c_ulonglong) for n in ("total", "avail", "tpf", "apf", "tv", "av", "aev")]
+
+            st = _MemStatus()
+            st.dwLength = ctypes.sizeof(st)
+            return st.avail / 2 ** 30 if ctypes.windll.kernel32.GlobalMemoryStatusEx(ctypes.byref(st)) else None
+        return os.sysconf("SC_AVPHYS_PAGES") * os.sysconf("SC_PAGE_SIZE") / 2 ** 30
+    except Exception:  # noqa: BLE001
+        return None
+
+
+def _fits(path: str) -> bool:
+    """Is there RAM for this GGUF plus llama.cpp's buffers (LOCAL_AI_RAM_HEADROOM_GB, default 3)?
+
+    Written 2026-10-13: the 12 GB 35B model was loaded by two runs while Chrome held 9 GB;
+    the PC read 12,000 pages a second back from disk and every answer crawled. A model
+    that does not fit now is not loaded; _llm() takes the small one instead.
+    """
+    free = free_ram_gb()
+    if free is None:
+        return True
+    return free >= os.path.getsize(path) / 2 ** 30 + _float_env("LOCAL_AI_RAM_HEADROOM_GB", 3.0)
+
+
+def _light_path() -> str | None:
+    """The small model (LOCAL_AI_LIGHT_MODEL, default the 2B) when it is already on disk."""
+    try:
+        return model_path(download=False, spec=_env("LOCAL_AI_LIGHT_MODEL", DEFAULT_MODEL))
+    except ValueError:
+        return None
+
+
 def _llm():
     global _llm_instance
     with _model_lock:
@@ -445,6 +488,12 @@ def _llm():
         path = model_path(download=True)
         if not path:
             return None
+        if not _fits(path):
+            light = _light_path()
+            if light and light != path:
+                _log.info("local AI: %.1f GB RAM free, too little for %s - using %s for now",
+                          free_ram_gb() or 0, os.path.basename(path), os.path.basename(light))
+                path = light
         _llm_instance = _llama_cpp.Llama(
             model_path=path, n_ctx=_int_env("LOCAL_AI_CTX", 4096), n_threads=threads(),
             n_batch=512, verbose=False)
@@ -626,8 +675,29 @@ def ask(prompt: str, *, system: str = "", max_tokens: int = 200, json: bool = Fa
             return _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, left)
         finally:
             _machine_lock.release()
+            _rechoose_model()
     finally:
         _model_lock.release()
+
+
+def _rechoose_model() -> None:
+    """After a call: unload the model when it no longer suits the free RAM, so the next call picks again.
+
+    The big model is dropped when RAM runs short (LOCAL_AI_MIN_FREE_GB, default 1.5) - the
+    PC was paging it in from disk; the small stand-in is dropped once the big one fits again.
+    """
+    llm = _llm_instance
+    if llm is None:
+        return
+    loaded = getattr(llm, "model_path", "") or ""
+    wanted = model_path(download=False) or ""
+    if os.path.normcase(loaded) == os.path.normcase(wanted):
+        free = free_ram_gb()
+        if free is not None and free < _float_env("LOCAL_AI_MIN_FREE_GB", 1.5) and _light_path() not in (None, wanted):
+            _log.info("local AI: only %.1f GB RAM free - unloading %s", free, os.path.basename(loaded))
+            release()
+    elif wanted and _fits(wanted):
+        release()
 
 
 def _ask_llm(prompt, sys_text, max_tokens, json, schema, temperature, limit):

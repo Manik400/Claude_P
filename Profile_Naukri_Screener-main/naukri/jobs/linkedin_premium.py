@@ -922,15 +922,18 @@ def _opening_pool(state: dict, now: datetime | None = None, days: int = 3) -> li
 
 def _roundup_lines(state: dict, now: datetime | None = None, want: int = 12, theme: str | None = None,
                    used: set | None = None, pool: list[dict] | None = None) -> list[str]:
-    """Up to `want` lines for one roundup: openings matching the theme's pattern, none in `used` (updated)."""
+    """Up to `want` lines for one roundup: openings matching the theme's pattern, none in `used` (updated) -
+    neither its company today nor its link in any draft before."""
     used = used if used is not None else set()
     rx = next((re.compile(t[2], re.I) for t in HIRING_THEMES if t[0] == theme and t[2]), None)
     lines = []
     for o in (pool if pool is not None else _opening_pool(state, now)):
-        if o["tag"] in used or (rx is not None and not rx.search(o["text"])):
+        links = {"link:" + u for u in _URL_RX.findall(o["line"])}
+        if o["tag"] in used or links & used or (rx is not None and not rx.search(o["text"])):
             continue
         lines.append(o["line"])
         used.add(o["tag"])
+        used |= links
         if len(lines) >= want:
             break
     return lines
@@ -1154,12 +1157,15 @@ def tech_headlines(limit: int = 12) -> list[dict]:
     return [h for h in out if h.get("title")][:limit]
 
 
-def news_post(hashtags: list[str]) -> tuple[str, str, str] | None:
-    """(text, source, topic) - a light post on today's tech headlines, or None when nothing was read."""
-    heads = tech_headlines()
+def news_post(hashtags: list[str], used: set | None = None) -> tuple[str, str, str] | None:
+    """(text, source, topic) - a light post on today's tech headlines, or None when fewer than three
+    were read that no draft has carried before (`used`, updated with the ones taken)."""
+    used = used if used is not None else set()
+    heads = [h for h in tech_headlines() if not (h.get("url") and "link:" + h["url"] in used)]
     if len(heads) < 3:
         return None
     picks = heads[:5]
+    used |= {"link:" + h["url"] for h in picks if h.get("url")}
     ai = _localai()
     if ai is not None:
         try:
@@ -1197,8 +1203,81 @@ def _plan(cfg: dict) -> list[str] | None:
     return plan or None
 
 
+# Nothing is drafted twice, posted or not (2026-10-13: the same topics came back every day and 232
+# of 489 roundup links reappeared on later days). Every draft leaves marks - "topic:<kind>:<key>"
+# and "link:<url>" - in state["drafted_used"], which outlives drafts.json's 45 days and the
+# phone's Delete; a draft is only written from what carries no mark yet.
+TOPIC_LISTS = {"tech": TECH_TOPICS, "study": STUDY_TOPICS, "general": GENERAL_TOPICS}
+_URL_RX = re.compile(r"https?://[^\s)]+")
+USED_KEEP = 20000
+
+
+def _marks(draft: dict) -> set:
+    out = {"link:" + u for u in _URL_RX.findall(draft.get("text") or "")}
+    if draft.get("kind") in TOPIC_LISTS and draft.get("topic"):
+        out.add(f"topic:{draft['kind']}:{draft['topic']}")
+    return out
+
+
+def _used_before(state: dict, drafts: list[dict]) -> set:
+    """Every topic and link any draft has carried, deleted ones included."""
+    used = set(state.get("drafted_used") or [])
+    for d in drafts:
+        used |= _marks(d)
+    return used
+
+
+def _remember(state: dict, written: list[dict]) -> None:
+    mem = state.setdefault("drafted_used", [])
+    have = set(mem)
+    for w in written:
+        for m in sorted(_marks(w) - have):
+            mem.append(m)
+            have.add(m)
+    del mem[:-USED_KEEP]
+
+
+def _invented_topic(kind: str, used: set) -> dict | None:
+    """A new topic from the local model once the list's own are all used, or None."""
+    ai = _localai()
+    if ai is None:
+        return None
+    done = [m.split(":", 2)[2].replace("-", " ") for m in used if m.startswith(f"topic:{kind}:")][-60:]
+    about = {"tech": "a software-engineering idea for backend engineers",
+             "study": "practical learning or interview-preparation advice for software engineers",
+             "general": "an interesting, accurate piece of general or tech-adjacent knowledge for a broad audience"}[kind]
+    try:
+        out = ai.ask(
+            f"Suggest ONE new LinkedIn post topic: {about}. It must be different from every one of these used topics: "
+            + "; ".join(done) + NL + 'Reply as JSON: {"hook": "one-sentence opening", "points": ["three", "short", "points"], '
+            '"lesson": "one line", "ask": "a question to the reader"}',
+            system="You suggest fresh, accurate LinkedIn post topics. Reply with JSON only.",
+            max_tokens=260, json=True, temperature=0.9, timeout=120)
+    except Exception as exc:  # noqa: BLE001
+        log.debug("new %s topic via model failed: %s", kind, exc)
+        return None
+    if not isinstance(out, dict):
+        return None
+    hook = str(out.get("hook") or "").strip()
+    points = [str(p).strip() for p in (out.get("points") or []) if str(p).strip()][:3]
+    key = "-".join(re.sub(r"[^a-z0-9]+", " ", hook.lower()).split()[:8])
+    if not key or len(points) < 2 or not out.get("lesson") or not out.get("ask") or f"topic:{kind}:{key}" in used:
+        return None
+    return {"key": key, "hook": hook, "points": points, "lesson": str(out["lesson"]).strip(), "ask": str(out["ask"]).strip()}
+
+
+def _next_topic(kind: str, start: int, used: set) -> dict | None:
+    """The first topic of `kind` from `start` on that no draft has had (marked in `used`), else a new one."""
+    topics = TOPIC_LISTS[kind]
+    t = next((topics[(start + i) % len(topics)] for i in range(len(topics))
+              if f"topic:{kind}:{topics[(start + i) % len(topics)]['key']}" not in used), None) or _invented_topic(kind, used)
+    if t is not None:
+        used.add(f"topic:{kind}:{t['key']}")
+    return t
+
+
 def _make(kind: str, state: dict, now: datetime, cursor: int, n_kind: int, used: set, pool: list[dict]) -> tuple | None:
-    """(kind, text, source, topic) for one draft of `kind`, or None when that kind has nothing today."""
+    """(kind, text, source, topic) for one draft of `kind`, or None when that kind has nothing new today."""
     if kind == "hiring":
         # each roundup of the day takes the next theme that still has 10 unused openings
         order = [t[0] for t in HIRING_THEMES]
@@ -1209,19 +1288,30 @@ def _make(kind: str, state: dict, now: datetime, cursor: int, n_kind: int, used:
                 return "hiring", got[0], "watchers", got[1]
         return None
     if kind == "news":
-        got = news_post(HASHTAGS_BY_KIND["news"])
+        got = news_post(HASHTAGS_BY_KIND["news"], used)
         return ("news", got[0], got[1], got[2]) if got else None
-    if kind == "general":
-        t = GENERAL_TOPICS[(cursor + n_kind) % len(GENERAL_TOPICS)]
-        text, source = general_post(t, HASHTAGS_BY_KIND["general"])
-        return "general", text, source, t["key"]
-    if kind == "study":
-        t = STUDY_TOPICS[(cursor + n_kind) % len(STUDY_TOPICS)]
-        text, source = study_post(t, HASHTAGS_BY_KIND["study"])
-        return "study", text, source, t["key"]
-    t = TECH_TOPICS[(cursor + n_kind) % len(TECH_TOPICS)]
-    text, source = tech_post(t, HASHTAGS_BY_KIND["tech"])
-    return "tech", text, source, t["key"]
+    kind = kind if kind in TOPIC_LISTS else "tech"
+    t = _next_topic(kind, cursor + n_kind, used)
+    if t is None:
+        return None
+    writer = {"tech": tech_post, "study": study_post, "general": general_post}[kind]
+    text, source = writer(t, HASHTAGS_BY_KIND[kind])
+    return kind, text, source, t["key"]
+
+
+FALLBACK_KINDS = ("study", "general", "tech", "news")
+
+
+def _make_any(kind: str, state: dict, now: datetime, cursor: int, counts: dict, used: set, pool: list[dict]) -> tuple | None:
+    """`kind`, or the first other kind that still has something new; None when nothing new is left today."""
+    for k in (kind,) + tuple(x for x in FALLBACK_KINDS if x != kind):
+        got = _make(k, state, now, cursor, counts.get(k, 0), used, pool)
+        if got is not None:
+            if k != kind:
+                log.info("draft: nothing new for %s today - a %s post instead", kind, got[0])
+            return got
+    log.info("draft: nothing new left for %s today - skipped rather than repeated", kind)
+    return None
 
 
 def write_drafts(cfg: dict, state: dict, me: dict | None = None, now: datetime | None = None, want: int | None = None) -> list[dict]:
@@ -1253,9 +1343,9 @@ def write_drafts(cfg: dict, state: dict, me: dict | None = None, now: datetime |
                 plan.remove(d.get("kind"))
     if not plan:
         return []
-    # openings already listed in today's roundups are not listed again
+    # no topic or link any draft ever carried; no company twice in today's roundups
     pool = _opening_pool(state, now) if "hiring" in plan else []
-    used: set = set()
+    used = _used_before(state, drafts)
     for d in have:
         if d.get("kind") == "hiring":
             for o in pool:
@@ -1266,17 +1356,16 @@ def write_drafts(cfg: dict, state: dict, me: dict | None = None, now: datetime |
     for k in [d.get("kind") for d in have]:
         counts[k] = counts.get(k, 0) + 1
     for kind in plan:
-        got = _make(kind, state, now, cursor, counts.get(kind, 0), used, pool)
+        got = _make_any(kind, state, now, cursor, counts, used, pool)
         if got is None:
-            # not enough openings / headlines today: a study post keeps the day's count
-            got = _make("study", state, now, cursor, counts.get("study", 0), used, pool)
-            log.info("draft: no %s post possible today - a study post instead", kind)
+            continue
         kind2, text, source, topic = got
         counts[kind2] = counts.get(kind2, 0) + 1
         did = f"{key}-{now.strftime('%H%M%S')}-{len(have) + len(written) + 1}"
         written.append({"id": did, "date": key, "time": now.strftime("%H:%M"), "kind": kind2, "topic": topic or "", "text": text,
                         "source": source or "", "posted": None, "deleted": False, "created": now.isoformat(timespec="seconds")})
         log.info("draft written (%s, %s, by the %s): %d chars", kind2, topic, source, len(text))
+    _remember(state, written)
     drafts = written + drafts
     save_drafts(drafts, now=now)
     state["draft_index"] = cursor + 1
@@ -1300,7 +1389,7 @@ def write_more(cfg: dict, state: dict, n: int = 6, now: datetime | None = None) 
     plan = [base[i % len(base)] for i in range(max(1, n))]
     cursor = int(state.get("draft_index") or 0) + len(have)
     pool = _opening_pool(state, now) if "hiring" in plan else []
-    used: set = set()
+    used = _used_before(state, drafts)
     for d in have:
         if d.get("kind") == "hiring":
             for o in pool:
@@ -1311,7 +1400,9 @@ def write_more(cfg: dict, state: dict, n: int = 6, now: datetime | None = None) 
         counts[k] = counts.get(k, 0) + 1
     written: list[dict] = []
     for kind in plan:
-        got = _make(kind, state, now, cursor, counts.get(kind, 0), used, pool) or _make("general", state, now, cursor, counts.get("general", 0), used, pool)
+        got = _make_any(kind, state, now, cursor, counts, used, pool)
+        if got is None:
+            continue
         kind2, text, source, topic = got
         counts[kind2] = counts.get(kind2, 0) + 1
         did = f"{key}-{now.strftime('%H%M%S')}-{len(have) + len(written) + 1}"
@@ -1319,6 +1410,7 @@ def write_more(cfg: dict, state: dict, n: int = 6, now: datetime | None = None) 
                         "source": source or "", "posted": None, "deleted": False, "created": now.isoformat(timespec="seconds")})
         log.info("extra draft (%s, %s, by the %s): %d chars", kind2, topic, source, len(text))
     if written:
+        _remember(state, written)
         drafts = written + drafts
         save_drafts(drafts, now=now)
         state["draft_index"] = cursor + len(written) + 1
@@ -1881,8 +1973,16 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
                         d["skipped"].append(f"{c.get('title')} at {c.get('company')} ({c.get('location')}): {', '.join(why)}")
                         continue
                     # InMail drafts for the best postings with a named hiring team
-                    if info.get("hiring_team") and len(d["inmails"]) < 6 and not any(m["job_url"] == c["url"] for m in d["inmails"]):
-                        person = info["hiring_team"][0]
+                    # never twice for one job or one person, on any day
+                    if "inmailed" not in state:        # first run with the list: what earlier days drafted
+                        state["inmailed"] = [u for dd in (state.get("days") or {}).values() for m in dd.get("inmails") or []
+                                             for u in (m.get("job_url"), m.get("person_url")) if u]
+                    inmailed = state["inmailed"]
+                    person =(info.get("hiring_team") or [{}])[0]
+                    if (info.get("hiring_team") and len(d["inmails"]) < 6 and c.get("url") not in inmailed
+                            and (not person.get("url") or person["url"] not in inmailed)):
+                        inmailed.extend(u for u in (c.get("url"), person.get("url")) if u)
+                        del inmailed[:-USED_KEEP]
                         d["inmails"].append({"to": person.get("name") or "hiring team", "headline": person.get("headline", ""),
                                              "person_url": person.get("url"), "job": c.get("title"), "company": c.get("company"),
                                              "job_url": c.get("url"), "text": inmail_draft(c, person, me)})
