@@ -410,6 +410,10 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                     linkedin_premium.publish_phone(cfg_p, linkedin_premium.load_state())
                 except Exception as exc:  # noqa: BLE001
                     log("control: phone file not republished: %s" % exc)
+                if str(payload.get("task")) == "PhoneApplyQueue" and str(payload.get("do")) == "stop":
+                    # last, after the phone file says "stopped": ends this very process
+                    os.environ["PHONE_CONTROL_SELF_STOP"] = "1"
+                    log("control: " + linkedin_premium.control_task("PhoneApplyQueue", "stop"))
             else:
                 log("unknown request %s in %s" % (kind, name))
         except Exception as exc:

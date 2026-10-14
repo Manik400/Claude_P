@@ -1660,10 +1660,10 @@ def control_task(name: str, do: str) -> str:
     known = name in TASKS or any(name.startswith(p) for p in TASK_PREFIXES)
     if not known or not re.match(r"^[\w\-]+$", name or ""):
         return f"unknown task {name!r}"
-    if do == "stop" and name == "PhoneApplyQueue":
-        # this worker is the one that hears the phone: stopping and disabling it would end this very run
-        # before it republishes, and nothing could ever send it Start again
-        return f"stop {name}: refused (it is the task that listens to the phone)"
+    if do == "stop" and name == "PhoneApplyQueue" and os.environ.get("PHONE_CONTROL_SELF_STOP") != "1":
+        # this worker hears the phone and may be the process running this call: disable now, and let
+        # the caller republish the phone file before the final stop (see phone_apply's control branch)
+        do = "disable"
     # run = start now; a stopped task is disabled, so Run enables it first (the phone's Run must always work)
     cmds = {"start": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null; Start-ScheduledTask -TaskName '{name}'",
             "run": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null; Start-ScheduledTask -TaskName '{name}'",
