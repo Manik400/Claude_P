@@ -1756,7 +1756,7 @@
         '<div class="muted" style="font-size:0.85rem">' + esc(t.name) + (t.last_pass ? " · last pass " + esc(ago(t.last_pass)) + (t.last_run ? " · started " + esc(ago(t.last_run)) : "")
           : (t.last_run ? " · last run " + esc(ago(t.last_run)) : "") + (t.next_run && !off ? " · next " + esc(ago(t.next_run).replace(" ago", "")) : "")) + "</div>" +
         '<div class="acts">' + (waiting ? "" : off ? '<button class="btn2" data-ctl="start" data-task="' + esc(t.name) + '">Start</button>' :
-          (t.name === "PhoneApplyQueue" ? "" : '<button class="btn2" data-ctl="stop" data-task="' + esc(t.name) + '">Stop</button>') +
+          '<button class="btn2" data-ctl="stop" data-task="' + esc(t.name) + '">Stop</button>' +
           '<button class="btn2" data-ctl="run" data-task="' + esc(t.name) + '">Run now</button>') + "</div></div>";
     });
     h += '<div class="hint">Start / Stop reach the PC through the queue worker (every 30 minutes, and 2 minutes after logon). Stop also disables the task so it is not restarted; Start enables and starts it.</div></div>';
@@ -1805,7 +1805,7 @@
     box.querySelectorAll("[data-ctl]").forEach(function (b) {
       b.addEventListener("click", function () {
         var task = b.dataset.task, act = b.dataset.ctl;
-        if (act === "stop" && !confirm("Stop and disable " + taskLabel(task) + " on the PC?")) return;
+        if (act === "stop" && !confirm("Stop and disable " + taskLabel(task) + " on the PC?" + (task === "PhoneApplyQueue" ? "\n\nThis is the task that listens to this phone: after it stops, Start can only be done on the PC (Enable-ScheduledTask / Start-ScheduledTask PhoneApplyQueue)." : ""))) return;
         b.disabled = true;
         request("control", { task: task, do: act }, (act === "stop" ? "Stop" : act === "run" ? "Run" : "Start") + " sent to the PC (applied on its next check-in).").then(function (ok) {
           if (!ok) { b.disabled = false; return; }
