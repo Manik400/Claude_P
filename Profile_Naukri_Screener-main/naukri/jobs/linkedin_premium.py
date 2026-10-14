@@ -1660,8 +1660,13 @@ def control_task(name: str, do: str) -> str:
     known = name in TASKS or any(name.startswith(p) for p in TASK_PREFIXES)
     if not known or not re.match(r"^[\w\-]+$", name or ""):
         return f"unknown task {name!r}"
+    if do == "stop" and name == "PhoneApplyQueue":
+        # this worker is the one that hears the phone: stopping and disabling it would end this very run
+        # before it republishes, and nothing could ever send it Start again
+        return f"stop {name}: refused (it is the task that listens to the phone)"
+    # run = start now; a stopped task is disabled, so Run enables it first (the phone's Run must always work)
     cmds = {"start": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null; Start-ScheduledTask -TaskName '{name}'",
-            "run": f"Start-ScheduledTask -TaskName '{name}'",
+            "run": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null; Start-ScheduledTask -TaskName '{name}'",
             "stop": f"Stop-ScheduledTask -TaskName '{name}' -ErrorAction SilentlyContinue; Disable-ScheduledTask -TaskName '{name}' | Out-Null",
             "enable": f"Enable-ScheduledTask -TaskName '{name}' | Out-Null",
             "disable": f"Disable-ScheduledTask -TaskName '{name}' | Out-Null"}
