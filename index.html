@@ -1745,14 +1745,19 @@
     var tasks = d.tasks || [];
     h += '<div class="card"><h2>What runs on the PC</h2>';
     if (!tasks.length) h += '<div class="muted">No scheduled tasks reported yet.</div>';
+    var ctlSent = {}; try { ctlSent = JSON.parse(store.get("pm.ctl", "{}")) || {}; } catch (e) { ctlSent = {}; }
     tasks.forEach(function (t) {
-      var running = /running/i.test(t.state || ""), off = t.enabled === false || /disabled/i.test(t.state || "");
+      var off = t.enabled === false || /disabled/i.test(t.state || ""), running = !off && /running/i.test(t.state || "");
+      // sent from this phone, and the PC's file is not newer than the click: say so instead of the old state
+      var sent = ctlSent[t.name], waiting = sent && (!d.updated || Date.parse(d.updated) < sent.at) && Date.now() - sent.at < 3 * 3600 * 1000;
+      var waitLabel = waiting ? ({ stop: "stop sent, waiting for the PC", run: "start sent, waiting for the PC", start: "start sent, waiting for the PC" }[sent.do] || "sent") : "";
       h += '<div class="job" style="padding:10px 0;border-top:1px solid var(--line)"><div><b>' + esc(taskLabel(t.name)) + "</b> " +
-        chip(running ? "ok" : off ? "bad" : "", running ? "running" : off ? "stopped" : esc(t.state || "?")) + "</div>" +
+        (waiting ? chip("warn", waitLabel) : chip(running ? "ok" : off ? "bad" : "", running ? "running" : off ? "stopped" : esc(t.state || "?"))) + "</div>" +
         '<div class="muted" style="font-size:0.85rem">' + esc(t.name) + (t.last_pass ? " · last pass " + esc(ago(t.last_pass)) + (t.last_run ? " · started " + esc(ago(t.last_run)) : "")
           : (t.last_run ? " · last run " + esc(ago(t.last_run)) : "") + (t.next_run && !off ? " · next " + esc(ago(t.next_run).replace(" ago", "")) : "")) + "</div>" +
-        '<div class="acts">' + (off ? '<button class="btn2" data-ctl="start" data-task="' + esc(t.name) + '">Start</button>' :
-          '<button class="btn2" data-ctl="stop" data-task="' + esc(t.name) + '">Stop</button><button class="btn2" data-ctl="run" data-task="' + esc(t.name) + '">Run now</button>') + "</div></div>";
+        '<div class="acts">' + (waiting ? "" : off ? '<button class="btn2" data-ctl="start" data-task="' + esc(t.name) + '">Start</button>' :
+          (t.name === "PhoneApplyQueue" ? "" : '<button class="btn2" data-ctl="stop" data-task="' + esc(t.name) + '">Stop</button>') +
+          '<button class="btn2" data-ctl="run" data-task="' + esc(t.name) + '">Run now</button>') + "</div></div>";
     });
     h += '<div class="hint">Start / Stop reach the PC through the queue worker (every 30 minutes, and 2 minutes after logon). Stop also disables the task so it is not restarted; Start enables and starts it.</div></div>';
     if (d.reach && d.reach.length) {
@@ -1802,7 +1807,11 @@
         var task = b.dataset.task, act = b.dataset.ctl;
         if (act === "stop" && !confirm("Stop and disable " + taskLabel(task) + " on the PC?")) return;
         b.disabled = true;
-        request("control", { task: task, do: act }, (act === "stop" ? "Stop" : act === "run" ? "Run" : "Start") + " sent to the PC (applied on its next check-in).");
+        request("control", { task: task, do: act }, (act === "stop" ? "Stop" : act === "run" ? "Run" : "Start") + " sent to the PC (applied on its next check-in).").then(function (ok) {
+          if (!ok) { b.disabled = false; return; }
+          var m = {}; try { m = JSON.parse(store.get("pm.ctl", "{}")) || {}; } catch (e) { m = {}; }
+          m[task] = { do: act, at: Date.now() }; store.set("pm.ctl", JSON.stringify(m)); renderPremium();
+        });
       });
     });
   }
