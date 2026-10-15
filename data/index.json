@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-15T19:00:21Z",
+ "updated": "2026-10-15T20:43:42Z",
  "items": [
+  {
+   "id": "applications-20261015-204342-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-15T20:43:42Z",
+   "file": "data/applications/applications-20261015-204342-applications-sent.html",
+   "bytes": 4302445,
+   "meta": {}
+  },
   {
    "id": "careers-20261015-190021-software-engineer-software-developer-bac",
    "kind": "careers",
@@ -110,15 +119,6 @@
     "jobs_file": "data/naukri/naukri-20261015-051420-naukri-openings-2026-10-15-run-1-last-24.jobs.json",
     "jobs": "139"
    }
-  },
-  {
-   "id": "applications-20261015-044743-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-15T04:47:43Z",
-   "file": "data/applications/applications-20261015-044743-applications-sent.html",
-   "bytes": 4107579,
-   "meta": {}
   },
   {
    "id": "naukri-20261014-091221-naukri-openings-2026-10-14-run-3",
