@@ -377,8 +377,10 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                 if len(text) < 40:
                     log("post: nothing to post (no text sent and no draft on this PC)")
                 else:
-                    status, note = linkedin_premium.post_draft(text, headless=True, draft_id=str(payload.get("id") or "") or None)
-                    log("post: %s (%s)" % (status, note))
+                    # LINKEDIN OFF (2026-10-15): nothing is posted on LinkedIn from this PC
+                    # status, note = linkedin_premium.post_draft(text, headless=True, draft_id=str(payload.get("id") or "") or None)
+                    # log("post: %s (%s)" % (status, note))
+                    log("post: LinkedIn is switched off on this PC - nothing posted")
             elif kind == "labels":
                 # the phone's labeling card: {answers: {post id: true/false}} -> data/model/human.jsonl
                 from naukri.jobs import post_model
@@ -391,6 +393,8 @@ def apply_requests(queue: dict, requests_: list, pages: str, passphrase: str, da
                     log("drafts: %d deleted" % n)
                 more = int(payload.get("more") or 0)
                 if more:
+                    log("drafts: LinkedIn Premium is switched off - no drafts generated")
+                if more and False:   # LINKEDIN OFF (2026-10-15)
                     cfg_p = linkedin_premium.load_config()
                     st = linkedin_premium.load_state()
                     written = linkedin_premium.write_more(cfg_p, st, min(more, 12))
@@ -596,9 +600,10 @@ def run_applies(queue: dict, settings: dict, limit: int, dry_run: bool, autoappl
                                          company_apply=bool(it.get("company_apply")),
                                          has_questionnaire=bool(it.get("has_questionnaire")), source="phone"))
             naukri_jobs[-1].score = it.get("score") or 100
-        elif it["board"] == "linkedin":
-            cards.append({"job_id": it["job_id"], "url": it["url"], "title": it["title"],
-                          "company": it["company"], "location": it.get("location", ""), "easy_apply": True})
+        # LINKEDIN OFF (2026-10-15): LinkedIn items stay in the queue untouched
+        # elif it["board"] == "linkedin":
+        #     cards.append({"job_id": it["job_id"], "url": it["url"], "title": it["title"],
+        #                   "company": it["company"], "location": it.get("location", ""), "easy_apply": True})
     for it in todo:
         it["attempts"] = it.get("attempts", 0) + 1
     profile = config_mod.load_profile()

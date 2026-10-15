@@ -138,7 +138,8 @@ def apply_run(jobs, per_run: int | None = None, dry_run: bool = True,
     config_mod, autoapply = mods["config"], mods["autoapply"]
     profile = config_mod.load_profile()
     config = config_mod.load(profile=profile)
-    cards = linkedin_cards(jobs, min_score=min_score)
+    # cards = linkedin_cards(jobs, min_score=min_score)   # LINKEDIN OFF (2026-10-15): Easy Apply is not run
+    cards = []
     web = web_postings(jobs, min_score=min_score)
     if not cards and not web:
         return {"_summary": {"dry_run": dry_run, "naukri": {}, "linkedin": {}, "per_run": per_run,

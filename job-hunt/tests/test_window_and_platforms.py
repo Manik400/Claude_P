@@ -98,14 +98,15 @@ def test_hours_wins_over_days_and_reaches_the_boards_as_seconds():
 # --- platforms --------------------------------------------------------------
 
 def test_platform_names_and_keys_both_resolve():
+    # LINKEDIN OFF (2026-10-15): "linkedin" is no longer a source, so it comes back as unknown
     picked, unknown = job_bot.parse_platforms("linkedin, The Muse, seek/jobsdb, apify-naukri")
-    assert picked == ["linkedin", "themuse", "seek", "apify-naukri"]
-    assert unknown == []
+    assert picked == ["themuse", "seek", "apify-naukri"]
+    assert unknown == ["linkedin"]
 
 
 def test_unknown_platform_is_reported_not_silently_dropped():
-    picked, unknown = job_bot.parse_platforms("linkedin, not-a-board")
-    assert picked == ["linkedin"] and unknown == ["not-a-board"]
+    picked, unknown = job_bot.parse_platforms("seek, not-a-board")
+    assert picked == ["seek"] and unknown == ["not-a-board"]
 
 
 def test_no_platforms_asked_means_every_platform():

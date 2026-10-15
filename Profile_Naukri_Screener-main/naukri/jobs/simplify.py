@@ -292,8 +292,9 @@ def launch(p, headless: bool, states: list[Path] | None = None,
 
 def _states() -> list[Path]:
     from ..session import DEFAULT_STATE
-    from .linkedin import STATE_PATH as LINKEDIN_STATE
-    return [DEFAULT_STATE, LINKEDIN_STATE]
+    # from .linkedin import STATE_PATH as LINKEDIN_STATE   # LINKEDIN OFF (2026-10-15)
+    # return [DEFAULT_STATE, LINKEDIN_STATE]
+    return [DEFAULT_STATE]
 
 
 def open_naukri(p, headless: bool):
