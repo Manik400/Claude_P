@@ -1,6 +1,26 @@
 {
- "updated": "2026-10-15T18:13:09Z",
+ "updated": "2026-10-15T19:00:21Z",
  "items": [
+  {
+   "id": "careers-20261015-190021-software-engineer-software-developer-bac",
+   "kind": "careers",
+   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, developer, SWE, SDE, engineer",
+   "when": "2026-10-15T19:00:21Z",
+   "file": "data/careers/careers-20261015-190021-software-engineer-software-developer-bac.json",
+   "bytes": 2811399,
+   "meta": {
+    "jobs": "97",
+    "relocation": "76",
+    "countries": "NL,DE,IE,GB,AU,CA,ES,IN,US",
+    "experience": "0-2",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "15 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "naukri-20261015-090400-naukri-openings-2026-10-15-run-1-last-24",
    "kind": "naukri",
