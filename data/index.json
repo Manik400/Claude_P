@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-15T22:57:40Z",
+ "updated": "2026-10-16T04:43:02Z",
  "items": [
+  {
+   "id": "applications-20261016-044302-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-16T04:43:02Z",
+   "file": "data/applications/applications-20261016-044302-applications-sent.html",
+   "bytes": 4346709,
+   "meta": {}
+  },
   {
    "id": "careers-20261015-225740-software-engineer-software-developer-bac",
    "kind": "careers",
@@ -20,15 +29,6 @@
     "list_sha": "ec840ae28566",
     "list_count": "9110"
    }
-  },
-  {
-   "id": "applications-20261015-204342-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-15T20:43:42Z",
-   "file": "data/applications/applications-20261015-204342-applications-sent.html",
-   "bytes": 4302445,
-   "meta": {}
   },
   {
    "id": "careers-20261015-190021-software-engineer-software-developer-bac",
