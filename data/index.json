@@ -1,6 +1,26 @@
 {
- "updated": "2026-10-19T08:27:22Z",
+ "updated": "2026-10-19T10:14:02Z",
  "items": [
+  {
+   "id": "applications-20261019-101402-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-19T10:14:02Z",
+   "file": "data/applications/applications-20261019-101402-applications-sent.html",
+   "bytes": 4606621,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261019-101400-naukri-openings-2026-10-19-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-19 run 2 - Early",
+   "when": "2026-10-19T10:14:00Z",
+   "file": "data/naukri/naukri-20261019-101400-naukri-openings-2026-10-19-run-2-early.html",
+   "bytes": 35082,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261019-101400-naukri-openings-2026-10-19-run-2-early.jobs.json"
+   }
+  },
   {
    "id": "naukri-20261019-082722-naukri-openings-2026-10-19-run-1-last-24",
    "kind": "naukri",
@@ -11,15 +31,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261019-082722-naukri-openings-2026-10-19-run-1-last-24.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261016-221304-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-16T22:13:04Z",
-   "file": "data/applications/applications-20261016-221304-applications-sent.html",
-   "bytes": 4537865,
-   "meta": {}
   },
   {
    "id": "naukri-20261016-131259-naukri-openings-2026-10-16-run-1-last-24",
@@ -908,17 +919,6 @@
    "bytes": 65627,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-1-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261002-095458-naukri-openings-2026-10-02-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-02 run 2 - Early",
-   "when": "2026-10-02T09:54:58Z",
-   "file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-2-early.html",
-   "bytes": 29140,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261002-095458-naukri-openings-2026-10-02-run-2-early.jobs.json"
    }
   },
   {
