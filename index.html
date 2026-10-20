@@ -2157,8 +2157,6 @@
     };
     try { wideQ.addEventListener("change", onWide); } catch (e) { wideQ.addListener(onWide); }
   }
-  // postings read by the rented Apify scrapers (Naukri / Indeed / LinkedIn); extra.worldwide = the global LinkedIn pass
-  function isApifyJob(j) { return !!((j.extra || {}).via === "apify" || /^apify-/.test(j.source || "") || /\(Apify\)/.test(j.source_name || "")); }
   function jobsFiltered() {
     var keys = queueKeys();
     return JV.jobs.filter(function (j) {
@@ -2173,9 +2171,6 @@
       if (JV.sal === "floor" && !(ex.salary_stated && (ex.salary_lpa || 0) >= JV.floorLpa)) return false;
       if (JV.sal === "high" && !((lpaOf(j).lpa || 0) >= JV.floorLpa)) return false;
       if (JV.mnc && !(ex.is_mnc || mncOf(j.company))) return false;
-      if (JV.via === "apify" && !isApifyJob(j)) return false;
-      if (JV.via === "world" && !ex.worldwide) return false;
-      if (JV.via === "direct" && isApifyJob(j)) return false;
       return true;
     }).sort(function (a, b) {
       if (JV.tsort) {  // a column heading was clicked: that wins over the Sort box
@@ -2207,8 +2202,6 @@
     var counts = { linkedin: 0, naukri: 0, web: 0 }, cc = {}, bc = {}, bname = {};
     JV.jobs.forEach(function (j) { if (j.fit !== "no") { counts[j._board] = (counts[j._board] || 0) + 1; var c = j.country || "??"; cc[c] = (cc[c] || 0) + 1; bc[j._src] = (bc[j._src] || 0) + 1; bname[j._src] = bname[j._src] || j.source_name || j.source || "Other"; } });
     var tally = {}; JV.jobs.forEach(function (j) { var q = keys[j._key]; if (q) tally[q.status] = (tally[q.status] || 0) + 1; });
-    var live = JV.jobs.filter(function (j) { return j.fit !== "no"; }), nAll = live.length,
-      nApify = live.filter(isApifyJob).length, nWorld = live.filter(function (j) { return (j.extra || {}).worldwide; }).length;
     // boards: every registry board (dimmed at 0), then any other source found in this report
     var boards = BOARDS.map(function (b) { return [b[0], b[1]]; });
     Object.keys(bc).forEach(function (k) { if (!BOARDS.some(function (b) { return b[0] === k; })) boards.push([k, bname[k]]); });
@@ -2222,7 +2215,7 @@
     var fsum = [fb.length === 0 ? "All boards" : fb.length === 1 ? labelOf(boards, fb[0]) : fb.length + " boards",
       fc.length === 0 ? "All countries" : fc.length === 1 ? ccLabel(fc[0]) : fc.length + " countries",
       JV.min ? "match ≥" + JV.min + "%" : "any match", JV.sal === "any" ? "" : { floor: "pay ≥ " + JV.floorLpa + " LPA", stated: "pay stated", unstated: "pay not stated", high: "≥ " + JV.floorLpa + " LPA incl. estimates" }[JV.sal],
-      JV.mnc ? "MNC only" : "", { apify: "Apify only", world: "Apify worldwide", direct: "without Apify" }[JV.via || ""] || "", JV.sort === "new" ? "newest first" : "best match first"].filter(Boolean).join(" · ");
+      JV.mnc ? "MNC only" : "", JV.sort === "new" ? "newest first" : "best match first"].filter(Boolean).join(" · ");
     var fchip = function (attr, k, label, n, on) { return '<button type="button" data-' + attr + '="' + esc(k) + '" class="' + (on ? "on" : "") + (n ? "" : " zero") + '">' + label + " · " + n + "</button>"; };
     var jm = JV.item.meta || {}, jwin = windowLabel(jm);
     var h = '<div class="card"><div class="muted">' + JV.jobs.length + " postings · " + counts.linkedin + " LinkedIn · " + counts.naukri + " Naukri · " + counts.web + " other boards / company sites</div>" +
@@ -2242,9 +2235,8 @@
       '<div><label>Sort</label><select id="jf-sort"><option value="score"' + (JV.sort === "score" ? " selected" : "") + '>best match</option><option value="new"' + (JV.sort === "new" ? " selected" : "") + ">newest</option></select></div></div>" +
       '<div class="row"><div><label>Pay</label>' + sel("jf-sal", JV.sal, [["any", "any"], ["high", "≥ " + JV.floorLpa + " LPA (stated or estimated)"], ["floor", "stated ≥ " + JV.floorLpa + " LPA"], ["stated", "pay stated"], ["unstated", "pay not stated"]]) + "</div>" +
       '<div><label>Employer</label><div class="chips small"><button type="button" id="jf-mnc"' + (JV.mnc ? ' class="on"' : "") + '>MNC / big tech / unicorn only</button></div></div></div>' +
-      '<div class="row"><div><label>Search</label>' + sel("jf-via", JV.via || "", [["", "all searches · " + nAll], ["apify", "Apify only · " + nApify], ["world", "Apify worldwide pass · " + nWorld], ["direct", "without Apify"]]) + "</div></div>" +
       '<div class="hint">Pay is read from each posting\'s pay field or text; where a posting says nothing, "~₹" is an estimate (typical for the company, or looked up). Postings that stated less than the search\'s floor were already left out.</div>' +
-      (fb.length || fc.length || JV.min || JV.sal !== "any" || JV.mnc || JV.via ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
+      (fb.length || fc.length || JV.min || JV.sal !== "any" || JV.mnc ? '<button type="button" class="ghost small" id="jf-clear" style="margin-top:12px">Clear filters</button>' : ""));
     // the list itself: a table at >=1100px, the cards below that. The detail of the
     // selected posting is the second column (wide) or an accordion under its card.
     var shown = todo.slice(0, JV.limit), body = "";
@@ -2274,11 +2266,10 @@
     var toggleIn = function (set, k) { if (!k) Object.keys(set).forEach(function (x) { delete set[x]; }); else if (set[k]) delete set[k]; else set[k] = 1; JV.limit = 50; renderJobs(); };
     $("jf-board").addEventListener("click", function (e) { var b = e.target.closest("button[data-b]"); if (b) toggleIn(JV.boards, b.dataset.b); });
     $("jf-cc").addEventListener("click", function (e) { var b = e.target.closest("button[data-cc]"); if (b) toggleIn(JV.countries, b.dataset.cc); });
-    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.sal = "any"; JV.mnc = false; JV.via = ""; store.set("j.mnconly", ""); JV.limit = 50; renderJobs(); });
+    if ($("jf-clear")) $("jf-clear").addEventListener("click", function () { JV.boards = {}; JV.countries = {}; JV.min = 0; JV.sal = "any"; JV.mnc = false; store.set("j.mnconly", ""); JV.limit = 50; renderJobs(); });
     if ($("jf-mnc")) $("jf-mnc").addEventListener("click", function () { JV.mnc = !JV.mnc; store.set("j.mnconly", JV.mnc ? "1" : ""); JV.limit = 50; renderJobs(); });
     $("jf-min").addEventListener("change", function (e) { JV.min = +e.target.value; renderJobs(); });
     if ($("jf-sal")) $("jf-sal").addEventListener("change", function (e) { JV.sal = e.target.value; JV.limit = 50; renderJobs(); });
-    if ($("jf-via")) $("jf-via").addEventListener("change", function (e) { JV.via = e.target.value; JV.limit = 50; renderJobs(); });
     $("jf-sort").addEventListener("change", function (e) { JV.sort = e.target.value; renderJobs(); });
     if ($("jf-more")) $("jf-more").addEventListener("click", function () { JV.limit += 50; renderJobs(); });
     box.querySelectorAll("[data-sel]").forEach(function (c) { c.addEventListener("change", function () { JV.sel[c.dataset.sel] = c.checked; renderJobs(); }); });

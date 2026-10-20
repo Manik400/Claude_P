@@ -1,6 +1,26 @@
 {
- "updated": "2026-10-20T21:25:59Z",
+ "updated": "2026-10-20T22:20:10Z",
  "items": [
+  {
+   "id": "careers-20261020-222010-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-20T22:20:10Z",
+   "file": "data/careers/careers-20261020-222010-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2797812,
+   "meta": {
+    "jobs": "108",
+    "relocation": "2",
+    "countries": "IN",
+    "experience": "0-3",
+    "reloc_mode": "any",
+    "days": "1",
+    "hours": "",
+    "min_salary": "15 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "applications-20261020-201842-applications-sent",
    "kind": "applications",
