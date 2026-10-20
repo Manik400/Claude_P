@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-20T22:20:10Z",
+ "updated": "2026-10-20T22:37:09Z",
  "items": [
+  {
+   "id": "applications-20261020-223709-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-20T22:37:09Z",
+   "file": "data/applications/applications-20261020-223709-applications-sent.html",
+   "bytes": 5702786,
+   "meta": {}
+  },
   {
    "id": "careers-20261020-222010-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -20,15 +29,6 @@
     "list_sha": "ec840ae28566",
     "list_count": "9110"
    }
-  },
-  {
-   "id": "applications-20261020-201842-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-20T20:18:42Z",
-   "file": "data/applications/applications-20261020-201842-applications-sent.html",
-   "bytes": 5648256,
-   "meta": {}
   },
   {
    "id": "accuracy-20261020-071321-accuracy-learning",
