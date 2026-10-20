@@ -1609,8 +1609,7 @@ def write_report(cfg: dict, state: dict, now: datetime | None = None) -> Path:
 
 PHONE_PATH = "data/premium/latest.json"
 # The scheduled tasks the phone may show and start / stop (scripts\schedule_*.ps1 register them).
-# TASKS = ["LiveFeed", "LinkedInPremium", "SocialPostsWatch", "LinkedInPostsWatch", "JobHuntApply", "PhoneApplyQueue", "NaukriProfileRefresh"]
-TASKS = ["LiveFeed", "SocialPostsWatch", "LinkedInPostsWatch", "JobHuntApply", "PhoneApplyQueue", "NaukriProfileRefresh"]   # LINKEDIN OFF (2026-10-15): LinkedInPremium cannot be started from the phone
+TASKS = ["LiveFeed", "LinkedInPremium", "SocialPostsWatch", "LinkedInPostsWatch", "JobHuntApply", "PhoneApplyQueue", "NaukriProfileRefresh"]
 TASK_PREFIXES = ["NaukriJobAgent"]
 
 
@@ -2228,10 +2227,6 @@ def main(argv=None) -> int:
     args = ap.parse_args(argv)
 
     _setup_logging(args.verbose)
-    if not args.report:
-        # LINKEDIN OFF (2026-10-15): no LinkedIn pass, no drafts, no posting. Only --report (rebuild the phone page) still works.
-        print("LinkedIn Premium is switched off (LINKEDIN OFF (2026-10-15)): nothing was opened or written.")
-        return 0
     cfg = load_config(Path(args.config))
     if args.show:
         os.environ["NAUKRI_SHOW"] = "1"

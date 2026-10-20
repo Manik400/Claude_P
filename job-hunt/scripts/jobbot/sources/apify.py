@@ -7,12 +7,20 @@ their scrapers instead, which is what makes an India search worth reading:
 
     apify-naukri     valig/naukri-jobs-scraper        India only      ~$0.4 per 1000 jobs
     apify-indeed     valig/indeed-jobs-scraper        60+ countries   ~$0.1 per 1000 jobs
-    apify-linkedin   curious_coder/linkedin-jobs-scraper  everywhere  ~$2 per 1000 jobs;
+    apify-linkedin   curious_coder/linkedin-jobs-scraper  worldwide   ~$2 per 1000 jobs;
                      also returns the job poster (name, title, LinkedIn profile) - a contact
 
 Set APIFY_TOKEN (https://console.apify.com/account/integrations). APIFY_SOURCES
-picks which of the three run (default "naukri,indeed"; add "linkedin" to spend
-on it). Each actor call is synchronous and capped by --max-per-source.
+picks which of the three run (default "naukri,indeed,linkedin"). Each actor call is
+synchronous and capped by --max-per-source.
+
+apify-linkedin runs as ONE worldwide pass per keyword on every run (LinkedIn's
+"Worldwide" location, newest first), not once per country: the whole world for the
+price of one call. Each card gets the country its location names, else "??". At most
+APIFY_LINKEDIN_LIMIT results per keyword (default 25), so it leaves budget for Naukri
+and Indeed. APIFY_LINKEDIN_PER_COUNTRY=1 adds the old per-country calls on top.
+Every Apify posting carries extra["via"] = "apify" (and extra["worldwide"] = True for
+the global pass); the reports filter on both.
 
 Spending is paced against the account's real usage (users/me/limits), so the PC's
 half-hourly rounds and the GitHub runs share one budget: APIFY_MONTHLY_USD (default 4.5,
@@ -64,7 +72,7 @@ INDEED_COUNTRIES = {"AR", "AU", "AT", "BH", "BE", "BR", "CA", "CL", "CN", "CO", 
 
 
 def _enabled_sources():
-    raw = os.environ.get("APIFY_SOURCES", "naukri,indeed")
+    raw = os.environ.get("APIFY_SOURCES") or "naukri,indeed,linkedin"
     return {s.strip().lower() for s in raw.split(",") if s.strip()}
 
 
@@ -202,6 +210,7 @@ class ApifyNaukri(_ApifyBase):
                         setattr(j, attr, float(m.group()))
                 j.extra.update({"naukri_id": jid, "company_apply": bool(it.get("companyApplyJob")),
                                 "applicants": it.get("applyCount"), "rating": ((it.get("ambitionBox") or {}).get("companyInfo") or {}).get("AggregateRating")})
+                j.extra["via"] = "apify"
                 if it.get("wfhType") in ("2", "Remote", "remote"):
                     j.remote = True
                 out.append(j.finalize())
@@ -244,7 +253,7 @@ class ApifyIndeed(_ApifyBase):
                     description=normalize_ws((it.get("description") or {}).get("text") or ""),
                     query=kw, id=f"in{jid}",
                 )
-                j.extra.update({"indeed_key": jid, "company_site": (it.get("employer") or {}).get("corporateWebsite") or ""})
+                j.extra.update({"indeed_key": jid, "company_site": (it.get("employer") or {}).get("corporateWebsite") or "", "via": "apify"})
                 out.append(j.finalize())
         return out
 
@@ -254,16 +263,36 @@ class ApifyLinkedIn(_ApifyBase):
     name = "LinkedIn (Apify)"
     sub = "linkedin"
     actor = "curious_coder/linkedin-jobs-scraper"
+    always_worldwide = True   # jobbot.search adds the global pass on every run, not only `--countries worldwide`
+
+    def applies_to(self, country):
+        # per-country calls only when asked for; the worldwide pass already covers every country
+        return os.environ.get("APIFY_LINKEDIN_PER_COUNTRY", "").strip() in ("1", "true", "yes") and super().applies_to(country)
+
+    def search_worldwide(self, ctx):
+        from ..config import REMOTE, countries_in_text
+        jobs = self._search(ctx, "Worldwide", "??", limit=int(os.environ.get("APIFY_LINKEDIN_LIMIT") or 25))
+        for j in jobs:
+            hit = countries_in_text(j.location)
+            if hit:
+                j.country = hit[0]
+            elif j.remote:
+                j.country = REMOTE
+            j.extra["worldwide"] = True
+        return jobs
 
     def search(self, ctx, country):
-        out, seen = [], set()
         meta = ctx.country_meta(country)
         location = meta.get("linkedin") or meta.get("name") or country
+        return self._search(ctx, location, country)
+
+    def _search(self, ctx, location, country, limit=None):
+        out, seen = [], set()
         h = ctx.window_hours
         posted = "past24Hours" if h and h <= 24 else ("pastWeek" if h and h <= 168 else "pastMonth")
         for kw in ctx.keywords():
             payload = {"keywords": kw, "location": location, "datePosted": posted, "scrapeCompany": False,
-                       "limitPerSource": min(ctx.max_per_source, 100)}
+                       "limitPerSource": min(ctx.max_per_source, limit or 100, 100)}
             for it in _run(ctx, self.actor, payload, self.name):
                 jid = str(it.get("id") or "")
                 if not jid or jid in seen:
@@ -281,6 +310,7 @@ class ApifyLinkedIn(_ApifyBase):
                     query=kw, id=f"li{jid}",
                 )
                 j.extra["linkedin_id"] = jid
+                j.extra["via"] = "apify"
                 if it.get("applyUrl"):
                     j.extra["apply_url"] = it["applyUrl"]
                 if it.get("jobPosterName"):

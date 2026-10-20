@@ -113,10 +113,9 @@ def backlog(days: int = 7) -> tuple[list[Job], list[dict]]:
             job = Job(**fields)
             job.score = rec.get("score") or 0
             jobs[job.job_id] = job
-        # LINKEDIN OFF (2026-10-15): LinkedIn cards from earlier scans are not applied to
-        # for card in results.get("linkedin") or []:
-        #     if card.get("job_id") and card.get("url"):
-        #         cards[str(card["job_id"])] = dict(card)
+        for card in results.get("linkedin") or []:
+            if card.get("job_id") and card.get("url"):
+                cards[str(card["job_id"])] = dict(card)
     return list(jobs.values()), list(cards.values())
 
 
@@ -462,15 +461,13 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
     retry_naukri = [Job(job_id=j["job_id"], title=j.get("title") or "", company=j.get("company") or "",
                         url=j.get("url") or "")
                     for j in retry if j.get("board") != "linkedin" and j.get("url")]
-    # LINKEDIN OFF (2026-10-15): no LinkedIn retries
-    # retry_cards = [{"job_id": j["job_id"], "title": j.get("title"), "company": j.get("company"),
-    #                 "url": j.get("url"), "easy_apply": True}
-    #                for j in retry if j.get("board") == "linkedin" and j.get("url")]
-    retry_cards = []
+    retry_cards = [{"job_id": j["job_id"], "title": j.get("title"), "company": j.get("company"),
+                    "url": j.get("url"), "easy_apply": True}
+                   for j in retry if j.get("board") == "linkedin" and j.get("url")]
     parked_jobs, parked_cards = unblocked_waiting(
         ledger, lambda q: answers_mod.resolve(q, [], no_model)[0] is not None)
     retry_naukri += [j for j in parked_jobs if j.job_id not in {r.job_id for r in retry_naukri}]
-    # retry_cards += [c for c in parked_cards if c["job_id"] not in {r["job_id"] for r in retry_cards}]   # LINKEDIN OFF (2026-10-15)
+    retry_cards += [c for c in parked_cards if c["job_id"] not in {r["job_id"] for r in retry_cards}]
     if parked_jobs or parked_cards:
         log.info("%d job(s) parked on questions that are answered now go back in the line",
                  len(parked_jobs) + len(parked_cards))
@@ -516,8 +513,7 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
                      " (dry run)" if dry_run else "")
             with sync_playwright() as p:
                 if use_simplify:
-                    # browser = simplify.launch(p, headless=headless, states=[DEFAULT_STATE, linkedin_mod.STATE_PATH])   # LINKEDIN OFF (2026-10-15)
-                    browser = simplify.launch(p, headless=headless, states=[DEFAULT_STATE])
+                    browser = simplify.launch(p, headless=headless, states=[DEFAULT_STATE, linkedin_mod.STATE_PATH])
                     context = browser.context
                 else:
                     browser = launch_browser(p, headless=headless, offscreen=not headless)
@@ -659,137 +655,134 @@ def _run(kept, cards, config, profile, headless, dry_run, per_run, include_backl
         if not dry_run:
             ledger.save()
 
-    # LINKEDIN OFF (2026-10-15): the whole LinkedIn apply section (Easy Apply and plain-Apply to company
-    # sites) is switched off. Kept commented, not deleted, so it can come back as it was.
-    cards = []
-#     # -------------------------------------------------------------- LinkedIn
-#     counts = summary["linkedin"]
-#     if config.get("linkedin_easy_apply", True):
-#         li_budget = max(0, int(config.get("linkedin_max_applies_per_day") or 0)
-#                         - _applied_today(ledger, "linkedin"))
-#         if per_run is not None:
-#             li_budget = min(li_budget, max(0, int(per_run)))
-#         li_cards = []
-#         seen_ids = set()
-#         for card in list(cards) + retry_cards:
-#             # With LinkedIn's switch off, Easy Apply is never pressed - but the posting is
-#             # still opened (once a day, linkedin_daily.py): a plain Apply leads to the
-#             # company's site, where the career applier fills the form. apply_to() reports
-#             # those "offsite"; Easy Apply ones come back "limit-cooldown" -> "platform-off".
-#             if not card.get("url") or not (card.get("easy_apply") or career_on):
-#                 continue
-#             job = _card_job(card)
-#             if job.job_id in seen_ids:
-#                 continue
-#             status = ledger.status(job.job_id)
-#             if status in DONE and not (career_on and career_untried(job.job_id)):
-#                 continue
-#             if status == WAITING and job.job_id not in {c["job_id"] for c in retry_cards}:
-#                 continue
-#             if memory.blocked(key=job.job_id, url=job.url, company=job.company, title=job.title):
-#                 tracked[0] += 1
-#                 continue
-#             seen_ids.add(job.job_id)
-#             li_cards.append((card, job))
-#         if tracked[0]:
-#             log.info("%d posting(s) left out: already applied to or removed (tracker - any board, the sheet, the phone)",
-#                      tracked[0])
-#         # Easy Apply stops for the day when our own cap is spent or LinkedIn
-#         # said its limit is reached (linkedin_limit.py, 24 h). The postings
-#         # are still opened when the career applier can use them: a plain
-#         # Apply leads to the company's site, which no limit touches.
-#         paused = [linkedin_limit.active() or not linkedin_on]
-#         if li_cards and not linkedin_on:
-#             log.info("LinkedIn Easy Apply is off: %d posting(s) are opened only to follow a plain Apply to the company site",
-#                      len(li_cards))
-#         if li_cards and li_budget <= 0:
-#             log.info("LinkedIn: daily cap of %s already reached; %d job(s) left for tomorrow",
-#                      config.get("linkedin_max_applies_per_day"), len(li_cards))
-#             paused[0] = True
-#         if li_cards and linkedin_limit.active():
-#             log.info("LinkedIn: %s - Easy Apply postings are left alone; plain-Apply ones still go to the company site",
-#                      linkedin_limit.label())
-#         if li_cards and paused[0] and not career_ready():
-#             li_cards = []           # nothing this run could do with them
-#         # Scheduled runs open LinkedIn for applying once a day (linkedin_daily.py);
-#         # the postings stay in line for tomorrow's turn.
-#         if li_cards and not linkedin_daily.take("apply"):
-#             # The day's Easy Apply turn is used: Easy Apply postings wait for tomorrow. Postings whose
-#             # Apply leads OFF LinkedIn are not limited by anything LinkedIn counts, so every later run
-#             # still opens a few of them (linkedin_offsite_per_run) and follows the Apply to the
-#             # company's form - that is where "apply to as many as possible" happens.
-#             note = linkedin_daily.label("apply")
-#             cap = max(0, int(config.get("linkedin_offsite_per_run") or 0))
-#             offsite = [(c, j) for c, j in li_cards if not c.get("easy_apply") or career_untried(j.job_id)] if career_ready() and cap else []
-#             keep_ids = {j.job_id for _c, j in offsite[:cap]}
-#             held = [(c, j) for c, j in li_cards if j.job_id not in keep_ids]
-#             for _card, job in held:
-#                 outcomes[job.job_id] = {"status": "limit-cooldown", "note": note}
-#             counts["skipped-once-a-day"] = len(held)
-#             li_cards = [(c, j) for c, j in li_cards if j.job_id in keep_ids]
-#             paused[0] = True
-#             log.info("LinkedIn Easy Apply skipped: %s - %d Easy Apply job(s) wait for tomorrow; %d plain-Apply posting(s) go to the company site now",
-#                      note, len(held), len(li_cards))
-#         if li_cards:
-#             log.info("LinkedIn: %s up to %d of %d job(s)%s",
-#                      "company-site applies from" if paused[0] else "Easy Apply to",
-#                      li_budget if not paused[0] else len(li_cards), len(li_cards),
-#                      " (dry run)" if dry_run else "")
-#             try:
-#                 with sync_playwright() as p:
-#                     if use_simplify:
-#                         browser, _ctx, page = simplify.open_linkedin(p, headless=headless)
-#                     else:
-#                         browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
-#                     try:
-#                         for n, (card, job) in enumerate(li_cards):
-#                             if _out_of_time(board_deadline, "LinkedIn", len(li_cards) - n, waiter):
-#                                 break
-#                             if li_budget <= 0 and not paused[0]:
-#                                 paused[0] = True
-#                                 log.info("LinkedIn: this run's Easy Apply cap is spent - plain-Apply postings "
-#                                          "still go to the company site")
-#                             if paused[0] and not career_ready():
-#                                 break
-#                             if career_untried(job.job_id) and not career_ready():
-#                                 continue
-#                             capture = {}
-#                             status, note = linkedin_apply.apply_to(
-#                                 page, card, facts, dry_run=dry_run, phone=phone, capture=capture,
-#                                 easy_apply_paused=paused[0])
-#                             if status == "limit-cooldown" and not linkedin_on:
-#                                 status, note = "platform-off", platform_switch.off_note("linkedin")
-#                             if status == "limit-reached":
-#                                 end = linkedin_limit.hit()
-#                                 paused[0] = True
-#                                 log.warning("LinkedIn: daily Easy Apply limit reached - Easy Apply paused until %s; "
-#                                             "Naukri, other boards, company sites and LinkedIn's plain-Apply postings continue",
-#                                             end.strftime("%Y-%m-%d %H:%M"))
-#                             if status == "offsite" and career_ready():
-#                                 status, note = try_career(
-#                                     page, job, "linkedin",
-#                                     lambda: _press(page, [linkedin_apply.ANY_APPLY_BUTTON]))
-#                             else:
-#                                 _record(ledger, job, status, note, "linkedin", capture)
-#                             if status == "questionnaire" and capture.get("question"):
-#                                 summary["questions_saved"] += 1
-#                             if not dry_run and status not in career_mod.STATUSES                                     and status not in ("limit-reached", "limit-cooldown", "platform-off"):
-#                                 applications.record("linkedin", job, status, note, capture,
-#                                                     dry_run=False, per_run=per_run, project=project)
-#                             counts[status] = counts.get(status, 0) + 1
-#                             outcomes[job.job_id] = {"status": status, "note": note}
-#                             log.info("[linkedin %s] %s @ %s - %s", status, job.title, job.company, note)
-#                             if status in ("applied", "would-apply"):
-#                                 li_budget -= 1
-#                             if not dry_run and li_budget > 0:
-#                                 time.sleep(random.uniform(*(SHORT_PAUSE if status in NOTHING_SENT else LINKEDIN_PAUSE)))
-#                     finally:
-#                         browser.close()
-#             except linkedin_mod.NotLoggedIn as exc:
-#                 log.warning("LinkedIn applies skipped: %s", exc)
-#                 counts["skipped-not-logged-in"] = len(li_cards)
-#             if not dry_run:
-#                 ledger.save()
+    # -------------------------------------------------------------- LinkedIn
+    counts = summary["linkedin"]
+    if config.get("linkedin_easy_apply", True):
+        li_budget = max(0, int(config.get("linkedin_max_applies_per_day") or 0)
+                        - _applied_today(ledger, "linkedin"))
+        if per_run is not None:
+            li_budget = min(li_budget, max(0, int(per_run)))
+        li_cards = []
+        seen_ids = set()
+        for card in list(cards) + retry_cards:
+            # With LinkedIn's switch off, Easy Apply is never pressed - but the posting is
+            # still opened (once a day, linkedin_daily.py): a plain Apply leads to the
+            # company's site, where the career applier fills the form. apply_to() reports
+            # those "offsite"; Easy Apply ones come back "limit-cooldown" -> "platform-off".
+            if not card.get("url") or not (card.get("easy_apply") or career_on):
+                continue
+            job = _card_job(card)
+            if job.job_id in seen_ids:
+                continue
+            status = ledger.status(job.job_id)
+            if status in DONE and not (career_on and career_untried(job.job_id)):
+                continue
+            if status == WAITING and job.job_id not in {c["job_id"] for c in retry_cards}:
+                continue
+            if memory.blocked(key=job.job_id, url=job.url, company=job.company, title=job.title):
+                tracked[0] += 1
+                continue
+            seen_ids.add(job.job_id)
+            li_cards.append((card, job))
+        if tracked[0]:
+            log.info("%d posting(s) left out: already applied to or removed (tracker - any board, the sheet, the phone)",
+                     tracked[0])
+        # Easy Apply stops for the day when our own cap is spent or LinkedIn
+        # said its limit is reached (linkedin_limit.py, 24 h). The postings
+        # are still opened when the career applier can use them: a plain
+        # Apply leads to the company's site, which no limit touches.
+        paused = [linkedin_limit.active() or not linkedin_on]
+        if li_cards and not linkedin_on:
+            log.info("LinkedIn Easy Apply is off: %d posting(s) are opened only to follow a plain Apply to the company site",
+                     len(li_cards))
+        if li_cards and li_budget <= 0:
+            log.info("LinkedIn: daily cap of %s already reached; %d job(s) left for tomorrow",
+                     config.get("linkedin_max_applies_per_day"), len(li_cards))
+            paused[0] = True
+        if li_cards and linkedin_limit.active():
+            log.info("LinkedIn: %s - Easy Apply postings are left alone; plain-Apply ones still go to the company site",
+                     linkedin_limit.label())
+        if li_cards and paused[0] and not career_ready():
+            li_cards = []           # nothing this run could do with them
+        # Scheduled runs open LinkedIn for applying once a day (linkedin_daily.py);
+        # the postings stay in line for tomorrow's turn.
+        if li_cards and not linkedin_daily.take("apply"):
+            # The day's Easy Apply turn is used: Easy Apply postings wait for tomorrow. Postings whose
+            # Apply leads OFF LinkedIn are not limited by anything LinkedIn counts, so every later run
+            # still opens a few of them (linkedin_offsite_per_run) and follows the Apply to the
+            # company's form - that is where "apply to as many as possible" happens.
+            note = linkedin_daily.label("apply")
+            cap = max(0, int(config.get("linkedin_offsite_per_run") or 0))
+            offsite = [(c, j) for c, j in li_cards if not c.get("easy_apply") or career_untried(j.job_id)] if career_ready() and cap else []
+            keep_ids = {j.job_id for _c, j in offsite[:cap]}
+            held = [(c, j) for c, j in li_cards if j.job_id not in keep_ids]
+            for _card, job in held:
+                outcomes[job.job_id] = {"status": "limit-cooldown", "note": note}
+            counts["skipped-once-a-day"] = len(held)
+            li_cards = [(c, j) for c, j in li_cards if j.job_id in keep_ids]
+            paused[0] = True
+            log.info("LinkedIn Easy Apply skipped: %s - %d Easy Apply job(s) wait for tomorrow; %d plain-Apply posting(s) go to the company site now",
+                     note, len(held), len(li_cards))
+        if li_cards:
+            log.info("LinkedIn: %s up to %d of %d job(s)%s",
+                     "company-site applies from" if paused[0] else "Easy Apply to",
+                     li_budget if not paused[0] else len(li_cards), len(li_cards),
+                     " (dry run)" if dry_run else "")
+            try:
+                with sync_playwright() as p:
+                    if use_simplify:
+                        browser, _ctx, page = simplify.open_linkedin(p, headless=headless)
+                    else:
+                        browser, _ctx, page = linkedin_mod.open_session(p, headless=headless)
+                    try:
+                        for n, (card, job) in enumerate(li_cards):
+                            if _out_of_time(board_deadline, "LinkedIn", len(li_cards) - n, waiter):
+                                break
+                            if li_budget <= 0 and not paused[0]:
+                                paused[0] = True
+                                log.info("LinkedIn: this run's Easy Apply cap is spent - plain-Apply postings "
+                                         "still go to the company site")
+                            if paused[0] and not career_ready():
+                                break
+                            if career_untried(job.job_id) and not career_ready():
+                                continue
+                            capture = {}
+                            status, note = linkedin_apply.apply_to(
+                                page, card, facts, dry_run=dry_run, phone=phone, capture=capture,
+                                easy_apply_paused=paused[0])
+                            if status == "limit-cooldown" and not linkedin_on:
+                                status, note = "platform-off", platform_switch.off_note("linkedin")
+                            if status == "limit-reached":
+                                end = linkedin_limit.hit()
+                                paused[0] = True
+                                log.warning("LinkedIn: daily Easy Apply limit reached - Easy Apply paused until %s; "
+                                            "Naukri, other boards, company sites and LinkedIn's plain-Apply postings continue",
+                                            end.strftime("%Y-%m-%d %H:%M"))
+                            if status == "offsite" and career_ready():
+                                status, note = try_career(
+                                    page, job, "linkedin",
+                                    lambda: _press(page, [linkedin_apply.ANY_APPLY_BUTTON]))
+                            else:
+                                _record(ledger, job, status, note, "linkedin", capture)
+                            if status == "questionnaire" and capture.get("question"):
+                                summary["questions_saved"] += 1
+                            if not dry_run and status not in career_mod.STATUSES                                     and status not in ("limit-reached", "limit-cooldown", "platform-off"):
+                                applications.record("linkedin", job, status, note, capture,
+                                                    dry_run=False, per_run=per_run, project=project)
+                            counts[status] = counts.get(status, 0) + 1
+                            outcomes[job.job_id] = {"status": status, "note": note}
+                            log.info("[linkedin %s] %s @ %s - %s", status, job.title, job.company, note)
+                            if status in ("applied", "would-apply"):
+                                li_budget -= 1
+                            if not dry_run and li_budget > 0:
+                                time.sleep(random.uniform(*(SHORT_PAUSE if status in NOTHING_SENT else LINKEDIN_PAUSE)))
+                    finally:
+                        browser.close()
+            except linkedin_mod.NotLoggedIn as exc:
+                log.warning("LinkedIn applies skipped: %s", exc)
+                counts["skipped-not-logged-in"] = len(li_cards)
+            if not dry_run:
+                ledger.save()
 
     if not web_first:
         run_web()

@@ -29,13 +29,12 @@ from .workingnomads import WorkingNomads
 from .xing import Xing
 
 # Order matters only for display. Keyed sources are skipped automatically when their env vars are absent.
-# LINKEDIN OFF (2026-10-15): LinkedIn() and ApifyLinkedIn() are left out of the search
 ALL_SOURCES = [
-    Seek(), Xing(), Arbeitnow(), Duunitori(), Tecnoempleo(), InfoJobs(), Wellfound(),
+    LinkedIn(), Seek(), Xing(), Arbeitnow(), Duunitori(), Tecnoempleo(), InfoJobs(), Wellfound(),
     TokyoDev(), JapanDev(), Daijob(), Wantedly(), JobThai(), TheMuse(), LandingJobs(), RelocateMe(),
     Instahyre(), Remotive(), RemoteOK(), Jobicy(), WorkingNomads(), Himalayas(), WeWorkRemotely(),
     Adzuna(), Jooble(), JSearch(), FirecrawlSearch(),
-    ApifyNaukri(), ApifyIndeed(),   # ApifyLinkedIn(),
+    ApifyNaukri(), ApifyIndeed(), ApifyLinkedIn(),
 ]
 
 BY_KEY = {s.key: s for s in ALL_SOURCES}

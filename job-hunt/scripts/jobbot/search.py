@@ -75,7 +75,7 @@ def run_search(ctx, sources, log=print, workers=6, max_minutes=0):
         for cc in ctx.countries:
             if src.applies_to(cc):
                 tasks.append((src, cc))
-        if getattr(ctx, "worldwide", False) and hasattr(src, "search_worldwide"):
+        if (getattr(ctx, "worldwide", False) or getattr(src, "always_worldwide", False)) and hasattr(src, "search_worldwide"):
             tasks.append((src, WORLD))
     log(f"search: {len(tasks)} source/country tasks with {workers} workers"
         + (f", stopping new ones after {max_minutes:g} min" if max_minutes else ""))

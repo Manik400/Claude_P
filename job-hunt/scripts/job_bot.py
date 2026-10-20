@@ -417,8 +417,7 @@ def do_apply(run_dir, meta, statuses, jobs, args, log):
     # This run's postings plus what earlier runs had no time for: the report shows each
     # posting once, the apply pass keeps going until every one is applied to.
     pool = list(jobs) + backlog_jobs(run_dir, jobs, log)
-    # cards = autoapply.linkedin_cards(pool, min_score=getattr(args, "min_score", None))   # LINKEDIN OFF (2026-10-15)
-    cards = []
+    cards = autoapply.linkedin_cards(pool, min_score=getattr(args, "min_score", None))
     web = autoapply.web_postings(pool, min_score=getattr(args, "min_score", None))
     log(f"apply: {len(cards)} LinkedIn + {len(web)} company-site / other-board posting(s) in this run{'' if limit is None else f', at most {limit} this run'}{' (dry run - add --yes to send)' if dry else ''}")
     outcomes = autoapply.apply_run(pool, per_run=limit, dry_run=dry, min_score=getattr(args, "min_score", None))

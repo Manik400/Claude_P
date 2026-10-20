@@ -71,10 +71,9 @@ PLATFORMS = [
          url=lambda r, cc, m: (f"https://europa.eu/eures/portal/jv-se/search?page=1&resultsPerPage=10&orderBy=BEST_MATCH"
                                f"&keywordsEverywhere={_q(r)}&locationCodes={cc.lower()}&lang=en"),
          site=None, hint=""),
-    # LINKEDIN OFF (2026-10-15)
-    # dict(key="linkedin_web", name="LinkedIn (full search)", countries=None,
-    #      url=lambda r, cc, m: f"https://www.linkedin.com/jobs/search/?keywords={_q(r)}&location={_q(m['linkedin'])}&f_TPR=r2592000",
-    #      site=None, hint=""),
+    dict(key="linkedin_web", name="LinkedIn (full search)", countries=None,
+         url=lambda r, cc, m: f"https://www.linkedin.com/jobs/search/?keywords={_q(r)}&location={_q(m['linkedin'])}&f_TPR=r2592000",
+         site=None, hint=""),
     dict(key="wellfound_web", name="Wellfound", countries=None,
          url=lambda r, cc, m: f"https://wellfound.com/role/l/{slugify(r) or 'software-engineer'}/{m['wellfound']}",
          site=None, hint=""),
@@ -91,7 +90,7 @@ def direct_links(role, country):
             {"name": "Remotive", "url": f"https://remotive.com/remote-jobs?search={_q(role)}"},
             {"name": "RemoteOK", "url": f"https://remoteok.com/remote-{slugify(role)}-jobs"},
             {"name": "We Work Remotely", "url": f"https://weworkremotely.com/remote-jobs/search?term={_q(role)}"},
-            # {"name": "LinkedIn remote", "url": f"https://www.linkedin.com/jobs/search/?keywords={_q(role)}&f_WT=2&f_TPR=r2592000"},   # LINKEDIN OFF (2026-10-15)
+            {"name": "LinkedIn remote", "url": f"https://www.linkedin.com/jobs/search/?keywords={_q(role)}&f_WT=2&f_TPR=r2592000"},
         ]
     meta = COUNTRIES.get(country)
     if not meta:

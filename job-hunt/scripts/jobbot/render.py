@@ -13,11 +13,21 @@ def build_payload(meta, jobs, statuses):
     codes = list(meta.get("countries") or [])
     if REMOTE not in codes and any(j.country == REMOTE for j in jobs):
         codes.append(REMOTE)
+    # countries only a worldwide pass found (Apify / LinkedIn "Worldwide") get a tab too,
+    # most postings first, and "??" (location names no country) last
+    found = {}
+    for j in jobs:
+        if j.country and j.country not in codes:
+            found[j.country] = found.get(j.country, 0) + 1
+    codes += sorted((c for c in found if c != "??"), key=lambda c: -found[c])
+    if "??" in found:
+        codes.append("??")
     countries = []
     for cc in codes:
         n = sum(1 for j in jobs if j.country == cc)
         countries.append({
-            "code": cc, "name": country_name(cc), "flag": country_flag(cc), "count": n,
+            "code": cc, "name": "Other / not stated" if cc == "??" else country_name(cc),
+            "flag": "" if cc == "??" else country_flag(cc), "count": n,
             "links": direct_links(meta.get("roles", [""])[0] if meta.get("roles") else "", cc),
         })
     payload = {

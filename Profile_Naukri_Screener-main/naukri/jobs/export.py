@@ -462,22 +462,21 @@ def run(locations: list[str], top: int = 30, headless: bool = False,
     summarize_top(kept, config)
 
     cards = []
-    include_linkedin = False   # LINKEDIN OFF (2026-10-15): the scan is Naukri-only; the block below is kept, commented
-#     if include_linkedin and not linkedin_daily.take("search"):
-#         log.info("LinkedIn search skipped: %s", linkedin_daily.label("search"))
-#         include_linkedin = False
-#     if include_linkedin:
-#         try:
-#             cards = gather_linkedin(config, locations, top=top, headless=headless,
-#                                     worldwide=worldwide,
-#                                     posted_days=int(posted_days) if posted_days else 30,
-#                                     exclude_ids=already_listed, early=early)
-#             log.info("LinkedIn: %d card(s) after filtering", len(cards))
-#             cards = memory.filter(cards, key=lambda c: f"linkedin:{c.get('job_id')}", url=lambda c: c.get("url"),
-#                                   company=lambda c: c.get("company"), title=lambda c: c.get("title"), log_as="LinkedIn")
-#         except Exception as exc:
-#             # A LinkedIn failure must not cost you the Naukri sheet.
-#             log.warning("LinkedIn search skipped: %s", str(exc)[:200])
+    if include_linkedin and not linkedin_daily.take("search"):
+        log.info("LinkedIn search skipped: %s", linkedin_daily.label("search"))
+        include_linkedin = False
+    if include_linkedin:
+        try:
+            cards = gather_linkedin(config, locations, top=top, headless=headless,
+                                    worldwide=worldwide,
+                                    posted_days=int(posted_days) if posted_days else 30,
+                                    exclude_ids=already_listed, early=early)
+            log.info("LinkedIn: %d card(s) after filtering", len(cards))
+            cards = memory.filter(cards, key=lambda c: f"linkedin:{c.get('job_id')}", url=lambda c: c.get("url"),
+                                  company=lambda c: c.get("company"), title=lambda c: c.get("title"), log_as="LinkedIn")
+        except Exception as exc:
+            # A LinkedIn failure must not cost you the Naukri sheet.
+            log.warning("LinkedIn search skipped: %s", str(exc)[:200])
 
     outcomes: dict = {}
     if apply:

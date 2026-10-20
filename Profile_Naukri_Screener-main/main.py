@@ -251,8 +251,7 @@ def main() -> int:
             path, jobs, cards = jobs_export.run(
                 locations, top=args.top, headless=not args.show,
                 include_applied=args.include_applied,
-                # include_linkedin=not args.no_linkedin,   # LINKEDIN OFF (2026-10-15): LinkedIn is not searched
-                include_linkedin=False,
+                include_linkedin=not args.no_linkedin,
                 worldwide=args.worldwide,
                 posted_days=args.posted_days,
                 new_only=args.new_only,
