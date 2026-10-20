@@ -1,0 +1,50 @@
+{
+  "_about": "Daily searches GitHub starts on a timer (.github/workflows/jobhunt.yml and careers.yml, on: schedule). Each entry's cron must match one cron line in that workflow, in UTC (IST = UTC + 5:30). Keys are the workflow inputs; relocation: strict | visa | any. Edit here, no workflow change needed unless a time changes.",
+  "roles": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+  "jobhunt": [
+    {
+      "cron": "30 0 * * *",
+      "name": "India",
+      "countries": "IN",
+      "experience": "0-3",
+      "fit": "strict",
+      "relocation": "any",
+      "min_salary": "12 LPA",
+      "days": "2",
+      "extra": "--no-remote"
+    },
+    {
+      "cron": "30 3 * * *",
+      "name": "Germany + Australia, relocation / visa",
+      "countries": "DE,AU",
+      "experience": "0-3",
+      "fit": "strict",
+      "relocation": "visa",
+      "min_salary": "12 LPA",
+      "days": "2",
+      "extra": "--no-remote"
+    }
+  ],
+  "careers": [
+    {
+      "cron": "30 1 * * *",
+      "name": "India",
+      "countries": "IN",
+      "experience": "0-3",
+      "fit": "strict",
+      "relocation": "any",
+      "min_salary": "12 LPA",
+      "days": "2"
+    },
+    {
+      "cron": "30 4 * * *",
+      "name": "Germany + Australia, relocation / visa",
+      "countries": "DE,AU",
+      "experience": "0-3",
+      "fit": "strict",
+      "relocation": "visa",
+      "min_salary": "12 LPA",
+      "days": "2"
+    }
+  ]
+}

@@ -71,11 +71,15 @@ def run_search(ctx, sources, log=print, workers=6, max_minutes=0):
     time limit publishes nothing, while one that stops early publishes what it read.
     """
     tasks = []
+    # A source with always_worldwide (Apify LinkedIn) makes one global pass per run - but a search
+    # of only one or two countries asks those countries directly instead, which costs the same.
+    few = len([c for c in ctx.countries if c != REMOTE]) <= 2 and not getattr(ctx, "worldwide", False)
     for src in sources:
+        always = getattr(src, "always_worldwide", False)
         for cc in ctx.countries:
-            if src.applies_to(cc):
+            if src.applies_to(cc) or (always and few and cc != REMOTE):
                 tasks.append((src, cc))
-        if (getattr(ctx, "worldwide", False) or getattr(src, "always_worldwide", False)) and hasattr(src, "search_worldwide"):
+        if hasattr(src, "search_worldwide") and (getattr(ctx, "worldwide", False) or (always and not few)):
             tasks.append((src, WORLD))
     log(f"search: {len(tasks)} source/country tasks with {workers} workers"
         + (f", stopping new ones after {max_minutes:g} min" if max_minutes else ""))
@@ -219,6 +223,25 @@ def apply_fit_filter(jobs, mode="default"):
     if mode == "strict":
         return [j for j in jobs if j.fit in ("fit",)]
     return [j for j in jobs if j.fit != "no"]
+
+
+def relocation_filter(jobs, mode="any", log=print):
+    """mode: strict = only postings that offer relocation; visa = relocation or visa sponsorship;
+    any = keep all. Same reading as the careers search (jobbot.careers.relocation.assess) over the
+    title and whatever text the board gave; each posting keeps its verdict in extra["reloc"]."""
+    if mode not in ("strict", "visa"):
+        return jobs, 0
+    from .careers.relocation import assess
+    kept = []
+    for j in jobs:
+        r = assess(j.title, j.description or j.snippet or "")
+        if j.extra.get("relocation_paid") and r["label"] != "yes":
+            r = dict(r, label="yes", relocation="yes", evidence=r.get("evidence") or "board: relocation paid")
+        j.extra["reloc"] = r
+        if r["label"] == "yes" or (mode == "visa" and r["label"] == "visa"):
+            kept.append(j)
+    log(f"relocation filter ({mode}): {len(jobs)} -> {len(kept)} jobs")
+    return kept, len(jobs) - len(kept)
 
 
 def sort_jobs(jobs):

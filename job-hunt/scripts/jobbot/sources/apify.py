@@ -279,6 +279,10 @@ class ApifyLinkedIn(_ApifyBase):
             elif j.remote:
                 j.country = REMOTE
             j.extra["worldwide"] = True
+        if not getattr(ctx, "worldwide", False):
+            # a run of chosen countries keeps only those (and Remote when the run has it)
+            wanted = set(getattr(ctx, "countries", None) or [])
+            jobs = [j for j in jobs if j.country in wanted]
         return jobs
 
     def search(self, ctx, country):

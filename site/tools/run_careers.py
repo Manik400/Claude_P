@@ -152,6 +152,9 @@ def publish():
 
 
 def main():
+    sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+    import scheduled
+    scheduled.apply("careers")   # a timer-started run: the search from site/scheduled_searches.json
     mode = sys.argv[1] if len(sys.argv) > 1 else ""
     if mode == "search":
         search()

@@ -6,6 +6,11 @@ name: Job Hunt (phone)
 # to the gh-pages branch, where the phone page lists it.
 
 on:
+  # Daily searches (UTC; IST = UTC + 5:30). What each one searches is in site/scheduled_searches.json,
+  # matched by this cron line: 00:30 = India (06:00 IST), 03:30 = Germany + Australia (09:00 IST).
+  schedule:
+    - cron: "30 0 * * *"
+    - cron: "30 3 * * *"
   workflow_dispatch:
     inputs:
       role:
@@ -100,6 +105,7 @@ jobs:
 
       - name: Search and publish
         env:
+          SCHEDULE: ${{ github.event.schedule }}
           INPUT_ROLE: ${{ inputs.role }}
           INPUT_EXPERIENCE: ${{ inputs.experience }}
           INPUT_COUNTRIES: ${{ inputs.countries }}

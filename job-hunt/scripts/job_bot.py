@@ -44,7 +44,7 @@ from jobbot.models import Job  # noqa: E402
 from jobbot.render import render  # noqa: E402
 from jobbot.resume import ResumeError, device_resume_path, extract_text  # noqa: E402
 from jobbot.scoring import score_jobs  # noqa: E402
-from jobbot.search import apply_fit_filter, run_search, salary_filter, sort_jobs  # noqa: E402
+from jobbot.search import apply_fit_filter, relocation_filter, run_search, salary_filter, sort_jobs  # noqa: E402
 from jobbot.sources import ALL_SOURCES, BY_KEY, select_sources  # noqa: E402
 from jobbot.sources.base import SearchContext  # noqa: E402
 from jobbot.textutil import slugify  # noqa: E402
@@ -261,6 +261,8 @@ def do_search(args, run_dir, log):
     jobs = apply_fit_filter(jobs, args.fit)
     if before != len(jobs):
         log(f"fit filter ({args.fit}): {before} -> {len(jobs)} jobs")
+    reloc_mode = getattr(args, "relocation", None) or "any"
+    jobs, reloc_dropped = relocation_filter(jobs, reloc_mode, log=log)
     jobs = sort_jobs(jobs)
     plan = fallback_queries(ctx.roles, [c for c in countries if c != REMOTE], user_years)
     meta = {
@@ -271,7 +273,7 @@ def do_search(args, run_dir, log):
         "strict_undated": ctx.strict_undated, "dates_checked": dates_checked, "dates_dropped": dates_dropped,
         "min_salary_inr": ctx.min_salary_inr, "salary_dropped": salary_dropped,
         "platforms": [s.key for s in sources], "platforms_asked": include,
-        "fit_mode": args.fit, "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
+        "fit_mode": args.fit, "reloc_mode": reloc_mode, "reloc_dropped": reloc_dropped, "generated": datetime.now().strftime("%Y-%m-%d %H:%M"),
         "seconds": round(time.time() - t0, 1), "requests": ctx.http.requests_made,
         "fallback_queries": len(plan), "resume_name": "", "resume_path": "",
     }
@@ -650,6 +652,8 @@ def add_search_args(p):
     p.add_argument("--no-remote", action="store_true", help="skip remote job boards / the Remote tab")
     p.add_argument("--fit", choices=["default", "strict", "all"], default="default",
                    help="experience filter: default drops clear mismatches, strict keeps only fits, all keeps everything")
+    p.add_argument("--relocation", choices=["strict", "visa", "any"], default="any",
+                   help="strict = only postings that offer relocation; visa = relocation or visa sponsorship; any = all")
     p.add_argument("--out", help="run directory (default: ~/Documents/JobHunt/<date>_<role>)")
     p.add_argument("--out-root", help="parent directory for auto-named runs")
     p.add_argument("--workers", type=int, default=6)

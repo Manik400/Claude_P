@@ -11,6 +11,8 @@ Inputs come from the environment (set by .github/workflows/jobhunt.yml):
     INPUT_MIN_SALARY  "10 LPA"                                (optional; postings that state less are dropped)
     INPUT_PLATFORMS   "linkedin,seek,The Muse"                (optional; empty = every platform set up)
     INPUT_FIT         default | strict | all                  (optional)
+    INPUT_RELOCATION  strict | visa | any                     (optional; scheduled runs only)
+    SCHEDULE          the cron line that started the run      (set on timer runs: site/scheduled_searches.json wins)
     INPUT_EXTRA       any extra job_bot flags                 (optional)
     RESUME_TEXT       resume as plain text (repo secret)      (optional; enables match scoring)
     PAGES_REPO_URL    push URL for the gh-pages branch        (set by the workflow)
@@ -31,6 +33,9 @@ def env(name, default=""):
 
 
 def main():
+    sys.path.insert(0, HERE)
+    import scheduled
+    scheduled.apply("jobhunt")   # a timer-started run: the search from site/scheduled_searches.json
     roles = [r.strip() for r in env("INPUT_ROLE").split(",") if r.strip()]
     if not roles:
         raise SystemExit("INPUT_ROLE is required")
@@ -61,6 +66,8 @@ def main():
         argv += ["--sources", env("INPUT_PLATFORMS")]
     if env("INPUT_FIT"):
         argv += ["--fit", env("INPUT_FIT")]
+    if env("INPUT_RELOCATION"):
+        argv += ["--relocation", env("INPUT_RELOCATION")]
     if env("INPUT_EXTRA"):
         argv += shlex.split(env("INPUT_EXTRA"))
     # The resume the phone sent with this run (stored on that device, workflow input `resume`)
