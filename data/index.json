@@ -1,13 +1,13 @@
 {
- "updated": "2026-10-20T15:13:20Z",
+ "updated": "2026-10-20T16:28:03Z",
  "items": [
   {
-   "id": "applications-20261020-151320-applications-sent",
+   "id": "applications-20261020-162803-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-10-20T15:13:20Z",
-   "file": "data/applications/applications-20261020-151320-applications-sent.html",
-   "bytes": 5509514,
+   "when": "2026-10-20T16:28:03Z",
+   "file": "data/applications/applications-20261020-162803-applications-sent.html",
+   "bytes": 5538473,
    "meta": {}
   },
   {
