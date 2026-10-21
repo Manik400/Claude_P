@@ -1,1 +1,1 @@
-{"last_seen": "2026-10-21T11:07:35", "host": "MANIK", "busy": "online; running: JobHuntApply, NaukriJobAgent-Scan3, PhoneApplyQueue"}
+{"last_seen": "2026-10-21T11:07:56", "host": "MANIK", "busy": "busy: another run (7920 2026-10-21 10:23:09 ends=1792564689) holds the apply lock"}
