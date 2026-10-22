@@ -1,0 +1,406 @@
+[
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Junior Software Engineer",
+  "company": "Taskwiser",
+  "url": "https://wellfound.com/jobs/4867061-junior-software-engineer",
+  "country": "IN",
+  "location": "New Delhi",
+  "remote": true,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹14L – ₹15L",
+  "snippet": "## Junior Software Engineer **Full-time | Fully remote within India** **Company base: New Delhi | Annual salary: ₹14,00,000–₹15,00,000 (₹14–15 LPA)** Taskwiser is a product of Engagetal Solutions. We are looking for a curious early-career engineer to help build reliable software and grow through hands-on engineering work. ### Apply through LinkedIn Easy Apply For faster processing, please submit y",
+  "description": "## Junior Software Engineer **Full-time | Fully remote within India** **Company base: New Delhi | Annual salary: ₹14,00,000–₹15,00,000 (₹14–15 LPA)** Taskwiser is a product of Engagetal Solutions. We are looking for a curious early-career engineer to help build reliable software and grow through hands-on engineering work. ### Apply through LinkedIn Easy Apply For faster processing, please submit your application through our LinkedIn job listing using **Easy Apply**: **[Apply directly on LinkedIn — Junior Software Engineer](https://www.linkedin.com/jobs/view/4480240151/)** Direct application link: https://www.linkedin.com/jobs/view/4480240151/ ### Eligibility - Open only to freshers and candidates with **less than 1 year (under 12 months) of total professional work experience**. Candidates with 1 year or more of experience are not eligible. - **Indian citizens only, based in India.** - This is a full-time, fully remote role. The company is based in New Delhi; relocation to New Delhi is not required. - No prior full-time work experience is required. Academic, personal, internship, and open-source projects are welcome as evidence of your skills. ### What you will do - Help build and maintain features for our hiring platform and internal tools. - Develop and integrate APIs, work with databases, and contribute to user-facing functionality. - Write readable code, test your changes, investigate bugs, and document your work. - Participate in code reviews and collaborate with engineers and product stakeholders. - Learn to improve application reliability, performance, and security. ### What we are looking for - A foundation in programming, data structures, algorithms, and problem solving. - Familiarity with JavaScript/TypeScript or Python, plus basic web development concepts. - An understanding of REST APIs, SQL or relational databases, and Git. - At least one academic, personal, internship, or open-source project you can explain clearly. - Clear communication, attention to detail, and a willingness to learn and act on feedback. - Ability to collaborate remotely from India. ### Helpful, but not required Exposure to Node.js, React/Next.js, PostgreSQL, automated testing, or cloud deployment. Interest in AI-enabled products and developer tools is welcome. You do not need to know every technology listed to apply. ### Compensation Annual salary: **₹14–15 LPA (₹14,00,000–₹15,00,000 per year).** ### How to apply For faster processing, apply directly through **LinkedIn Easy Apply** at **https://www.linkedin.com/jobs/view/4480240151/** with your resume. Include a GitHub, portfolio, or project link in your resume if available, and highlight what you built and your contribution.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 74.1,
+  "matched_skills": [
+   "data structures",
+   "code review",
+   "javascript",
+   "typescript",
+   "rest api",
+   "sql",
+   "react",
+   "postgresql",
+   "test automation"
+  ],
+  "missing_skills": [
+   "python",
+   "git",
+   "node.js",
+   "next.js",
+   "artificial intelligence"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf4867061",
+  "extra": {
+   "company_size": "SIZE_1_10",
+   "salary_stated": true,
+   "salary_inr": 1500000,
+   "salary_lpa": 15.0,
+   "salary_text": "₹14L – ₹15L",
+   "semantic": 0.39,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong Java/SQL background with React and Kafka experience aligns well with core responsibilities.",
+    "gaps": "Lacks direct Python/Node.js and AI product exposure, though fundamentals are present."
+   },
+   "is_mnc": false,
+   "lpa": 15.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 6.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Taskwiser%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22New%20Delhi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Taskwiser%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22New%20Delhi%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Taskwiser%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22New%20Delhi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Taskwiser%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22New%20Delhi%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Taskwiser%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22New%20Delhi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Taskwiser%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22New%20Delhi%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Taskwiser%22%20%28%22Senior%20engineer%22%29%20%22New%20Delhi%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Taskwiser%22%20%28%22Senior%20engineer%22%29%20%22New%20Delhi%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "SDE-1",
+  "company": "Zenskar",
+  "url": "https://wellfound.com/jobs/4821657-sde-1",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹15L – ₹25L • No equity",
+  "snippet": "# About Zenskar Zenskar is an AI-native revenue automation platform built to handle real-world complexity. It sits between your CRM and ERP automating everything in between: billing, revenue recognition, collections, usage metering, and analytics. Across any pricing model, any entity structure, any currency. **Our vision: Zero-Touch Finance.** Agents execute. Humans supervise. Finance teams set th",
+  "description": "# About Zenskar Zenskar is an AI-native revenue automation platform built to handle real-world complexity. It sits between your CRM and ERP automating everything in between: billing, revenue recognition, collections, usage metering, and analytics. Across any pricing model, any entity structure, any currency. **Our vision: Zero-Touch Finance.** Agents execute. Humans supervise. Finance teams set the rules. Zenskar runs them. Founded by Apurv Bansal and Saurabh Agarwal, second-time founders whose previous startups were acquired by Snapdeal and Gaana. The team brings experience from Google, Deutsche Bank, Elevation Capital, IIT Bombay, IIT Delhi, and Harvard Business School. We have 5x'd revenue in the past year. We are default alive. ## Funding We raised **$15M in Series A** funding in April 2026, led by Susquehanna Venture Capital, Bessemer Venture Partners, Shine Capital, and Rho, with participation from Rocketship, J-Ventures, Future Back Ventures by Bain & Company, and Converge. The funding is being used to expand our **Agents Marketplace** and scale operations, not headcount. 📰 Read the announcement → https://youtu.be/jRb2ybvrSwU?si=vuLLgUY_MFdRzDMl See how Zenskar automates the full order-to-cash cycle, from contract to cash, without spreadsheets, workarounds, or engineering tickets.* ## The Problem We're Solving Finance teams aren't struggling because they lack AI tools. They're struggling because the systems underneath those tools were built for a simpler world. These systems label real-world complexity as edge cases and force teams into costly, error-prone workarounds: revenue leakage, delayed collections, audit risk, and finance teams buried in grunt work. Bolting AI onto these broken foundations is as good as a Ferrari engine on a horse-drawn carriage. Zenskar is purpose-built from the ground up: the architecture handles complexity natively, so AI actually works. It combines **foundational flexibility + deterministic calculation + purpose-built AI agents** to deliver end-to-end automation across the order-to-cash cycle - without workarounds, without engineering tickets. The B2B billing and revenue automation market is **$2B today, projected to reach $10B by 2030**. ## What Customers Say > *\"We're saving 200+ hours/quarter on invoicing and receivables by completely automating our recurring billing.\"* - **Noy Kalansky, Finance Controller, Pontera** > > *\"Zenskar automates revenue recognition accurately for our value-based billing: agents reducing manual hours by 70%.\"* - **Matt Barnard, VP Finance, Vertice** > > *\"Zenskar’s agents automated 90% of our billing, integrated with our CRM, and accelerated revenue collection by a month.\"* - **Ming Lui, VP Finance, Yembo** > > *\"Sardine had spent 4 years running billing in-house for high-volume, usage-based pricing. Zenskar took care of it all.\"* - **Sardine team** > > *\"We launched our product 4 months faster instead of building an in-house system for our usage-based pricing.\"* - **Kshitij Gupta, CEO, 100ms** > # About the role We’re looking for an early-career engineer who enjoys building things end to end. You might build an API in the morning, wire it into a product workflow in the afternoon, and spend the next day figuring out why one very determined edge case refuses to cooperate. This is a full-stack role, but not one where “full stack” means changing button colours and occasionally calling an API. You’ll work across product UI, backend services, data models and integrations. You can be stronger on one side: we don’t expect perfect symmetry - but you should be excited to learn and work across both. Our backend is primarily **Python and Postgres on AWS**. On the frontend, you’ll work with a modern JavaScript/TypeScript application. Familiarity with our exact stack helps, but it is not a requirement. **Also:** you do not need to know billing or accounting before joining. You will learn. Probably more than you ever planned to. ## What you'll walk into This is software that moves money, so correctness matters. A tiny-looking edge case can create a very real invoice, and customers tend to notice those. At the same time, the product needs to feel simple. Finance teams should not need to understand our database schema-or summon an engineer-to complete everyday work. That combination creates interesting full-stack problems: - Turning complex billing rules into workflows that are understandable in the UI. - Building APIs that remain predictable when customer configurations become complicated. - Showing useful errors instead of “Something went wrong. Please try again.” - Handling retries, duplicate requests and partial failures safely. - Making large datasets and long-running operations feel responsive. - Giving users visibility into what our AI agents did, why they did it and what needs human attention. You won’t spend your first three months watching onboarding videos. You’ll pair with the team, read real code and start shipping carefully scoped changes. ### **Projects you might work on** The exact project will depend on product priorities, but early SDE1 projects could look like: - **Make a product workflow truly end to end:** Build or improve a workflow spanning a frontend form, API validation, persistence and the final success/error experience. - *For example: configuring a pricing rule, creating a customer, reviewing an invoice adjustment or setting up a usage alert.* - **Make failures understandable:** Improve a workflow where backend validation is technically correct but the user has no idea what to do next. You might introduce structured errors in the API, map them to the right UI state and add enough observability to understand how often the failure occurs. - **Improve an integration experience:** Work on a CRM, ERP or payment integration: status tracking, retry behavior, duplicate handling, failure visibility and the UI through which a user understands what happened. - **Make a slow screen boringly fast:** Trace a slow product workflow from browser to database. Improve the query or API, introduce pagination where needed and make loading behavior sensible in the UI. - **Write an AI agent to solve a business usecase:** Write an AI agent on our internal platform to help solve customers’ usecases. ### **Your first 30 days** The goal of the first month is not to know everything. It is to become comfortable enough with one part of the system to make small useful, safe changes. By the end of your first 30 days, we expect you to have: - Set up the application locally and understood how code moves from your laptop to production. - Learned the basic journey from contract and usage data to invoices and revenue workflows. - Traced at least one product flow from the UI through the API and database. - Shipped a few small production changes—likely a bug fix or contained product improvement. - Written or updated tests for the behavior you changed. - Participated in code reviews and acted on feedback. - Debugged one real issue alongside another engineer. - Demoed something you shipped to the team. - Learned how we use logs, metrics and other tools to verify that a change is healthy. It is completely fine to ask a lot of questions. We would much rather answer an early question than investigate a confidently shipped mystery later. ### **By 90 days** By the end of your first 90 days, you should be able to own a small, well-scoped feature from discussion to production. That means you can: - Clarify the expected behavior and identify important edge cases. - Break the work into manageable pieces. - Make the necessary frontend, API and data-model changes. - Handle loading, empty, validation, permission and failure states. - Write useful tests without being reminded at the end. - Work with product and design when the expected experience is unclear. - Use code review feedback to improve the solution rather than only patching comments. - Deploy the feature and verify that it behaves correctly in production. - Investigate a production issue using logs and the codebase, with help when needed. - Explain what you built, why you built it that way and what you would improve next. You will not be expected to design the next five years of Zenskar’s architecture. You will be expected to take increasing ownership of your corner of it. A good 90-day outcome is not “never needed help.” It is “asked for help at the right time, learned quickly and became noticeably more independent.” ## **Who you are** - You have **1–3 years of professional software development experience**. Substantial internships and strong personal or open-source projects count. - You have built at least one non-trivial application or feature and can explain what you personally contributed. - You are comfortable programming in at least one mainstream language and are willing to work in Python. - You understand basic web concepts: HTTP, APIs, databases, validation and application state. - You can write ordinary, readable code using common data structures and control flow. - You enjoy figuring things out, but you also know when to ask for help. - You can explain your thinking without hiding behind framework terminology. - You care whether the feature works for the user—not only whether your pull request was merged. ### **Good to have** None of these are mandatory: - Python, Postgres or SQL experience. - Experience with a modern JavaScript or TypeScript frontend framework. - Building and consuming REST APIs. - Exposure to AWS, Docker, CI/CD or background jobs. - Experience at a startup or on a small product team. - A habit of writing unit and integration tests. - Personal projects that have real users—even if the number of users is your five very patient friends. - Experience using AI coding tools without outsourcing your understanding to them. - Any exposure to billing, payments, accounting or fintech. ## Location - Hybrid - 3 days per week - Office Location: Indiranagar, Bengaluru. - Address: 3rd Floor, A wing No 1, Carlton Towers, HAL Old Airport Rd, HAL 2nd Stage, Indiranagar, Bengaluru, Karnataka 560008. ## Interview process Our interviews are practical and evidence-based. No single round exceeds 60 minutes, and we are not interested in testing whether you memorised obscure Python behavior or 200 LeetCode problems. - **R0, Introductory conversation:** A short conversation about something you built, what you personally owned, what went wrong and what you learned. We’ll also align on the role, location and compensation. - **R1, Practical coding and debugging:** You’ll work in a small Python codebase with supplied tests. The goal is to understand the requirement, write working code and debug failures—not solve an algorithm puzzle. - **R2, Code-first design:** You’ll implement a small component with a few business rules and then adapt it when the requirement changes. - **R3, Hiring Manager:** A discussion about projects, learning, feedback, mistakes, ownership and the kind of environment in which you do your best work. During technical rounds, documentation and syntax search are allowed. AI can help with syntax or a small isolated utility, but it cannot be used to solve or debug the interview problem for you. We’ll explain the rules clearly before starting. No surprise gotchas. ## How to apply Interested? Click here to apply → https://evolve.keka.com/careers/jobdetails/91601 OR Write to nitya@zenskar.com",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 1,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 56.9,
+  "matched_skills": [
+   "postgresql",
+   "aws",
+   "javascript",
+   "typescript",
+   "code review",
+   "observability",
+   "data structures",
+   "sql",
+   "rest api",
+   "docker",
+   "ci/cd"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "python",
+   "ai agents",
+   "integration testing",
+   "payments",
+   "fintech"
+  ],
+  "also_on": [],
+  "query": "senior-software-developer",
+  "id": "wf4821657",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2500000,
+   "salary_lpa": 25.0,
+   "salary_text": "₹15L – ₹25L • No equity",
+   "semantic": 0.365,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong match with 2 years of production experience in Java, Kafka, PostgreSQL, and AWS, aligning with Zenskar's core tech stack and engineering rigor.",
+    "gaps": "Limited exposure to AI agents, fintech payments, and integration testing compared to the role's requirements."
+   },
+   "is_mnc": false,
+   "lpa": 25.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "zenskar.com",
+    "site": "",
+    "emails": [
+     "nitya@zenskar.com"
+    ],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenskar%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenskar%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenskar%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenskar%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenskar%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenskar%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zenskar%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zenskar%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Test Engineer",
+  "company": "Quality Engineering",
+  "url": "https://www.adzuna.in/details/5935575363?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "India",
+  "remote": null,
+  "posted": "2026-10-20",
+  "posted_at": "2026-10-20T22:02:37+00:00",
+  "posted_raw": "2026-10-20T22:02:37Z",
+  "salary": "",
+  "snippet": "Role Summary Lead functional validation of business requirements and end-to-end user journeys across Banking applications. Key Responsibilities Analyse requirements and prepare test scenarios. Execute complex SIT and E2E test cases. Mentor junior testers. Support defect triage and RCA. Coordinate with stakeholders. Required Skills & Experience 1-3 years of Functional Testing experience. Strong Ban",
+  "description": "Role Summary Lead functional validation of business requirements and end-to-end user journeys across Banking applications. Key Responsibilities Analyse requirements and prepare test scenarios. Execute complex SIT and E2E test cases. Mentor junior testers. Support defect triage and RCA. Coordinate with stakeholders. Required Skills & Experience 1-3 years of Functional Testing experience. Strong Banking domain experience with SQL and Linux. SIT, UAT, and Regression Testing expertise. Jira and Agile experience. Good to Have Mobile Banking testing experience. API Testing exposure.",
+  "skills": [],
+  "employment_type": "['Full Time']",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 52.4,
+  "matched_skills": [
+   "sql",
+   "linux",
+   "agile"
+  ],
+  "missing_skills": [
+   "jira"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "7df20a88cefb",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.169,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has strong SQL and Linux skills, aligning with the job's core requirements for banking domain testing and technical proficiency.",
+    "gaps": "Lacks explicit Jira and Agile experience, which are critical for functional validation and project management in this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Quality%20Engineering%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Quality%20Engineering%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Quality%20Engineering%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Quality%20Engineering%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Quality%20Engineering%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Quality%20Engineering%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Quality%20Engineering%22%20%28%22Senior%20engineer%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Quality%20Engineering%22%20%28%22Senior%20engineer%22%29%20%22India%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Software Engineer",
+  "company": "Insight Consultants",
+  "url": "https://wellfound.com/jobs/4824775-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": true,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "# Job Description: Quickbase Application Developer & Python Engineer **Company:** Insight Consultants **Role:** Quickbase Application Developer & Python Engineer **Employment Type:** Full-time or Contract (based on experience) **Location:** Bangalore, India ## About the Role Insight Consultants is looking for a hands-on developer to manage, maintain, and continuously improve an existing Quickbase",
+  "description": "# Job Description: Quickbase Application Developer & Python Engineer **Company:** Insight Consultants **Role:** Quickbase Application Developer & Python Engineer **Employment Type:** Full-time or Contract (based on experience) **Location:** Bangalore, India ## About the Role Insight Consultants is looking for a hands-on developer to manage, maintain, and continuously improve an existing Quickbase application. This role goes beyond application support. We want someone who can understand business requirements, identify opportunities to improve existing processes, develop new functionality, and use Python to build integrations, automate tasks, and extend the application's capabilities. The ideal candidate combines strong Quickbase development skills with Python programming experience and a practical, problem-solving mindset. They should be comfortable working with an existing application, understanding how it works, and progressively making it more efficient, scalable, and user-friendly. ## Key Responsibilities ### 1. Quickbase Application Management - Take ownership of the existing Quickbase application, including its tables, relationships, forms, reports, dashboards, and workflows. - Maintain and troubleshoot existing functionality, resolve issues, and ensure the application operates reliably. - Manage application enhancements, user access, permissions, and configuration changes. - Review the existing application architecture and identify opportunities to improve performance, usability, and maintainability. - Document application structure, business rules, workflows, and technical changes. ### 2. Application Enhancements and Development - Gather and translate business requirements into practical Quickbase solutions. - Develop new features, forms, reports, dashboards, automations, and workflows. - Improve existing business processes by reducing manual work and eliminating unnecessary steps. - Identify gaps in the current application and proactively recommend improvements. - Test enhancements, troubleshoot defects, and implement changes with minimal disruption to existing operations. ### 3. Python Development and Automation - Develop Python scripts and utilities to automate repetitive tasks and business processes. - Build integrations between Quickbase and other applications, APIs, databases, and data sources. - Use Python to perform data validation, transformation, reconciliation, and bulk data processing. - Develop custom functionality where Quickbase's native capabilities are insufficient or where an external service would be more effective. - Write maintainable, reusable, and well-documented code. ### 4. Integrations and Data Management - Work with Quickbase APIs and REST APIs to exchange data with external systems. - Design and maintain reliable data import, export, synchronization, and integration processes. - Monitor data quality, investigate discrepancies, and implement validation and error-handling mechanisms. - Ensure appropriate handling of credentials, access permissions, and sensitive business data. ### 5. Continuous Improvement - Work with business stakeholders to understand operational challenges and improvement opportunities. - Evaluate whether a requirement is best addressed through Quickbase configuration, Python development, or integration with another system. - Recommend solutions that improve productivity, reduce errors, and support future business growth. - Maintain technical documentation and communicate progress, issues, and recommendations clearly. ## Required Qualifications - Demonstrated experience developing and maintaining applications using **Quickbase**. - Proficiency in **Python**, including writing scripts, working with data, debugging, and building automation. - Experience working with REST APIs, JSON, authentication, and API integrations. - Understanding of relational databases, data structures, and data relationships. - Experience troubleshooting existing applications and enhancing functionality without disrupting established workflows. - Strong analytical and problem-solving skills. - Ability to understand business requirements and translate them into technical solutions. - Good communication skills and the ability to work independently. ## Preferred Qualifications - Experience with Quickbase pipelines, formula fields, relationships, reports, and application administration. - Experience with Quickbase API integrations and advanced application customization. - Familiarity with SQL and database concepts. - Experience with Git or other version control systems. - Familiarity with cloud platforms, scheduled jobs, and automated deployments. - Experience with data analytics, reporting, workflow automation, or AI-enabled business applications. ## Who We Are Looking For We are looking for a practical, hands-on developer who takes ownership of the application and thinks beyond the immediate task. Someone who asks, \"Can this process be made better?\" rather than simply implementing the next requested change. The right person will be comfortable working with an existing system, learning its business logic, proposing improvements, and delivering solutions that make a measurable difference to the business.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 1,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 51.3,
+  "matched_skills": [
+   "rest api",
+   "data structures",
+   "sql"
+  ],
+  "missing_skills": [
+   "python",
+   "technical documentation",
+   "git",
+   "data analysis",
+   "artificial intelligence"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "wf4824775",
+  "extra": {
+   "company_size": "SIZE_11_50",
+   "posted_checked": "none",
+   "salary_stated": false,
+   "semantic": 0.369,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has strong REST API and SQL skills with 2 years of backend experience, aligning with the core technical requirements for this role.",
+    "gaps": "Lacks Python expertise and technical documentation skills required for this position."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Insight%20Consultants%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Insight%20Consultants%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Insight%20Consultants%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Insight%20Consultants%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Insight%20Consultants%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Insight%20Consultants%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Insight%20Consultants%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Insight%20Consultants%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.0,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ }
+]
