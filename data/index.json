@@ -1,6 +1,28 @@
 {
- "updated": "2026-10-23T08:49:11Z",
+ "updated": "2026-10-23T08:49:55Z",
  "items": [
+  {
+   "id": "jobhunt-20261023-084955-engineer-senior-software-developer-sse-s",
+   "kind": "jobhunt",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-23T08:49:55Z",
+   "file": "data/jobhunt/jobhunt-20261023-084955-engineer-senior-software-developer-sse-s.html",
+   "bytes": 48780,
+   "meta": {
+    "jobs": "0",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "days": "2",
+    "hours": "",
+    "window_hours": "48",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,adzuna,jooble,jsearch,firecrawl,apify-naukri",
+    "min_salary": "12 LPA",
+    "worldwide": "",
+    "dates_checked": "80",
+    "jobs_file": "data/jobhunt/jobhunt-20261023-084955-engineer-senior-software-developer-sse-s.jobs.json"
+   }
+  },
   {
    "id": "accuracy-20261023-084911-accuracy-learning",
    "kind": "accuracy",
