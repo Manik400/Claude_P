@@ -1,13 +1,13 @@
 {
- "updated": "2026-10-24T18:44:26Z",
+ "updated": "2026-10-24T21:14:14Z",
  "items": [
   {
-   "id": "applications-20261024-184426-applications-sent",
+   "id": "applications-20261024-211414-applications-sent",
    "kind": "applications",
    "title": "Applications sent",
-   "when": "2026-10-24T18:44:26Z",
-   "file": "data/applications/applications-20261024-184426-applications-sent.html",
-   "bytes": 8149945,
+   "when": "2026-10-24T21:14:14Z",
+   "file": "data/applications/applications-20261024-211414-applications-sent.html",
+   "bytes": 8333820,
    "meta": {}
   },
   {
@@ -1478,40 +1478,6 @@
    "file": "data/interview/interview-20260925-161458-interview-prep-2026-09-20-r1.html",
    "bytes": 307914,
    "meta": {}
-  },
-  {
-   "id": "jobhunt-20260924-204918-software",
-   "kind": "jobhunt",
-   "title": "software",
-   "when": "2026-09-24T20:49:18Z",
-   "file": "data/jobhunt/jobhunt-20260924-204918-software.html",
-   "bytes": 468121,
-   "meta": {
-    "jobs": "87",
-    "countries": "IN",
-    "experience": "",
-    "days": "1",
-    "hours": "2",
-    "window_hours": "2",
-    "platforms_asked": "",
-    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads",
-    "jobs_file": "data/jobhunt/jobhunt-20260924-204918-software.jobs.json"
-   }
-  },
-  {
-   "id": "careers-20260924-204016-software",
-   "kind": "careers",
-   "title": "software",
-   "when": "2026-09-24T20:40:16Z",
-   "file": "data/careers/careers-20260924-204016-software.json",
-   "bytes": 132338,
-   "meta": {
-    "jobs": "61",
-    "relocation": "0",
-    "countries": "IN",
-    "experience": "1",
-    "reloc_mode": "any"
-   }
   }
  ],
  "hidden": [
