@@ -22,6 +22,57 @@
    }
   },
   {
+   "id": "applications-20261024-091406-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-24T09:14:06Z",
+   "file": "data/applications/applications-20261024-091406-applications-sent.html",
+   "bytes": 7559017,
+   "meta": {}
+  },
+  {
+   "id": "accuracy-20261024-091406-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-24T09:14:06Z",
+   "file": "data/accuracy/accuracy-20261024-091406-accuracy-learning.html",
+   "bytes": 21794,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261024-091404-naukri-openings-2026-10-24-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-24 run 1 - Last 24h",
+   "when": "2026-10-24T09:14:04Z",
+   "file": "data/naukri/naukri-20261024-091404-naukri-openings-2026-10-24-run-1-last-24.html",
+   "bytes": 99791,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261024-091404-naukri-openings-2026-10-24-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261024-091404-naukri-openings-2026-10-24-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-24 run 2 - Early",
+   "when": "2026-10-24T09:14:04Z",
+   "file": "data/naukri/naukri-20261024-091404-naukri-openings-2026-10-24-run-2-early.html",
+   "bytes": 33197,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261024-091404-naukri-openings-2026-10-24-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261024-091404-naukri-openings-2026-10-24-run-3",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-24 run 3",
+   "when": "2026-10-24T09:14:04Z",
+   "file": "data/naukri/naukri-20261024-091404-naukri-openings-2026-10-24-run-3.html",
+   "bytes": 76789,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261024-091404-naukri-openings-2026-10-24-run-3.jobs.json"
+   }
+  },
+  {
    "id": "jobhunt-20261024-082553-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -42,57 +93,6 @@
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261024-082553-engineer-senior-software-developer-sse-s.jobs.json"
    }
-  },
-  {
-   "id": "naukri-20261024-075250-naukri-openings-2026-10-24-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-24 run 3",
-   "when": "2026-10-24T07:52:50Z",
-   "file": "data/naukri/naukri-20261024-075250-naukri-openings-2026-10-24-run-3.html",
-   "bytes": 76789,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261024-075250-naukri-openings-2026-10-24-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "accuracy-20261024-075250-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-10-24T07:52:50Z",
-   "file": "data/accuracy/accuracy-20261024-075250-accuracy-learning.html",
-   "bytes": 21794,
-   "meta": {}
-  },
-  {
-   "id": "naukri-20261024-075249-naukri-openings-2026-10-24-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-24 run 1 - Last 24h",
-   "when": "2026-10-24T07:52:49Z",
-   "file": "data/naukri/naukri-20261024-075249-naukri-openings-2026-10-24-run-1-last-24.html",
-   "bytes": 99791,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261024-075249-naukri-openings-2026-10-24-run-1-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261024-075249-naukri-openings-2026-10-24-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-24 run 2 - Early",
-   "when": "2026-10-24T07:52:49Z",
-   "file": "data/naukri/naukri-20261024-075249-naukri-openings-2026-10-24-run-2-early.html",
-   "bytes": 33197,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261024-075249-naukri-openings-2026-10-24-run-2-early.jobs.json"
-   }
-  },
-  {
-   "id": "applications-20261024-071519-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-24T07:15:19Z",
-   "file": "data/applications/applications-20261024-071519-applications-sent.html",
-   "bytes": 7394784,
-   "meta": {}
   },
   {
    "id": "careers-20261024-070912-engineer-senior-software-developer-sse-s",
