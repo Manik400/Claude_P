@@ -22,6 +22,15 @@
    }
   },
   {
+   "id": "applications-20261025-092431-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-25T09:24:31Z",
+   "file": "data/applications/applications-20261025-092431-applications-sent.html",
+   "bytes": 9386278,
+   "meta": {}
+  },
+  {
    "id": "jobhunt-20261025-084354-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -75,24 +84,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261025-064801-naukri-openings-2026-10-25-run-3.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261025-064801-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-25T06:48:01Z",
-   "file": "data/applications/applications-20261025-064801-applications-sent.html",
-   "bytes": 8871269,
-   "meta": {}
-  },
-  {
-   "id": "accuracy-20261025-064801-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-10-25T06:48:01Z",
-   "file": "data/accuracy/accuracy-20261025-064801-accuracy-learning.html",
-   "bytes": 22108,
-   "meta": {}
   },
   {
    "id": "naukri-20261025-064759-naukri-openings-2026-10-25-run-3",
