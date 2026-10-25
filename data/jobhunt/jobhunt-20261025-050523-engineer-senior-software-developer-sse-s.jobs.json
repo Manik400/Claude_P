@@ -1,0 +1,83 @@
+[
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.0,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "posted_checked": "none",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ }
+]
