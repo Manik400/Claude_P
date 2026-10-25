@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-25T09:41:00Z",
+ "updated": "2026-10-25T13:56:14Z",
  "items": [
+  {
+   "id": "accuracy-20261025-135614-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-25T13:56:14Z",
+   "file": "data/accuracy/accuracy-20261025-135614-accuracy-learning.html",
+   "bytes": 22108,
+   "meta": {}
+  },
   {
    "id": "careers-20261025-094100-engineer-senior-software-developer-sse-s",
    "kind": "careers",
