@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-26T10:49:03Z",
+ "updated": "2026-10-26T14:44:27Z",
  "items": [
+  {
+   "id": "applications-20261026-144427-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-26T14:44:27Z",
+   "file": "data/applications/applications-20261026-144427-applications-sent.html",
+   "bytes": 12361381,
+   "meta": {}
+  },
   {
    "id": "careers-20261026-104903-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -20,15 +29,6 @@
     "list_sha": "ec840ae28566",
     "list_count": "9110"
    }
-  },
-  {
-   "id": "applications-20261026-100405-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-26T10:04:05Z",
-   "file": "data/applications/applications-20261026-100405-applications-sent.html",
-   "bytes": 12224974,
-   "meta": {}
   },
   {
    "id": "jobhunt-20261026-091938-engineer-senior-software-developer-sse-s",
@@ -1618,17 +1618,6 @@
     "platforms_asked": "apify-naukri",
     "platforms": "apify-naukri",
     "jobs_file": "data/jobhunt/jobhunt-20260927-113953-developer-engineer.jobs.json"
-   }
-  },
-  {
-   "id": "jobhunt-20260926-112850-2026-09-26-1536-software-engineer",
-   "kind": "jobhunt",
-   "title": "2026-09-26_1536_software-engineer",
-   "when": "2026-09-26T11:28:50Z",
-   "file": "data/jobhunt/jobhunt-20260926-112850-2026-09-26-1536-software-engineer.html",
-   "bytes": 2045639,
-   "meta": {
-    "jobs_file": "data/jobhunt/jobhunt-20260926-112850-2026-09-26-1536-software-engineer.jobs.json"
    }
   }
  ],
