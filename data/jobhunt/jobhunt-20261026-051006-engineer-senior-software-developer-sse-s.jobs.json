@@ -1,0 +1,411 @@
+[
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "DevOps Engineer - 1",
+  "company": "Hyperface",
+  "url": "https://www.instahyre.com/job-446587-devops-engineer-1-at-hyperface-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-10-12",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Modern credit card stack for the future",
+  "description": "Responsibilities: Intelligently plan, build, and own parts of the infrastructure. Build and manage CI/CD pipelines. Work closely with application developers and help build environments. Explore and identify the right tools for infrastructure/application monitoring. Troubleshoot infrastructure/application issues. Demonstrate a very high degree of ownership when it comes to system metrics. Build defence mechanisms to ensure information security. Work with auditors and Infosec counterparts from the bank to assure them of our data security. Own the documentation for processes and keep it up to date. Requirements: 1-3 years of experience in building infrastructure using AWS, Kubernetes and Terraform. DevOps and Platform Engineering: CI/CD, GitOps, Infrastructure as Code, Terraform, CloudFormation, Jenkins, GitHub Actions, ArgoCD, Helm, etc. Containers and Orchestration: Docker, Kubernetes, Helm, Ingress Controllers/Gateways, Service Mesh. On-Prem and Banking Infrastructure: Linux Administration, VPNs, Firewalls, Proxy Servers, SSL/TLS, Disaster Recovery, Compliance and Security Standards, etc. Monitoring and Observability: OpenTelemetry, Alerting, Production Troubleshooting, RCA, etc. Automation, Scripting: Shell Scripting, Python/Go.",
+  "skills": [
+   "AWS",
+   "IaC",
+   "Infrastructure as Code",
+   "Kubernetes",
+   "Terraform"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 51.4,
+  "matched_skills": [
+   "aws",
+   "devops",
+   "ci/cd",
+   "github actions",
+   "docker",
+   "linux",
+   "observability"
+  ],
+  "missing_skills": [
+   "infrastructure as code",
+   "kubernetes",
+   "terraform",
+   "monitoring",
+   "cybersecurity",
+   "helm",
+   "platform engineering",
+   "cloudformation"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih446587",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.333,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong AWS and Kafka experience with 2 years of production backend engineering aligns well with the candidate's core technical requirements.",
+    "gaps": "Lacks specific experience with Kubernetes, Terraform, and CI/CD automation tools required for DevOps roles."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Hyperface%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Hyperface%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Hyperface%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Hyperface%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Hyperface%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Hyperface%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Hyperface%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Hyperface%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Software Engineer",
+  "company": "ClearFeed",
+  "url": "https://wellfound.com/jobs/4377418-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "## This is not a normal software engineering role At ClearFeed, using AI to build software is not optional. Every engineer is expected to use AI every day — to understand code, write code, review code, debug issues, design product flows, generate tests, write docs, explore APIs, and ship faster. We expect you to be comfortable using tools like Claude, Cursor, ChatGPT, Codex, or similar AI tools as",
+  "description": "## This is not a normal software engineering role At ClearFeed, using AI to build software is not optional. Every engineer is expected to use AI every day — to understand code, write code, review code, debug issues, design product flows, generate tests, write docs, explore APIs, and ship faster. We expect you to be comfortable using tools like Claude, Cursor, ChatGPT, Codex, or similar AI tools as part of your default engineering workflow. If you do not know how to use AI effectively to write code, debug issues, understand unfamiliar systems, and improve your own engineering output, **please do not apply**. We are looking for engineers who can use AI as leverage — while still bringing strong judgment, ownership, and engineering taste. AI can write a lot of the first draft. You are responsible for the final result. ## What we are building ClearFeed is building an AI-first support platform for modern teams working in Slack and Microsoft Teams. Our product connects conversations, tickets, knowledge bases, engineering tools, CRMs, and AI agents so companies can resolve customer and internal requests faster. Our engineers work on real product problems: * How should an AI agent understand a support conversation? * When should it answer automatically, and when should it ask a human? * How do we safely connect Slack, Teams, Zendesk, Jira, GitHub, Linear, Salesforce, HubSpot, and other tools? * How do we make AI workflows observable, debuggable, and trustworthy? * How do we ship fast without creating chaos for customers? ## What you will do You will take ambiguous customer problems and turn them into working software. That may include API design, backend logic, database changes, Slack/Teams workflows, AI-agent behavior, product UX, tests, monitoring, and deployment. You will be expected to: * Use AI tools heavily while writing and reviewing code. * Use AI to create first-pass designs, specs, implementation plans, tests, and docs. * Build backend services using TypeScript, Node.js, NestJS, PostgreSQL, Redis, queues, and cloud infrastructure. * Work on AI-agent features involving LLMs, RAG, tool-calling, structured outputs, evals, guardrails, and observability. * Own features end to end: idea → design → implementation → testing → release → production debugging. * Debug production issues and improve the system after every incident. * Improve our engineering system itself: better prompts, better internal tools, better test generation, better review loops, better deployment workflows. * Move fast, but stay accountable for what ships. ## What “AI-native” means here We do not mean “vibe code and hope it works.” We mean: * You can use AI to move significantly faster. * You can use AI to write, refactor, test, and debug code. * You can review AI-generated code critically. * You understand that AI is often confidently wrong. * You can use AI for product thinking, but you do not outsource judgment. * You can ship faster without lowering quality. * You can explain your decisions clearly to humans. The best engineers in the next decade will not be the ones who manually type the most code. They will be the ones who combine product judgment, technical depth, and AI leverage to ship high-quality software faster than traditional teams. ## What we are looking for You may be a good fit if: * You are already using AI coding tools daily. * You are faster today than you were one year ago because of AI. * You have strong software fundamentals and do not blindly trust generated code. * You can work across backend, product, integrations, and basic frontend when needed. * You care about customer experience, not just clean abstractions. * You enjoy working in small teams with high ownership. * You can take a problem statement and come back with a working solution. * You are comfortable with ambiguity. * You like shipping. * You are curious, direct, and low-ego. ## Bonus points We will pay extra attention if you have: * Built something real using AI agents. * Used Claude Code, Cursor, Codex, v0, Lovable, Replit, or similar tools seriously. * Shipped a side project using AI. * Built integrations with Slack, Teams, Zendesk, Jira, GitHub, Salesforce, or HubSpot. * Worked on support, developer tools, workflow automation, or B2B SaaS products. * Written about your engineering work. * Open-source contributions or visible proof of work. ## How we evaluate We use AI in our hiring process for the same reason we use it in engineering: it helps everyone move faster and spend time where human judgment matters most. The first step is a short AI-led interview of around 15 minutes. It helps us understand your background, your experience, and how you think about building software. After that, you will have three technical discussions with our team: * Problem solving + debugging * Problem solving * System design We want to understand how you reason, how you debug, how you make trade-offs, and how well you can combine engineering fundamentals with AI tools to build reliable software faster. ## What you get We want engineers to have the tools, support, and environment to do their best work. ### Flexible AI Credits You will get flexible AI credits and access to the tools you need to build faster — Claude, Cursor, ChatGPT, Codex, or whatever genuinely helps you ship better software. We do not want engineers hesitating before using AI because of subscription limits or tool access. ### Health and medical support You get comprehensive medical insurance, along with **free doctor consultations**. We are a small team, but we want to be thoughtful about health, family, and emergencies. You should not have to figure everything out on your own when something medical comes up. ### Sports and team activities We sponsor badminton and cricket games for the team. Not mandatory forced-fun activities. Just real sports, real games, and a good way to spend time with people outside tickets, PRs, and production issues. ## How to apply Apply here or send your resume to jobs@clearfeed.ai with: * Your LinkedIn, GitHub, or resume. * One thing you have built that you are proud of. * A short note on how you use AI in your engineering workflow. * Optional: a Loom/video/walkthrough of something you built.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 48.0,
+  "matched_skills": [
+   "api design",
+   "typescript",
+   "postgresql",
+   "observability",
+   "system design"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "ai agents",
+   "jira",
+   "salesforce",
+   "ui/ux",
+   "monitoring",
+   "node.js",
+   "nestjs"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf4377418",
+  "extra": {
+   "company_size": "SIZE_11_50",
+   "salary_stated": false,
+   "semantic": 0.388,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with ClearFeed's AI-first platform needs. Proven ability to optimize systems and ship fast matches the engineering speed expectations.",
+    "gaps": "Lacks direct AI/LLM experience and Node.js; needs to demonstrate AI integration skills."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "clearfeed.ai",
+    "site": "",
+    "emails": [
+     "jobs@clearfeed.ai"
+    ],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ClearFeed%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ClearFeed%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ClearFeed%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ClearFeed%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ClearFeed%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ClearFeed%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ClearFeed%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ClearFeed%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.0,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Power Automate Desktop Developer",
+  "company": "Evolutyz Corp",
+  "url": "https://www.instahyre.com/job-446068-power-automate-desktop-developer-at-evolutyz-corp-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-10-07",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "An award-winning IT solutions firm together, the future is limitless",
+  "description": "We are looking for an experienced Power Automate Desktop (PAD) Developer / RPA Developer with strong hands-on experience in developing, supporting, and troubleshooting automation solutions using Microsoft Power Automate Desktop. The ideal candidate should have experience with SQL, Automation Anywhere, other RPA technologies, and at least one programming language. Responsibilities: Design, develop, test, and maintain Power Automate Desktop flows/bots. Develop and support automation solutions using PAD, with a minimum of 10+ flows/bots. Write and execute SQL queries for data extraction, validation, manipulation, and automation requirements. Integrate SQL-based data operations with Power Automate Desktop workflows. Develop, troubleshoot, enhance, and maintain Automation Anywhere bots. Work with other RPA platforms such as UiPath, Blue Prism, or Automation Anywhere. Provide production support for Power Automate automation projects. Analyse automation failures, identify root causes, and implement corrective actions. Monitor automation processes and ensure timely resolution of production issues. Utilise ServiceNow, Remedy, Jira, or other ITSM tools for incident, problem, and service request management. Collaborate with development, business, and support teams to resolve automation-related issues. Participate in testing, deployment, release activities, and post-production support. Provide hypercare support after go-live and ensure smooth transition to steady-state operations. Create and maintain technical documentation, process documentation, and support procedures. Requirements: Hands-on experience developing 10+ Power Automate Desktop (PAD) flows/bots. Strong experience working with Power Automate Desktop development and support. Hands-on experience with SQL data queries, including integration with PAD flows. 1-2 years of experience with Automation Anywhere is mandatory. Experience with at least one programming language: Java /. NET / Python / Angular JS / Node.js . Experience supporting Power Automate projects in production environments. Experience working with ITSM ticketing tools such as ServiceNow, Remedy, Jira, or similar platforms. Basic Qualifications: Bachelor's degree in Business, Computer Science, Information Technology, or a related field. 5+ years of experience in application/production support with Microsoft Power Platform / Power Automate. Strong hands-on experience with Power Automate Desktop. Experience working with development and support teams. Microsoft Power Platform certifications such as Power Automate / Power Apps are a plus. Preferred Skills: Experience with Automation Anywhere bot development. Exposure to UiPath or Blue Prism. Strong SQL knowledge. Programming experience in Java. NET, Python, AngularJS, or Node.js . Experience with enterprise RPA development and production support. Good troubleshooting, analytical, and problem-solving skills. Ability to work independently as well as collaboratively with development and business teams. Willingness to work in afternoon/night shift models.",
+  "skills": [
+   "Automation Anywhere",
+   "PAD",
+   "Power Automate Desktop",
+   "SQL"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 38.1,
+  "matched_skills": [
+   "sql",
+   "java",
+   "angular",
+   "javascript"
+  ],
+  "missing_skills": [
+   "power platform",
+   "servicenow",
+   "jira",
+   "python",
+   "node.js",
+   "technical documentation"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih446068",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.301,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has 2 years of Java/SQL experience and React skills, but lacks direct Power Automate Desktop, RPA, and ITSM support experience.",
+    "gaps": "Missing critical Power Platform, RPA, and ITSM support experience."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Evolutyz%20Corp%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Evolutyz%20Corp%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Evolutyz%20Corp%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Evolutyz%20Corp%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Evolutyz%20Corp%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Evolutyz%20Corp%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Evolutyz%20Corp%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Evolutyz%20Corp%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate Engineer - Embedded Software Engineering",
+  "company": "Harman Becker Automotive Systems Manufacturing Kft",
+  "url": "https://www.adzuna.in/details/5940650959?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "India",
+  "remote": null,
+  "posted": "2026-10-24",
+  "posted_at": "2026-10-24T21:28:22+00:00",
+  "posted_raw": "2026-10-24T21:28:22Z",
+  "salary": "",
+  "snippet": "HARMAN’s engineers and designers are creative, purposeful and agile. As part of this team, you’ll combine your technical expertise with innovative ideas to help drive cutting-edge solutions in the car, enterprise and connected ecosystem. Every day, you will push the boundaries of creative design, and HARMAN is committed to providing you with the opportunities, innovative technologies and resources",
+  "description": "HARMAN’s engineers and designers are creative, purposeful and agile. As part of this team, you’ll combine your technical expertise with innovative ideas to help drive cutting-edge solutions in the car, enterprise and connected ecosystem. Every day, you will push the boundaries of creative design, and HARMAN is committed to providing you with the opportunities, innovative technologies and resources to build a successful career. A Career at HARMAN As a technology leader that is rapidly on the move, HARMAN is filled with people who are focused on making life better. Innovation, inclusivity and teamwork are a part of our DNA. When you add that to the challenges we take on and solve together, you’ll discover that at HARMAN you can grow, make a difference and be proud of the work you do everyday. Introduction: A Career at HARMAN Automotive We are a global, multidisciplinary team leveraging the innovative power of technology to transform the future. At HARMAN Automotive, we provide the opportunities, resources, and support to help fast-track your career. Engineer audio systems and integrated technology platforms that enhance the driving experience. Combine ingenuity, in-depth research, and a collaborative spirit with design and engineering excellence. Advance in-vehicle infotainment, safety, efficiency, and enjoyment. What You'll Be Part Of HARMAN is the #1 brand in automotive audio, powered by a portfolio of premium audio brands including Bowers & Wilkins, Bang & Olufsen, Mark Levinson, AKG, Lexicon, Harman Kardon, JBL, Infinity, and more. The brand user experience includes multiple brand identity elements such as branded HMI (UI), branded grilles and trim parts (ID), branded audio components and transducers, acoustic experiences, and unique digital/software-based experiences. Each audio brand has its own identity and dedicated team that creates new brand experiences through HARMAN's Car Audio innovation process. This includes developing proof-of-concept experiences in demonstration vehicles and refining them into production-ready solutions for deployment in OEM vehicles, strengthening HARMAN's position as an industry leader in the premium automotive audio space. Each HARMAN automotive audio brand delivers distinctive in-car audio experiences built upon a deep understanding and respect for the brand's DNA. These experiences are driven by creativity, innovation, new technologies, and research across acoustics, sound field control, simulation, interaction design, materials, mechanical design, and user interface development. The Brand Experience Team owns and drives most aspects of the development process, including user experience, system design, software components, hardware components, acoustic tuning, trim parts, and the fabrication of experience vehicles. The Brand Experience Team is a highly skilled organization of more than 200 professionals, including Technical Fellows and Distinguished Engineers, located across six countries: the United States, Denmark, Germany, India, Japan, and China. The team spans multiple disciplines, including user experience, system design, hardware, software, and acoustics. If you are interested in working in a global, creative environment where the end-user experience is the primary focus, are passionate about building end-to-end user experiences, and bring an innovative, solution-oriented mindset, you may be the ideal candidate for this role. How You'll Make an Impact Responsible for ideating, prototyping, and delivering software solutions for global EPIC advanced experiences, domain teams, and/or brand teams in accordance with agreed project scopes. Drive the early ideation and strategy of User Experience-based software solutions in close collaboration with cross-brand and brand-specific teams. Serve as a key stakeholder in developing innovative software experiences that align with audio brand identities and customer needs. Lead the implementation and execution of User Experience software solutions according to agreed scope and in close alignment with advanced experience, domain, cross-brand, and brand teams. Push the boundaries of software-driven experiences within the car audio domain by contributing to innovative concepts, experiences, patents, and intellectual property. Identify and develop strategic software partnerships with external organizations to strengthen HARMAN's overall car audio capabilities. Collaborate globally with internal stakeholders, customers, and partners, and participate in sales presentations, customer engagements, and industry events. Stay current with emerging software technologies and trends within the automotive industry through ongoing research. Collaborate closely with cross-brand and brand-specific teams to transform ideas into platform-ready solutions. Develop innovative concepts and solutions for future branded audio systems. The role involves defining and designing system architecture, leading the development of advanced software experiences, primarily focused on embedded software, mentoring team members, and collaborating with stakeholders, including external partners. This position, based in India, reports to the Director of the Advanced Experience Team, located in the United States. The Advanced Experiences Software Lead plays a critical role in both delivery and people management. What Makes You a Strong Fit Bachelor's degree in Engineering or a related field. Strong knowledge of Android systems, components, and Android middleware. Strong proficiency in native C/C++ programming. Proficiency with communication interfaces such as JNI, Binder/AIDL/HIDL, MQTT, and socket communication. Exposure to the multimedia domain, including multimedia frameworks, diverse media sources, content management, and media playback scenarios. Proficiency in multithreaded programming and middleware development in Android environments, with a strong understanding of IPC and operating system concepts. Exposure to the Android application framework. Strong experience developing responsive applications that scale across different display resolutions. Experience with Android music players, preferably ExoPlayer. Exposure to cloud interfaces, including OAuth and REST APIs. Automotive domain knowledge is a plus, but not mandatory. Strong debugging skills using Android tools such as Logcat and ADB. Experience working with third-party libraries, APIs, and the Android SDK. Knowledge of Gradle and Android build systems (preferred). Experience working in Agile development environments. Excellent written and verbal communication skills in English. Experience using tools such as Gerrit, Git, Bamboo, Bitbucket, Jira, and related development platforms. Bonus Points If You Have Proficiency in architectural patterns such as MVVM, MVC, and MVP. Knowledge of UML state diagrams, sequence diagrams, and related analysis techniques. Working knowledge of software development processes and quality frameworks such as CMMI or ASPICE. Ability to manage multiple projects and tasks simultaneously. Experience collaborating with globally distributed teams. Ability to work effectively within a matrix organization. Things to Know Willingness to travel 10-20% of the time, both domestically and internationally. Willingness to work from the Bangalore, India office. This position supports global product launch timelines; therefore, occasional early-morning or late-evening meetings may be required to collaborate with teams across Europe and Asia. This role requires occasional domestic and international travel to customer sites, manufacturing facilities, and product launch events. Because this role supports customer programs with specific security requirements, the selected candidate must be able to obtain and maintain the required clearances or access approvals. What You Can Expect A hybrid work environment that balances flexibility with in-person collaboration, with most office-based roles requiring on-site presence three days per week. Access to employee discounts on HARMAN and Samsung products, including JBL, Harman Kardon, AKG, and other brands. Learning and development opportunities through HARMAN University's award-winning programs. Comprehensive wellness benefits designed to support your overall well-being. Tuition reimbursement support. Access to HARMAN campus amenities, including fitness centers and cafeterias, where available. An inclusive and diverse work environment that supports both professional growth and personal development. #LI-AD3 HARMAN is proud to be an Equal Opportunity / Affirmative Action employer. All qualified applicants will receive consideration for employment without regard to race, religion, color, national origin, gender (including pregnancy, childbirth, or related medical conditions), sexual orientation, gender identity, gender expression, age, status as a protected veteran, status as an individual with a disability, or other applicable legally protected characteristics.",
+  "skills": [],
+  "employment_type": "['Full Time']",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 30.4,
+  "matched_skills": [
+   "agile",
+   "system design",
+   "rest api",
+   "english"
+  ],
+  "missing_skills": [
+   "android",
+   "ui/ux",
+   "embedded",
+   "prototyping",
+   "mentoring",
+   "c++",
+   "mqtt",
+   "oauth"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "65f3ff3118fc",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.02,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with embedded software engineering principles, though the candidate lacks specific embedded and UI/UX skills.",
+    "gaps": "Missing critical embedded and UI/UX skills required for automotive audio systems."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Senior%20engineer%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Harman%20Becker%20Automotive%20Systems%20Manufacturing%20Kft%22%20%28%22Senior%20engineer%22%29%20%22India%22"
+     }
+    }
+   }
+  }
+ }
+]
