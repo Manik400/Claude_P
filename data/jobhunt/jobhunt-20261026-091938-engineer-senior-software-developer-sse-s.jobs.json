@@ -1,0 +1,78 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Research Engineer",
+  "company": "Sereact GmbH",
+  "url": "https://www.arbeitnow.ch/jobs/companies/sereact-gmbh/research-engineer-zurich-318019",
+  "country": "DE",
+  "location": "Zurich",
+  "remote": false,
+  "posted": "2026-10-24",
+  "posted_at": "2026-10-24T23:40:15+00:00",
+  "posted_raw": 1792885215,
+  "salary": "",
+  "snippet": "Research Engineer, Manipulation Data & Teleoperation — Zurich This role owns the data generation layer of Sereact's VLA stack: teleoperation systems and data collection infrastructure that feed Cortex, built from our Zurich research hub. About Sereact Sereact is a Series B embodied-AI company. Cortex, our VLA model, is deployed in live warehouse robotic cells across the EU and US. Zurich is our ne",
+  "description": "Research Engineer, Manipulation Data & Teleoperation — Zurich This role owns the data generation layer of Sereact's VLA stack: teleoperation systems and data collection infrastructure that feed Cortex, built from our Zurich research hub. About Sereact Sereact is a Series B embodied-AI company. Cortex, our VLA model, is deployed in live warehouse robotic cells across the EU and US. Zurich is our newest research hub, focused on the manipulation and control problems that sit underneath Cortex. The role This is a Research Engineer position. It is scoped to the data generation layer of the VLA stack: teleoperation hardware and software, retargeting pipelines that map human demonstrations onto robot hands, and the data collection infrastructure that feeds Cortex. It requires building the systems that produce the data those models train on, and working closely with the training team on what that data needs to look like. What you'll do Build and operate teleoperation systems for dexterous manipulation, including retargeting algorithms that map human hand and arm motion onto robot end-effectors Design and maintain scalable, UMI-style data collection hardware and software that other engineers at Sereact rely on Benchmark control and retargeting approaches using rigorous, human-factors-informed methodology Instrument and support the physical robots deployed in the Zurich hub, including day-to-day work on the control stack Work with the model-training team to define what data they need and close the loop on data quality Build tooling or infrastructure outside your immediate brief when it unblocks the wider team What you'll bring MSc (or equivalent, in progress) in robotics, mechanical engineering, or a closely related field, with a thesis or capstone project on manipulation, teleoperation, or retargeting Hands-on experience building a data collection device or system for robot learning (UMI or a comparable system), not just operating one someone else built Working knowledge of retargeting algorithms for mapping human input onto robot hands or end-effectors 1 to 2 years of combined research, internship, or industry experience in robotics, mechatronics, or a related engineering discipline Software and systems engineering skills strong enough to build and maintain infrastructure other engineers rely on, not only research-grade prototypes Comfortable working as an individual contributor in a small, still-forming team Nice to have A conference submission on manipulation, teleoperation, or retargeting where the candidate is an author (an MSc thesis submitted to a venue like CoRL counts; supervising a student team whose own work was later published does not) Teaching or TA experience in a robotics course Some exposure to large-model training, even without an independent training record A concrete example of building something outside the formal role brief because the team needed it Location: Zurich Area, Switzerland: This role is based in our Zurich office, offering a vibrant ecosystem for robotics and AI. What We Offer: Free meals at the workplace. Flexible working hours and the option to work from home when needed. Direct collaboration with founders and world-leading AI experts. Access to large-scale compute clusters and proprietary robotic datasets. A key role in shaping the future of embodied AI. Competitive compensation and a relocation package for the Zurich area Find Jobs in Switzerland on Arbeitnow",
+  "skills": [
+   "Software"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 32.6,
+  "matched_skills": [
+   "data structures"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "robotics"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "d3831925ac94",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Competitive compensation and a relocation package for the Zurich area Find Jobs in Switzerland on Arbeitnow"
+   },
+   "semantic": 0.317,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with the data collection infrastructure role. Experience optimizing high-throughput systems and building reusable libraries matches the need for scalable teleoperation hardwar",
+    "gaps": "Lacks direct robotics or teleoperation experience; candidate needs hands-on background in robot control stacks and manipulation data generation."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sereact%20GmbH%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sereact%20GmbH%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Zurich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sereact%20GmbH%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sereact%20GmbH%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Zurich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sereact%20GmbH%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sereact%20GmbH%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Zurich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sereact%20GmbH%22%20%28%22Senior%20engineer%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sereact%20GmbH%22%20%28%22Senior%20engineer%22%29%20%22Zurich%22"
+     }
+    }
+   }
+  }
+ }
+]
