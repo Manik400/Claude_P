@@ -22,6 +22,15 @@
    }
   },
   {
+   "id": "applications-20261026-100405-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-26T10:04:05Z",
+   "file": "data/applications/applications-20261026-100405-applications-sent.html",
+   "bytes": 12224974,
+   "meta": {}
+  },
+  {
    "id": "jobhunt-20261026-091938-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -126,15 +135,6 @@
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261026-051006-engineer-senior-software-developer-sse-s.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261026-041542-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-26T04:15:42Z",
-   "file": "data/applications/applications-20261026-041542-applications-sent.html",
-   "bytes": 11948486,
-   "meta": {}
   },
   {
    "id": "careers-20261025-094100-engineer-senior-software-developer-sse-s",
