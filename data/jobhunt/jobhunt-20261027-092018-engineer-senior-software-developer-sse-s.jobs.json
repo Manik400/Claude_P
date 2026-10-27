@@ -1,0 +1,86 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Junior Engine Control System & Monitoring Engineer",
+  "company": "The Exploration Company",
+  "url": "https://www.arbeitnow.com/jobs/companies/the-exploration-company/junior-engine-control-system-monitoring-engineer-munich-361342",
+  "country": "DE",
+  "location": "Munich, Germany",
+  "remote": false,
+  "posted": "2026-10-26",
+  "posted_at": "2026-10-26T15:40:13+00:00",
+  "posted_raw": 1793029213,
+  "salary": "",
+  "snippet": "Here at The Exploration Company, we are building spacecrafts for humanity. About The Exploration Company At The Exploration Company, we are developing, producing and operating Nyx, a modular and reusable orbital space vehicle that aims to eventually be refuelled in orbit, carrying cargo and potentially humans in the long run. The heart of a spacecraft lies in its engine, which is why we develop ou",
+  "description": "Here at The Exploration Company, we are building spacecrafts for humanity. About The Exploration Company At The Exploration Company, we are developing, producing and operating Nyx, a modular and reusable orbital space vehicle that aims to eventually be refuelled in orbit, carrying cargo and potentially humans in the long run. The heart of a spacecraft lies in its engine, which is why we develop our own propulsion systems, aiming for the highest level of efficiency and reliability. Role Summary We are seeking a Junior Engine Control System & Monitoring Engineer to join the engine control and monitoring team of Storm, our high-thrust LOX/LCH4 cryogenic rocket engine. Working alongside senior control engineers, you will develop and test control and monitoring algorithms, work with the engine functional models provided by the functional team, contribute to setting up the controller development environment, and help verify the controller through Model-, Software- and Hardware-in-the-Loop testing and during engine test campaigns. This is an entry-level, hands-on role for a recent graduate with strong control fundamentals who wants to learn on real hardware and progressively grow into full ownership of safety-critical engine control functions. Key responsibilities: 1. Control & Monitoring Algorithm Development • Design and implement engine control and monitoring algorithms, following the software team's rules, guidelines and auto-coding practices. • Contribute to the definition of the engine regulation strategy (thrust and mixture ratio control, chill-down, start-up and shutdown transients) together with functional and system engineers. • Support the definition of control and monitoring requirements for engine subsystems (valves, pumps, sensors, controller, software). 2. Simulation & Controller Development Environment • Contribute to setting up the controller development environment: toolchain, model and code configuration management, auto-coding chain, and the MiL/SiL/HiL simulation and test infrastructure. • Integrate the engine functional models delivered by the functional team (turbopumps, valves, combustion devices, cryogenic feed lines; steady-state, transient and chill-down) into the control design and simulation environment, deriving simplified or linearised models for controller synthesis where needed. • Run closed-loop simulations to assess controller performance, stability margins and robustness to model uncertainties. • Feed test results back to the functional team to support model correlation, and flag model limitations that matter for control. 3. Health Monitoring & Fault Management • Contribute to the engine monitoring strategy that assesses the health status of the engine and its subsystems (combustion chamber, turbopumps, valves…). • Implement fault detection and sensor validation logic for both real-time protection and post-test analysis. • Support failure mode analyses (FMEA) and the management of failure modes, paving the way for engine reusability. 4. Validation, Testing & Documentation • Prepare and run Model-, Software- and Hardware-in-the-Loop (MiL, SiL, HiL) test campaigns to verify the control and monitoring functions at each step, from Simulink model to embedded code on target hardware. • Support Storm engine and component cryogenic (LOX/LCH4) test campaigns: test preparation, on-site support, data processing and post-test analysis. • Produce clear development documentation: specifications, test procedures, test reports and justification files. What we would love to see from you: • Master's degree (or equivalent) in Aerospace, Electrical, Control or Mechanical Engineering, or a related technical discipline. • Recent graduate (or graduating within the next months); no professional experience required. A master's thesis, internship or academic project in control, propulsion or embedded systems is a strong plus. • Solid fundamentals in control theory, both classical and modern (state-space, robustness, digital control). • Practical use of MATLAB/Simulink and Python through coursework or projects; basic knowledge of C/C++. • Basic understanding of fluid dynamics and thermodynamics, and a strong interest in cryogenic propulsion and turbomachinery. • Fluent in English. Nice to Have: • Exposure to MiL/SiL/HiL testing or real-time embedded systems. • Experience with auto-coding from Simulink models. • Familiarity with safety-critical design practices, reliability engineering or failure mode analysis. • Interest or experience in data science applied to health monitoring and anomaly detection. • Knowledge of space standards (ECSS, MIL-STD, NASA-HBK…). • German and/or French. Skills & Behaviours: • Eagerness to learn and to take on increasing ownership under the guidance of senior engineers. • Strong analytical and problem-solving skills, including the ability to draw useful conclusions from partial or contradictory data. • Clear oral and written communication; comfortable working closely with engine, avionics, software and test teams. • Organised, able to prioritise tasks and deliver within time constraints. • Positive, flexible attitude and enthusiasm for space exploration. • Behaviour consistent with The Exploration Company's core values of Mission, Vision, Integrity, Excellence and Teamwork. Why you should join us! What makes us special here at The Exploration Company and why we think you will enjoy working here is: We’re Agile - we make decisions fast whilst keeping our goals and systems in mind We’re Open and Collaborative - we are transparent about risks and obstacles, so that we can cooperate to overcome them We have a lot of Fun - we refuel our energy knowing we are democratising space. It’s a wonderful and rare opportunity, are YOU up for the challenge? We'd love to hear from you if you wish to be a part of our journey. Please submit your CV now for immediate consideration and we will be in touch shortly. The Exploration Company is an equal opportunity employer and values diversity. We do not discriminate based on race, religion, colour, national origin, gender, sexual orientation, age, marital status or disability status. Relocation assistance is provided for those willing to relocate including visa sponsorship where applicable. All offers are contingent upon the successful completion of a background check, which will be subject to the country, role, and project you applied for. By submitting your application, you acknowledge and agree that any offer of employment may be conditional upon successful condition of this check. The Exploration Company partners with Zinc Work Limited located in the UK (Zinc), a third-party provider, to ensure this process as efficient and transparent as possible. If applicable, you will receive an email from Zinc upon acceptance of your offer with a link to a secure portal where you can provide the required information to Zinc. Find Jobs in Germany on Arbeitnow",
+  "skills": [
+   "Future Propulsion - Storm"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 36.4,
+  "matched_skills": [
+   "data structures",
+   "english",
+   "german",
+   "agile"
+  ],
+  "missing_skills": [
+   "monitoring",
+   "embedded",
+   "matlab",
+   "python",
+   "c++",
+   "data science",
+   "french"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "2bcf987eed5b",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "yes",
+    "evidence": "…Relocation assistance is provided for those willing to relocate including visa sponsorship where applicable.…"
+   },
+   "semantic": 0.201,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong Java/Python-like skills, Kafka experience, and agile background align well with the software engineering foundation required for this role.",
+    "gaps": "Lacks specific embedded systems knowledge, C++, and experience with simulation tools like MATLAB or Python, which are critical for engine control work."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Senior%20engineer%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Senior%20engineer%22%29%20%22Munich%22"
+     }
+    }
+   }
+  }
+ }
+]
