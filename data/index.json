@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-27T10:29:35Z",
+ "updated": "2026-10-27T10:44:22Z",
  "items": [
+  {
+   "id": "applications-20261027-104422-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-27T10:44:22Z",
+   "file": "data/applications/applications-20261027-104422-applications-sent.html",
+   "bytes": 13038082,
+   "meta": {}
+  },
   {
    "id": "careers-20261027-102935-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -126,15 +135,6 @@
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261027-052649-engineer-senior-software-developer-sse-s.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261027-024403-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-27T02:44:03Z",
-   "file": "data/applications/applications-20261027-024403-applications-sent.html",
-   "bytes": 12832719,
-   "meta": {}
   },
   {
    "id": "careers-20261026-235711-engineer-senior-software-developer-sse-s",
