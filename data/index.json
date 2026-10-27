@@ -1,6 +1,15 @@
 {
- "updated": "2026-10-26T23:57:11Z",
+ "updated": "2026-10-27T00:18:23Z",
  "items": [
+  {
+   "id": "applications-20261027-001823-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-27T00:18:23Z",
+   "file": "data/applications/applications-20261027-001823-applications-sent.html",
+   "bytes": 12733111,
+   "meta": {}
+  },
   {
    "id": "careers-20261026-235711-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -20,15 +29,6 @@
     "list_sha": "ec840ae28566",
     "list_count": "9110"
    }
-  },
-  {
-   "id": "applications-20261026-194327-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-26T19:43:27Z",
-   "file": "data/applications/applications-20261026-194327-applications-sent.html",
-   "bytes": 12544064,
-   "meta": {}
   },
   {
    "id": "careers-20261026-104903-engineer-senior-software-developer-sse-s",
