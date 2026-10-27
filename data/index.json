@@ -1,6 +1,28 @@
 {
- "updated": "2026-10-27T07:00:43Z",
+ "updated": "2026-10-27T08:27:15Z",
  "items": [
+  {
+   "id": "naukri-20261027-082715-naukri-openings-2026-10-27-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-27 run 2 - Early",
+   "when": "2026-10-27T08:27:15Z",
+   "file": "data/naukri/naukri-20261027-082715-naukri-openings-2026-10-27-run-2-early.html",
+   "bytes": 36596,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261027-082715-naukri-openings-2026-10-27-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261027-082714-naukri-openings-2026-10-27-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-27 run 1 - Last 24h",
+   "when": "2026-10-27T08:27:14Z",
+   "file": "data/naukri/naukri-20261027-082714-naukri-openings-2026-10-27-run-1-last-24.html",
+   "bytes": 95341,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261027-082714-naukri-openings-2026-10-27-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "careers-20261027-070043-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -1405,17 +1427,6 @@
    }
   },
   {
-   "id": "naukri-20261011-083855-naukri-openings-2026-10-11-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-11 run 1 - Last 24h",
-   "when": "2026-10-11T08:38:55Z",
-   "file": "data/naukri/naukri-20261011-083855-naukri-openings-2026-10-11-run-1-last-24.html",
-   "bytes": 53890,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261011-083855-naukri-openings-2026-10-11-run-1-last-24.jobs.json"
-   }
-  },
-  {
    "id": "careers-20261010-174404-software-engineer-software-developer-bac",
    "kind": "careers",
    "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, SWE, SDE",
@@ -1433,17 +1444,6 @@
     "min_salary": "10 LPA",
     "list_sha": "2183c287bec4",
     "list_count": "8948"
-   }
-  },
-  {
-   "id": "naukri-20261010-071520-naukri-openings-2026-10-10-run-3-all-job",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-10 run 3 - All jobs",
-   "when": "2026-10-10T07:15:20Z",
-   "file": "data/naukri/naukri-20261010-071520-naukri-openings-2026-10-10-run-3-all-job.html",
-   "bytes": 62438,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261010-071520-naukri-openings-2026-10-10-run-3-all-job.jobs.json"
    }
   },
   {
