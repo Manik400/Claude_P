@@ -1,6 +1,28 @@
 {
- "updated": "2026-10-27T20:13:50Z",
+ "updated": "2026-10-28T06:06:52Z",
  "items": [
+  {
+   "id": "jobhunt-20261028-060652-engineer-senior-software-developer-sse-s",
+   "kind": "jobhunt",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-28T06:06:52Z",
+   "file": "data/jobhunt/jobhunt-20261028-060652-engineer-senior-software-developer-sse-s.html",
+   "bytes": 99608,
+   "meta": {
+    "jobs": "8",
+    "countries": "IN",
+    "experience": "0-3",
+    "days": "2",
+    "hours": "",
+    "window_hours": "48",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,adzuna,jooble,jsearch,firecrawl,apify-naukri",
+    "min_salary": "12 LPA",
+    "worldwide": "",
+    "dates_checked": "80",
+    "jobs_file": "data/jobhunt/jobhunt-20261028-060652-engineer-senior-software-developer-sse-s.jobs.json"
+   }
+  },
   {
    "id": "applications-20261027-201350-applications-sent",
    "kind": "applications",
@@ -1686,21 +1708,6 @@
     "jobs": "71",
     "relocation": "63",
     "countries": "IN",
-    "experience": "1",
-    "reloc_mode": "visa"
-   }
-  },
-  {
-   "id": "careers-20260928-055803-software-developer-engineer",
-   "kind": "careers",
-   "title": "software, developer, engineer",
-   "when": "2026-09-28T05:58:03Z",
-   "file": "data/careers/careers-20260928-055803-software-developer-engineer.json",
-   "bytes": 4140069,
-   "meta": {
-    "jobs": "1929",
-    "relocation": "1546",
-    "countries": "worldwide",
     "experience": "1",
     "reloc_mode": "visa"
    }
