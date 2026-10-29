@@ -1,0 +1,815 @@
+[
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Production Engineer",
+  "company": "Tushar Trans Equipment Pvt. Ltd.",
+  "url": "https://www.adzuna.in/details/5943994418?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "Bharuch, Gujarat",
+  "remote": null,
+  "posted": "2026-10-28",
+  "posted_at": "2026-10-28T07:49:56+00:00",
+  "posted_raw": "2026-10-28T07:49:56Z",
+  "salary": "180,000 - 1,200,000",
+  "snippet": "Job Description: Production Engineer – CT/PT Transformer Industry Job Title: Production Engineer Industry: CT/PT Instrument Transformer Manufacturing Department: Production Qualification: B.E. / B.Tech or Diploma in Electrical / Mechanical Engineering Experience: 0–10 Years Job Location: Tushar Trans Equipment Pvt Ltd Employment Type: Full-Time Job Summary We are looking for Production Engineers t",
+  "description": "Job Description: Production Engineer – CT/PT Transformer Industry Job Title: Production Engineer Industry: CT/PT Instrument Transformer Manufacturing Department: Production Qualification: B.E. / B.Tech or Diploma in Electrical / Mechanical Engineering Experience: 0–10 Years Job Location: Tushar Trans Equipment Pvt Ltd Employment Type: Full-Time Job Summary We are looking for Production Engineers to manage and monitor the manufacturing processes of Current Transformers (CTs) and Potential Transformers (PTs). Candidates should have a basic understanding of production activities, good coordination skills, and knowledge of basic ERP data entry. Freshers and experienced candidates with Electrical or Mechanical Engineering qualifications are welcome to apply. Key Responsibilities Monitor daily production activities according to the production plan and schedule. Coordinate CT/PT manufacturing processes, including winding, core assembly, insulation, assembly, and other activities as applicable. Ensure timely completion of production orders and achievement of production targets. Maintain daily production reports, job cards, work orders, and manufacturing records. Perform basic ERP entries related to production orders, material consumption, production output, and job status. Coordinate with the stores department for raw material availability and material issuance. Work closely with the quality and testing departments to resolve production-related issues. Monitor material utilization, production rejection, and wastage. Ensure proper utilization of manpower, machinery, tools, and equipment. Identify production delays and take necessary corrective actions in coordination with the concerned departments. Maintain proper documentation and ensure adherence to company procedures. Follow workplace safety rules, 5S practices, and quality standards. Coordinate with planning, purchase, stores, testing, quality, and dispatch departments. Educational Qualifications B.E. / B.Tech in Electrical Engineering or Mechanical Engineering. Diploma in Electrical Engineering or Mechanical Engineering. Required Skills Basic knowledge of CT/PT transformer manufacturing processes. Basic computer knowledge, including MS Excel and MS Office. Basic knowledge of ERP software and data entry. Ability to maintain production records and prepare daily reports. Good communication, coordination, and problem-solving skills. Knowledge of manufacturing processes, material management, and production planning is an advantage. Key Performance Indicators (KPIs) Achievement of daily and monthly production targets. Timely completion of manufacturing orders. Accuracy of ERP entries and production documentation. Reduction in material wastage and production rejection. Efficient utilization of manpower and materials. Compliance with quality, safety, and manufacturing standards.",
+  "skills": [],
+  "employment_type": "permanent",
+  "exp_min": 0.0,
+  "exp_max": 10.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 65.7,
+  "matched_skills": [],
+  "missing_skills": [
+   "transformers"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "455948dd4405",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": true,
+   "salary_inr": 1200000,
+   "salary_lpa": 12.0,
+   "salary_text": "180,000 - 1,200,000",
+   "semantic": 0.056,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has strong backend and distributed systems experience with Kafka, PostgreSQL, and AWS, aligning with the production engineer's need for data management and ERP skills.",
+    "gaps": "Lacks specific knowledge of CT/PT transformer manufacturing processes and basic electrical engineering fundamentals required for this role."
+   },
+   "is_mnc": false,
+   "lpa": 12.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 6.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bharuch%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bharuch%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bharuch%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Senior%20engineer%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Senior%20engineer%22%29%20%22Bharuch%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "SDE III - Backend",
+  "company": "Robustrade FZCO",
+  "url": "https://www.instahyre.com/job-448312-sde-iii-backend-at-robustrade-fzco-pune-work-from-home/",
+  "country": "IN",
+  "location": "Pune,Work From Home",
+  "remote": null,
+  "posted": "2026-10-28",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Extensive network of strategic alliances",
+  "description": "We're looking for an experienced SDE III - Backend who is strong in backend engineering, system design, and databases. The role is highly hands-on and involves designing and building scalable backend services, APIs, distributed systems, and event-driven workflows. Go is a key requirement for this role. Candidates coming from a strong Java backend background can also be considered, provided they have at least 1 year of hands-on Golang experience and are comfortable working primarily in Go. The core responsibilities for the job include the following: Backend Engineering: Design, develop, and maintain scalable backend services using Golang. Build and maintain reliable microservices and REST/GraphQL APIs. Design and implement event-driven systems and asynchronous processing using queues/messaging systems. Build backend systems capable of handling high-volume and transaction-heavy workloads. Work on performance, scalability, reliability, security, and availability of backend services. Diagnose and resolve production issues and performance bottlenecks. System Design: Own technical solutions from design through implementation and production. Design scalable distributed systems and define appropriate service boundaries. Make sound decisions around databases, APIs, caching, messaging, and system architecture. Participate in architecture and design discussions and contribute to technical documentation. Databases: Work extensively with relational and NoSQL databases. Design efficient schemas, queries, indexes, and data access patterns. Understand database scalability, performance optimization, consistency, and reliability. Engineering and Collaboration: Write clean, maintainable, production-quality code. Develop unit, integration, and performance tests. Participate in code reviews and technical discussions. Collaborate with frontend/mobile engineers and infrastructure teams to deliver end-to-end product functionality. Contribute to CI/CD, observability, monitoring, and engineering best practices. Requirements: 6+ years of backend software development experience. Strong hands-on experience with Golang. A minimum of 1+ year of practical Golang experience is mandatory. Strong experience with system design and distributed systems. Strong understanding of relational databases and NoSQL databases. Experience building REST and/or GraphQL APIs. Experience with microservices and event-driven architecture. Experience with queues, messaging systems, or asynchronous processing. Good understanding of scalability, performance, reliability, and fault tolerance. Familiarity with at least one cloud platform: AWS, GCP, or Azure. Strong communication and collaboration skills. Java Candidates: Strong Java backend engineers can also be considered only if they have at least 1 year of hands-on Golang experience. Candidates with less than 1 year of Go experience will not be considered. The selected candidate should be comfortable working primarily with Golang. Nice to Have: Experience in fintech, payments, banking, or transaction-heavy systems. Experience with Docker and Kubernetes. Experience with observability tools such as Datadog, Prometheus, or Grafana. Experience with CI/CD pipelines and automated quality gates. Experience building highly available and fault-tolerant systems. Experience working with financial transactions, payment workflows, or money movement systems.",
+  "skills": [
+   "Api",
+   "Backend",
+   "Database",
+   "Distributed",
+   "Go",
+   "Golang",
+   "Java",
+   "Microservices",
+   "NoSQL"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 57.5,
+  "matched_skills": [
+   "java",
+   "microservices",
+   "system design",
+   "distributed systems",
+   "ci/cd",
+   "observability",
+   "performance optimization",
+   "code review",
+   "aws",
+   "docker",
+   "prometheus",
+   "grafana"
+  ],
+  "missing_skills": [
+   "golang",
+   "event-driven",
+   "scalability",
+   "graphql",
+   "caching",
+   "technical documentation",
+   "monitoring",
+   "gcp"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih448312",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.642,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong Java background with 2 years of production experience, proven expertise in event-driven systems, microservices, and high-performance databases.",
+    "gaps": "Missing Golang experience and limited event-driven architecture depth."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Robustrade%20FZCO%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Robustrade%20FZCO%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Robustrade%20FZCO%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Robustrade%20FZCO%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Robustrade%20FZCO%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Robustrade%20FZCO%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Robustrade%20FZCO%22%20%28%22Senior%20engineer%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Robustrade%20FZCO%22%20%28%22Senior%20engineer%22%29%20%22Pune%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Backend Developer (SDE1)",
+  "company": "Slikk",
+  "url": "https://www.instahyre.com/job-447352-backend-developer-sde1-at-slikk-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-10-17",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "India's Fastest Fashion & Beauty App",
+  "description": "Responsibilities: Architect, design, and develop highly scalable, low-latency backend systems. Build and maintain RESTful and/or GraphQL APIs for large-scale applications. Drive system design discussions, including trade-offs, scalability, and performance optimisation. Write clean, testable, and production-ready code with high coverage. Own services end-to-end from design to deployment and monitoring. Optimise applications for maximum throughput, reliability, and performance. Implement and enforce security, data protection, and compliance standards. Collaborate cross-functionally with frontend, DevOps, product, and QA teams. Requirements: 1+ years of experience in backend development. Proficiency in at least one of the following: Java (Spring Boot / Hibernate), Python (Django / Flask / FastAPI), Node.js (Express.js / NestJS). Strong understanding of RESTful API design and development. Experience with databases such as MySQL, PostgreSQL, MongoDB, or Redis. Familiarity with version control systems (Git). Knowledge of microservices architecture and distributed systems. Experience with cloud platforms (AWS, Azure, or GCP) is a plus. Understanding of containerization tools like Docker is preferred. Strong problem-solving and analytical skills.",
+  "skills": [
+   "Backend",
+   "Django",
+   "GraphQL",
+   "Java",
+   "Node.js",
+   "Python",
+   "Rest",
+   "Spring Boot"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 54.6,
+  "matched_skills": [
+   "java",
+   "spring",
+   "rest api",
+   "system design",
+   "devops",
+   "qa",
+   "hibernate",
+   "postgresql",
+   "microservices",
+   "distributed systems",
+   "aws",
+   "docker"
+  ],
+  "missing_skills": [
+   "graphql",
+   "python",
+   "django",
+   "node.js",
+   "scalability",
+   "monitoring",
+   "flask",
+   "fastapi"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih447352",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.585,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with Java, Spring Boot, PostgreSQL, and AWS, matching the core technical requirements for a Backend Developer role.",
+    "gaps": "Lacks specific experience with GraphQL, Python, or Node.js, and has not demonstrated strong monitoring or scalability expertise."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Testing Engineer",
+  "company": "Tushar Trans Equipment Pvt. Ltd.",
+  "url": "https://www.adzuna.in/details/5943994408?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "Vadodara, Gujarat",
+  "remote": null,
+  "posted": "2026-10-28",
+  "posted_at": "2026-10-28T07:49:56+00:00",
+  "posted_raw": "2026-10-28T07:49:56Z",
+  "salary": "180,000 - 1,200,000",
+  "snippet": "Job Title: Testing Engineer Industry: Electrical Manufacturing – CT/PT Transformers Qualification: Diploma / BE in Electrical Engineering Experience: 0–10 Years Job Location: Tushar Trans Equipment Pvt Ltd (POR GIDC) Department:Testing Job Summary We are looking for a motivated and technically skilled Testing Engineer to perform routine, type, and other applicable electrical tests on Current Trans",
+  "description": "Job Title: Testing Engineer Industry: Electrical Manufacturing – CT/PT Transformers Qualification: Diploma / BE in Electrical Engineering Experience: 0–10 Years Job Location: Tushar Trans Equipment Pvt Ltd (POR GIDC) Department:Testing Job Summary We are looking for a motivated and technically skilled Testing Engineer to perform routine, type, and other applicable electrical tests on Current Transformers (CT) and Potential/Voltage Transformers (PT/VT). The candidate will be responsible for ensuring product quality, accuracy, reliability, and compliance with applicable IS/IEC standards and customer specifications. Key Responsibilities Perform routine testing of CT and PT/VT transformers as per approved test procedures. Conduct tests such as: Insulation Resistance (IR) Test Winding Resistance Test Ratio Test Polarity Test Accuracy Test Excitation / Knee Point Test, wherever applicable Burden and Phase Angle Error Test Power Frequency Withstand / High Voltage (HV) Test Partial Discharge Test, wherever applicable Operate and maintain electrical testing equipment and instruments. Verify test results against approved drawings, specifications, and applicable IS/IEC standards. Prepare and maintain test reports, inspection records, and quality documentation. Identify testing failures, investigate root causes, and coordinate corrective actions. Coordinate with Production, Quality Assurance, and Design departments to resolve technical issues. Ensure compliance with safety procedures during testing activities. Support calibration and maintenance of testing equipment. Educational Qualification Diploma in Electrical Engineering, or BE / B.Tech in Electrical Engineering. Required Skills Knowledge of Current Transformers (CT) and Potential/Voltage Transformers (PT/VT). Understanding of electrical measurements and transformer testing procedures. Familiarity with applicable IS/IEC standards, drawings, and technical specifications. Ability to analyze test results and prepare accurate test reports. Good troubleshooting, documentation, and communication skills. Knowledge of electrical safety practices.",
+  "skills": [],
+  "employment_type": "permanent",
+  "exp_min": 0.0,
+  "exp_max": 10.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 51.4,
+  "matched_skills": [
+   "qa"
+  ],
+  "missing_skills": [
+   "transformers"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "687859e8524c",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": true,
+   "salary_inr": 1200000,
+   "salary_lpa": 12.0,
+   "salary_text": "180,000 - 1,200,000",
+   "semantic": 0.0,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with testing infrastructure needs, though the candidate lacks direct transformer testing expertise.",
+    "gaps": "Missing specific knowledge of electrical transformers and testing equipment."
+   },
+   "is_mnc": false,
+   "lpa": 12.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 6.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bharuch%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bharuch%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bharuch%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Senior%20engineer%22%29%20%22Bharuch%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Tushar%20Trans%20Equipment%20Pvt.%20Ltd.%22%20%28%22Senior%20engineer%22%29%20%22Bharuch%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Solution Engineer",
+  "company": "Weekday AI",
+  "url": "https://www.adzuna.in/details/5944689228?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "India",
+  "remote": null,
+  "posted": "2026-10-28",
+  "posted_at": "2026-10-28T21:32:22+00:00",
+  "posted_raw": "2026-10-28T21:32:22Z",
+  "salary": "",
+  "snippet": "' : - ( - ) Experience: 1 yrs Location: Mumbai As a Solution Engineer, you will design and implement robust API integration solutions for our cloud-based SaaS platform, ensuring seamless connectivity between our services and clients’ existing systems. You will collaborate closely with sales and product teams to understand customer requirements and translate them into technical roadmaps. Your role",
+  "description": "' : - ( - ) Experience: 1+ yrs Location: Mumbai As a Solution Engineer, you will design and implement robust API integration solutions for our cloud-based SaaS platform, ensuring seamless connectivity between our services and clients’ existing systems. You will collaborate closely with sales and product teams to understand customer requirements and translate them into technical roadmaps. Your role will involve deploying APIs, troubleshooting integration challenges, and optimizing performance to meet stringent uptime and security standards. Leveraging your expertise, you will also support pre‑sales technical demonstrations and post‑implementation training to drive customer success and adoption. Requirements • Design, develop, and maintain scalable API integrations for SaaS applications • Collaborate with product and engineering teams to define integration requirements and specifications • Conduct end‑to‑end testing of API endpoints and troubleshoot integration issues • Optimize API performance, monitoring, and scalability to meet SLA targets • Provide technical support and guidance to clients during onboarding and deployment phases • Document integration processes, best practices, and troubleshooting guides • Stay updated on industry trends, emerging technologies, and security standards • Develop and deliver technical presentations and demos for sales and customers • Participate in code reviews and collaborate on continuous integration/continuous delivery pipelines • Mentor junior engineers and share knowledge across the engineering community • 1+ years of hands‑on experience with API integration and implementation • Proficiency in RESTful API design, Swagger/OpenAPI specifications, and JSON/XML data formats • Familiarity with SaaS deployment models, multi‑tenant architecture, and cloud services • Strong scripting skills in Python, JavaScript, or similar languages for automation • Experience with API gateways, rate limiting, and security protocols (OAuth, JWT) • Ability to analyze complex business requirements and translate them into technical solutions • Excellent communication skills for liaising with technical and non‑technical stakeholders • Proactive problem‑solving mindset and a commitment to continuous learning • A collaborative attitude and willingness to mentor peers • Proven track record of delivering successful client integrations within timelines.",
+  "skills": [],
+  "employment_type": "['Full Time']",
+  "exp_min": 1.0,
+  "exp_max": 1.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 41.7,
+  "matched_skills": [
+   "ci/cd",
+   "code review",
+   "rest api",
+   "javascript"
+  ],
+  "missing_skills": [
+   "openapi",
+   "monitoring",
+   "scalability",
+   "python",
+   "oauth",
+   "jwt"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "29c6eec048bc",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.425,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Manik has 2 years of experience with REST APIs, Kafka, and cloud services, aligning with the core requirements for API integration and SaaS deployment.",
+    "gaps": "Lacks specific experience with OAuth, JWT, and Python scripting, which are critical for the security and automation aspects of this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Weekday%20AI%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Weekday%20AI%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Weekday%20AI%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Weekday%20AI%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Weekday%20AI%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Weekday%20AI%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Weekday%20AI%22%20%28%22Senior%20engineer%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Weekday%20AI%22%20%28%22Senior%20engineer%22%29%20%22India%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Engineer",
+  "company": "Kuku Technologies",
+  "url": "https://wellfound.com/jobs/4901349-ai-engineer",
+  "country": "IN",
+  "location": "Mumbai",
+  "remote": false,
+  "posted": "2026-10-28",
+  "posted_at": "2026-10-28T06:15:46+00:00",
+  "posted_raw": "",
+  "salary": "₹15L – ₹28L • No equity",
+  "snippet": "About the role We are seeking an AI Engineer to build and implement AI systems for content production at scale. You'll work at the intersection of engineering and content designing prompt pipelines, integrating generative models, and building the tooling that turns source material into finished creative output. The ideal candidate is technically strong but also has taste: someone who understands s",
+  "description": "About the role We are seeking an AI Engineer to build and implement AI systems for content production at scale. You'll work at the intersection of engineering and content designing prompt pipelines, integrating generative models, and building the tooling that turns source material into finished creative output. The ideal candidate is technically strong but also has taste: someone who understands story and craft, and can tell the difference between output that's technically correct and output that's actually good. Responsibilities Build and iterate on prompt pipelines and multi-agent workflow components Design and integrate agentic workflows orchestrate multi-step, tool-using agents that plan, call models, and hand off between stages in production Deploy and serve open-source models set up inference endpoints, manage GPU compute, and optimize for latency and cost Write evals compare outputs against references, quantify quality, and feed results back into the pipeline Work on data pipelines: structured extraction from messy source text, localization, similarity/dedup Debug and maintain pipeline stages in production What you bring: (1+/3+) years of engineering experience, or a strong portfolio of shipped projects Solid Python fundamentals clean, working, readable code Hands-on experience with LLM APIs and prompt engineering (personal projects count) Comfort with Git, REST APIs, and working in a Linux environment A feel for content and narrative you can judge whether generated output is actually good, not just valid Curiosity and clear communication you ask good questions and don't stay stuck silently Preferred Exposure to agent/orchestration frameworks (LangGraph, LangChain, CrewAI) Familiarity with vector databases, embeddings, or RAG (Qdrant, pgvector) Hands-on work with open-source generative media models Flux, LTX, Wan, or similar Experience deploying open-source models for inference (vLLM, ComfyUI, Replicate/Cog, Docker + GPU) Experience writing evals or LLM-as-judge scoring Node.js and Fastapi familiarity, or experience deploying on AWS About KUKU Founded in 2018, KUKU is India’s leading storytelling platform, offering a vast digital library of audio stories, short courses, and microdramas. KUKU aims to be India’s largest cultural exporter of stories, culture, and history to the world with a firm belief in “Create In India, Create For The World”. We deliver immersive entertainment and education through our OTT platforms: Kuku FM, Guru, Kuku TV, and more. With a mission to provide high-quality, personalized stories across genres in entertainment, spanning multiple formats and languages, KUKU continues to push boundaries and redefine India’s entertainment industry. 🌐 Website: www.kukufm.com 📱 Android App: Google Play 📱 iOS App: App Store 🔗 LinkedIn: KUKU 📢 Ready to make an impact? Apply now!",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 1,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 40.2,
+  "matched_skills": [
+   "vector databases",
+   "rest api",
+   "linux",
+   "docker",
+   "aws"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "llm",
+   "ai agents",
+   "data pipelines",
+   "python",
+   "prompt engineering",
+   "git",
+   "langchain"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "wf4901349",
+  "extra": {
+   "company_size": "SIZE_501_1000",
+   "posted_source": "page:json-ld",
+   "posted_checked": "json-ld",
+   "salary_stated": true,
+   "salary_inr": 2800000,
+   "salary_lpa": 28.0,
+   "salary_text": "₹15L – ₹28L • No equity",
+   "semantic": 0.243,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with the technical requirements. However, the candidate lacks critical AI-specific skills like Python, LLMs, and prompt engineering needed for this role.",
+    "gaps": "Missing core AI skills: Python, LLMs, prompt engineering, and AI agents."
+   },
+   "is_mnc": false,
+   "lpa": 28.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Kuku%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Kuku%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mumbai%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Kuku%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Kuku%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mumbai%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Kuku%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Kuku%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mumbai%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Kuku%20Technologies%22%20%28%22Senior%20engineer%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Kuku%20Technologies%22%20%28%22Senior%20engineer%22%29%20%22Mumbai%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "Associate Engineer",
+  "company": "Arm",
+  "url": "https://www.linkedin.com/jobs/view/4474954084",
+  "country": "IN",
+  "location": "Bengaluru, Karnataka, India",
+  "remote": null,
+  "posted": "2026-10-27",
+  "posted_at": null,
+  "posted_raw": "1 day ago",
+  "salary": "",
+  "snippet": "Arm’s Physical IP Division develops Physical IP that is extensively used by SoC designers around the world to build sophisticated, high-performance chips on groundbreaking process nodes. We are looking for a Graduate Software Engineer to join the Design Enablement team within Solutions Engineering - Implementation organization. You will build and maintain software tools and automated EDA flows use",
+  "description": "Arm’s Physical IP Division develops Physical IP that is extensively used by SoC designers around the world to build sophisticated, high-performance chips on groundbreaking process nodes. We are looking for a Graduate Software Engineer to join the Design Enablement team within Solutions Engineering - Implementation organization. You will build and maintain software tools and automated EDA flows used to develop, validate, and deliver custom cells and custom macros. Working alongside experienced software engineers and circuit designers across Arm's global engineering sites, you will learn established development practices while contributing practical solutions for engineering teams. Responsibilities Develop and sustain software applications and automated workflows that support custom cells and custom macro development and validation. Write clear, maintainable code in Java or Python, with supporting automation in Tcl, Bash, or tcsh. Work with circuit designers and software engineers to understand requirements and implement practical solutions. Help integrate new build methodologies and EDA tools into Custom Cells workflows. Support efficient, scalable, and parallel execution of EDA workloads in on-premises and cloud environments. Write unit, integration, and regression tests, investigate failures, and debug software issues. Participate in code reviews, document changes, and provide support to engineering users. Essential Skills and Experience: Bachelor’s degree or master’s degree or equivalent experience in Computer Science, Information Science, Electronics and Communication Engineering, or a related technical field. Good programming skills in Java, Python, or both, including object-oriented programming and data structures. Strong problem-solving and debugging skills, with attention to software quality and accuracy. Good written and verbal communication skills and the ability to work collaboratively. Familiarity with software development fundamentals, including version control and automated testing. “Desired” Skills and Experience: Experience or coursework in Tcl and Unix shell scripting, including Bash or tcsh. Familiarity with Linux or Unix development environments. Basic understanding of digital electronics, semiconductor design flows, or Physical IP. Exposure to EDA tools or batch-computing and job-scheduling environments such as IBM Platform LSF. In Return: At Arm, we believe in nurturing talent and providing opportunities for growth. You will join a team that embraces inclusion and collaboration, working on ambitious projects that push the boundaries of technology. We offer a dynamic work environment where your contributions are recognized and rewarded. Join us and be a part of a world-class team that is dedicated to delivering flawless solutions that compete at the highest level! Our 10x Mindset At Arm, we believe progress happens when people are empowered to think bigger and push beyond what seems possible. Our 10x mindset is about curiosity, ambition and creating impact that will be used by millions. We learn fast, prioritise collaboration and turn bold ideas into real technology. We look for people who are inspired by this way of working and want to grow in an environment where bold ideas are welcomed. Discover how the 10x mindset shapes life at Arm: https://careers.arm.com/10x-mindset Use of AI in Your Application At Arm, we embrace the benefits AI can bring, including in recruitment. You may use AI to support your preparation, such as improving the clarity of written responses, practicing interview questions, or learning more about our industry. However, your application and interview responses must reflect your own thinking, experience, and abilities. We want to understand your authentic perspective, creativity, and approach to problem solving. As such, you may not use AI to complete assigned tasks as part of any assessments. If you plan to use AI-supported or assistive technologies as part of a reasonable adjustment, please contact accommodations@arm.com so we can support you. Recruitment Adjustments and Accommodations At Arm, we want to build extraordinary teams. If you need an adjustment or an accommodation during the recruitment process, please email accommodations@arm.com . To note, by sending us the requested information, you consent to its use by Arm to arrange for appropriate accommodations. All accommodation or adjustment requests will be treated with confidentiality, and information concerning these requests will only be disclosed as necessary to provide the accommodation. Although this is not an exhaustive list, examples of support include breaks between interviews, having documents read aloud, or office accessibility. Please email us about anything we can do to accommodate you during the recruitment process. Hybrid Working Arm’s approach to hybrid working is designed to create a working environment that supports both high performance and personal wellbeing. We believe in bringing people together face to face to enable us to work at pace, whilst recognizing the value of flexibility. Within that framework, we empower groups/teams to determine their own hybrid working patterns, depending on the work and the team’s needs. Details of what this means for each role will be shared upon application. In some cases, the flexibility we can offer is limited by local legal, regulatory, tax, or other considerations, and where this is the case, we will collaborate with you to find the best solution. Please talk to us to find out more about what this could look like for you. Equal Opportunities Arm is an equal opportunity employer, committed to providing an environment of mutual respect where equal opportunities are available to all applicants and colleagues. We are a diverse organization of dedicated and innovative individuals, and don’t discriminate on the basis of race, color, religion, sex, sexual orientation, gender identity, national origin, disability, or status as a protected veteran.",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.9,
+  "matched_skills": [
+   "java",
+   "code review",
+   "data structures",
+   "test automation",
+   "linux"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "bash",
+   "python",
+   "object-oriented",
+   "accessibility"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4474954084",
+  "extra": {
+   "linkedin_id": "4474954084",
+   "seniority_level": "Associate",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.239,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Manik has 2 years of Java experience and strong coding skills, matching the core requirement for a Java-based Associate Engineer role.",
+    "gaps": "Lacks specific EDA/Physical IP experience and familiarity with Tcl/Unix scripting, which are critical for this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "arm.com",
+    "site": "",
+    "emails": [
+     "accommodations@arm.com"
+    ],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arm%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arm%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arm%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arm%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arm%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arm%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arm%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arm%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.4,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "Associate Data Engineer",
+  "company": "Mobility Global",
+  "url": "https://www.linkedin.com/jobs/view/4475412443",
+  "country": "IN",
+  "location": "Gurugram, Haryana, India",
+  "remote": null,
+  "posted": "2026-10-28",
+  "posted_at": "2026-10-28T12:05:54.502494+00:00",
+  "posted_raw": "18 hours ago",
+  "salary": "",
+  "snippet": "Why Mobility Global? At Mobility Global, our mission is to provide the trusted information that helps billions of people build, sell, and own vehicles with confidence. As we shape the next generation of automotive intelligence through innovation, AI, and industry-leading data, we're creating new opportunities for our customers, our business, and our people. Join a team singularly focused on transf",
+  "description": "Why Mobility Global? At Mobility Global, our mission is to provide the trusted information that helps billions of people build, sell, and own vehicles with confidence. As we shape the next generation of automotive intelligence through innovation, AI, and industry-leading data, we're creating new opportunities for our customers, our business, and our people. Join a team singularly focused on transforming the automotive industry. S&P Global Mobility is Mobility Global — the company behind CARFAX, automotiveMastermind, Market Scan, and Polk Automotive Solutions. Our strength comes from our people, and here, the progress you make helps the entire automotive ecosystem move faster and with greater confidence. What You'll Do Our proprietary software-as-a-service helps automotive dealerships and sales teams better understand and predict exactly which customers are ready to buy, the reasons why, and the key offers and incentives most likely to close the sale. Its micro-marketing engine then delivers the right message at the right time to those customers, ensuring higher conversion rates and a stronger ROI. You will be part of our data platform & product insights data engineering team. As part of this agile team, you will work in our cloud native environment to: Build & support data ingestion and processing pipelines. This will entail extract, load and transform of ‘big data’ from a wide variety of sources, both batch & streaming, using latest data frameworks and technologies Build real-time monitoring dashboards and alerting systems. Partner with product to assemble large, complex data sets that meet functional / non-functional business requirements, ensure build out of Data Dictionaries/data catalog and detailed documentation and knowledge around these data assets, metrics and KPIs. Warehouse this data, build data marts, data aggregations, metrics, KPIs, business logic that leads to actionable insights into our product efficacy, marking platform, customer behaviour, retention etc. Required Skills What we are looking for: 1-3 years of experience in Big Data and Data Engineering. Strong knowledge of SQL, and experience working with relational databases, as well as working familiarity with a variety of databases. Hands-on experience in modern data platform components such as Spark, Python, etc. Experience with setting up and maintaining Data warehouse (Google BigQuery, Redshift, Snowflake) and Data Lakes (GCS, AWS S3 etc.) for an organization Experience with relational SQL and NoSQL databases, including Postgres and Cassandra / MongoDB. Experience with data pipeline and workflow management tools: Airflow, Dataflow, Dataproc, etc. Experience with Distributed Versioning Control environments such as GIT, Azure DevOps Building Docker images and fetch/promote and deploy to Production. Integrated Docker container orchestration framework using Kubernetes by creating pods, config Maps, deployments using terraform. Strong problem solving and communication skills. Bachelor’s or an advanced degree in Computer Science or related engineering discipline. Preferred Skills Good to have experience in one of the Cloud providers – GCP, Azure, AWS. Exposure to any Business Intelligence (BI) tools like Tableau, Dundas, Power BI etc. Agile software development methodologies. Working in multi-functional, multi-location teams This is a hybrid role with in-office expectations determined by location and subject to change based on evolving business needs. What’s In It For You Competitive compensation package, including base salary and incentive opportunities where applicable. Comprehensive health and wellness benefits for employees and eligible dependents. Retirement savings programs, including company matching contributions where available. Equal Opportunity Employer Mobility Global is proud to be an Equal Opportunity Employer. We value diverse perspectives and are committed to fostering an inclusive workplace where everyone is respected, supported, and empowered to succeed. We provide reasonable accommodations throughout the hiring process and employment for qualified individuals with disabilities. Recruitment Fraud Alert Mobility Global will never ask candidates to pay money at any stage of the hiring process, including for applications, interviews, background checks, training, or equipment. If you receive a suspicious communication or request for payment or personal financial information, please exercise caution and report it immediately.",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 33.9,
+  "matched_skills": [
+   "agile",
+   "sql",
+   "aws",
+   "docker",
+   "s3",
+   "postgresql"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "monitoring",
+   "spark",
+   "python",
+   "data warehouse",
+   "bigquery",
+   "redshift",
+   "snowflake"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4475412443",
+  "extra": {
+   "linkedin_id": "4475412443",
+   "seniority_level": "Not Applicable",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.268,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, TimescaleDB, and AWS, aligning with the candidate's 2+ years in data pipeline and warehouse building.",
+    "gaps": "Lacks hands-on experience with Spark, Python, and cloud-native data warehouses like BigQuery, Redshift, or Snowflake."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mobility%20Global%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mobility%20Global%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurugram%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mobility%20Global%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mobility%20Global%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurugram%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mobility%20Global%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mobility%20Global%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurugram%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mobility%20Global%22%20%28%22Senior%20engineer%22%29%20%22Gurugram%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mobility%20Global%22%20%28%22Senior%20engineer%22%29%20%22Gurugram%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "JUNIOR ENGINEER",
+  "company": "Sansera Engineering Limited",
+  "url": "https://www.linkedin.com/jobs/view/4481876373",
+  "country": "IN",
+  "location": "Bengaluru, Karnataka, India",
+  "remote": null,
+  "posted": "2026-10-27",
+  "posted_at": null,
+  "posted_raw": "1 day ago",
+  "salary": "",
+  "snippet": "Sansera Engineering is an engineering-led integrated manufacturer of forged complex and high-precision components for the automotive, non-Automotive and Aerospace sectors. With a rich legacy spanning over three decades, Sansera Engineering is committed to delivering quality products to its global clientele. As we continue to expand our operations and workforce, As we continue to expand our operati",
+  "description": "Sansera Engineering is an engineering-led integrated manufacturer of forged complex and high-precision components for the automotive, non-Automotive and Aerospace sectors. With a rich legacy spanning over three decades, Sansera Engineering is committed to delivering quality products to its global clientele. As we continue to expand our operations and workforce, As we continue to expand our operations and workforce, we are seeking talented and dedicated individuals to join our team. JOB TITLE: Engineer – Process Design Department: Process Design Experience: 1–3Years PRIME FUNCTION To prepare and maintain process engineering documents that support effective process planning, risk assessment, quality control, and standardization of manufacturing processes. Job Description / Responsibilities Prepare, review, and update Machining Drawings (MD), Process Drawings (PD), Control Plans (CP), and Process Failure Mode and Effects Analysis (PFMEA). Interpret customer drawings, GD&T requirements, engineering specifications, and dimensional tolerances to define manufacturing process requirements. Develop process sequences and identify critical dimensions, process parameters, and inspection requirements. Identify potential process failure modes, assess risks, and coordinate actions to prevent defects. Ensure consistency between machining drawings, process drawings, PFMEA, and control plans. Coordinate with Production, Quality, Design, and Tool Engineering teams during process development and implementation. Update process documents following engineering changes, manufacturing trials, and improvement activities. Maintain document revision control and ensure approved documents are available at the point of use. Support process trials, troubleshooting, and audits related to process documentation. AUTHORITY Recommend changes to process drawings, manufacturing sequences, and process controls. Raise technical concerns regarding drawing requirements, dimensional tolerances, and manufacturing feasibility. Initiate document revisions and coordinate approvals as per established procedures. COMPETENCY Qualification: Diploma / B.E. / B.Tech in Mechanical Engineering or a related discipline. Technical Competencies: Understanding of GD&T, engineering drawings, and dimensional tolerances. Knowledge of machining processes and manufacturing process planning. Ability to prepare and maintain MD, PD, CP, and PFMEA. Working knowledge of AutoCAD or relevant engineering drawing software. Understanding of process risk assessment, quality controls, and document revision management. Behavioural Competencies: Analytical thinking and attention to detail. Problem-solving and continuous improvement. Effective communication and cross-functional coordination. PERFORMANCE MEASURES Timely preparation and release of process documents. Accuracy and completeness of drawings and documentation. Consistency between PFMEA, control plans, and process drawings. Timely implementation of engineering changes and risk mitigation actions. Reduction in documentation errors and related audit observations.",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 24.9,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4481876373",
+  "extra": {
+   "linkedin_id": "4481876373",
+   "seniority_level": "Not Applicable",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.098,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with process design requirements for manufacturing systems.",
+    "gaps": "Lacks direct mechanical engineering background and CAD experience required for process design."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sansera%20Engineering%20Limited%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sansera%20Engineering%20Limited%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sansera%20Engineering%20Limited%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sansera%20Engineering%20Limited%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sansera%20Engineering%20Limited%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sansera%20Engineering%20Limited%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Sansera%20Engineering%20Limited%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Sansera%20Engineering%20Limited%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ }
+]
