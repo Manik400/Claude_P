@@ -1,6 +1,48 @@
 {
- "updated": "2026-10-29T08:54:31Z",
+ "updated": "2026-10-29T09:54:56Z",
  "items": [
+  {
+   "id": "accuracy-20261029-095456-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-29T09:54:56Z",
+   "file": "data/accuracy/accuracy-20261029-095456-accuracy-learning.html",
+   "bytes": 23138,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261029-095455-naukri-openings-2026-10-29-run-3",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-29 run 3",
+   "when": "2026-10-29T09:54:55Z",
+   "file": "data/naukri/naukri-20261029-095455-naukri-openings-2026-10-29-run-3.html",
+   "bytes": 100041,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261029-095455-naukri-openings-2026-10-29-run-3.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261029-095453-naukri-openings-2026-10-29-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-29 run 2 - Early",
+   "when": "2026-10-29T09:54:53Z",
+   "file": "data/naukri/naukri-20261029-095453-naukri-openings-2026-10-29-run-2-early.html",
+   "bytes": 36482,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261029-095453-naukri-openings-2026-10-29-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261029-095451-naukri-openings-2026-10-29-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-29 run 1 - Last 24h",
+   "when": "2026-10-29T09:54:51Z",
+   "file": "data/naukri/naukri-20261029-095451-naukri-openings-2026-10-29-run-1-last-24.html",
+   "bytes": 110780,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261029-095451-naukri-openings-2026-10-29-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "applications-20261029-085431-applications-sent",
    "kind": "applications",
@@ -9,28 +51,6 @@
    "file": "data/applications/applications-20261029-085431-applications-sent.html",
    "bytes": 13466909,
    "meta": {}
-  },
-  {
-   "id": "naukri-20261029-085423-naukri-openings-2026-10-29-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-29 run 2 - Early",
-   "when": "2026-10-29T08:54:23Z",
-   "file": "data/naukri/naukri-20261029-085423-naukri-openings-2026-10-29-run-2-early.html",
-   "bytes": 36432,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261029-085423-naukri-openings-2026-10-29-run-2-early.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261029-085422-naukri-openings-2026-10-29-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-29 run 1 - Last 24h",
-   "when": "2026-10-29T08:54:22Z",
-   "file": "data/naukri/naukri-20261029-085422-naukri-openings-2026-10-29-run-1-last-24.html",
-   "bytes": 110730,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261029-085422-naukri-openings-2026-10-29-run-1-last-24.jobs.json"
-   }
   },
   {
    "id": "careers-20261029-074933-engineer-senior-software-developer-sse-s",
@@ -221,15 +241,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261027-085700-naukri-openings-2026-10-27-run-3.jobs.json"
    }
-  },
-  {
-   "id": "accuracy-20261027-085700-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-10-27T08:57:00Z",
-   "file": "data/accuracy/accuracy-20261027-085700-accuracy-learning.html",
-   "bytes": 22642,
-   "meta": {}
   },
   {
    "id": "naukri-20261027-085659-naukri-openings-2026-10-27-run-1-last-24",
@@ -1581,17 +1592,6 @@
    "bytes": 135918,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261012-112148-naukri-openings-2026-10-12-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261012-112147-naukri-openings-2026-10-12-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-12 run 2 - Early",
-   "when": "2026-10-12T11:21:47Z",
-   "file": "data/naukri/naukri-20261012-112147-naukri-openings-2026-10-12-run-2-early.html",
-   "bytes": 56093,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261012-112147-naukri-openings-2026-10-12-run-2-early.jobs.json"
    }
   },
   {
