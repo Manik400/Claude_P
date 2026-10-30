@@ -1,6 +1,26 @@
 {
- "updated": "2026-10-30T06:17:29Z",
+ "updated": "2026-10-30T07:53:33Z",
  "items": [
+  {
+   "id": "careers-20261030-075333-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-30T07:53:33Z",
+   "file": "data/careers/careers-20261030-075333-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2886044,
+   "meta": {
+    "jobs": "222",
+    "relocation": "1",
+    "countries": "IN",
+    "experience": "0-3",
+    "reloc_mode": "any",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "jobhunt-20261030-061729-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1782,21 +1802,6 @@
     "relocation": "300",
     "countries": "worldwide",
     "experience": "0-2",
-    "reloc_mode": "visa"
-   }
-  },
-  {
-   "id": "careers-20261001-092056-software-engineer-backend-engineer-java-",
-   "kind": "careers",
-   "title": "software engineer, backend engineer, java developer, software developer",
-   "when": "2026-10-01T09:20:56Z",
-   "file": "data/careers/careers-20261001-092056-software-engineer-backend-engineer-java-.json",
-   "bytes": 3268790,
-   "meta": {
-    "jobs": "800",
-    "relocation": "661",
-    "countries": "worldwide",
-    "experience": "2",
     "reloc_mode": "visa"
    }
   },
