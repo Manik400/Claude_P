@@ -1,6 +1,93 @@
 {
- "updated": "2026-10-30T07:53:33Z",
+ "updated": "2026-10-30T08:44:36Z",
  "items": [
+  {
+   "id": "naukri-20261030-084436-naukri-openings-2026-10-30-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-30 run 2 - Early",
+   "when": "2026-10-30T08:44:36Z",
+   "file": "data/naukri/naukri-20261030-084436-naukri-openings-2026-10-30-run-2-early.html",
+   "bytes": 35431,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261030-084436-naukri-openings-2026-10-30-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261030-084436-naukri-openings-2026-10-30-run-3",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-30 run 3",
+   "when": "2026-10-30T08:44:36Z",
+   "file": "data/naukri/naukri-20261030-084436-naukri-openings-2026-10-30-run-3.html",
+   "bytes": 77919,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261030-084436-naukri-openings-2026-10-30-run-3.jobs.json"
+   }
+  },
+  {
+   "id": "applications-20261030-084436-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-10-30T08:44:36Z",
+   "file": "data/applications/applications-20261030-084436-applications-sent.html",
+   "bytes": 13713910,
+   "meta": {}
+  },
+  {
+   "id": "accuracy-20261030-084436-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-10-30T08:44:36Z",
+   "file": "data/accuracy/accuracy-20261030-084436-accuracy-learning.html",
+   "bytes": 23465,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261030-084435-naukri-openings-2026-10-30-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-30 run 1 - Last 24h",
+   "when": "2026-10-30T08:44:35Z",
+   "file": "data/naukri/naukri-20261030-084435-naukri-openings-2026-10-30-run-1-last-24.html",
+   "bytes": 100867,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261030-084435-naukri-openings-2026-10-30-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261030-084430-naukri-openings-2026-10-30-run-3",
+   "kind": "naukri",
+   "title": "Job Openings 2026-10-30 r3",
+   "when": "2026-10-30T08:44:30Z",
+   "file": "data/naukri/naukri-20261030-084430-naukri-openings-2026-10-30-run-3.html",
+   "bytes": 77919,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261030-084430-naukri-openings-2026-10-30-run-3.jobs.json",
+    "jobs": "73"
+   }
+  },
+  {
+   "id": "naukri-20261030-084429-naukri-openings-2026-10-30-run-1-last-24",
+   "kind": "naukri",
+   "title": "Job Openings 2026-10-30 r1 - Last 24h",
+   "when": "2026-10-30T08:44:29Z",
+   "file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-1-last-24.html",
+   "bytes": 100867,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-1-last-24.jobs.json",
+    "jobs": "73"
+   }
+  },
+  {
+   "id": "naukri-20261030-084429-naukri-openings-2026-10-30-run-2-early",
+   "kind": "naukri",
+   "title": "Job Openings 2026-10-30 r2 - Early",
+   "when": "2026-10-30T08:44:29Z",
+   "file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-2-early.html",
+   "bytes": 35431,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-2-early.jobs.json",
+    "jobs": "73"
+   }
+  },
   {
    "id": "careers-20261030-075333-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -44,15 +131,6 @@
    }
   },
   {
-   "id": "applications-20261029-221325-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-10-29T22:13:25Z",
-   "file": "data/applications/applications-20261029-221325-applications-sent.html",
-   "bytes": 13608728,
-   "meta": {}
-  },
-  {
    "id": "careers-20261029-113123-engineer-senior-software-developer-sse-s",
    "kind": "careers",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -93,15 +171,6 @@
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261029-102211-engineer-senior-software-developer-sse-s.jobs.json"
    }
-  },
-  {
-   "id": "accuracy-20261029-095456-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-10-29T09:54:56Z",
-   "file": "data/accuracy/accuracy-20261029-095456-accuracy-learning.html",
-   "bytes": 23138,
-   "meta": {}
   },
   {
    "id": "naukri-20261029-095455-naukri-openings-2026-10-29-run-3",
@@ -1550,29 +1619,6 @@
    }
   },
   {
-   "id": "naukri-20261014-091219-naukri-openings-2026-10-14-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-14 run 1 - Last 24h",
-   "when": "2026-10-14T09:12:19Z",
-   "file": "data/naukri/naukri-20261014-091219-naukri-openings-2026-10-14-run-1-last-24.html",
-   "bytes": 115658,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261014-091219-naukri-openings-2026-10-14-run-1-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261014-081526-naukri-openings-2026-10-14-run-1-last-24",
-   "kind": "naukri",
-   "title": "Job Openings 2026-10-14 r1 - Last 24h",
-   "when": "2026-10-14T08:15:26Z",
-   "file": "data/naukri/naukri-20261014-081526-naukri-openings-2026-10-14-run-1-last-24.html",
-   "bytes": 115717,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261014-081526-naukri-openings-2026-10-14-run-1-last-24.jobs.json",
-    "jobs": "14"
-   }
-  },
-  {
    "id": "careers-20261013-233209-software-engineer-software-developer-bac",
    "kind": "careers",
    "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, developer, SWE, SDE, engineer",
@@ -1613,39 +1659,6 @@
    }
   },
   {
-   "id": "naukri-20261013-070429-naukri-openings-2026-10-13-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-13 run 3",
-   "when": "2026-10-13T07:04:29Z",
-   "file": "data/naukri/naukri-20261013-070429-naukri-openings-2026-10-13-run-3.html",
-   "bytes": 136536,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261013-070429-naukri-openings-2026-10-13-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261013-070428-naukri-openings-2026-10-13-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-13 run 1 - Last 24h",
-   "when": "2026-10-13T07:04:28Z",
-   "file": "data/naukri/naukri-20261013-070428-naukri-openings-2026-10-13-run-1-last-24.html",
-   "bytes": 94759,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261013-070428-naukri-openings-2026-10-13-run-1-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261013-070428-naukri-openings-2026-10-13-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-13 run 2 - Early",
-   "when": "2026-10-13T07:04:28Z",
-   "file": "data/naukri/naukri-20261013-070428-naukri-openings-2026-10-13-run-2-early.html",
-   "bytes": 37464,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261013-070428-naukri-openings-2026-10-13-run-2-early.jobs.json"
-   }
-  },
-  {
    "id": "jobhunt-20261013-024945-software-engineer-software-developer-bac",
    "kind": "jobhunt",
    "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, developer, SWE, SDE, engineer",
@@ -1665,17 +1678,6 @@
     "worldwide": "",
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261013-024945-software-engineer-software-developer-bac.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261012-112148-naukri-openings-2026-10-12-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-12 run 3",
-   "when": "2026-10-12T11:21:48Z",
-   "file": "data/naukri/naukri-20261012-112148-naukri-openings-2026-10-12-run-3.html",
-   "bytes": 135918,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261012-112148-naukri-openings-2026-10-12-run-3.jobs.json"
    }
   },
   {
