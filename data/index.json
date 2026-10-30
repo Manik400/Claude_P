@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-30T11:27:22Z",
+ "updated": "2026-10-30T20:26:36Z",
  "items": [
   {
    "id": "careers-20261030-112722-engineer-senior-software-developer-sse-s",
@@ -1843,18 +1843,6 @@
    "bytes": 803858,
    "meta": {
     "jobs_file": "data/jobhunt/jobhunt-20261001-055039-2026-10-01-0342-software-developer.jobs.json"
-   }
-  },
-  {
-   "id": "jobhunt-20260930-122733-software-engineer-developer",
-   "kind": "jobhunt",
-   "title": "software, engineer, developer",
-   "when": "2026-09-30T12:27:33Z",
-   "file": "data/jobhunt/jobhunt-20260930-122733-software-engineer-developer.html",
-   "bytes": 260071,
-   "meta": {
-    "jobs_file": "data/jobhunt/jobhunt-20260930-122733-software-engineer-developer.jobs.json",
-    "jobs": "62"
    }
   }
  ],
