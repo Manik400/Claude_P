@@ -1,0 +1,521 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function () {
+  try {
+    var r = document.documentElement, t = localStorage.getItem('jh:theme') || 'auto';
+    if (t === 'light' || t === 'dark') r.setAttribute('data-theme', t);
+    if (localStorage.getItem('jh:ui') === 'v2') {
+      r.setAttribute('data-ui', 'v2');
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'; document.head.appendChild(l);
+    }
+  } catch (e) { /* private window: follow the device */ }
+})();</script>
+<title>Job Hunt · engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE · 31 Oct 2026</title>
+<style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
+  :root {
+    --bg: #f6f7f9; --card: #ffffff; --ink: #1c2128; --muted: #5f6b7a; --line: #e3e7ec; --soft: #eef1f5;
+    --accent: #2b6cb0; --accent-ink: #ffffff; --accent-soft: #e6f0fb;
+    --good: #1f8a4c; --good-soft: #e3f5ea; --warn: #b7791f; --warn-soft: #fbf1dc; --bad: #c53030; --bad-soft: #fde8e8;
+    --grey-soft: #eceff3; --shadow: 0 1px 2px rgba(16,24,40,.06), 0 1px 3px rgba(16,24,40,.08);
+    --radius: 12px; --font: -apple-system, "Segoe UI", Roboto, Helvetica, Arial, "Noto Sans", sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0f1419; --card: #171d25; --ink: #e6e9ee; --muted: #9aa5b4; --line: #2a333f; --soft: #1f2732;
+      --accent: #6ea8ff; --accent-ink: #0b1220; --accent-soft: #1c2c44;
+      --good: #4cc38a; --good-soft: #14301f; --warn: #e0b04a; --warn-soft: #362a10; --bad: #f08a8a; --bad-soft: #3a1717;
+      --grey-soft: #232c37; --shadow: 0 1px 2px rgba(0,0,0,.4);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0f1419; --card: #171d25; --ink: #e6e9ee; --muted: #9aa5b4; --line: #2a333f; --soft: #1f2732;
+    --accent: #6ea8ff; --accent-ink: #0b1220; --accent-soft: #1c2c44;
+    --good: #4cc38a; --good-soft: #14301f; --warn: #e0b04a; --warn-soft: #362a10; --bad: #f08a8a; --bad-soft: #3a1717;
+    --grey-soft: #232c37; --shadow: 0 1px 2px rgba(0,0,0,.4);
+  }
+  * { box-sizing: border-box; }
+  html, body { margin: 0; background: var(--bg); color: var(--ink); font: 0.875rem/1.45 var(--font); }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  button { font: inherit; cursor: pointer; }
+  .wrap { max-width: none; margin: 0; padding: 0 clamp(14px, 2.2vw, 36px); }  /* fill the screen - no empty side margins */
+
+  header.top { border-bottom: 1px solid var(--line); background: var(--card); }
+  header.top .wrap { display: flex; flex-wrap: wrap; align-items: baseline; gap: 8px 20px; padding: 14px 16px; }
+  .brand { font-size: 1.25rem; font-weight: 700; letter-spacing: .2px; }
+  .brand span { color: var(--accent); }
+  .criteria { color: var(--muted); }
+  .criteria b { color: var(--ink); font-weight: 600; }
+  .spacer { flex: 1; }
+  .stat { color: var(--muted); font-size: 0.8125rem; }
+  .stat b { color: var(--ink); }
+  .iconbtn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 4px 10px; font-size: 0.8125rem; }
+  .iconbtn:hover { background: var(--soft); }
+
+  nav.tabs { position: sticky; top: 0; z-index: 5; background: var(--bg); border-bottom: 1px solid var(--line); }
+  nav.tabs .wrap { display: flex; gap: 6px; overflow-x: auto; padding: 10px 16px; scrollbar-width: thin; }
+  .tab { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 999px; padding: 6px 12px; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .tab .n { background: var(--soft); border-radius: 999px; padding: 0 8px; font-size: 0.75rem; color: var(--muted); }
+  .tab.active { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); }
+  .tab.active .n { background: rgba(255,255,255,.25); color: inherit; }
+
+  section.controls .wrap { display: flex; flex-wrap: wrap; gap: 8px 12px; align-items: center; padding: 12px 16px; }
+  .controls input[type=search] { flex: 1 1 260px; min-width: 200px; padding: 8px 10px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+  .controls select { padding: 7px 8px; border: 1px solid var(--line); border-radius: 8px; background: var(--card); color: var(--ink); }
+  .chips { display: inline-flex; gap: 6px; flex-wrap: wrap; }
+  .chip { border: 1px solid var(--line); background: var(--card); color: var(--muted); border-radius: 999px; padding: 4px 10px; font-size: 0.75rem; }
+  .chip.on { background: var(--accent-soft); color: var(--accent); border-color: transparent; }
+  .range { display: inline-flex; align-items: center; gap: 6px; color: var(--muted); font-size: 0.8125rem; }
+  .range input { width: 120px; }
+  .fgrp[data-grp="report.search"] { flex: 1 1 280px; }
+  .fgrp[data-grp="report.search"] > .fbody { flex: 1 1 auto; min-width: 0; }
+  .fgrp[data-grp="report.search"] input[type=search] { width: 100%; min-width: 0; }
+  details.srcs { margin: 0 0 6px; }
+  details.srcs summary { cursor: pointer; color: var(--muted); font-size: 0.8125rem; }
+  .srcgrid { display: grid; grid-template-columns: repeat(auto-fill, minmax(230px, 1fr)); gap: 6px 14px; padding: 8px 0 4px; font-size: 0.7812rem; }
+  .srcgrid .ok { color: var(--good); } .srcgrid .blocked { color: var(--bad); } .srcgrid .error { color: var(--warn); }
+  .srcgrid .cc { color: var(--muted); }
+  .direct { color: var(--muted); font-size: 0.8125rem; padding: 4px 0 10px; }
+  .direct a { margin-right: 10px; white-space: nowrap; }
+
+  main .wrap { padding: 6px 16px 40px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(430px, 1fr)); gap: 12px; }
+  @media (max-width: 520px) { .grid { grid-template-columns: 1fr; } }
+  /* grid items default to min-width:auto, so one long title or URL stretched a card past the screen */
+  .grid > * { min-width: 0; } .card { overflow-wrap: anywhere; }
+  .card { background: var(--card); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 14px 16px; display: flex; flex-direction: column; gap: 8px; position: relative; }
+  .card.applied { border-color: var(--good); }
+  .card.saved { border-left: 4px solid var(--warn); }
+  .card.hidden-job { opacity: .55; }
+  .card .head { display: flex; gap: 12px; align-items: flex-start; }
+  .card .title { font-size: 1rem; font-weight: 650; line-height: 1.3; }
+  .card .title a { color: var(--ink); }
+  .card .sub { color: var(--muted); font-size: 0.8125rem; margin-top: 2px; }
+  .card .sub b { color: var(--ink); font-weight: 600; }
+  .ring { flex: 0 0 auto; width: 52px; height: 52px; position: relative; }
+  .ring svg { width: 52px; height: 52px; transform: rotate(-90deg); }
+  .ring .v { position: absolute; inset: 0; display: grid; place-items: center; font-size: 0.875rem; font-weight: 700; }
+  .ring .lbl { position: absolute; left: 0; right: 0; bottom: -14px; text-align: center; font-size: 0.625rem; color: var(--muted); }
+  .badges { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+  .b { font-size: 0.7188rem; border-radius: 6px; padding: 2px 7px; background: var(--grey-soft); color: var(--muted); white-space: nowrap; }
+  .b.src { background: var(--accent-soft); color: var(--accent); font-weight: 600; }
+  .b.fit-fit { background: var(--good-soft); color: var(--good); font-weight: 600; }
+  .b.fit-stretch { background: var(--warn-soft); color: var(--warn); font-weight: 600; }
+  .b.fit-over { background: var(--soft); color: var(--muted); }
+  .b.fit-no { background: var(--bad-soft); color: var(--bad); }
+  .b.fit-unknown { background: var(--grey-soft); color: var(--muted); }
+  .b.remote { background: var(--soft); color: var(--ink); }
+  .skills { display: flex; flex-wrap: wrap; gap: 5px; }
+  .sk { font-size: 0.7188rem; border-radius: 999px; padding: 2px 8px; border: 1px solid var(--line); color: var(--muted); }
+  .sk.hit { border-color: transparent; background: var(--good-soft); color: var(--good); }
+  .sk.miss { border-color: transparent; background: var(--bad-soft); color: var(--bad); }
+  .snip { color: var(--muted); font-size: 0.8125rem; display: -webkit-box; -webkit-line-clamp: 3; -webkit-box-orient: vertical; overflow: hidden; }
+  .ai { font-size: 0.8125rem; line-height: 1.45; padding: 6px 10px; border-left: 3px solid var(--accent, #3b82f6); background: color-mix(in srgb, var(--accent, #3b82f6) 8%, transparent); border-radius: 0 6px 6px 0; }
+  .ai b { font-weight: 600; }
+  .card.open .snip { display: block; -webkit-line-clamp: unset; }  /* grows with the page: no scroll inside the scroll */
+  .more { color: var(--accent); font-size: 0.75rem; background: none; border: 0; padding: 0; align-self: flex-start; }
+  .actions { display: flex; gap: 8px; margin-top: auto; padding-top: 4px; flex-wrap: wrap; align-items: center; }
+  .btn { border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; padding: 7px 12px; font-size: 0.8125rem; }
+  .btn:hover { background: var(--soft); text-decoration: none; }
+  .btn.primary { background: var(--accent); color: var(--accent-ink); border-color: var(--accent); font-weight: 600; }
+  .btn.primary:hover { filter: brightness(1.08); }
+  .btn.on { background: var(--good-soft); color: var(--good); border-color: transparent; }
+  .btn.warn.on { background: var(--warn-soft); color: var(--warn); }
+  .empty { color: var(--muted); padding: 40px 0; text-align: center; }
+  .sect { grid-column: 1 / -1; font-size: 0.75rem; color: var(--muted); text-transform: uppercase; letter-spacing: .07em; font-weight: 600; margin: 18px 2px 0; }
+  .btn.icon { margin-left: auto; padding: 7px 10px; }
+  footer .wrap { color: var(--muted); font-size: 0.75rem; padding: 20px 16px 40px; border-top: 1px solid var(--line); }
+  @media print { nav.tabs, section.controls, .actions, .iconbtn { display: none !important; } .card { break-inside: avoid; box-shadow: none; } }
+</style>
+</head>
+<body>
+<header class="top"><div class="wrap">
+  <div class="brand">Job<span>Hunt</span></div>
+  <div class="criteria" id="criteria"></div>
+  <div class="spacer"></div>
+  <div class="stat" id="stats"></div>
+  <button class="iconbtn" id="theme" title="Toggle light/dark">◐</button>
+</div></header>
+
+<nav class="tabs"><div class="wrap" id="tabs"></div></nav>
+
+<section class="controls"><div class="wrap">
+  <span class="fgrp" data-grp="report.search"><span class="flabel">Search</span><span class="fbody">
+    <input type="search" id="q" placeholder="Search title, company, skills…">
+  </span></span>
+  <span class="fgrp" data-grp="report.score"><span class="flabel">Score</span><span class="fbody">
+    <span class="range" id="scoreRange"><label for="minScore">Min score</label><input type="range" id="minScore" min="0" max="100" step="5" value="0"><b id="minScoreV">0</b></span>
+  </span></span>
+  <span class="fgrp" data-grp="report.fit"><span class="flabel">Experience fit</span><span class="fbody">
+    <span class="chips" id="fitChips"></span>
+  </span></span>
+  <span class="fgrp" data-grp="report.remote"><span class="flabel">Remote</span><span class="fbody">
+    <select id="remote"><option value="any">Remote: any</option><option value="only">Remote only</option><option value="no">On-site / hybrid only</option></select>
+  </span></span>
+  <span class="fgrp" data-grp="report.sort"><span class="flabel">Sort</span><span class="fbody">
+    <select id="sort"></select>
+  </span></span>
+  <span class="fgrp" data-grp="report.source"><span class="flabel">Source</span><span class="fbody">
+    <select id="srcSel"><option value="">All sources</option></select>
+  </span></span>
+  <span class="fgrp" data-grp="report.via"><span class="flabel">Search</span><span class="fbody">
+    <select id="viaSel" title="Apify = postings read by the rented Apify scrapers (Naukri, Indeed, LinkedIn). The worldwide pass is one LinkedIn search of the whole world per keyword.">
+      <option value="">All searches</option><option value="apify">Apify only</option><option value="world">Apify worldwide pass</option><option value="direct">Without Apify</option>
+    </select>
+  </span></span>
+  <span class="fgrp" data-grp="report.show"><span class="flabel">Show</span><span class="fbody">
+    <span class="chips">
+      <button class="chip" id="onlySaved">★ Saved</button>
+      <button class="chip" id="hideApplied">Hide applied</button>
+      <button class="chip" id="showHidden">Show removed</button>
+      <button class="chip" id="titleOnly">Title match only</button>
+      <button class="chip" id="mncOnly" title="Big tech, product MNCs, unicorns, finance / HFT, MNC engineering centres (job-hunt/assets/mnc.txt)">MNC only</button>
+      <button class="chip" id="highPay" title="Pay of 10 LPA or more - stated by the posting, or estimated (typical for the company / looked up)">≥ 10 LPA</button>
+    </span>
+  </span></span>
+  <button class="iconbtn" id="csv">Export CSV</button>
+  <button class="iconbtn" id="reset">Reset</button>
+</div></section>
+
+<main><div class="wrap">
+  <details class="srcs" id="srcPanel"><summary id="srcSummary">Sources</summary><div class="srcgrid" id="srcGrid"></div></details>
+  <div class="direct" id="direct"></div>
+  <div class="grid" id="list"></div>
+</div></main>
+
+<footer><div class="wrap" id="foot"></div></footer>
+
+<script id="data" type="application/json">{"meta": {"run_id": "jobhunt-run", "version": "1.0.0", "roles": ["engineer", "senior software developer", "SSE", "SDE II", "SDE 2", "senior software engineer", "software engineer II", "software engineer 2", "software engineer", "software developer", "backend engineer", "backend developer", "full stack engineer", "full stack developer", "frontend engineer", "frontend developer", "java developer", "SWE", "SDE"], "experience_label": "0-3", "experience_years": 1.5, "countries": ["IN"], "remote": false, "worldwide": false, "days": 2, "hours": null, "window_hours": 48.0, "strict_undated": false, "dates_checked": 80, "dates_dropped": 68, "min_salary_inr": 1200000, "salary_dropped": 5, "platforms": ["linkedin", "seek", "xing", "arbeitnow", "duunitori", "tecnoempleo", "infojobs", "wellfound", "tokyodev", "japandev", "daijob", "wantedly", "jobthai", "themuse", "landingjobs", "relocateme", "instahyre", "adzuna", "jooble", "jsearch", "firecrawl", "apify-naukri"], "platforms_asked": [], "fit_mode": "strict", "reloc_mode": "any", "reloc_dropped": 0, "generated": "2026-10-31 06:04", "seconds": 253.3, "requests": 301, "fallback_queries": 76, "resume_name": "resume.txt", "resume_path": "/home/runner/work/_temp/resume.txt", "resume_skills": ["postgresql", "kafka", "rest api", "timescaledb", "react", "docker", "github actions", "ffmpeg", "java", "aws", "c#", "sql", ".net", "angular", "webrtc", "vector databases", "s3", "grafana", "prometheus", "clean architecture", "api design", "code review", "anpr", "video analytics", "javascript", "typescript", "html", "css", "spring", "hibernate", "jpa", "entity framework", "microservices", "distributed systems", "rabbitmq", "devops", "ec2", "rds", "ci/cd", "linux", "observability", "system design", "design patterns", "performance optimization", "agile", "scrum", "unit testing", "english", "hindi", "german", "face recognition", "qa", "h.264", "websockets", "concurrency", "postman", "test automation", "data structures", "c"], "semantic": true, "contacts": {"companies": 6, "providers": ["hunter", "apollo"]}}, "countries": [{"code": "IN", "name": "India", "flag": "🇮🇳", "count": 6, "links": [{"name": "Indeed", "url": "https://in.indeed.com/jobs?q=engineer&fromage=30&sort=date"}, {"name": "Glassdoor", "url": "https://www.glassdoor.com/Job/jobs.htm?sc.keyword=engineer&locT=N&locKeyword=India"}, {"name": "Naukri", "url": "https://www.naukri.com/engineer-jobs-in-india"}, {"name": "Hirist", "url": "https://www.hirist.tech/search/engineer"}, {"name": "LinkedIn (full search)", "url": "https://www.linkedin.com/jobs/search/?keywords=engineer&location=India&f_TPR=r2592000"}, {"name": "Wellfound", "url": "https://wellfound.com/role/l/engineer/india"}]}], "sources": [{"source": "themuse", "source_name": "The Muse", "country": "IN", "status": "ok", "count": 1, "seconds": 2.0}, {"source": "instahyre", "source_name": "Instahyre", "country": "IN", "status": "ok", "count": 80, "seconds": 2.1}, {"source": "jooble", "source_name": "Jooble", "country": "IN", "status": "blocked", "count": 0, "seconds": 0.3, "error": "403 from jooble.org"}, {"source": "relocateme", "source_name": "Relocate.me", "country": "IN", "status": "ok", "count": 0, "seconds": 4.8}, {"source": "wellfound", "source_name": "Wellfound", "country": "IN", "status": "ok", "count": 67, "seconds": 6.5}, {"source": "jsearch", "source_name": "JSearch (Google Jobs)", "country": "IN", "status": "error", "count": 0, "seconds": 6.1, "error": "HTTPError: 429 Client Error: Too Many Requests for url: https://jsearch.p.rapidapi.com/search-v2?query=engineer+in+India&country=in&date_posted=3days&page=1&num_pages=1", "trace": "                                               ^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/Claude_P/Claude_P/job-hunt/scripts/jobbot/sources/jsearch.py\", line 62, in search\n    data = ctx.http.get_json(API, params=params, headers=headers)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"/home/runner/work/Claude_P/Claude_P/job-hunt/scripts/jobbot/http.py\", line 93, in get_json\n    r.raise_for_status()\n  File \"/opt/hostedtoolcache/Python/3.11.17/x64/lib/python3.11/site-packages/requests/models.py\", line 1167, in raise_for_status\n    raise HTTPError(http_error_msg, response=self)\nrequests.exceptions.HTTPError: 429 Client Error: Too Many Requests for url: https://jsearch.p.rapidapi.com/search-v2?query=engineer+in+India&country=in&date_posted=3days&page=1&num_pages=1\n"}, {"source": "adzuna", "source_name": "Adzuna", "country": "IN", "status": "ok", "count": 100, "seconds": 11.8}, {"source": "linkedin", "source_name": "LinkedIn", "country": "IN", "status": "ok", "count": 67, "seconds": 14.2}, {"source": "apify-naukri", "source_name": "Naukri (Apify)", "country": "IN", "status": "ok", "count": 0, "seconds": 14.5}, {"source": "firecrawl", "source_name": "Web search (Firecrawl)", "country": "IN", "status": "ok", "count": 0, "seconds": 160.7}], "jobs": [{"source": "adzuna", "source_name": "Adzuna", "title": "Junior Engineer / Engineer - Service", "company": "KONE", "url": "https://www.adzuna.in/details/5947101355?utm_medium=api&utm_source=28f9775f", "country": "IN", "location": "Kozhikode, Kerala", "remote": null, "posted": "2026-10-30", "posted_at": "2026-10-30T21:30:53+00:00", "posted_raw": "2026-10-30T21:30:53Z", "salary": "had annual net sales of EUR 11.2 billion. We employ over 60,000 driven professionals in close to", "snippet": "Did you know KONE moves over one billion people every day? In 2025, we had annual net sales of EUR 11.2 billion. We employ over 60,000 driven professionals in close to 70 countries worldwide joined together by a shared vision. As a global leader in the elevator and escalator industry, it is our mission to improve the flow of urban life. Why this role? KONE is embarking upon an exciting growth phas", "description": "Did you know KONE moves over one billion people every day? In 2025, we had annual net sales of EUR 11.2 billion. We employ over 60,000 driven professionals in close to 70 countries worldwide joined together by a shared vision. As a global leader in the elevator and escalator industry, it is our mission to improve the flow of urban life. Why this role? KONE is embarking upon an exciting growth phase and this represents an opportunity for you to join our Calicut team, as a Junior Engineer / Engineer - Service. What will you be doing? Customer relationship management • Accountable for customer satisfaction through quality of service and precise communication • Accountable for equipment safety and performance • Accountable for selling service repairs • Accountable for the sales lead volume, quality, and further processing of sales leads • Accountable for resolving customer service quality complaints • Accountable for resolving customers invoicing complaints related to maintenance operations Service operations • Accountable for the end-users, the sites and the technicians safety • Accountable for the delivery of service according to the service contract requirements, the time limits, the KONE quality standards and the local regulations • Accountable for the control of the field operations costs and CMII • Accountable for callouts and service repairs sales • Responsible for proximity stock content & value • Accountable for managing the third party inspections visits and follow-up actions • Validates the service contract technical terms with the salesperson • Accountable for supporting the maintenance of any foreign equipment coming into the LIS base • Responsible for helping the KC3 solving technician callout assignment conflicts (priorities) • Accountable for solving and closing the open callouts and reacting in case of stopped equipment and/or safety issues • Accountable for reducing the callouts in his area • Accountable for reviewing callout and service repairs invoices that are not automatically invoiced • Accountable for the timely completion of the planned maintenance visits • Accountable for the planned maintenance scheduling and optimized routing • Responsible for performing site audits • Responsible for investigating accidents and following company policy on evidence custody and internal reporting. • Responsible for the control and authorization of overtime People management / Leadership • Accountable for the performance of his assigned technicians • Accountable for maintenance technicians motivation and competence development • Accountable for determining and checking technicians performance objectives • Accountable for communication to his technicians • Accountable for managing technician absences and back-up, and callout technician scheduling • Accountable for technician timesheet validation prior to payroll • Accountable for equipment assignment to technician and technician workload balancing • Responsible of defining the technician capacity need and for the technician hiring and selection process • Accountable for defining, authorizing replacement , managing technician’s tools, vans, phone/PDA and instruments What do we offer? Career progression opportunities within a global organization. Total reward elements that engage and motivate our employees and help us make KONE a great place to work. Comprehensive learning and development programs covering a wide range of professional skills. At KONE, we are focused on creating an innovative and collaborative working culture where we value the contribution of each individual. Employee engagement is a key focus area for us and we encourage participation and the sharing of information and ideas. Sustainability is an integral part of our culture and the daily practice. We follow ethical business practices and we seek to develop a culture of working together where co-workers trust and respect each other and good performance is recognized. In being a great place to work, we are proud to offer a range of experiences and opportunities that will help you to achieve your career and personal goals and enable you to live a healthy and balanced life. Read more on https://kone.com/global/en/careers.html", "skills": [], "employment_type": "['Full Time']", "exp_min": null, "exp_max": null, "seniority": "junior", "fit": "fit", "relevance": 1.0, "score": 64.6, "matched_skills": ["html"], "missing_skills": ["team leadership"], "also_on": [], "query": "engineer", "id": "16e33e174722", "extra": {"details_fetched": true, "salary_stated": true, "salary_inr": 2143232, "salary_lpa": 21.4, "salary_text": "had annual net sales of EUR 11.2 billion. We employ over 60,000 driven professionals in close to", "semantic": 0.174, "score_confidence": "high", "ai_summary": {"why": "Strong Java, Kafka, and AWS experience aligns with KONE's technical requirements for service operations and equipment management.", "gaps": "Lacks direct elevator/escalator service experience and team leadership skills."}, "is_mnc": false, "lpa": 21.4, "lpa_kind": "stated", "lpa_source": "the posting", "pay_bonus": 8.0, "contacts": {"domain": "kone.com", "site": "", "emails": ["bruno.krieger@kone.com", "markus.jylhae@kone.com", "dave.lu@kone.com", "zhi.wang@kone.com", "mari.kursukangas@kone.com", "morris.zhang@kone.com", "mousa.musallam@kone.com", "kalle.johansson@kone.com", "dilip.dubey@kone.com", "michael.nagao@kone.com"], "people": [{"name": "Bruno Krieger", "title": "Chief Executive Officer", "company": "KONE", "location": "", "email": "bruno.krieger@kone.com", "linkedin": "https://www.linkedin.com/in/bruno-krieger-05759aa4", "source": "hunter", "confidence": 98}, {"name": "Markus Jylhä", "title": "Senior Vice President of Human Resources", "company": "KONE", "location": "", "email": "markus.jylhae@kone.com", "linkedin": "https://www.linkedin.com/in/markus-jylhä-82406316", "source": "hunter", "confidence": 95}, {"name": "Dave Lu", "title": "Head of HR", "company": "KONE", "location": "", "email": "dave.lu@kone.com", "linkedin": "https://www.linkedin.com/in/dave-lu-7b672872", "source": "hunter", "confidence": 95}, {"name": "Da Wang", "title": "Director of Engineering", "company": "KONE", "location": "", "email": "zhi.wang@kone.com", "linkedin": "https://www.linkedin.com/in/da-zhi-wang-617a69ba", "source": "hunter", "confidence": 95}, {"name": "Mari Kursukangas", "title": "Head of IT", "company": "KONE", "location": "", "email": "mari.kursukangas@kone.com", "linkedin": "https://www.linkedin.com/in/mari-kursukangas-b5990810", "source": "hunter", "confidence": 95}, {"name": "Zhang Morris", "title": "General Manager", "company": "KONE", "location": "", "email": "morris.zhang@kone.com", "linkedin": "https://www.linkedin.com/in/zhang-morris-28474b70", "source": "hunter", "confidence": 95}, {"name": "Mousa Musallam", "title": "General Manager", "company": "KONE", "location": "", "email": "mousa.musallam@kone.com", "linkedin": "https://www.linkedin.com/in/mousa-musallam-95547462", "source": "hunter", "confidence": 95}, {"name": "Kalle Johansson", "title": "District Manager", "company": "KONE", "location": "", "email": "kalle.johansson@kone.com", "linkedin": "https://www.linkedin.com/in/kalle-johansson-8014b194", "source": "hunter", "confidence": 95}, {"name": "Dilip Dubey", "title": "General Manager", "company": "KONE", "location": "", "email": "dilip.dubey@kone.com", "linkedin": "https://www.linkedin.com/in/dilip-dubey-937054a5", "source": "hunter", "confidence": 95}, {"name": "Michael Nagao", "title": "General Manager", "company": "KONE", "location": "", "email": "michael.nagao@kone.com", "linkedin": "https://www.linkedin.com/in/michael-nagao-03599176", "source": "hunter", "confidence": 95}], "searches": {"Tech recruiters": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22KONE%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Kozhikode%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22KONE%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Kozhikode%22"}, "Engineering managers": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22KONE%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Kozhikode%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22KONE%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Kozhikode%22"}, "Head of Engineering / CTO": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22KONE%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Kozhikode%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22KONE%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Kozhikode%22"}, "Senior engineer": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22KONE%22%20%28%22Senior%20engineer%22%29%20%22Kozhikode%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22KONE%22%20%28%22Senior%20engineer%22%29%20%22Kozhikode%22"}}}}}, {"source": "wellfound", "source_name": "Wellfound", "title": "Technical Support Engineer", "company": "BrainSightAI", "url": "https://wellfound.com/jobs/4903417-technical-support-engineer", "country": "IN", "location": "Bangalore Urban", "remote": false, "posted": "2026-10-29", "posted_at": "2026-10-29T06:37:27+00:00", "posted_raw": "", "salary": "No equity", "snippet": "Location: Bangalore office (JP Nagar) Experience: 1 to 3 years Work pattern: Rotational shifts, six-day week Joining: Immediate requirement About the role BrainSightAI is a health-technology company. We process MRI scans from hospitals into brain network and tract results that neurosurgeons use to plan surgery. Every case passes through a fixed sequence of people: Technical Support, Connectomics T", "description": "Location: Bangalore office (JP Nagar) Experience: 1 to 3 years Work pattern: Rotational shifts, six-day week Joining: Immediate requirement About the role BrainSightAI is a health-technology company. We process MRI scans from hospitals into brain network and tract results that neurosurgeons use to plan surgery. Every case passes through a fixed sequence of people: Technical Support, Connectomics Technologist, Radiologist, Product Deployment and Clinical Application Specialist. The Technical Support Engineer is the first step in that sequence. You check the data and the pipeline output before anyone else reviews it, you fix what fails, and you are the first point of contact when a hospital has a problem. A missed error at this step reaches the radiologist, and in the worst case the neurosurgeon, so accuracy and timing both matter. **What you will do** 1. Case processing and data checks * Receive incoming hospital cases and confirm the scan data is complete and usable. * Run the processing pipeline and act on the automated QA/QC result. Cases that fail come back to you for troubleshooting; cases that pass are posted to the review channel. * Support tumour segmentation when a T1c sequence is present. * After the radiologist's review, prepare the thresholding file with their changes, and apply the decision on which tracts come from the legacy pipeline and which from the current one. * Create the final result folder and hand the case on for delivery. * Record tracts and cases that fail repeatedly, so the pipeline team can investigate. 2. First and second level customer support * Answer questions and requests from hospitals and internal teams by phone, email, chat or in person. * Diagnose and resolve problems with software, data, networks and hardware at the customer site. * Guide users through troubleshooting steps such as checking connections, triggering the required commands, applying a manual bypass, reinstalling software and making results available to the customer. * Explain technical issues clearly and patiently, without jargon, including to frustrated or confused users. 3. Tickets, bugs and documentation * Create and manage support tickets so that every issue is tracked to resolution within agreed timelines. * Log, reproduce and follow up on bugs with the engineering and ML teams. * Record problems and solutions in the knowledge base, and escalate complex or unresolved issues to the right team. * Manage customer complaints and plan your workload so that no case waits without an owner. 4. Coordination and compliance * Turn comments from the neuro-anatomy reviewer and the radiologist into correct, specific actions on the case. * Follow channel and template discipline, keep file versions clear, and close the loop on every handoff. * Follow company policies and the compliance requirements that apply to us, including ISO and FDA requirements and HIPAA-level handling of patient data. * Collect customer feedback and share what you learn with the team to improve the support process. Shifts, travel and relocation * Rotational shifts as per roster. Current shifts are 4:00 AM to 12:00 PM, 2:00 PM to 11:00 PM, 11:00 PM - 7:00 AM and timings may change as coverage needs grow. * Six-day work week with one rotational weekly off. * Weekend and public holiday duty is shared across the team by roster, because many elective surgeries are scheduled on holidays. * Willingness to travel to hospitals when required. * Willingness to relocate to the Bangalore office. Who you are * 1 to 3 years of experience in technical support, application support or a similar role. Experience supporting hospitals, imaging or healthcare software is a strong advantage. * Bachelor's degree in biomedical engineering, computer science, electronics and communication, AI/ML, medical imaging technology or a related field. * Clear and courteous communication with customers and with colleagues. * Structured troubleshooting and problem solving, with the habit of finding the root cause. * Coding background in Python. Java is preferred. * Quick to learn and quick to implement, and comfortable working independently. * Good planning, and a high sense of responsibility and accountability for every case you touch.", "skills": [], "employment_type": "full-time", "exp_min": 1, "exp_max": null, "seniority": "", "fit": "fit", "relevance": 1.0, "score": 45.5, "matched_skills": ["qa", "java"], "missing_skills": ["machine learning", "artificial intelligence", "python"], "also_on": [], "query": "engineer", "id": "wf4903417", "extra": {"company_size": "SIZE_51_200", "posted_source": "page:json-ld", "posted_checked": "json-ld", "salary_stated": false, "semantic": 0.335, "score_confidence": "high", "ai_summary": {"why": "Candidate has strong Java and Kafka experience, aligning with the technical support role's need for data processing and pipeline troubleshooting.", "gaps": "Lacks specific machine learning and AI skills required for MRI scan analysis and tumor segmentation tasks."}, "is_mnc": false, "contacts": {"domain": "brainsightai.com", "site": "", "emails": ["simran.rana@brainsightai.com", "rimjhim.agrawal@brainsightai.com", "laina.emmanuel@brainsightai.com", "rucha.sangewar@brainsightai.com", "naveen.ramaiah@brainsightai.com", "hrishikesh.rane@brainsightai.com", "vidita.gode@brainsightai.com", "isha.mathur@brainsightai.com", "somesh.chopdekar@brainsightai.com", "sri.rajan@brainsightai.com"], "people": [{"name": "Simran Rana", "title": "Head of Human Resources", "company": "BrainSightAI", "location": "", "email": "simran.rana@brainsightai.com", "linkedin": "https://www.linkedin.com/in/simranrana", "source": "hunter", "confidence": 99}, {"name": "Rimjhim Agrawal", "title": "Co-founder and Chief Technology Officer", "company": "BrainSightAI", "location": "", "email": "rimjhim.agrawal@brainsightai.com", "linkedin": "https://www.linkedin.com/in/rimjhim-agrawal-ph-d-70530137", "source": "hunter", "confidence": 97}, {"name": "Laina Emmanuel", "title": "CEO", "company": "BrainSightAI", "location": "", "email": "laina.emmanuel@brainsightai.com", "linkedin": "https://www.linkedin.com/in/laina-emmanuel-8a873b33", "source": "hunter", "confidence": 97}, {"name": "Rucha Sangewar", "title": "Content Architect", "company": "BrainSightAI", "location": "", "email": "rucha.sangewar@brainsightai.com", "linkedin": "https://www.linkedin.com/in/ruchasangewar", "source": "hunter", "confidence": 95}, {"name": "Naveen Ramaiah", "title": "Engineering", "company": "BrainSightAI", "location": "", "email": "naveen.ramaiah@brainsightai.com", "linkedin": "https://www.linkedin.com/in/naveen-ramaiah-5b0705", "source": "hunter", "confidence": 97}, {"name": "Hrishikesh Rane", "title": "Cyber Security Intern", "company": "BrainSightAI", "location": "", "email": "hrishikesh.rane@brainsightai.com", "linkedin": "https://www.linkedin.com/in/hrishikeshdrane", "source": "hunter", "confidence": 97}, {"name": "Vidita Gode", "title": "Applications Specialist", "company": "BrainSightAI", "location": "", "email": "vidita.gode@brainsightai.com", "linkedin": "https://www.linkedin.com/in/vidita-gode-8a101b311", "source": "hunter", "confidence": 97}, {"name": "Isha Mathur", "title": "Modeling Specialist", "company": "BrainSightAI", "location": "", "email": "isha.mathur@brainsightai.com", "linkedin": "https://www.linkedin.com/in/isha-mathur-b8a3b6183", "source": "hunter", "confidence": 97}, {"name": "Somesh Chopdekar", "title": "Full Stack Engineer", "company": "BrainSightAI", "location": "", "email": "somesh.chopdekar@brainsightai.com", "linkedin": "https://www.linkedin.com/in/somesh-chopdekar-274a39186", "source": "hunter", "confidence": 96}, {"name": "Sri Rajan", "title": "Full Stack Engineer", "company": "BrainSightAI", "location": "", "email": "sri.rajan@brainsightai.com", "linkedin": "https://www.linkedin.com/in/sri-rajan-bb1442215", "source": "hunter", "confidence": 95}], "searches": {"Tech recruiters": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BrainSightAI%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BrainSightAI%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"}, "Engineering managers": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BrainSightAI%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BrainSightAI%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"}, "Head of Engineering / CTO": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BrainSightAI%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BrainSightAI%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"}, "Senior engineer": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BrainSightAI%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BrainSightAI%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"}}}}}, {"source": "adzuna", "source_name": "Adzuna", "title": "Staff Engineer", "company": "Nagarro", "url": "https://www.adzuna.in/details/5947323937?utm_medium=api&utm_source=28f9775f", "country": "IN", "location": "Mumbai, Maharashtra", "remote": null, "posted": "2026-10-31", "posted_at": "2026-10-31T06:41:18+00:00", "posted_raw": "2026-10-31T06:41:18Z", "salary": "", "snippet": "Job Description Requirements Experience : 5.5years Experience in software development, AI/ML engineering, or applied AI, including at least 1–2 years of hands-on experience building production-grade LLM applications. Expert-level proficiency in React.js for developing scalable, responsive, and reusable frontend applications. Strong hands-on experience with Python for AI development, automation, ba", "description": "Job Description Requirements Experience : 5.5+years Experience in software development, AI/ML engineering, or applied AI, including at least 1–2 years of hands-on experience building production-grade LLM applications. Expert-level proficiency in React.js for developing scalable, responsive, and reusable frontend applications. Strong hands-on experience with Python for AI development, automation, backend services, and API integration. Working knowledge of Java for backend services, REST API development, and enterprise application integration. Practical experience with LLM providers and APIs, including OpenAI, Anthropic, Azure OpenAI, Vertex AI, or equivalent platforms. Hands-on experience with prompt engineering, system prompts, structured outputs, JSON schemas, function calling, and tool integration. Strong understanding of LLM application development, AI assistants, agentic workflows, and enterprise AI integration. Experience with at least one LLM orchestration framework such as LangChain, LlamaIndex, LangGraph, Haystack, or equivalent. Hands-on experience implementing RAG pipelines, including embeddings, document chunking, retrieval tuning, grounding, and vector database integration. Experience with at least one vector database or search platform, such as pgvector, Pinecone, Weaviate, Chroma, FAISS, Azure AI Search, or Vertex AI Vector Search. Working knowledge of LLM evaluation methodologies, including evaluation datasets, regression testing, and frameworks such as RAGAS, DeepEval, Promptfoo, or LangSmith. Strong understanding of AI application testing, debugging, observability, performance optimization, and cost management. Basic frontend development knowledge of HTML, CSS, and JavaScript, along with backend API development using FastAPI, Flask, or equivalent frameworks. Familiarity with asynchronous programming, Python packaging, testing frameworks, and application development best practices. Knowledge of Shell scripting, Linux fundamentals, Git, CI/CD pipelines, and Docker. Exposure to at least one cloud platform such as Microsoft Azure, AWS, or Google Cloud Platform. Basic understanding of Infrastructure Security concepts, including vulnerabilities, patch management, security logs, IAM, and access controls. Awareness of responsible AI and security practices, including prompt injection, data leakage, hallucinations, bias, and content filtering. Familiarity with SIEM platforms such as Microsoft Sentinel or Splunk, including the ability to write KQL or SPL queries for AI-assisted security detection and investigation. Basic understanding of Cloud Security Posture Management (CSPM) and cloud security controls such as Network Security Groups (NSGs), Web Application Firewalls (WAF), IAM policies, and conditional access. Understanding of Infrastructure as Code (IaC) tools such as Terraform or Bicep for cloud-native AI service deployment and configuration. Exposure to data privacy and regulatory requirements applicable in India, including the DPDP Act and RBI IT Risk Framework, particularly in handling personal and sensitive data within AI systems. Familiarity with vulnerability management concepts, including CVE, CVSS, EPSS scoring, CISA KEV catalogue, and patch prioritization workflows. Strong analytical and problem-solving skills, with the ability to debug LLM behavior across prompts, retrieval pipelines, and tool integrations. Ability to interpret evaluation metrics, application logs, and security telemetry to improve AI quality, reliability, and operational efficiency. Demonstrated ownership of AI solutions from prototype to production, including evaluation, observability, testing, and documentation. Strong learning agility and adaptability to evolving AI models, frameworks, tools, and development practices. Excellent written and verbal communication skills, with the ability to collaborate effectively across technical and business teams. Certifications such as CISSP, Associate of ISC², CEH, Google Professional Machine Learning Engineer, AWS Certified Machine Learning – Specialty, Microsoft Azure Administrator Associate (AZ-104), CCSP, or Google Associate Cloud Engineer are preferred. Responsibilities Design, develop, and deploy LLM-powered features, AI assistants, and intelligent automation solutions to support Infrastructure Security (InfraSec) workflows. Build AI-driven capabilities for vulnerability summarization, log triage, remediation recommendations, security policy reviews, configuration assessments, and natural-language querying of security data. Develop responsive and scalable frontend applications using React.js, JavaScript, HTML, and CSS for AI-powered internal tools and dashboards. Build and maintain backend AI services and APIs using Python, with Java-based backend development wherever required. Integrate LLM providers such as OpenAI, Anthropic, Azure OpenAI, Vertex AI, and open-source models into enterprise applications. Design, develop, and optimize prompt templates, system prompts, structured-output schemas, and function-calling workflows. Implement end-to-end Retrieval-Augmented Generation (RAG) pipelines, including document chunking, embeddings, vector store integration, retrieval optimization, and response grounding. Develop AI agents and tool-calling workflows using frameworks such as LangChain, LlamaIndex, LangGraph, Haystack, or equivalent technologies. Build evaluation frameworks, golden datasets, and regression test suites to measure LLM accuracy, hallucination rates, response quality, latency, and cost. Perform prompt engineering and continuously improve AI outputs through offline and online evaluations. Implement responsible AI and security controls, including prompt-injection protection, PII redaction, output filtering, rate limiting, audit logging, and access management. Integrate AI services with vulnerability scanners, ticketing platforms, SIEM solutions, monitoring tools, and other security infrastructure to enable automated security workflows. Automate AI/ML operations activities such as data preparation, embedding refresh, evaluation runs, health checks, and monitoring using Python and Shell scripting. Support application testing, debugging, performance tuning, and cost optimization to ensure reliable and scalable AI solutions. Maintain technical documentation, source code repositories, deployment artifacts, and operational procedures. Collaborate with security, infrastructure, engineering, DevOps, and data teams to translate business requirements into practical AI-driven solutions. Apply infrastructure security principles and cloud security controls while designing and deploying AI services. Continuously evaluate emerging LLM models, frameworks, prompting techniques, and evaluation methodologies to improve solution quality and security posture.", "skills": [], "employment_type": "['Full Time']", "exp_min": 1.0, "exp_max": 2.0, "seniority": "lead", "fit": "fit", "relevance": 1.0, "score": 40.1, "matched_skills": ["vector databases", "react", "java", "observability", "performance optimization", "html", "css", "javascript", "aws", "rest api", "linux", "ci/cd"], "missing_skills": ["artificial intelligence", "llm", "machine learning", "python", "azure", "openai", "vertex ai", "anthropic"], "also_on": [], "query": "engineer", "id": "c04a48e4e0ba", "extra": {"details_fetched": true, "salary_stated": false, "semantic": 0.4, "score_confidence": "high", "ai_summary": {"why": "Candidate has strong Java, React, and AWS experience with Kafka and vector databases, aligning with core technical requirements.", "gaps": "Lacks hands-on AI/ML experience, Python proficiency, and LLM orchestration framework knowledge."}, "is_mnc": true, "mnc_tier": "itservices", "mnc_name": "Nagarro", "lpa": 7.5, "lpa_kind": "typical", "lpa_source": "typical for Nagarro (IT services MNC, 0-2 yrs)", "lpa_url": "https://www.nagarro.com/en/careers", "lpa_lo": 5.0, "lpa_hi": 10.0, "pay_bonus": 1.0, "contacts": {"domain": "nagarro.com", "site": "", "emails": ["pr@nagarro.com", "vera.reichlin-meldegg@nagarro.com", "mohit.kaushal@nagarro.com", "manmohan.gupta@nagarro.com", "shruti.tandon@nagarro.com", "vaibhav.gadodia@nagarro.com", "bhawana.sethi@nagarro.com", "ritu.tandon@nagarro.com", "nidhee.pathak@nagarro.com", "michael.muehl@nagarro.com"], "people": [{"name": "Phaneendra Rao", "title": "Ecommerce Director", "company": "Nagarro", "location": "", "email": "pr@nagarro.com", "linkedin": "https://www.linkedin.com/in/phaneendra-rao-488620170", "source": "hunter", "confidence": 99}, {"name": "Vera Lange", "title": "Managing Director", "company": "Nagarro", "location": "", "email": "vera.reichlin-meldegg@nagarro.com", "linkedin": "https://www.linkedin.com/in/vera-lange", "source": "hunter", "confidence": 99}, {"name": "Mohit Kaushal", "title": "Director of Technology", "company": "Nagarro", "location": "", "email": "mohit.kaushal@nagarro.com", "linkedin": "https://www.linkedin.com/in/mohitkaushal", "source": "hunter", "confidence": 98}, {"name": "Manmohan Gupta", "title": "Co-Founder", "company": "Nagarro", "location": "", "email": "manmohan.gupta@nagarro.com", "linkedin": "", "source": "hunter", "confidence": 98}, {"name": "Shruti Tandon", "title": "Director of Human Resources", "company": "Nagarro", "location": "", "email": "shruti.tandon@nagarro.com", "linkedin": "https://www.linkedin.com/in/meetshruti", "source": "hunter", "confidence": 96}, {"name": "Vaibhav Gadodia", "title": "Chief Technology Officer", "company": "Nagarro", "location": "", "email": "vaibhav.gadodia@nagarro.com", "linkedin": "https://www.linkedin.com/in/vaibhav-gadodia", "source": "hunter", "confidence": 95}, {"name": "Bhawana Sethi", "title": "IT Director", "company": "Nagarro", "location": "", "email": "bhawana.sethi@nagarro.com", "linkedin": "https://www.linkedin.com/in/bhawanasethi", "source": "hunter", "confidence": 95}, {"name": "Ritu Tandon", "title": "Director", "company": "Nagarro", "location": "", "email": "ritu.tandon@nagarro.com", "linkedin": "https://www.linkedin.com/in/ritu-tandon-b7a7108", "source": "hunter", "confidence": 95}, {"name": "Nidhee Pathak", "title": "Managing Director", "company": "Nagarro", "location": "", "email": "nidhee.pathak@nagarro.com", "linkedin": "https://www.linkedin.com/in/nidhee-pathak", "source": "hunter", "confidence": 95}, {"name": "Michael Mühl", "title": "Application Manager", "company": "Nagarro", "location": "", "email": "michael.muehl@nagarro.com", "linkedin": "https://www.linkedin.com/in/michael-mühl-62b0b720", "source": "hunter", "confidence": 94}], "searches": {"Tech recruiters": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarro%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mumbai%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarro%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mumbai%22"}, "Engineering managers": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarro%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mumbai%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarro%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mumbai%22"}, "Head of Engineering / CTO": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarro%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mumbai%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarro%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mumbai%22"}, "Senior engineer": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nagarro%22%20%28%22Senior%20engineer%22%29%20%22Mumbai%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nagarro%22%20%28%22Senior%20engineer%22%29%20%22Mumbai%22"}}}}}, {"source": "wellfound", "source_name": "Wellfound", "title": "AI Software Engineer", "company": "Valiance Solutions", "url": "https://wellfound.com/jobs/248309-ai-software-engineer", "country": "IN", "location": "Bangalore Urban", "remote": false, "posted": null, "posted_at": null, "posted_raw": "", "salary": "₹12L – ₹20L • No equity", "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni", "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.", "skills": [], "employment_type": "full-time", "exp_min": 0, "exp_max": null, "seniority": "", "fit": "fit", "relevance": 1.0, "score": 39.4, "matched_skills": [], "missing_skills": ["artificial intelligence", "machine learning", "generative ai", "azure", "llm", "openai", "python", "data analysis"], "also_on": [], "query": "software-engineer", "id": "wf248309", "extra": {"company_size": "SIZE_51_200", "salary_stated": true, "salary_inr": 2000000, "salary_lpa": 20.0, "salary_text": "₹12L – ₹20L • No equity", "semantic": 0.421, "score_confidence": "high", "ai_summary": {"why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL", "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."}, "is_mnc": false, "lpa": 20.0, "lpa_kind": "stated", "lpa_source": "the posting", "pay_bonus": 8.0, "contacts": {"domain": "valiancesolutions.com", "site": "", "emails": ["vikas.kamra@valiancesolutions.com", "anindya.palit@valiancesolutions.com", "kavita.yadav@valiancesolutions.com", "kaberi.s@valiancesolutions.com", "ankit.chauhan@valiancesolutions.com", "chitrank.tyagi@valiancesolutions.com", "vivek.yadav@valiancesolutions.com", "riddhi.sharma@valiancesolutions.com", "priya.chowdhary@valiancesolutions.com", "aman.kumar@valiancesolutions.com"], "people": [{"name": "Vikas Kamra", "title": "CEO", "company": "Valiance Solutions", "location": "", "email": "vikas.kamra@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/vikaskamra", "source": "hunter", "confidence": 99}, {"name": "Anindya Palit", "title": "Chief Strategy Officer", "company": "Valiance Solutions", "location": "", "email": "anindya.palit@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/anindyapalit", "source": "hunter", "confidence": 96}, {"name": "Kavita Yadav", "title": "Vice President of Human Resources", "company": "Valiance Solutions", "location": "", "email": "kavita.yadav@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923", "source": "hunter", "confidence": 95}, {"name": "Kaberi S", "title": "Senior Vice President of Technology", "company": "Valiance Solutions", "location": "", "email": "kaberi.s@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153", "source": "hunter", "confidence": 95}, {"name": "Ankit Chauhan", "title": "Site Manager", "company": "Valiance Solutions", "location": "", "email": "ankit.chauhan@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200", "source": "hunter", "confidence": 95}, {"name": "Chitrank Tyagi", "title": "Technical Architect", "company": "Valiance Solutions", "location": "", "email": "chitrank.tyagi@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/chitrank-tyagi-b08030165", "source": "hunter", "confidence": 99}, {"name": "Vivek Yadav", "title": "Talent Acquisition", "company": "Valiance Solutions", "location": "", "email": "vivek.yadav@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/vivek-yadav-7774241b2", "source": "hunter", "confidence": 95}, {"name": "Riddhi Sharma", "title": "HR Associate", "company": "Valiance Solutions", "location": "", "email": "riddhi.sharma@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/riddhi-sharma-150415218", "source": "hunter", "confidence": 95}, {"name": "Priya Chowdhary", "title": "Senior Associate, Talent Acquisition", "company": "Valiance Solutions", "location": "", "email": "priya.chowdhary@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr", "source": "hunter", "confidence": 95}, {"name": "Aman Kumar", "title": "Artificial Intelligence Engineer", "company": "Valiance Solutions", "location": "", "email": "aman.kumar@valiancesolutions.com", "linkedin": "https://www.linkedin.com/in/aman-kumar-3b30691bb", "source": "hunter", "confidence": 95}], "searches": {"Tech recruiters": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"}, "Engineering managers": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"}, "Head of Engineering / CTO": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"}, "Senior engineer": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"}}}}}, {"source": "wellfound", "source_name": "Wellfound", "title": "Business Development & Sales Intern", "company": "Mantra Softech", "url": "https://wellfound.com/jobs/4901450-business-development-sales-intern", "country": "IN", "location": "Ahmedabad", "remote": false, "posted": null, "posted_at": null, "posted_raw": "", "salary": "", "snippet": "**Key Responsibilities** * Conduct market research and identify potential clients and business opportunities. * Generate leads and support client outreach and follow-ups. * Assist in sales presentations, proposals, and client relationship management. * Research industry trends, competitors, and target markets. * Support the team in developing sales strategies and achieving business goals. **What W", "description": "**Key Responsibilities** * Conduct market research and identify potential clients and business opportunities. * Generate leads and support client outreach and follow-ups. * Assist in sales presentations, proposals, and client relationship management. * Research industry trends, competitors, and target markets. * Support the team in developing sales strategies and achieving business goals. **What We Offer** * 6-month paid internship. * Hands-on experience in B2B sales and business development. * Exposure to AI, computer vision, and video analytics technologies. * Opportunity to work with an experienced team in a growing technology business. * Potential full-time employment on the company payroll based on performance after successful completion of the internship. **Location:** Ahmedabad, Gujarat **Preferred Qualification: **B.Tech / MBA graduates Joining: Immediate joiners preferred 📩 Apply at: recruiter19@mantratec.com", "skills": [], "employment_type": "internship", "exp_min": 0, "exp_max": null, "seniority": "intern", "fit": "fit", "relevance": 0.7, "score": 36.1, "matched_skills": ["video analytics"], "missing_skills": ["artificial intelligence", "computer vision"], "also_on": [], "query": "senior-software-developer", "id": "wf4901450", "extra": {"company_size": "SIZE_1001_5000", "salary_stated": false, "semantic": 0.111, "score_confidence": "high", "ai_summary": {"why": "Candidate has 2 years of experience in video analytics and cloud infrastructure, aligning with the internship's focus on AI, computer vision, and video analytics technologies.", "gaps": "Lacks direct B.Tech/MBA degree and no prior B2B sales experience."}, "is_mnc": false, "contacts": {"domain": "mantratec.com", "site": "", "emails": ["recruiter19@mantratec.com", "bhavyen@mantratec.com", "hiren@mantratec.com", "gurvinder.singh@mantratec.com", "ashok.ajad@mantratec.com", "prakash.namdeo@mantratec.com", "lokesh.suryavanshi@mantratec.com", "ashish.verma@mantratec.com", "natarajan.senguttuvan@mantratec.com", "ankush.agrawal@mantratec.com"], "people": [{"name": "Bhavyen Bhandari", "title": "Director of Project Management", "company": "Mantra Softech", "location": "", "email": "bhavyen@mantratec.com", "linkedin": "https://www.linkedin.com/in/bhavyen-bhandari-97a41132", "source": "hunter", "confidence": 84}, {"name": "Hiren Bhandari", "title": "Technical Director", "company": "Mantra Softech", "location": "", "email": "hiren@mantratec.com", "linkedin": "https://www.linkedin.com/in/hirenbhandari", "source": "hunter", "confidence": 82}, {"name": "Gurvinder Singh", "title": "Chief Information Security Officer", "company": "Mantra Softech", "location": "", "email": "gurvinder.singh@mantratec.com", "linkedin": "https://www.linkedin.com/in/gurvinder-singh-7145522a4", "source": "hunter", "confidence": 75}, {"name": "Ashok Ajad", "title": "Director of AI", "company": "Mantra Softech", "location": "", "email": "ashok.ajad@mantratec.com", "linkedin": "https://www.linkedin.com/in/ashok-ajad", "source": "hunter", "confidence": 75}, {"name": "Prakash Namdeo", "title": "Software Engineer", "company": "Mantra Softech", "location": "", "email": "prakash.namdeo@mantratec.com", "linkedin": "https://www.linkedin.com/in/prakash-namdeo-76869b203", "source": "hunter", "confidence": 85}, {"name": "Lokesh Suryavanshi", "title": "Software Test Engineer", "company": "Mantra Softech", "location": "", "email": "lokesh.suryavanshi@mantratec.com", "linkedin": "https://www.linkedin.com/in/lokesh-suryavanshi-0a0160310", "source": "hunter", "confidence": 85}, {"name": "Ashish Verma", "title": "Engineer", "company": "Mantra Softech", "location": "", "email": "ashish.verma@mantratec.com", "linkedin": "https://www.linkedin.com/in/ashish-kumar-verma-149525202", "source": "hunter", "confidence": 85}, {"name": "Natarajan Senguttuvan", "title": "Senior Research Engineer", "company": "Mantra Softech", "location": "", "email": "natarajan.senguttuvan@mantratec.com", "linkedin": "https://www.linkedin.com/in/natarajansenguttuvan", "source": "hunter", "confidence": 85}, {"name": "Ankush Agrawal", "title": "Engineering Leader R&D", "company": "Mantra Softech", "location": "", "email": "ankush.agrawal@mantratec.com", "linkedin": "https://www.linkedin.com/in/ankush-agrawal-531b7647", "source": "hunter", "confidence": 85}, {"name": "Monica Patel", "title": "Software Developer", "company": "Mantra Softech", "location": "", "email": "monica.patel@mantratec.com", "linkedin": "https://www.linkedin.com/in/monica-patel-459034223", "source": "hunter", "confidence": 84}], "searches": {"Tech recruiters": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mantra%20Softech%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Ahmedabad%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mantra%20Softech%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Ahmedabad%22"}, "Engineering managers": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mantra%20Softech%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Ahmedabad%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mantra%20Softech%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Ahmedabad%22"}, "Head of Engineering / CTO": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mantra%20Softech%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Ahmedabad%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mantra%20Softech%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Ahmedabad%22"}, "Senior engineer": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mantra%20Softech%22%20%28%22Senior%20engineer%22%29%20%22Ahmedabad%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mantra%20Softech%22%20%28%22Senior%20engineer%22%29%20%22Ahmedabad%22"}}}}}, {"source": "themuse", "source_name": "The Muse", "title": "Senior Casualty Claims Specialist, Attorney Represented - Northeast", "company": "Liberty Mutual Insurance", "url": "https://www.themuse.com/jobs/libertymutualinsurance/senior-casualty-claims-specialist-attorney-represented-northeast-f2bb23", "country": "IN", "location": "Albany, NY, Flexible / Remote, Garden City, NY, Marlton, NJ, Schenectady, NY", "remote": true, "posted": "2026-10-29", "posted_at": "2026-10-29T20:35:38+00:00", "posted_raw": "2026-10-29T20:35:38Z", "salary": "", "snippet": "Description Advance Your Career with Liberty Mutual's Personal Lines Casualty Team! Our Casualty Attorney Represented team is currently hiring for Senior Claims Specialists to manage attorney represented and litigated auto and homeowner's bodily injury claims. This role will manage, investigate and resolve claims as well as assist in providing prompt and quality service to policyholders for mild t", "description": "Description Advance Your Career with Liberty Mutual's Personal Lines Casualty Team! Our Casualty Attorney Represented team is currently hiring for Senior Claims Specialists to manage attorney represented and litigated auto and homeowner's bodily injury claims. This role will manage, investigate and resolve claims as well as assist in providing prompt and quality service to policyholders for mild to moderate severity and/or complexity claims. Work Arrangement Hybrid: Candidates who live within 50 miles of a Liberty Mutual Claims office are expected to work on-site at least two days per month. Remote: Candidates who live more than 50 miles from a Liberty Mutual Claims office are eligible to work fully remote. The start date for the role is January 11, 2027. This position operates on an Eastern time schedule. Responsibilities: Manages, investigates, and resolves claims. Investigates and evaluates coverage, liability, damages, and settles claims within prescribed authority levels. Identifies potential suspicious claims and refers to SIU and identifies opportunities for third party subrogation. Prepares for and attends trials, hearings and conferences and reports to Home Office and local management on status. Confers with trial counsel and prepares trial reports. Communicates with policyholders, witnesses, and claimants in order to gather information regarding claims, refers tasks to auxiliary resources as necessary, and advise as to proper course of action. Responds to various written and telephone inquiries including status reports. Ensures adequacy of reserves. Accountable for security of financial processing of claims, as well as security information contained in claims files. Updates files and provides comprehensive reports as required. Responsible for managing the practices and billing activities of outside and in-house counsel. Training is a critical component to your success and that success starts with reliable attendance. Attendance and active engagement during training is mandatory. Preferred Qualifications: 1+ years Personal Lines Third-Party Auto Casualty Experience. 1+ years Attorney Represented Experience. Experience handling Litigated Third-Party Auto Casualty Claims. Experience handling Uninsured and Underinsured Motorist (UM/UIM) Claims. Qualifications Strong written and oral communications skills required. Good interpersonal, analytical, investigative, and negotiation skills required. Customer service experience preferred. Demonstrated competency of legal liability, general insurance policy coverage and State Tort Law. The capabilities, skills and knowledge required is normally acquired through a Bachelor's degree or equivalent experience and at least 12-18 months of directly related experience. Ability to obtain proper licensing as required. Applicants residing in Washington state, California, or the District of Columbia are not eligible at this time. About Us Pay Philosophy: The typical starting salary range for this role is determined by a number of factors including skills, experience, education, certifications and location. The full salary range for this role reflects the competitive labor market value for all employees in these positions across the national market and provides an opportunity to progress as employees grow and develop within the role. Some roles at Liberty Mutual have a corresponding compensation plan which may include commission and/or bonus earnings at rates that vary based on multiple factors set forth in the compensation plan for the role. At Liberty Mutual, our goal is to create a workplace where everyone feels valued, supported, and can thrive. We build an environment that welcomes a wide range of perspectives and experiences, with inclusion embedded in every aspect of our culture and reflected in everyday interactions. This comes to life through comprehensive benefits, workplace flexibility, professional development opportunities, and a host of opportunities provided through our Employee Resource Groups. Each employee plays a role in creating our inclusive culture, which supports every individual to do their best work. Together, we cultivate a community where everyone can make a meaningful impact for our business, our customers, and the communities we serve. We value your hard work, integrity and commitment to make things better, and we put people first by offering you benefits that support your life and well-being. To learn more about our benefit offerings please visit: https://www.libertymutualgroup.com/about-lm/careers/benefits Liberty Mutual is an equal opportunity employer. We will not tolerate discrimination on the basis of race, color, national origin, sex, sexual orientation, gender identity, religion, age, disability, veteran's status, pregnancy, genetic information or on any basis prohibited by federal, state or local law. Fair Chance Notices California Los Angeles Incorporated Los Angeles Unincorporated Philadelphia San Francisco", "skills": [], "employment_type": "", "exp_min": 1.0, "exp_max": null, "seniority": "senior", "fit": "fit", "relevance": 0.7, "score": 21.8, "matched_skills": [], "missing_skills": ["embedded"], "also_on": [], "query": "", "id": "8be4d28d48b7", "extra": {"salary_stated": false, "semantic": 0.0, "score_confidence": "low", "ai_summary": {"why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with the technical demands of managing complex claims data and processing workflows.", "gaps": "Lacks direct experience in attorney-represented litigation, trial preparation, and handling uninsured/underinsured motorist claims."}, "is_mnc": false, "contacts": {"domain": "libertymutualre.com", "site": "", "emails": [], "people": [], "searches": {"Tech recruiters": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Liberty%20Mutual%20Insurance%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Albany%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Liberty%20Mutual%20Insurance%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Albany%22"}, "Engineering managers": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Liberty%20Mutual%20Insurance%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Albany%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Liberty%20Mutual%20Insurance%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Albany%22"}, "Head of Engineering / CTO": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Liberty%20Mutual%20Insurance%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Albany%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Liberty%20Mutual%20Insurance%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Albany%22"}, "Senior engineer": {"linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Liberty%20Mutual%20Insurance%22%20%28%22Senior%20engineer%22%29%20%22Albany%22", "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Liberty%20Mutual%20Insurance%22%20%28%22Senior%20engineer%22%29%20%22Albany%22"}}}}}]}</script>
+<script>
+(function () {
+  const DATA = JSON.parse(document.getElementById('data').textContent);
+  const META = DATA.meta || {};
+  const JOBS = DATA.jobs || [];
+  const COUNTRIES = DATA.countries || [];
+  const SCORED = JOBS.some(j => j.score !== null && j.score !== undefined);
+  const STATE_KEY = 'jobhunt:state';
+  const UI_KEY = 'jobhunt:ui:' + (META.run_id || 'run');
+
+  function load(key, fallback) { try { const v = localStorage.getItem(key); return v ? JSON.parse(v) : fallback; } catch (e) { return fallback; } }
+  function save(key, val) { try { localStorage.setItem(key, JSON.stringify(val)); } catch (e) {} }
+  const S = Object.assign({ applied: {}, saved: {}, hidden: {} }, load(STATE_KEY, {}));
+  const ui = Object.assign({
+    country: 'ALL', q: '', minScore: 0, fits: ['fit', 'stretch', 'unknown', 'over'], remote: 'any',
+    sort: SCORED ? 'score' : 'fit', src: '', via: '', onlySaved: false, hideApplied: false, showHidden: false, titleOnly: false, mncOnly: false, highPay: false,
+  }, load(UI_KEY, {}));
+  const $ = id => document.getElementById(id);
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+
+  // theme
+  const savedTheme = load('jobhunt:theme', null);
+  if (savedTheme) document.documentElement.setAttribute('data-theme', savedTheme);
+  $('theme').onclick = () => {
+    const cur = document.documentElement.getAttribute('data-theme');
+    const dark = cur ? cur === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+    const next = dark ? 'light' : 'dark';
+    document.documentElement.setAttribute('data-theme', next); save('jobhunt:theme', next);
+  };
+
+  // header
+  const roles = (META.roles || []).join(', ');
+  const exp = META.experience_label ? ` · <b>${esc(META.experience_label)}</b> experience` : '';
+  const cs = COUNTRIES.filter(c => c.code !== 'REMOTE').map(c => c.flag + ' ' + c.name).join(', ');
+  $('criteria').innerHTML = `<b>${esc(roles)}</b>${exp} · ${esc(cs)}${META.resume_name ? ' · scored against <b>' + esc(META.resume_name) + '</b>' : ''} · ${esc(META.generated || '')}`;
+  const okSources = new Set((DATA.sources || []).filter(s => s.status === 'ok' && s.count > 0).map(s => s.source_name));
+  const blocked = new Set((DATA.sources || []).filter(s => s.status !== 'ok').map(s => s.source_name));
+  $('stats').innerHTML = `<b>${JOBS.length}</b> jobs · <b>${okSources.size}</b> sources${blocked.size ? ` · <span title="${esc([...blocked].join(', '))}">${blocked.size} unavailable</span>` : ''}`;
+
+  // sources panel
+  const grid = $('srcGrid');
+  const bySrc = {};
+  (DATA.sources || []).forEach(s => { (bySrc[s.source_name] = bySrc[s.source_name] || []).push(s); });
+  grid.innerHTML = Object.keys(bySrc).sort().map(name => {
+    const rows = bySrc[name];
+    const total = rows.reduce((a, r) => a + (r.count || 0), 0);
+    const bad = rows.filter(r => r.status !== 'ok');
+    const cls = bad.length === rows.length ? (bad[0].status) : 'ok';
+    const detail = rows.map(r => `${r.country}${r.status === 'ok' ? ':' + r.count : ' ' + r.status}`).join(' ');
+    return `<div><span class="${cls}">●</span> ${esc(name)} <b>${total}</b> <span class="cc" title="${esc(bad.map(b => b.error || '').join('\n'))}">${esc(detail)}</span></div>`;
+  }).join('');
+  $('srcSummary').textContent = `Sources (${Object.keys(bySrc).length}) — click to see per-country counts; blocked platforms have direct search links under each country tab`;
+
+  // fit chips
+  const FITS = [['fit', 'Fit'], ['stretch', 'Stretch'], ['unknown', 'Unknown'], ['over', 'Overqualified'], ['no', 'Too senior']];
+  function renderFitChips() {
+    $('fitChips').innerHTML = FITS.map(([k, l]) => `<button class="chip ${ui.fits.includes(k) ? 'on' : ''}" data-fit="${k}">${l}</button>`).join('');
+  }
+  $('fitChips').onclick = e => {
+    const b = e.target.closest('[data-fit]'); if (!b) return;
+    const k = b.dataset.fit; ui.fits = ui.fits.includes(k) ? ui.fits.filter(x => x !== k) : ui.fits.concat(k); persist(); render();
+  };
+
+  // sort options
+  const SORTS = SCORED ? [['score', 'Best match'], ['date', 'Newest'], ['fit', 'Experience fit'], ['relevance', 'Title relevance'], ['company', 'Company A–Z']]
+                       : [['fit', 'Experience fit'], ['date', 'Newest'], ['relevance', 'Title relevance'], ['company', 'Company A–Z']];
+  $('sort').innerHTML = SORTS.map(([k, l]) => `<option value="${k}">${l}</option>`).join('');
+  if (!SCORED) $('scoreRange').style.display = 'none';
+
+  // source select
+  const srcNames = [...new Set(JOBS.map(j => j.source_name))].sort();
+  $('srcSel').innerHTML = '<option value="">All sources</option>' + srcNames.map(n => `<option value="${esc(n)}">${esc(n)}</option>`).join('');
+
+  // tabs
+  function renderTabs(counts) {
+    const tabs = [{ code: 'ALL', name: 'All', flag: '' }].concat(COUNTRIES);
+    $('tabs').innerHTML = tabs.map(c => `<button class="tab ${ui.country === c.code ? 'active' : ''}" data-cc="${c.code}">${c.flag ? c.flag + ' ' : ''}${esc(c.name)} <span class="n">${counts[c.code] || 0}</span></button>`).join('');
+  }
+  $('tabs').onclick = e => { const b = e.target.closest('[data-cc]'); if (!b) return; ui.country = b.dataset.cc; persist(); render(); window.scrollTo({ top: 0 }); };
+
+  // controls wiring
+  $('q').value = ui.q; $('minScore').value = ui.minScore; $('minScoreV').textContent = ui.minScore; $('remote').value = ui.remote; $('sort').value = ui.sort; $('srcSel').value = ui.src; $('viaSel').value = ui.via || '';
+  $('q').oninput = () => { ui.q = $('q').value; persist(); render(); };
+  $('minScore').oninput = () => { ui.minScore = +$('minScore').value; $('minScoreV').textContent = ui.minScore; persist(); render(); };
+  $('remote').onchange = () => { ui.remote = $('remote').value; persist(); render(); };
+  $('sort').onchange = () => { ui.sort = $('sort').value; persist(); render(); };
+  $('srcSel').onchange = () => { ui.src = $('srcSel').value; persist(); render(); };
+  $('viaSel').onchange = () => { ui.via = $('viaSel').value; persist(); render(); };
+  ['onlySaved', 'hideApplied', 'showHidden', 'titleOnly', 'mncOnly', 'highPay'].forEach(k => { $(k).onclick = () => { ui[k] = !ui[k]; persist(); render(); }; });
+  $('reset').onclick = () => { Object.assign(ui, { q: '', minScore: 0, fits: ['fit', 'stretch', 'unknown', 'over'], remote: 'any', src: '', via: '', onlySaved: false, hideApplied: false, showHidden: false, titleOnly: false, mncOnly: false, highPay: false }); $('q').value = ''; $('minScore').value = 0; $('minScoreV').textContent = 0; $('remote').value = 'any'; $('srcSel').value = ''; $('viaSel').value = ''; persist(); render(); };
+  $('csv').onclick = () => {
+    const rows = [['country', 'title', 'company', 'location', 'source', 'via', 'posted', 'salary', 'fit', 'exp_min', 'exp_max', 'score', 'matched_skills', 'missing_skills', 'ai_why', 'ai_gaps', 'url', 'applied', 'saved']];
+    visible().forEach(j => rows.push([j.country, j.title, j.company, j.location, j.source_name, isApify(j) ? ((j.extra && j.extra.worldwide) ? 'apify-worldwide' : 'apify') : '', j.posted || '', j.salary, j.fit, j.exp_min ?? '', j.exp_max ?? '', j.score ?? '', (j.matched_skills || []).join('; '), (j.missing_skills || []).join('; '), (j.extra && j.extra.ai_summary && j.extra.ai_summary.why) || '', (j.extra && j.extra.ai_summary && j.extra.ai_summary.gaps) || '', j.url, S.applied[j.id] ? 'yes' : '', S.saved[j.id] ? 'yes' : '']));
+    const csv = rows.map(r => r.map(v => '"' + String(v).replace(/"/g, '""') + '"').join(',')).join('\n');
+    const a = document.createElement('a'); a.href = URL.createObjectURL(new Blob(['﻿' + csv], { type: 'text/csv' })); a.download = 'jobs.csv'; a.click();
+  };
+  function persist() { save(UI_KEY, ui); }
+
+  // filtering
+  function isApify(j) { return !!((j.extra && j.extra.via === 'apify') || /^apify-/.test(j.source || '') || /\(Apify\)/.test(j.source_name || '')); }
+  function passes(j, ignoreCountry) {
+    if (!ignoreCountry && ui.country !== 'ALL' && j.country !== ui.country) return false;
+    if (S.hidden[j.id] && !ui.showHidden) return false;
+    if (ui.hideApplied && S.applied[j.id]) return false;
+    if (ui.onlySaved && !S.saved[j.id]) return false;
+    if (!ui.fits.includes(j.fit || 'unknown')) return false;
+    if (SCORED && ui.minScore > 0 && (j.score == null || j.score < ui.minScore)) return false;
+    if (ui.remote === 'only' && !j.remote) return false;
+    if (ui.remote === 'no' && j.remote === true) return false;
+    if (ui.src && j.source_name !== ui.src) return false;
+    if (ui.via === 'apify' && !isApify(j)) return false;
+    if (ui.via === 'world' && !(j.extra && j.extra.worldwide)) return false;
+    if (ui.via === 'direct' && isApify(j)) return false;
+    if (ui.titleOnly && !(j.relevance >= 0.75)) return false;
+    if (ui.mncOnly && !(j.extra && j.extra.is_mnc)) return false;
+    if (ui.highPay && !(j.extra && (j.extra.lpa || 0) >= 10)) return false;
+    if (ui.q) {
+      const q = ui.q.toLowerCase();
+      const hay = [j.title, j.company, j.location, (j.skills || []).join(' '), (j.matched_skills || []).join(' '), j.snippet].join(' ').toLowerCase();
+      if (!hay.includes(q)) return false;
+    }
+    return true;
+  }
+  const FIT_RANK = { fit: 0, unknown: 1, stretch: 2, over: 3, no: 4 };
+  function sorter(a, b) {
+    switch (ui.sort) {
+      case 'score': return (b.score ?? -1) - (a.score ?? -1) || (FIT_RANK[a.fit] - FIT_RANK[b.fit]) || (b.posted || '').localeCompare(a.posted || '');
+      case 'date': return (b.posted || '').localeCompare(a.posted || '') || (b.score ?? -1) - (a.score ?? -1);
+      case 'fit': return (FIT_RANK[a.fit] - FIT_RANK[b.fit]) || (b.score ?? -1) - (a.score ?? -1) || (b.relevance - a.relevance) || (b.posted || '').localeCompare(a.posted || '');
+      case 'relevance': return (b.relevance - a.relevance) || (b.score ?? -1) - (a.score ?? -1);
+      case 'company': return (a.company || '').localeCompare(b.company || '') || (b.score ?? -1) - (a.score ?? -1);
+    }
+    return 0;
+  }
+  function visible() { return JOBS.filter(j => passes(j, false)).sort(sorter); }
+
+  // rendering
+  function ago(iso) {
+    if (!iso) return '';
+    const d = Math.round((Date.now() - new Date(iso + 'T00:00:00Z').getTime()) / 86400000);
+    if (d <= 0) return 'today'; if (d === 1) return 'yesterday'; if (d < 30) return d + 'd ago'; return Math.round(d / 30) + 'mo ago';
+  }
+  function ring(score, conf) {
+    if (score == null) return '';
+    const col = score >= 70 ? 'var(--good)' : score >= 45 ? 'var(--warn)' : 'var(--muted)';
+    const r = 22, c = 2 * Math.PI * r, off = c * (1 - Math.max(0, Math.min(100, score)) / 100);
+    return `<div class="ring" title="Resume match ${score} (${conf || ''} confidence)"><svg viewBox="0 0 52 52"><circle cx="26" cy="26" r="${r}" fill="none" stroke="var(--line)" stroke-width="5"/><circle cx="26" cy="26" r="${r}" fill="none" stroke="${col}" stroke-width="5" stroke-linecap="round" stroke-dasharray="${c}" stroke-dashoffset="${off}"/></svg><div class="v">${Math.round(score)}</div><div class="lbl">${conf === 'low' ? 'title only' : 'match'}</div></div>`;
+  }
+  function expLabel(j) {
+    if (j.exp_min == null && j.exp_max == null) return j.seniority ? j.seniority : '';
+    if (j.exp_min != null && j.exp_max != null && j.exp_min !== j.exp_max) return `${j.exp_min}–${j.exp_max} yrs`;
+    if (j.exp_min != null) return `${j.exp_min}${j.exp_max == null ? '+' : ''} yrs`;
+    return `up to ${j.exp_max} yrs`;
+  }
+  const FIT_LABEL = { fit: 'Fit', stretch: 'Stretch', unknown: 'Exp. unknown', over: 'Overqualified', no: 'Too senior' };
+  // what it pays: the posting's own figure, else the estimate (typical for the company / looked up) - always with a "~"
+  function payBadge(j) {
+    const x = j.extra || {}; if (!x.lpa) return '';
+    const fig = String(Math.round(x.lpa * 10) / 10), stated = x.lpa_kind === 'stated';
+    const cls = x.lpa >= 10 ? 'fit-fit' : (stated && x.lpa < 6 ? 'fit-no' : '');
+    return `<span class="b ${cls}" title="${esc(x.lpa_source || '')}${x.lpa_lo && x.lpa_hi ? ' (' + x.lpa_lo + '–' + x.lpa_hi + ' LPA)' : ''}">${stated ? '' : '~'}₹${fig} LPA${stated ? '' : ' · ' + esc(x.lpa_kind)}</span>`;
+  }
+  function card(j) {
+    const applied = !!S.applied[j.id], saved = !!S.saved[j.id], hidden = !!S.hidden[j.id];
+    const matched = new Set(j.matched_skills || []), missing = new Set(j.missing_skills || []);
+    const tagSkills = (j.skills || []).filter(s => !matched.has(s) && !missing.has(s)).slice(0, 8);
+    const skills = [...matched].map(s => `<span class="sk hit" title="in your resume">${esc(s)}</span>`)
+      .concat([...missing].map(s => `<span class="sk miss" title="asked for, not in your resume">${esc(s)}</span>`))
+      .concat(tagSkills.map(s => `<span class="sk">${esc(s)}</span>`)).join('');
+    const eligible = (j.extra && j.extra.eligible && j.extra.eligible.length) ? `<span class="b remote" title="Countries this remote job is open to">open to: ${esc(j.extra.eligible.join(', '))}</span>` : '';
+    const country = COUNTRIES.find(c => c.code === j.country);
+    const text = j.description && j.description.length > (j.snippet || '').length ? j.description : (j.snippet || '');
+    return `<article class="card ${applied ? 'applied' : ''} ${saved ? 'saved' : ''} ${hidden ? 'hidden-job' : ''}" data-id="${j.id}">
+      <div class="head">${ring(j.score, j.extra && j.extra.score_confidence)}<div style="flex:1;min-width:0">
+        <div class="title"><a href="${esc(j.url)}" target="_blank" rel="noopener">${esc(j.title)}</a></div>
+        <div class="sub"><b>${esc(j.company || '—')}</b>${j.location ? ' · ' + esc(j.location) : ''}${ui.country === 'ALL' && country ? ' · ' + country.flag : ''}${j.posted ? ' · ' + ago(j.posted) : ''}${j.salary ? ' · ' + esc(j.salary) : ''}${j.employment_type ? ' · ' + esc(j.employment_type) : ''}</div>
+      </div></div>
+      <div class="badges"><span class="b src">${esc(j.source_name)}</span>${j.extra && j.extra.worldwide ? '<span class="b" title="Found by the Apify worldwide pass">🌍 worldwide</span>' : ''}${(j.also_on || []).map(a => `<span class="b">also on ${esc(a)}</span>`).join('')}${payBadge(j)}${j.extra && j.extra.is_mnc ? `<span class="b remote" title="${esc(j.extra.mnc_name || '')}">MNC · ${esc(j.extra.mnc_tier || '')}</span>` : ''}<span class="b fit-${j.fit}">${FIT_LABEL[j.fit] || j.fit}</span>${expLabel(j) ? `<span class="b">${esc(expLabel(j))}</span>` : ''}${j.remote ? '<span class="b remote">remote</span>' : ''}${eligible}${j.extra && j.extra.relocation_paid ? '<span class="b remote">relocation paid</span>' : ''}${j.extra && j.extra.applied_status === 'applied' ? '<span class="b fit-fit" title="' + esc(j.extra.applied_note || '') + '">Applied by agent</span>' : ''}${j.extra && j.extra.applied_status === 'questionnaire' ? '<span class="b fit-stretch" title="' + esc(j.extra.applied_note || '') + '">Needs your answer</span>' : ''}${j.extra && j.extra.applied_status === 'would-apply' ? '<span class="b fit-fit">Would apply</span>' : ''}${j.extra && j.extra.applied_status === 'offsite' ? '<span class="b">Apply on company site</span>' : ''}${j.extra && j.extra.japanese_level ? `<span class="b">JP: ${esc(j.extra.japanese_level)}</span>` : ''}</div>
+      ${skills ? `<div class="skills">${skills}</div>` : ''}
+      ${j.extra && j.extra.ai_summary && j.extra.ai_summary.why ? `<div class="ai" title="from the local model"><b>Fit:</b> ${esc(j.extra.ai_summary.why)}${j.extra.ai_summary.gaps && !/^none\.?$/i.test(j.extra.ai_summary.gaps) ? ` <b>Gap:</b> ${esc(j.extra.ai_summary.gaps)}` : ''}</div>` : ''}
+      ${text ? `<div class="snip">${esc(text)}</div><button class="more" data-act="more">more</button>` : ''}
+      <div class="actions">
+        <a class="btn primary" href="${esc(j.url)}" target="_blank" rel="noopener" data-act="apply">Apply ↗</a>
+        <button class="btn ${applied ? 'on' : ''}" data-act="applied">${applied ? '✓ Applied' : 'Mark applied'}</button>
+        <button class="btn warn ${saved ? 'on' : ''}" data-act="save">${saved ? '★ Saved' : '☆ Save'}</button>
+        <button class="btn icon" data-act="hide" title="${hidden ? 'Put back in the list' : 'Remove from list'}" aria-label="${hidden ? 'Put back in the list' : 'Remove from list'}">${hidden ? '↺' : '🗑'}</button>
+      </div>
+    </article>`;
+  }
+  function render() {
+    renderFitChips();
+    ['onlySaved', 'hideApplied', 'showHidden', 'titleOnly'].forEach(k => $(k).classList.toggle('on', !!ui[k]));
+    const counts = { ALL: 0 };
+    JOBS.forEach(j => { if (passes(j, true)) { counts.ALL++; counts[j.country] = (counts[j.country] || 0) + 1; } });
+    renderTabs(counts);
+    const cur = COUNTRIES.find(c => c.code === ui.country);
+    $('direct').innerHTML = cur && cur.links && cur.links.length ? `Search directly on: ${cur.links.map(l => `<a href="${esc(l.url)}" target="_blank" rel="noopener">${esc(l.name)} ↗</a>`).join('')}` : (ui.country === 'ALL' ? 'Pick a country tab to see one-click search links for platforms that block automated search (Indeed, Glassdoor, Naukri, StepStone…).' : '');
+    const vis = visible();
+    const todo = vis.filter(j => !S.applied[j.id]), done = vis.filter(j => S.applied[j.id]);
+    $('list').innerHTML = !vis.length ? '<div class="empty">No jobs match the current filters.</div>'
+      : (todo.length ? todo.map(card).join('') : '<div class="empty sect">Nothing left to apply to here — everything shown is in Applied below.</div>')
+        + (done.length ? `<div class="sect">Applied · ${done.length}</div>` + done.map(card).join('') : '');
+    $('foot').innerHTML = `Showing ${vis.length} of ${JOBS.length} jobs · generated by the job-hunt skill ${META.generated ? 'on ' + esc(META.generated) : ''} · ${META.version ? 'jobbot v' + esc(META.version) : ''}<br>Applied / saved / removed marks are stored in this browser only. Scores are a lexical estimate (skills overlap + text similarity + experience fit) — read the posting before applying.`;
+  }
+  $('list').onclick = e => {
+    const b = e.target.closest('[data-act]'); if (!b) return;
+    const art = b.closest('.card'); const id = art.dataset.id; const act = b.dataset.act;
+    if (act === 'apply') { S.applied[id] = S.applied[id] || Date.now(); save(STATE_KEY, S); setTimeout(render, 300); return; }
+    if (act === 'more') { art.classList.toggle('open'); b.textContent = art.classList.contains('open') ? 'less' : 'more'; return; }
+    e.preventDefault();
+    if (act === 'applied') { if (S.applied[id]) delete S.applied[id]; else S.applied[id] = Date.now(); }
+    if (act === 'save') { if (S.saved[id]) delete S.saved[id]; else S.saved[id] = Date.now(); }
+    if (act === 'hide') { if (S.hidden[id]) delete S.hidden[id]; else S.hidden[id] = Date.now(); }
+    save(STATE_KEY, S); render();
+  };
+  render();
+})();
+</script>
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 0.625rem; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+  /* a filter field: a labelled group, always open - only the whole toolbar collapses */
+  span.fgrp { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; vertical-align: middle;
+    border: 1px solid rgba(127,127,127,.28); border-radius: 12px; padding: 3px 8px; }
+  span.fgrp > .flabel { font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .7; padding: 4px 2px; white-space: nowrap; }
+  span.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+  /* the whole filter toolbar can be hidden: only its Filters button stays */
+  .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(127,127,127,.35);
+    background: transparent; color: inherit; opacity: .85; flex: none; }
+  .tb-toggle:hover { opacity: 1; }
+  .tb-toggle::after { content: "\25B4"; font-size: 0.7rem; }
+  .tb-hidden .tb-toggle::after { content: "\25BE"; }
+  .tb-hidden > :not(.tb-toggle) { display: none !important; }
+  .tb-hidden { padding-top: 4px !important; padding-bottom: 4px !important; }
+
+  /* thin scrollbars that follow the page's light / dark theme */
+  :root { color-scheme: light dark; } :root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+  * { scrollbar-width: thin; }
+
+  /* V2 skin (the site's portfolio look): one layer over each page's own variables */
+  :root[data-ui="v2"] {
+    --bg: #E9EAE4; --surface: #FFFFFF; --surface-2: #F5F6F2; --card: #FFFFFF; --card2: #F5F6F2;
+    --ink: #11151A; --fg: #11151A; --muted: #4E575F; --line: #11151A; --line2: #C9CCC3;
+    --accent: #EE3D28; --accent-on: #FFFFFF; --accent-soft: rgba(238,61,40,.12); --accent-bg: rgba(238,61,40,.12);
+    --v2-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; --v2-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root[data-ui="v2"]:not([data-theme="light"]) {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); } }
+  :root[data-ui="v2"][data-theme="dark"] {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); }
+  :root[data-ui="v2"] body, :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea {
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] span.fgrp > .flabel, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+    font-family: var(--v2-mono); letter-spacing: .02em; }
+  :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp, :root[data-ui="v2"] span.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
+  :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
+  :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,
+  :root[data-ui="v2"] .q, :root[data-ui="v2"] .row, :root[data-ui="v2"] article { border-color: var(--line) !important; box-shadow: 3px 3px 0 var(--line); }
+</style>
+<script>
+(function () {
+  "use strict";
+  // collapsible filter groups, open / closed remembered
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+
+  // a Filters button on every filter toolbar: hides / shows the whole bar
+  var kind = (document.title || "page").split(/\s+/).slice(0, 2).join("-").toLowerCase();
+  var bars = Array.prototype.filter.call(document.querySelectorAll(".bar-tools, section.controls, div.bar"), function (el) {
+    return el.querySelector(".chip, input[type=search], .search, select");   // a real filter bar, not a progress bar
+  });
+  bars.forEach(function (bar, i) {
+    if (bar.querySelector(":scope > .tb-toggle")) return;
+    var key = "tb:" + kind + ":" + i, btn = document.createElement("button");
+    btn.type = "button"; btn.className = "tb-toggle";
+    function paint(hidden) {
+      bar.classList.toggle("tb-hidden", hidden);
+      btn.textContent = hidden ? "Show filters" : "Filters";
+      btn.setAttribute("aria-expanded", hidden ? "false" : "true");
+      btn.title = hidden ? "Show the filters" : "Hide the filters";
+    }
+    var hidden = false;
+    try { hidden = localStorage.getItem(key) === "1"; } catch (e) {}
+    bar.insertBefore(btn, bar.firstChild);
+    paint(hidden);
+    btn.addEventListener("click", function () {
+      var h = !bar.classList.contains("tb-hidden"); paint(h);
+      try { h ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch (e) {}
+    });
+  });
+
+  // the site's theme / skin changed while this page is open: follow it
+  window.addEventListener("storage", function (e) {
+    if (e.key !== "jh:theme" && e.key !== "jh:ui") return;
+    var r = document.documentElement, t = localStorage.getItem("jh:theme") || "auto";
+    if (t === "light" || t === "dark") r.setAttribute("data-theme", t); else r.removeAttribute("data-theme");
+    if (localStorage.getItem("jh:ui") === "v2") r.setAttribute("data-ui", "v2"); else r.removeAttribute("data-ui");
+  });
+})();
+</script>
+</body>
+</html>
