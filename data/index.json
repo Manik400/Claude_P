@@ -1,6 +1,26 @@
 {
- "updated": "2026-10-31T07:26:29Z",
+ "updated": "2026-10-31T07:54:19Z",
  "items": [
+  {
+   "id": "careers-20261031-075419-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-10-31T07:54:19Z",
+   "file": "data/careers/careers-20261031-075419-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2846405,
+   "meta": {
+    "jobs": "112",
+    "relocation": "0",
+    "countries": "IN",
+    "experience": "0-3",
+    "reloc_mode": "any",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "accuracy-20261031-072629-accuracy-learning",
    "kind": "accuracy",
@@ -1822,25 +1842,6 @@
     "platforms_asked": "",
     "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads,himalayas,weworkremotely,adzuna,jooble,jsearch,firecrawl,apify-naukri",
     "jobs_file": "data/jobhunt/jobhunt-20261006-163111-software-engineer-software-developer-bac.jobs.json"
-   }
-  },
-  {
-   "id": "careers-20261006-121839-software-engineer-software-developer-bac",
-   "kind": "careers",
-   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-06T12:18:39Z",
-   "file": "data/careers/careers-20261006-121839-software-engineer-software-developer-bac.json",
-   "bytes": 3192109,
-   "meta": {
-    "jobs": "841",
-    "relocation": "28",
-    "countries": "IN",
-    "experience": "0-2",
-    "reloc_mode": "any",
-    "days": "1",
-    "hours": "",
-    "list_sha": "",
-    "list_count": ""
    }
   },
   {
