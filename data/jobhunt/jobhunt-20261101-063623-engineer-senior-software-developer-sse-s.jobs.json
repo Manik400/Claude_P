@@ -1,0 +1,662 @@
+[
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Backend AI Engineer",
+  "company": "Zomato",
+  "url": "https://www.instahyre.com/job-448605-backend-ai-engineer-at-zomato-gurgaon/",
+  "country": "IN",
+  "location": "Gurgaon",
+  "remote": null,
+  "posted": "2026-10-30",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Discover great places to eat around you",
+  "description": "Responsibilities: Build and integrate AI-powered applications using LLMs and generative AI technologies. Work on LLM-based applications, AI agents, and intelligent automation solutions. Develop and implement RAG (Retrieval-Augmented Generation) pipelines. Work with LLM APIs such as OpenAI, Gemini, Claude, or similar models. Explore and implement prompt engineering techniques to improve AI output quality. Work with vector databases and embeddings for semantic search and information retrieval. Experiment with AI frameworks such as LangChain and LangGraph. Evaluate, test, and optimize AI models and applications for performance and accuracy. Develop and maintain backend services and REST APIs using Python and FastAPI. Build scalable and efficient backend components to support AI-powered applications. Integrate third-party APIs, databases, and AI services. Write clean, reusable, and maintainable code. Debug issues and optimize application performance. Requirements: 1-2 years of hands-on experience in Python development. Strong understanding of Python programming fundamentals. Hands-on experience with FastAPI and REST API development. Practical exposure to generative AI and large language models (LLMs). Understanding of prompt engineering, embeddings, and RAG concepts. Experience integrating LLM APIs such as OpenAI, Gemini, or Claude. Familiarity with LangChain, LangGraph, or similar AI frameworks. Basic understanding of SQL/NoSQL databases and vector databases. Good problem-solving and debugging skills. Ability to learn and work with emerging AI technologies. Genuine interest in building AI-first products. Strong hands-on implementation skills rather than only theoretical knowledge. Ability to experiment, prototype, and take ownership of assigned tasks. Good To Have: Experience building AI agents or agentic workflows. Exposure to vector databases such as Pinecone, Qdrant, ChromaDB, or FAISS. Familiarity with Docker, Git, and cloud platforms. Experience with asynchronous programming in Python. Understanding of AI evaluation, hallucination reduction, and model optimization.",
+  "skills": [
+   "Agentic AI",
+   "AI Engineer",
+   "FastAPI",
+   "Gen AI",
+   "Generative AI",
+   "Large Language Models",
+   "LLMs",
+   "ML Engineer",
+   "Python",
+   "RAG",
+   "REST"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 55.6,
+  "matched_skills": [
+   "vector databases",
+   "rest api",
+   "sql",
+   "docker"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "llm",
+   "generative ai",
+   "python",
+   "ai agents",
+   "rag",
+   "fastapi",
+   "openai"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih448605",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.61,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with vector databases, REST APIs, and SQL optimization, aligning with core technical requirements.",
+    "gaps": "Lacks hands-on Python/FastAPI experience and AI/LLM framework exposure."
+   },
+   "is_mnc": true,
+   "mnc_tier": "unicorn",
+   "mnc_name": "Zomato",
+   "lpa": 22.5,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for Zomato (Unicorn / startup, 0-2 yrs)",
+   "lpa_url": "https://www.eternal.com/careers/",
+   "lpa_lo": 15.0,
+   "lpa_hi": 30.0,
+   "pay_bonus": 12.0,
+   "contacts": {
+    "domain": "zomato.com",
+    "site": "",
+    "emails": [
+     "deepinder@zomato.com",
+     "ruhi@zomato.com",
+     "lalit@zomato.com",
+     "amandeep.kohli@zomato.com",
+     "pravesh.saxena@zomato.com",
+     "sanchit.trivedi@zomato.com",
+     "sakshi.bang@zomato.com",
+     "kunal@zomato.com",
+     "akshay@zomato.com",
+     "daksh.vincent@zomato.com"
+    ],
+    "people": [
+     {
+      "name": "Gaurav Deepinder",
+      "title": "CEO",
+      "company": "Zomato",
+      "location": "",
+      "email": "deepinder@zomato.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 84
+     },
+     {
+      "name": "Ruhi Gupta",
+      "title": "Director of Human Resources",
+      "company": "Zomato",
+      "location": "",
+      "email": "ruhi@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/ruhi-gupta-29856b48",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Lalit Verma",
+      "title": "Chief Technology Officer",
+      "company": "Zomato",
+      "location": "",
+      "email": "lalit@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/lalitsverma",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Amandeep Kohli",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "amandeep.kohli@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/amandeep-singh-kohli-0825aa128",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Pravesh Saxena",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "pravesh.saxena@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/pravesh-saxena-102416166",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Sanchit Trivedi",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "sanchit.trivedi@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/sanchit-trivedi-435a92138",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Sakshi Bang",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "sakshi.bang@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/sakshi-bang-54219b126",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Kunal Gaurav",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "kunal@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/kunal-gaurav-638012136",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Akshay Shine",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "akshay@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/akshayshine",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Daksh Vincent",
+      "title": "Head",
+      "company": "Zomato",
+      "location": "",
+      "email": "daksh.vincent@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/daksh-vincent",
+      "source": "hunter",
+      "confidence": 75
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurgaon%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurgaon%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurgaon%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Senior%20engineer%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Senior%20engineer%22%29%20%22Gurgaon%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "Associate Software Engineer",
+  "company": "Duck Creek Technologies",
+  "url": "https://www.linkedin.com/jobs/view/4483447060",
+  "country": "IN",
+  "location": "Bengaluru, Karnataka, India",
+  "remote": null,
+  "posted": "2026-10-30",
+  "posted_at": null,
+  "posted_raw": "1 day ago",
+  "salary": "",
+  "snippet": "Title Associate Software Engineer Who We Are Duck Creek Technologies is the intelligent solutions provider defining the future of the property and casualty (P&C) insurance industry. Our modern SaaS platform enables insurers to run agile, cloud-based operations and deliver better customer experiences. Duck Creek is a flexible-first company, offering employees autonomy in how they manage their work.",
+  "description": "Title Associate Software Engineer Who We Are Duck Creek Technologies is the intelligent solutions provider defining the future of the property and casualty (P&C) insurance industry. Our modern SaaS platform enables insurers to run agile, cloud-based operations and deliver better customer experiences. Duck Creek is a flexible-first company, offering employees autonomy in how they manage their work. As part of our Flying Together approach, we are thoughtfully increasing opportunities for in-person collaboration by focusing on hiring in designated locations. This role is aligned to a specific location, and you’ll partner with your leader to participate in meaningful in-person moments that support team connection and collaboration. About Vista Duck Creek Technologies is a portfolio company of Vista Equity Partners, a global investment firm that partners with mission-critical enterprise software and technology-enabled businesses to drive growth and operational excellence. As part of a Vista portfolio company, you’ll work in an environment backed by deep expertise, long-term investment, and a strong commitment to building market-leading businesses and meaningful careers. Position Overview We're hiring early-career engineers to join an AI engineering team building LLM-based systems. This role leans toward two things in particular: evaluating whether an AI/LLM system's output is correct , and modelling extracted information as structured knowledge (entities and relationships) so it can be trusted, queried, and reasoned over. If you've built something with an LLM and then asked yourself, \"but how do I know if it's any good?\" — this role is for you. What You’ll Do Build and extend LLM evaluation harnesses — golden datasets, precision/recall/F1, calibration, LLM-as-judge scoring. Design and work with knowledge graphs — entity-relationship modelling, graph traversal/queries, embeddings-based similarity and retrieval. Build GenAI/LLM pipelines in Python — prompting, RAG, structured output. Write clean, tested code; collaborate with senior engineers; document your work. Act in accordance with and as a good steward of Duck Creek Technologies mission, vision, and core values: Mission: To empower insurers to reimagine the future of insurance What You’ve Done Education and Work Experience: B.Tech/M.Tech with an AI/ML specialization, or CS/IT with strong, demonstrable AI coursework/projects with 0 to 2 years of experience Strong Python fundamentals; solid grasp of data structures & algorithms. Working understanding of LLM fundamentals: prompting, embeddings, RAG, basic evaluation concepts. A maintained personal GitHub profile with at least one substantive AI/LLM project (academic or personal) — not a cloned tutorial. Share your resume along with your GitHub profile link. Applications without a working GitHub link showing original project work will not be considered. Good To Have Exposure to evaluation frameworks/metrics for generative AI (e.g. Ragas, DeepEval, or a self-built LLM-judge approach). Exposure to knowledge graphs / graph data structures (NetworkX, Neo4j, RDF/OWL, or a well-reasoned custom graph model in a project). Any agent framework (LangChain/LangGraph or similar), vector databases, any cloud platform, REST API basics (FastAPI/Flask). CORE COMPETENCIES Our team is built on strong core values that guide how we work and grow together. We prioritize clear and thoughtful communication, fostering open collaboration across diverse perspectives to achieve shared goals. We approach challenges with curiosity and critical thinking, seeking creative solutions while remaining adaptable in a fast-changing environment. We take accountability for our work and outcomes, holding ourselves to high standards of integrity and professionalism. Above all, we are committed to doing the right thing—treating others with respect, embracing continuous learning, and engaging inclusively across cultures and backgrounds. LEARN MORE Company Website – Transforming Insurance with Duck Creek's SaaS Solutions Life at Duck Creek – Life at Duck Creek - Duck Creek Benefits & Rewards – Wellbeing & Rewards - Duck Creek LOCATION & WAYS OF WORKING Duck Creek is a flexible-first company, offering employees autonomy in how they manage their day-to-day work. As part of our Flying Together approach, we are thoughtfully increasing opportunities for in-person collaboration by focusing on hiring in designated locations. This role is aligned to a specific location, and you are expected to reside within reasonable proximity to that location. You will partner with your leader to participate in meaningful in-person moments that support team connection, collaboration, and business priorities. At the start of your employment, your work may be performed remotely, subject to business needs and company guidelines. As our Flying Together approach continues to evolve, you may be expected to transition to a hybrid work arrangement, including working from a designated office location on a schedule determined by your leader and organizational needs. The Company reserves the right to modify your work arrangement, including location expectations and in-person requirements, based on business needs, organizational policy, or regulatory considerations. What We Stand For Our global team values the unique perspectives each employee brings. Our success is driven by an inclusive culture where everyone can learn from one another, regardless of role or background. This collaborative approach helps us continuously improve our products, services, and systems. Duck Creek is committed to equal opportunity for all employees and applicants, with decisions based on skills, experience, and achievements—without regard to any protected status. We strive to lead by example in inclusion, diversity, and equity, creating an environment where employees can be their authentic selves. Our values guide us: We Prioritize Respect, We Listen, We Care, We Add Value, and We Lead. To learn more: https://www.duckcreek.com/life-at-duck-creek/ AI STATEMENT To ensure an equitable and consistent process, candidates are expected to complete all interviews based on their own knowledge and experience. The use of AI tools during interviews is not permitted. PRIVACY NOTICE By submitting your application, you acknowledge that Duck Creek Technologies may collect and process your personal data – Refer Privacy Notice NOTICE Duck Creek Technologies does not accept agency resume",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": 0.0,
+  "exp_max": 2.0,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 40.2,
+  "matched_skills": [
+   "data structures",
+   "agile",
+   "c",
+   "vector databases",
+   "rest api"
+  ],
+  "missing_skills": [
+   "llm",
+   "artificial intelligence",
+   "generative ai",
+   "python",
+   "rag",
+   "machine learning",
+   "neo4j",
+   "langchain"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4483447060",
+  "extra": {
+   "linkedin_id": "4483447060",
+   "seniority_level": "Not Applicable",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.16,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has 2 years of backend experience with Kafka, PostgreSQL, and AWS, aligning with the AI/ML team's need for robust data pipelines and structured knowledge modeling.",
+    "gaps": "Lacks direct experience with LLMs, Python, RAG, or knowledge graphs; strong backend background but missing core AI/LLM skills required for this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "duckcreektechnology.com",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Duck%20Creek%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Duck%20Creek%20Technologies%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Duck%20Creek%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Duck%20Creek%20Technologies%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Duck%20Creek%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Duck%20Creek%20Technologies%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Duck%20Creek%20Technologies%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Duck%20Creek%20Technologies%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.2,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "chitrank.tyagi@valiancesolutions.com",
+     "vivek.yadav@valiancesolutions.com",
+     "riddhi.sharma@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "aman.kumar@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chitrank Tyagi",
+      "title": "Technical Architect",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chitrank.tyagi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chitrank-tyagi-b08030165",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Vivek Yadav",
+      "title": "Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vivek.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vivek-yadav-7774241b2",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Riddhi Sharma",
+      "title": "HR Associate",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "riddhi.sharma@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/riddhi-sharma-150415218",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Aman Kumar",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "aman.kumar@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/aman-kumar-3b30691bb",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate Project Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5948619893?se=IIehsr3V8RGGrscDUCQQSQ&utm_medium=api&utm_source=28f9775f&v=68C80DC9AFD02E674DD838AD27E26EC31451B8F1",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-01",
+  "posted_at": "2026-11-01T09:48:13+00:00",
+  "posted_raw": "2026-11-01T09:48:13Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.7,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "d5560714cfc1",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.115,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with ABB's lean engineering culture. Proven ability to optimize high-throughput systems and lead cross-functional projects.",
+    "gaps": "Limited frontend development experience and lack of specific ABB project management or LGBTQ community engagement background."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "marc.segura@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "alberto.garanzini@abb.com",
+     "boris.fiedler@abb.com",
+     "peter.terwiesch@abb.com",
+     "erich.labuda@abb.com",
+     "morten.wierod@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ }
+]
