@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-01T10:48:24Z",
+ "updated": "2026-11-01T11:54:51Z",
  "items": [
+  {
+   "id": "careers-20261101-115451-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-11-01T11:54:51Z",
+   "file": "data/careers/careers-20261101-115451-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2732329,
+   "meta": {
+    "jobs": "2",
+    "relocation": "0",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "jobhunt-20261101-104824-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1811,26 +1831,6 @@
    "when": "2026-10-13T23:32:09Z",
    "file": "data/careers/careers-20261013-233209-software-engineer-software-developer-bac.json",
    "bytes": 2784069,
-   "meta": {
-    "jobs": "69",
-    "relocation": "54",
-    "countries": "worldwide",
-    "experience": "0-2",
-    "reloc_mode": "visa",
-    "days": "7",
-    "hours": "",
-    "min_salary": "12 LPA",
-    "list_sha": "ec840ae28566",
-    "list_count": "9110"
-   }
-  },
-  {
-   "id": "careers-20261013-233134-software-engineer-software-developer-bac",
-   "kind": "careers",
-   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, developer, SWE, SDE, engineer",
-   "when": "2026-10-13T23:31:34Z",
-   "file": "data/careers/careers-20261013-233134-software-engineer-software-developer-bac.json",
-   "bytes": 2785038,
    "meta": {
     "jobs": "69",
     "relocation": "54",
