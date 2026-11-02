@@ -1,0 +1,948 @@
+[
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Junior Java Developer",
+  "company": "Klimb.io",
+  "url": "https://www.instahyre.com/job-445597-junior-java-developer-at-klimb-noida/",
+  "country": "IN",
+  "location": "Noida",
+  "remote": null,
+  "posted": "2026-10-05",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "For Proactive Organisations Who Want Better Control Of Recruiting Outcomes",
+  "description": "We are looking for a Junior Java Developer with a sound foundation in Core Java and hands-on exposure to Spring MVC, REST API development, and relational databases. The role involves developing and maintaining backend application components, integrating with databases, implementing APIs, fixing defects, and participating in code reviews and releases. This is a Noida-based position, and applications are being considered only from candidates currently based in Noida. Responsibilities: Develop, enhance, test, and maintain Java-based backend applications. Build web application components using Spring MVC and standard Java technologies. Develop and consume REST APIs, including request validation, response handling, exception handling, and integration with backend services. Implement database access using JDBC and/or JPA and write efficient SQL queries. Work with relational databases such as MySQL or Microsoft SQL Server. Investigate and fix application defects, performance issues, and data-related problems. Write clean, maintainable, and secure code following team coding standards. Participate in unit testing, peer code reviews, build activities, and release support. Work closely with senior developers, QA, and operations teams throughout the development lifecycle. Maintain technical documentation for modules, APIs, database changes, and deployment dependencies. Requirements: Strong understanding of Core Java fundamentals, including OOP, collections, exception handling, interfaces, inheritance, and basic multithreading concepts. Hands-on exposure to Spring MVC. Understanding of RESTful API concepts and experience developing or integrating REST APIs. Working knowledge of JDBC and JPA. Good SQL fundamentals and understanding of relational database concepts. Exposure to MySQL, Microsoft SQL Server, or another major RDBMS. Basic understanding of HTTP, JSON, application logs, debugging, and source control. Good problem-solving and communication skills. Good to Have: Exposure to Spring Boot, Hibernate, Maven, Git, and Tomcat. Basic understanding of authentication and authorization in web applications. Exposure to Linux/Unix environments and shell commands. Awareness of secure coding practices and common web application vulnerabilities. Basic knowledge of HTML, CSS, JavaScript, JSP, or frontend integration. Preferred Attributes: Good coding discipline and eagerness to learn from reviews. Strong debugging and logical reasoning skills. Ability to understand existing code and make controlled changes without affecting surrounding functionality.",
+  "skills": [
+   "Java",
+   "MySQL",
+   "RDBMS",
+   "REST API",
+   "REST Web Services",
+   "RESTful",
+   "Spring",
+   "Spring Mvc",
+   "SQL",
+   "SQL Server"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 71.5,
+  "matched_skills": [
+   "java",
+   "spring",
+   "rest api",
+   "sql",
+   "code review",
+   "jpa",
+   "unit testing",
+   "qa",
+   "concurrency",
+   "hibernate",
+   "linux",
+   "html"
+  ],
+  "missing_skills": [
+   "mvc",
+   "mysql",
+   "sql server",
+   "technical documentation",
+   "object-oriented",
+   "git",
+   "bash"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih445597",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.425,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has strong Java, Spring, and SQL skills with Kafka and cloud experience, matching core requirements.",
+    "gaps": "Lacks hands-on Spring MVC, MySQL, and Git exposure required for this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "Klimb.io",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Klimb.io%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Klimb.io%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Klimb.io%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Klimb.io%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Klimb.io%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Klimb.io%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Klimb.io%22%20%28%22Senior%20engineer%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Klimb.io%22%20%28%22Senior%20engineer%22%29%20%22Noida%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Backend Developer (SDE1)",
+  "company": "Slikk",
+  "url": "https://www.instahyre.com/job-447352-backend-developer-sde1-at-slikk-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-10-17",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "India's Fastest Fashion & Beauty App",
+  "description": "Responsibilities: Architect, design, and develop highly scalable, low-latency backend systems. Build and maintain RESTful and/or GraphQL APIs for large-scale applications. Drive system design discussions, including trade-offs, scalability, and performance optimisation. Write clean, testable, and production-ready code with high coverage. Own services end-to-end from design to deployment and monitoring. Optimise applications for maximum throughput, reliability, and performance. Implement and enforce security, data protection, and compliance standards. Collaborate cross-functionally with frontend, DevOps, product, and QA teams. Requirements: 1+ years of experience in backend development. Proficiency in at least one of the following: Java (Spring Boot / Hibernate), Python (Django / Flask / FastAPI), Node.js (Express.js / NestJS). Strong understanding of RESTful API design and development. Experience with databases such as MySQL, PostgreSQL, MongoDB, or Redis. Familiarity with version control systems (Git). Knowledge of microservices architecture and distributed systems. Experience with cloud platforms (AWS, Azure, or GCP) is a plus. Understanding of containerization tools like Docker is preferred. Strong problem-solving and analytical skills.",
+  "skills": [
+   "Backend",
+   "Django",
+   "GraphQL",
+   "Java",
+   "Node.js",
+   "Python",
+   "Rest",
+   "Spring Boot"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 54.7,
+  "matched_skills": [
+   "java",
+   "spring",
+   "rest api",
+   "system design",
+   "devops",
+   "qa",
+   "hibernate",
+   "postgresql",
+   "microservices",
+   "distributed systems",
+   "aws",
+   "docker"
+  ],
+  "missing_skills": [
+   "graphql",
+   "python",
+   "django",
+   "node.js",
+   "scalability",
+   "monitoring",
+   "flask",
+   "fastapi"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih447352",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.585,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with Java, Spring Boot, PostgreSQL, and AWS, matching the core technical requirements for a Backend Developer role.",
+    "gaps": "Lacks specific experience with GraphQL, Python, or Node.js, and has not demonstrated strong monitoring or scalability expertise."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "slikk.shop",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Slikk%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Slikk%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "SDET - Backend",
+  "company": "thinkify.io",
+  "url": "https://www.instahyre.com/job-16894-sdet-backend-at-thinkify-2-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2018-12-02",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Engineering Simplified",
+  "description": "Requirements: Hands on coding experience with proven record of automation using Java/Python/Ruby/C++. Working knowledge with 1 or more functional or non-functional automation stack. Around 1-3 years of experience in testing. Experience with testing of Mobile Applications. Experience with UI & Backend Testing of web services. You have good understanding of Testing life cycle, Test Processes. You have a strong technical background, be detail driven and have good problem solving abilities. You have good product and testing acumen. You have exposure to distributed systems or web applications. Experience in test automation tools like junit, testng, phpunit, webdriver, jmeter, SoapUI etc.",
+  "skills": [
+   "Appium",
+   "Automation Testing",
+   "Big Data",
+   "C++",
+   "Charles Proxy",
+   "Java",
+   "JavaScript",
+   "Mobile Apps Testing",
+   "Python",
+   "REST Assured",
+   "Ruby",
+   "SDET",
+   "Selenium"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 40.9,
+  "matched_skills": [
+   "java",
+   "javascript",
+   "distributed systems",
+   "test automation"
+  ],
+  "missing_skills": [
+   "python",
+   "ruby",
+   "c++",
+   "appium",
+   "mobile development",
+   "selenium",
+   "junit",
+   "testng"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih16894",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.201,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong Java and distributed systems experience with Kafka, PostgreSQL, and AWS aligns well with backend automation and web service testing.",
+    "gaps": "Lacks specific experience in UI testing, mobile automation, and dedicated test automation tools like JUnit, TestNG, or Selenium."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "thinkify.io",
+    "site": "",
+    "emails": [
+     "kulkarni.karthik@thinkify.io",
+     "ashwin@thinkify.io",
+     "vishnu@thinkify.io",
+     "pattern: {first}@thinkify.io"
+    ],
+    "people": [
+     {
+      "name": "Karthik Kulkarni",
+      "title": "Founder",
+      "company": "thinkify.io",
+      "location": "",
+      "email": "kulkarni.karthik@thinkify.io",
+      "linkedin": "https://www.linkedin.com/in/kulkarnikarthik",
+      "source": "hunter",
+      "confidence": 85
+     },
+     {
+      "name": "Ashwin Modi",
+      "title": "Director of Talent Acquisition",
+      "company": "thinkify.io",
+      "location": "",
+      "email": "ashwin@thinkify.io",
+      "linkedin": "https://www.linkedin.com/in/ashwin-modi-390b96183",
+      "source": "hunter",
+      "confidence": 79
+     },
+     {
+      "name": "Vishnu Pradeep",
+      "title": "Software Test Engineer",
+      "company": "thinkify.io",
+      "location": "",
+      "email": "vishnu@thinkify.io",
+      "linkedin": "https://www.linkedin.com/in/vishnupradeep332",
+      "source": "hunter",
+      "confidence": 79
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22thinkify.io%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22thinkify.io%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22thinkify.io%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22thinkify.io%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22thinkify.io%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22thinkify.io%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22thinkify.io%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22thinkify.io%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.5,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "chitrank.tyagi@valiancesolutions.com",
+     "vivek.yadav@valiancesolutions.com",
+     "riddhi.sharma@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "aman.kumar@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chitrank Tyagi",
+      "title": "Technical Architect",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chitrank.tyagi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chitrank-tyagi-b08030165",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Vivek Yadav",
+      "title": "Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vivek.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vivek-yadav-7774241b2",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Riddhi Sharma",
+      "title": "HR Associate",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "riddhi.sharma@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/riddhi-sharma-150415218",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Aman Kumar",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "aman.kumar@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/aman-kumar-3b30691bb",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Business Development Associate",
+  "company": "Learning Shala",
+  "url": "https://www.instahyre.com/job-448033-business-development-associate-at-learning-shala-noida/",
+  "country": "IN",
+  "location": "Noida",
+  "remote": null,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Choose your tomorrow",
+  "description": "",
+  "skills": [
+   "Business Development",
+   "Counseling",
+   "Sales",
+   "Telesales"
+  ],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 0.7,
+  "score": 32.2,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih448033",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong backend engineering background with proven ability to optimize high-throughput systems and integrate APIs, aligning with the role's focus on business development and technical execution.",
+    "gaps": "Lacks direct experience in sales, client acquisition, or business development strategies."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "learningshala.in",
+    "site": "",
+    "emails": [
+     "devesh@learningshala.in",
+     "pattern: {first}@learningshala.in"
+    ],
+    "people": [
+     {
+      "name": "Devesh Singh",
+      "title": "Founder",
+      "company": "Learning Shala",
+      "location": "",
+      "email": "devesh@learningshala.in",
+      "linkedin": "https://www.linkedin.com/in/devesh-singh-6885b6120",
+      "source": "hunter",
+      "confidence": 79
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Learning%20Shala%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Learning%20Shala%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Noida%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Learning%20Shala%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Learning%20Shala%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Noida%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Learning%20Shala%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Learning%20Shala%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Noida%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Learning%20Shala%22%20%28%22Senior%20engineer%22%29%20%22Noida%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Learning%20Shala%22%20%28%22Senior%20engineer%22%29%20%22Noida%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate Commissioning Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5949398656?se=ODy_AofW8RGRQOLR_vdAhg&utm_medium=api&utm_source=28f9775f&v=6B602920B785484D7EEB4A7FDABA2F88AFE3B375",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-01",
+  "posted_at": "2026-11-01T19:48:31+00:00",
+  "posted_raw": "2026-11-01T19:48:31Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 24.1,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "b0ef238c3d36",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.116,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with ABB's engineering culture. Proven ability to optimize high-throughput systems and lead cross-functional projects.",
+    "gaps": "Lacks direct commissioning and field installation experience; primarily focused on software engineering rather than hardware commissioning."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "erich.labuda@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "morten.wierod@abb.com",
+     "boris.fiedler@abb.com",
+     "peter.terwiesch@abb.com",
+     "marc.segura@abb.com",
+     "alberto.garanzini@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate Project Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5948619893?se=ODy_AofW8RGRQOLR_vdAhg&utm_medium=api&utm_source=28f9775f&v=68C80DC9AFD02E674DD838AD27E26EC31451B8F1",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-01",
+  "posted_at": "2026-11-01T09:48:13+00:00",
+  "posted_raw": "2026-11-01T09:48:13Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 24.0,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "9f9dbf78ab0f",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.115,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with ABB's lean engineering culture. Proven ability to optimize high-throughput systems and lead cross-functional projects.",
+    "gaps": "Limited frontend development experience and lack of specific ABB project management or LGBTQ community engagement background."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "erich.labuda@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "morten.wierod@abb.com",
+     "boris.fiedler@abb.com",
+     "peter.terwiesch@abb.com",
+     "marc.segura@abb.com",
+     "alberto.garanzini@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ }
+]
