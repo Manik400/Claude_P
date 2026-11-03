@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-03T11:15:29Z",
+ "updated": "2026-11-03T12:44:17Z",
  "items": [
+  {
+   "id": "careers-20261103-124417-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-11-03T12:44:17Z",
+   "file": "data/careers/careers-20261103-124417-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2732006,
+   "meta": {
+    "jobs": "2",
+    "relocation": "1",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "jobhunt-20261103-111529-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1830,26 +1850,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261020-051341-naukri-openings-2026-10-20-run-1-last-24.jobs.json",
     "jobs": "85"
-   }
-  },
-  {
-   "id": "careers-20261019-204612-software-engineer-software-developer-bac",
-   "kind": "careers",
-   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-19T20:46:12Z",
-   "file": "data/careers/careers-20261019-204612-software-engineer-software-developer-bac.json",
-   "bytes": 3150082,
-   "meta": {
-    "jobs": "601",
-    "relocation": "4",
-    "countries": "DE,IN,AU",
-    "experience": "0-3",
-    "reloc_mode": "any",
-    "days": "15",
-    "hours": "",
-    "min_salary": "15 LPA",
-    "list_sha": "ec840ae28566",
-    "list_count": "9110"
    }
   },
   {
