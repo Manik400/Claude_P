@@ -1,0 +1,734 @@
+[
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.4,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "chitrank.tyagi@valiancesolutions.com",
+     "vivek.yadav@valiancesolutions.com",
+     "riddhi.sharma@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "deepanker.negi@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chitrank Tyagi",
+      "title": "Technical Architect",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chitrank.tyagi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chitrank-tyagi-b08030165",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Vivek Yadav",
+      "title": "Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vivek.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vivek-yadav-7774241b2",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Riddhi Sharma",
+      "title": "HR Associate",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "riddhi.sharma@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/riddhi-sharma-150415218",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Deepanker Negi",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "deepanker.negi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/deepanker-negi-506a76213",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate AI Engineer",
+  "company": "Digital Green",
+  "url": "https://www.adzuna.in/details/5952526811?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "Agara, Bangalore",
+  "remote": null,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T10:08:16+00:00",
+  "posted_raw": "2026-11-04T10:08:16Z",
+  "salary": "",
+  "snippet": "Associate AI Engineer Job Title: Associate AI Engineer Location: Bangalore Department: Technology Experience : 1-4 years (relevant) About Digital Green Digital Green is a pioneer global not for profit organization, utilizing digital platforms and community-driven approaches to amplify the voices of smallholder farmers and improve their livelihoods. Our mission is to create a world where farmers us",
+  "description": "Associate AI Engineer Job Title: Associate AI Engineer Location: Bangalore Department: Technology Experience : 1-4 years (relevant) About Digital Green Digital Green is a pioneer global not for profit organization, utilizing digital platforms and community-driven approaches to amplify the voices of smallholder farmers and improve their livelihoods. Our mission is to create a world where farmers use technology and data to build prosperous communities. By harnessing the power of technology, we facilitate knowledge sharing, capacity building, and market linkages, enabling farmers to adopt sustainable agricultural practices and increase their productivity and income. We are dedicated to transforming the lives of under-served smallholder farmers worldwide through innovative technology solutions. Backed by leading philanthropic organizations such as the Bill & Melinda Gates Foundation (BMGF), Walmart Foundation, USAID, and UK Foreign, Commonwealth & Development Office (UKFCDO), we are committed to leveraging data and technology to empower smallholder farmers and strengthen agricultural extension systems. Job Summary LLMs · Embeddings · Evaluation · Agentic Systems · Multi-Modal AI The Associate AI Engineer will build and evaluate LLM-powered features for FarmerChat, Digital Green's conversational AI platform serving millions of smallholder farmers. We are seeking an engineer with Python skills and hands-on LLM experience to design, test, and monitor AI systems that work reliably in multilingual, low-resource, and real-world agricultural contexts. You'll rotate across feature development, evaluation testing, and observability depending on sprint priorities—gaining broad exposure across the full AI stack. In this role, you will write and refine prompts, build agentic workflows using tool-use patterns and the Model Context Protocol (MCP), maintain embedding and vector store pipelines, and work with multimodal data (text, speech, image) to serve farmer-facing advisory tools. You'll define and run automated evaluation frameworks to catch hallucination and bias before models ship to production, and collaborate with senior engineers, product, and field teams to ship reliable AI systems. This is a generalist role with genuine mentorship—your contributions matter from day one, and you'll grow rapidly in a fast-moving, impact-driven team. Key Responsibilities 1. Build & Integrate LLM Features Help build features for FarmerChat using LLM provider APIs (Anthropic Claude, OpenAI, Google Gemini) with guidance from senior engineers. Write and refine prompts, call APIs, and wire up tool-use patterns using provider SDKs and the Model Context Protocol (MCP). 2. Test & Evaluate AI Systems Run and extend automated test suites that check LLM outputs for accuracy, hallucination, and bias using tools like Ragas, DeepEval, or Promptfoo. Test agent workflows end-to-end and document edge cases, failure modes, and regressions. 3. Work with Embeddings, Speech & Vision Help maintain embedding pipelines and vector stores (Qdrant, pgvector, FAISS) that ground LLM responses with relevant agricultural knowledge. Support the team’s expanding multi-modal work - speech-to-text (Whisper, Deepgram), text-to-speech, and image classification for crop and pest detection. 4. Monitor, Debug & Document Use observability tools (Langfuse, Arize Phoenix, Weights & Biases) to monitor system health and flag issues. Document your work - prompts, experiments, runbooks - so the team can reproduce and build on it. Qualification & Skills: 1-4 years in software engineering, ML, data science, or a related AI role. Bachelor’s or Master’s in Computer Science, AI/ML, or a related field. Solid Python skills - comfortable writing code beyond notebooks. Hands-on experience with at least one LLM provider API (Claude, OpenAI, or Gemini). Familiarity with prompt engineering basics (few-shot, chain-of-thought, structured output). Basic understanding of embeddings and vector stores. Git and collaborative development workflows. Nice to Have Exposure to agentic workflows, MCP, or tool-use patterns. Hands-on with speech models (Whisper, Deepgram) or vision models (ViT, CLIP, YOLO). Experience with LLM evaluation frameworks (Ragas, DeepEval, Promptfoo). Cloud platform basics (AWS Bedrock / SageMaker, GCP Vertex AI, or Azure). Fine-tuning experience (LoRA / PEFT) or open-source LLMs (Gemma, LLaMA, Mistral). Docker / containerization basics. What You’ll Build Production features for FarmerChat - a real AI product serving millions of users. Evaluation pipelines that validate every model update before it ships. Multi-modal systems spanning text, speech, and image classification for agricultural use cases. Tools and documentation that make the whole AI team more productive. Why Digital Green Real impact - your code helps farmers, not ad clicks. Broad exposure - you’ll build, test, debug, and ship across the full AI stack. Genuine mentorship from senior engineers. Small, fast-moving team where your contributions matter from day one. Compensation and Application Process: Digital Green is a great place to work and prides itself on a competitive and comprehensive compensation and benefits package. Digital Green Trust is proud to be an equal opportunity employer. All qualified applicants will receive consideration for employment without regard to race, color, religion, sex, national origin, disability status, protected veteran status, or any other characteristic protected by law. Please send your application along with an updated CV and a cover letter explaining your suitability for the position. All completed applications should be applied through https://digitalgreen.applytojob.com/apply/Wtd9i7fv2k/Associate-AI-Engineer Powered by JazzHR",
+  "skills": [],
+  "employment_type": "['Full Time']",
+  "exp_min": 1.0,
+  "exp_max": 4.0,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 29.1,
+  "matched_skills": [
+   "observability",
+   "vector databases",
+   "aws",
+   "docker"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "llm",
+   "ai agents",
+   "python",
+   "openai",
+   "machine learning",
+   "anthropic",
+   "phoenix"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "d12f5ba88837",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.305,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with vector databases, observability, and AWS aligns well with the role's technical requirements.",
+    "gaps": "Lacks direct LLM/Python/AI agent experience; needs training on prompt engineering and agentic workflows."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "digitalgreen.org",
+    "site": "",
+    "emails": [
+     "rikin@digitalgreen.org",
+     "razak@digitalgreen.org",
+     "jona@digitalgreen.org",
+     "leena@digitalgreen.org",
+     "yordanos@digitalgreen.org",
+     "tetyana@digitalgreen.org",
+     "ammar@digitalgreen.org",
+     "mengistu@digitalgreen.org",
+     "michael@digitalgreen.org",
+     "lakshmi@digitalgreen.org"
+    ],
+    "people": [
+     {
+      "name": "Rikin Gandhi",
+      "title": "CEO",
+      "company": "Digital Green",
+      "location": "",
+      "email": "rikin@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/rikingandhi",
+      "source": "hunter",
+      "confidence": 82
+     },
+     {
+      "name": "Razak M",
+      "title": "Vice President of Engineering",
+      "company": "Digital Green",
+      "location": "",
+      "email": "razak@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/razakkm",
+      "source": "hunter",
+      "confidence": 79
+     },
+     {
+      "name": "Jona Repishti",
+      "title": "Director of Strategy",
+      "company": "Digital Green",
+      "location": "",
+      "email": "jona@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/jona-repishti",
+      "source": "hunter",
+      "confidence": 79
+     },
+     {
+      "name": "Leena Kumaran",
+      "title": "HR Manager",
+      "company": "Digital Green",
+      "location": "",
+      "email": "leena@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/leena-kumaran",
+      "source": "hunter",
+      "confidence": 78
+     },
+     {
+      "name": "Yordanos B",
+      "title": "Head of Human Resources",
+      "company": "Digital Green",
+      "location": "",
+      "email": "yordanos@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/yordanos-b-ba086397",
+      "source": "hunter",
+      "confidence": 77
+     },
+     {
+      "name": "Tetyana Zelenska",
+      "title": "Director of Monitoring and Evaluation",
+      "company": "Digital Green",
+      "location": "",
+      "email": "tetyana@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/tetyana-zelenska",
+      "source": "hunter",
+      "confidence": 77
+     },
+     {
+      "name": "Ammar Aljundi",
+      "title": "Global Head of Human Resources Operations",
+      "company": "Digital Green",
+      "location": "",
+      "email": "ammar@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/ammar-aljundi",
+      "source": "hunter",
+      "confidence": 76
+     },
+     {
+      "name": "Mengistu Ayele",
+      "title": "Regional Director",
+      "company": "Digital Green",
+      "location": "",
+      "email": "mengistu@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/mengistu-ayele-40b18113a",
+      "source": "hunter",
+      "confidence": 76
+     },
+     {
+      "name": "Michael Cook",
+      "title": "Senior Global IT Operations Manager",
+      "company": "Digital Green",
+      "location": "",
+      "email": "michael@digitalgreen.org",
+      "linkedin": "https://www.linkedin.com/in/michael-cook-78480668",
+      "source": "hunter",
+      "confidence": 67
+     },
+     {
+      "name": "Lakshmi Iyer",
+      "title": "Deputy Director Strategy",
+      "company": "Digital Green",
+      "location": "",
+      "email": "lakshmi@digitalgreen.org",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 84
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Digital%20Green%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Agara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Digital%20Green%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Agara%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Digital%20Green%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Agara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Digital%20Green%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Agara%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Digital%20Green%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Agara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Digital%20Green%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Agara%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Digital%20Green%22%20%28%22Senior%20engineer%22%29%20%22Agara%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Digital%20Green%22%20%28%22Senior%20engineer%22%29%20%22Agara%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "associate project Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5952402097?se=TJOSahvY8RGKX7Zo2OjLVg&utm_medium=api&utm_source=28f9775f&v=53D54A6FE87631C9FA0EB1191D367B9284CFE93A",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T09:21:39+00:00",
+  "posted_raw": "2026-11-04T09:21:39Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.7,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "a6a3af28c04c",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.114,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with Kafka, PostgreSQL, and AWS, aligning with the backend engineering role. Strong focus on performance optimization and distributed systems matches the project engineer's technical requirements.",
+    "gaps": "Candidate lacks direct experience with ABB's specific technologies (e.g., PLCs, SCADA systems) and the role's emphasis on lean manufacturing methodologies."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "erich.labuda@abb.com",
+     "boris.fiedler@abb.com",
+     "peter.terwiesch@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "morten.wierod@abb.com",
+     "alberto.garanzini@abb.com",
+     "marc.segura@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate R&D Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5952402347?se=TJOSahvY8RGKX7Zo2OjLVg&utm_medium=api&utm_source=28f9775f&v=15CA661465D23F9560770E573C0737BC1AE700BE",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T09:21:41+00:00",
+  "posted_raw": "2026-11-04T09:21:41Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.6,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "e81f63cfbeeb",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.11,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with video analytics, Kafka, and PostgreSQL, aligning with the R&D role's focus on distributed systems and event processing.",
+    "gaps": "Candidate lacks direct experience with ABB's specific technologies (C++, Python, C#) and the company's inclusive culture, though technical skills are strong."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "erich.labuda@abb.com",
+     "boris.fiedler@abb.com",
+     "peter.terwiesch@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "morten.wierod@abb.com",
+     "alberto.garanzini@abb.com",
+     "marc.segura@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ }
+]
