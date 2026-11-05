@@ -1,0 +1,536 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function () {
+  try {
+    var r = document.documentElement, t = localStorage.getItem('jh:theme') || 'auto';
+    if (t === 'light' || t === 'dark') r.setAttribute('data-theme', t);
+    if (localStorage.getItem('jh:ui') === 'v2') {
+      r.setAttribute('data-ui', 'v2');
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'; document.head.appendChild(l);
+    }
+  } catch (e) { /* private window: follow the device */ }
+})();</script>
+
+<title>Job Openings 2026-10-20 r3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
+  :root {
+    --bg: #f2f4f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --line: #dde2e9;
+    --ink: #161b22;
+    --muted: #5b6675;
+    --accent: #1f5c8b;
+    --accent-soft: #e8f0f7;
+    --accent-on: #ffffff;
+    --new: #a15c07;
+    --new-soft: #fdf3e3;
+    --good: #166534;
+    --good-soft: #e6f4ea;
+    --shadow: 0 1px 2px rgba(22, 27, 34, .06), 0 4px 12px rgba(22, 27, 34, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1218;
+      --surface: #161c25;
+      --surface-2: #1b222c;
+      --line: #2a3441;
+      --ink: #e7ecf3;
+      --muted: #8d99a9;
+      --accent: #6aa9d8;
+      --accent-soft: #17293a;
+      --accent-on: #0e1218;
+      --new: #e0a54a;
+      --new-soft: #2e2413;
+      --good: #6ec48c;
+      --good-soft: #14291c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1218;
+    --surface: #161c25;
+    --surface-2: #1b222c;
+    --line: #2a3441;
+    --ink: #e7ecf3;
+    --muted: #8d99a9;
+    --accent: #6aa9d8;
+    --accent-soft: #17293a;
+    --accent-on: #0e1218;
+    --new: #e0a54a;
+    --new-soft: #2e2413;
+    --good: #6ec48c;
+    --good-soft: #14291c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
+
+  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.75rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; font-size: clamp(26px, 4vw, 36px);
+    margin: 0; letter-spacing: -.02em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 116px; box-shadow: var(--shadow);
+  }
+  .stat b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.5rem; font-weight: 500; line-height: 1.15;
+  }
+  .stat span {
+    font-size: 0.6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .stat.is-applied b { color: var(--good); }
+  .stat.is-new b { color: var(--new); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--bg); padding: 6px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .chip {
+    font: 500 0.8125rem/1 Archivo, sans-serif;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  @media (max-height: 760px) { .bar { position: static; } }
+  .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1 1 auto; }
+  .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+  .bar-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6875rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding-right: 2px;
+  }
+  .search {
+    font: 400 0.875rem "Source Sans 3", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 10px; min-width: 180px; flex: 1 1 200px;
+  }
+
+  .group-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
+  }
+  .group-head h2 {
+    font-family: Archivo, sans-serif; font-size: 0.9375rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin: 0;
+  }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.8125rem; color: var(--muted); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px 1fr 172px 120px 92px;
+    gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px; margin-bottom: 7px; box-shadow: var(--shadow);
+  }
+  .row.done { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--line)); }
+  .row.done .title a { text-decoration: line-through; opacity: .62; }
+  .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 0.9688rem; line-height: 1.3; }
+  .title a { color: var(--ink); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .company { color: var(--muted); font-size: 0.8438rem; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6562rem; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
+  .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
+  .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+  .note { color: var(--muted); font-size: 0.7812rem; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
+
+  .meta { font-size: 0.8125rem; color: var(--muted); }
+  .meta div + div { margin-top: 3px; }
+  .rank {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.0625rem; text-align: right; color: var(--accent);
+  }
+  .rank small { display: block; font-size: 0.5938rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  .empty { color: var(--muted); padding: 26px 0; text-align: center; }
+
+  /* Shared with the interview-prep page, which links back here. */
+  nav.top {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  }
+  nav.top a, nav.top span.here {
+    font: 600 0.8438rem/1 Archivo, sans-serif; text-decoration: none;
+    padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
+    border-radius: 6px 6px 0 0;
+  }
+  nav.top a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.top span.here { color: var(--ink); border-bottom-color: var(--accent); }
+  nav.top a.disabled { opacity: .45; pointer-events: none; }
+
+  /* Each scan of the day keeps its own page, so this is how you get back to
+     the 08:52 list from the 18:11 one. */
+  nav.runs {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+    margin: -14px 0 20px; font: 400 0.7812rem/1.6 "Source Sans 3", sans-serif;
+  }
+  nav.runs .label { color: var(--muted); margin-right: 2px; }
+  nav.runs a, nav.runs span.here {
+    padding: 3px 9px; border-radius: 999px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted);
+    font: 500 0.7812rem/1.6 "IBM Plex Mono", monospace;
+  }
+  nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
+  nav.runs .sep { color: var(--line); padding: 0 4px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8125rem; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 30px 1fr; }
+    .meta, .rank { grid-column: 2; text-align: left; }
+    .rank { font-size: 0.9375rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="top">
+    <span class="here">Job Scanner</span>
+    <a href="#" class="disabled">Top 10 Jobs</a>
+    <a href="#" class="disabled">Interview Preparation (not generated)</a>
+    <a href="applications.html">Applications sent</a>
+  </nav>
+
+  <nav class="runs">
+    <span class="label">Today&rsquo;s scans</span>
+    <a href="openings-2026-10-20-r1.html">r1</a>
+    <a href="openings-2026-10-20-r2.html">r2</a>
+    <span class="here">r3</span>
+    <span class="sep">|</span>
+    <a href="openings-2026-10-19-r3.html">10-19</a>
+    <a href="openings-2026-10-16-r3.html">10-16</a>
+    <a href="openings-2026-10-15-r3.html">10-15</a>
+    <a href="openings-2026-10-14-r3.html">10-14</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">2026-10-20 &middot; scan 3 &middot; All locations &middot; first seen today</div>
+    <h1>47 openings, 47 new today</h1>
+    <p class="sub">Every opening this scan found, remote first. Tick a row when you have applied &mdash; ticks are saved in this browser and carry across every day&rsquo;s page.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="s-total">0</b><span>Openings</span></div>
+    <div class="stat is-new"><b id="s-new">0</b><span>New today</span></div>
+    <div class="stat"><b id="s-remote">0</b><span>Remote</span></div>
+    <div class="stat is-applied"><b id="s-applied">0</b><span>Applied</span></div>
+    <div class="stat"><b id="s-left">0</b><span>Still to do</span></div>
+  </div>
+
+  <div class="bar">
+    <span class="fgrp" data-grp="openings.show"><span class="flabel">Show</span><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+      <button class="chip" data-filter="mnc" aria-pressed="false">MNC / big tech / unicorn</button>
+      <button class="chip" data-filter="pay" aria-pressed="false">&#8805; 10 LPA</button>
+    </span></span>
+    <span class="fgrp" data-grp="openings.posted"><span class="flabel">Posted</span><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></span>
+    <span class="spacer"></span>
+    <span class="fgrp" data-grp="openings.search"><span class="flabel">Search</span><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></span>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Generated 2026-10-20 from 47 Naukri and 0 LinkedIn listings.
+    Naukri scores are 0&ndash;100 across skills, title, experience, location and freshness.
+    LinkedIn shows title match only &mdash; its cards carry no skills or experience range, so the two are not the same measure.</p>
+    <p>Ticks are stored in this browser under <code>jobtracker.applied</code>. Clearing site data clears them.</p>
+    <p>Every listing carries a posted date.</p>
+  </footer>
+</div>
+
+<script id="data" type="application/json">[{"id": "naukri:191026504323", "board": "Naukri", "title": "Case Analyst", "company": "Immigration Hotspot", "location": "Remote", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-2 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-case-analyst-immigration-hotspot-india-remote-1-to-2-years-191026504323", "remote": true, "easy": false, "note": "Building, Analysis, Data", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914230", "board": "Naukri", "title": "Application Engineer", "company": "Mongodb", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 24.0, "lpa_kind": "typical", "lpa_source": "typical for MongoDB (Product MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "product", "mnc_name": "MongoDB", "experience": "1-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 85.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-application-engineer-mongodb-software-india-private-limited-bengaluru-1-to-6-years-191026914230", "remote": false, "easy": true, "note": "Docker, Architecture, Cloud, Development, AWS", "ai": "Fit: Strong cloud (AWS) and Docker experience with event-driven architecture aligns well with the candidate's background in high-throughput systems. However, the role requires GenAI innovation and specific MongoDB expertise, which are missing fr  Gap: Lacks specific experience with MongoDB and GenAI solutions required by the job.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026501849", "board": "Naukri", "title": "Backend Engineer Junior", "company": "Cognyte Analytics India", "location": "Pune", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 68.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-engineer-junior-cognyte-analytics-india-private-limited-pune-1-to-3-years-191026501849", "remote": false, "easy": false, "note": "Angular, Docker, Cloud, Development, Analytics", "ai": "Fit: Strong Java/Spring Boot background with 2 years of production experience, plus Docker and cloud skills align well with the candidate's core competencies.  Gap: Lacks explicit Kubernetes/OpenShift experience and Git branching workflows required for the Junior role.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026503372", "board": "Naukri", "title": "Analyst-Control Management", "company": "AMERICAN EXPRESS", "location": "Gurugram", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for American Express (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "American Express", "experience": "1-2 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 64.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-analyst-control-management-american-express-india-gurugram-1-to-2-years-191026503372", "remote": false, "easy": false, "note": "Operations, Automation, Analysis, SQL", "ai": "Fit: Strong SQL and analysis skills with 2 years of experience in high-throughput data processing and system optimization.  Gap: Lacks direct financial services industry experience and BigQuery proficiency.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:220926009494", "board": "Naukri", "title": "Frontend Engineer-React.js+Node.Js", "company": "Naukri Assist", "location": "Gurugram", "salary": "5-13 Lacs PA", "lpa": 13.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "27 Days Ago", "age": 28, "rank": 61.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-engineer-react-js-node-js-naukri-assist-gurugram-2-to-5-years-220926009494", "remote": false, "easy": false, "note": "react, React.Js", "ai": "Fit: Candidate has 2 years of experience with React, but lacks 25 years of professional frontend development experience and deep JavaScript ES6+ expertise required for a senior role.  Gap: Significant gap in professional experience (25 years vs 2 years) and depth of JavaScript mastery.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026502375", "board": "Naukri", "title": "AI Full Stack Developer", "company": "Incruiter", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.7, "lpa_kind": "role", "lpa_source": "market median for a full stack developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 61.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-ai-full-stack-developer-incruiter-bengaluru-1-to-6-years-191026502375", "remote": false, "easy": false, "note": "Full Stack, Architecture, AWS", "ai": "Fit: Strong MERN stack experience with 2 years of production-scale development, including Kafka, Redis, and cloud infrastructure, aligns well with the role's focus on scalable architecture and AI integrations.  Gap: Lacks specific experience with AI/ML frameworks (LangChain, TensorFlow) and WebSocket/WebRTC, which are critical for this role.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026502447", "board": "Naukri", "title": "SDE 1 (Flutter)", "company": "Nikah Forever", "location": "New Delhi", "salary": "Not disclosed", "lpa": 10.5, "lpa_kind": "role", "lpa_source": "market median for a mobile developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 61.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-1-flutter-nikah-forever-new-delhi-1-to-6-years-191026502447", "remote": false, "easy": false, "note": "Architecture, Development", "ai": "Fit: Strong Flutter experience, 2 years of production-grade distributed systems, and 85%+ code coverage.  Gap: Limited to 2 years of experience; candidate needs 6-12 months of fresh mobile development focus.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:170926500981", "board": "Naukri", "title": "Software Developer", "company": "Zionstar Edtech", "location": "Nagercoil", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "30+ Days Ago", "age": 33, "rank": 58.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-zionstar-edtech-private-limited-nagercoil-1-to-4-years-170926500981", "remote": false, "easy": false, "note": "python, software development, sql", "ai": "Fit: Strong Java/Spring Boot experience, event-driven microservices, and cloud (AWS) skills align well with the role's technical requirements.  Gap: Lacks direct Python and SQL proficiency; candidate needs to demonstrate proficiency in these areas.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026503061", "board": "Naukri", "title": "Backend Developer", "company": "Opseazy", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 58.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-opseazy-bengaluru-2-to-7-years-191026503061", "remote": false, "easy": false, "note": "Python, Backend", "ai": "Fit: Strong Java/Spring Boot experience and 2 years of production-scale backend work align well with the role's core requirements.  Gap: Candidate lacks direct Python/Flask experience and MongoDB modeling/querying skills.", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026911010", "board": "Naukri", "title": "Data Analytics Specialist IV", "company": "Uber", "location": "Hyderabad, Hyderabad", "salary": "Not disclosed", "lpa": 30.0, "lpa_kind": "typical", "lpa_source": "typical for Uber (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Uber", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 57.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-data-analytics-specialist-iv-uber-india-research-and-development-private-limited-hyderabad-hyderabad-2-to-7-years-191026911010", "remote": false, "easy": true, "note": "Project, Analytics", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:120825503192", "board": "Naukri", "title": "Associate Software Engineer", "company": "Qualminds", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-2 Yrs", "posted": "30+ Days Ago", "age": 434, "rank": 56.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-associate-software-engineer-qualminds-technologies-pvt-ltd-hyderabad-0-to-2-years-120825503192", "remote": false, "easy": false, "note": "Linux, Javascript, HTML", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026911130", "board": "Naukri", "title": "GPU Performance Verification Engineer", "company": "Intel", "location": "Bengaluru, Bengaluru", "salary": "Not disclosed", "lpa": 15.0, "lpa_kind": "typical", "lpa_source": "typical for Intel (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Intel", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 55.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-gpu-performance-verification-engineer-intel-technology-india-pvt-ltd-bengaluru-bengaluru-2-to-7-years-191026911130", "remote": false, "easy": true, "note": "Architecture, Cache", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026503097", "board": "Naukri", "title": "VS01670 - Web Development Engineer", "company": "E4 Software Services", "location": "Mumbai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-vs01670-web-development-engineer-e4-softwares-mumbai-0-to-3-years-191026503097", "remote": false, "easy": false, "note": "Development, Cache", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026501635", "board": "Naukri", "title": "VS01671 - Mobile Development Engineer (React Native)", "company": "E4 Software Services", "location": "Mumbai", "salary": "Not disclosed", "lpa": 10.5, "lpa_kind": "role", "lpa_source": "market median for a mobile developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 53.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-vs01671-mobile-development-engineer-react-native-e4-softwares-mumbai-1-to-4-years-191026501635", "remote": false, "easy": false, "note": "Integration", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914443", "board": "Naukri", "title": "Software Engineer", "company": "Ecolab Global Services", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 52.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-ecolab-global-services-private-limited-bengaluru-1-to-4-years-191026914443", "remote": false, "easy": true, "note": "SQL", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026012134", "board": "Naukri", "title": "NI Pune Q4 26- Backend Engineer Junior", "company": "Cognyte Analytics India", "location": "Hybrid - Pune", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 52.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-ni-pune-q4-26-backend-engineer-junior-cognyte-analytics-india-pune-1-to-4-years-191026012134", "remote": false, "easy": false, "note": "Websocket, Backend, Rest", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026501988", "board": "Naukri", "title": "VS01650 - Software Test Engineer - Web", "company": "E4 Software Services", "location": "Thane", "salary": "Not disclosed", "lpa": 5.0, "lpa_kind": "role", "lpa_source": "market median for a qa engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 51.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-vs01650-software-test-engineer-web-e4-softwares-thane-2-to-4-years-191026501988", "remote": false, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026501462", "board": "Naukri", "title": "VS01651 - Software Test Engineer Mobile", "company": "E4 Software Services", "location": "Thane", "salary": "Not disclosed", "lpa": 5.0, "lpa_kind": "role", "lpa_source": "market median for a qa engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 50.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-vs01651-software-test-engineer-mobile-e4-softwares-thane-2-to-4-years-191026501462", "remote": false, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:070926502379", "board": "Naukri", "title": "SDE - 2 (Backend)", "company": "Ferns N Petals", "location": "Gurugram", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "30+ Days Ago", "age": 43, "rank": 50.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sde-2-backend-ferns-n-petals-pvt-ltd-gurugram-1-to-4-years-070926502379", "remote": false, "easy": false, "note": "caching", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914184", "board": "Naukri", "title": "Datadog Engineer", "company": "Techstar Group", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 49.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-datadog-engineer-techstar-software-development-india-pvt-ltd-hyderabad-2-to-4-years-191026914184", "remote": false, "easy": true, "note": "Integration, Cloud", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026502865", "board": "Naukri", "title": "COE - Scrapper developers", "company": "Avolta", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 49.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-coe-scrapper-developers-avolta-bengaluru-1-to-4-years-191026502865", "remote": false, "easy": false, "note": "HTML, Linux, CSS, Concurrent", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026502215", "board": "Naukri", "title": "HR Operations Associate", "company": "Expedia", "location": "Gurugram", "salary": "Not disclosed", "lpa": 19.0, "lpa_kind": "typical", "lpa_source": "typical for Expedia Group (Product MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "product", "mnc_name": "Expedia Group", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 49.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-hr-operations-associate-expedia-group-gurugram-2-to-7-years-191026502215", "remote": false, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914177", "board": "Naukri", "title": "Palantir Developer", "company": "Techstar Group", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 49.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-palantir-developer-techstar-software-development-india-pvt-ltd-hyderabad-0-to-5-years-191026914177", "remote": false, "easy": true, "note": "Processing, Data", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026913348", "board": "Naukri", "title": "Associate Specialist - Employee Experience", "company": "Iris Software", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 46.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-associate-specialist-employee-experience-iris-software-technologies-private-limited-noida-2-to-5-years-191026913348", "remote": false, "easy": true, "note": "Cloud, Analytics", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914183", "board": "Naukri", "title": "OpenWrt Software Engineer", "company": "Techstar Group", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 46.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-openwrt-software-engineer-techstar-software-development-india-pvt-ltd-hyderabad-1-to-6-years-191026914183", "remote": false, "easy": true, "note": "Architecture", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026503099", "board": "Naukri", "title": "Kubernetes Engineer", "company": "Training Basket", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 46.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-kubernetes-engineer-training-basket-noida-1-to-3-years-191026503099", "remote": false, "easy": false, "note": "Architecture", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026011300", "board": "Naukri", "title": "Data Privacy Consultant", "company": "ValuePoint", "location": "Bengaluru", "salary": "12-20 Lacs PA", "lpa": 20.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 45.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-data-privacy-consultant-valuepoint-bengaluru-3-to-6-years-191026011300", "remote": false, "easy": true, "note": "Management, Data", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026009291", "board": "Naukri", "title": "AS400, Cobol Developer", "company": "CGI", "location": "Hybrid - Hyderabad, Chennai, Bengaluru", "salary": "8-15 Lacs PA", "lpa": 15.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-as400-cobol-developer-cgi-hyderabad-chennai-bengaluru-3-to-8-years-191026009291", "remote": false, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:210926026326", "board": "Naukri", "title": "Logistics Executive", "company": "Flipkart", "location": "Mumbai(Wadala +4)", "salary": "Not disclosed", "lpa": 22.5, "lpa_kind": "typical", "lpa_source": "typical for Walmart Global Tech (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Walmart Global Tech", "experience": "0-5 Yrs", "posted": "28 Days Ago", "age": 29, "rank": 43.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-logistics-executive-flipkart-mumbai-0-to-5-years-210926026326", "remote": false, "easy": false, "note": "Delivery", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914172", "board": "Naukri", "title": "QA OpenWRT  Support Engineer", "company": "Techstar Group", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 5.0, "lpa_kind": "role", "lpa_source": "market median for a qa engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-qa-openwrt-support-engineer-techstar-software-development-india-pvt-ltd-hyderabad-2-to-6-years-191026914172", "remote": false, "easy": true, "note": "Linux", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026502356", "board": "Naukri", "title": "Software Developer T05-T10", "company": "Pluxee", "location": "Mumbai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-t05-t10-pluxee-mumbai-2-to-4-years-191026502356", "remote": false, "easy": false, "note": "Software development", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026008876", "board": "Naukri", "title": "Data Strategy", "company": "Anlage Infotech", "location": "Hybrid - Gurugram, Pune, Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-data-strategy-anlage-infotech-pune-gurugram-bengaluru-3-to-7-years-191026008876", "remote": false, "easy": true, "note": "Core, Data", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:211124506650", "board": "Naukri", "title": "Client Solution Group (CSG) Management & Strategy - Associate", "company": "Goldman Sachs", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 24.0, "lpa_kind": "typical", "lpa_source": "typical for Goldman Sachs (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Goldman Sachs", "experience": "2-5 Yrs", "posted": "30+ Days Ago", "age": 698, "rank": 42.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-client-solution-group-csg-management-strategy-associate-goldman-sachs-bengaluru-2-to-5-years-211124506650", "remote": false, "easy": false, "note": "HTML", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:280825502419", "board": "Naukri", "title": "Data Migration Specialist", "company": "Lixil", "location": "Gurugram", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-5 Yrs", "posted": "30+ Days Ago", "age": 418, "rank": 42.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-data-migration-specialist-lixil-asia-gurugram-1-to-5-years-280825502419", "remote": false, "easy": false, "note": "Agile, Data", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:291025503656", "board": "Naukri", "title": "PHP DEVELOPER", "company": "Wdp Technologies", "location": "Jaipur", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "30+ Days Ago", "age": 356, "rank": 42.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-php-developer-wdp-technologies-pvt-ltd-jaipur-1-to-4-years-291025503656", "remote": false, "easy": false, "note": "HTML, GIT", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026913352", "board": "Naukri", "title": "Associate Executive - Talent Management", "company": "Iris Software", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 42.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-associate-executive-talent-management-iris-software-technologies-private-limited-noida-2-to-3-years-191026913352", "remote": false, "easy": true, "note": "Cloud, Analytics", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:100625501515", "board": "Naukri", "title": "Trainer", "company": "Flipkart", "location": "Gurugram", "salary": "Not disclosed", "lpa": 22.5, "lpa_kind": "typical", "lpa_source": "typical for Walmart Global Tech (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Walmart Global Tech", "experience": "1-2 Yrs", "posted": "30+ Days Ago", "age": 497, "rank": 42.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-trainer-flipkart-gurugram-1-to-2-years-100625501515", "remote": false, "easy": false, "note": "Usage", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914188", "board": "Naukri", "title": "AML Transaction Monitoring Analyst", "company": "Techstar Group", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 41.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-aml-transaction-monitoring-analyst-techstar-software-development-india-pvt-ltd-bengaluru-2-to-5-years-191026914188", "remote": false, "easy": true, "note": "", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:221124503360", "board": "Naukri", "title": "Direct To Consumer -  Chat Process -Digital Operations - Specialist", "company": "Goldman Sachs", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 24.0, "lpa_kind": "typical", "lpa_source": "typical for Goldman Sachs (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Goldman Sachs", "experience": "1-2 Yrs", "posted": "30+ Days Ago", "age": 697, "rank": 41.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-direct-to-consumer-chat-process-digital-operations-specialist-goldman-sachs-hyderabad-1-to-2-years-221124503360", "remote": false, "easy": false, "note": "HTML", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026914130", "board": "Naukri", "title": "AUTOSAR BSW Developer", "company": "ZF", "location": "Chennai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 40.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-autosar-bsw-developer-zf-india-private-limited-chennai-2-to-4-years-191026914130", "remote": false, "easy": true, "note": "Architecture", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:201026000240", "board": "Naukri", "title": "Data Quality Control & Excel Specialist", "company": "Demand Curve Marketing Systems", "location": "Bengaluru(Sanjay nagar)", "salary": "Not disclosed", "lpa": 5.0, "lpa_kind": "role", "lpa_source": "market median for a qa engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "Today", "age": 0, "rank": 36.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-data-quality-control-excel-specialist-demand-curve-marketing-systems-bengaluru-1-to-3-years-201026000240", "remote": false, "easy": false, "note": "Building", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026504133", "board": "Naukri", "title": "SEO Off-Page Specialist", "company": "Stalkus Digital (sud)", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 35.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-seo-off-page-specialist-sud-marketing-agency-bengaluru-0-to-3-years-191026504133", "remote": false, "easy": false, "note": "Building", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:201026007266", "board": "Naukri", "title": "CAE Engineer- Durability", "company": "Canvendor Software solutions", "location": "Chennai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-6 Yrs", "posted": "Just Now", "age": 0, "rank": 34.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-cae-engineer-durability-canvendor-software-solutions-chennai-1-to-6-years-201026007266", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026503028", "board": "Naukri", "title": "Operator", "company": "Ayud Software", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 33.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-operator-ayud-software-bengaluru-2-to-7-years-191026503028", "remote": false, "easy": false, "note": "Production", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:150118500014", "board": "Naukri", "title": "three D Animation Developer", "company": "Deshya Technologies", "location": "Guwahati", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "30+ Days Ago", "age": 2645, "rank": 29.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-three-d-animation-developer-deshya-technologies-pvt-ltd-guwahati-1-to-3-years-150118500014", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:191026913384", "board": "Naukri", "title": "Immigration Specialist", "company": "Iris Software", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 28.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-immigration-specialist-iris-software-technologies-private-limited-noida-2-to-7-years-191026913384", "remote": false, "easy": true, "note": "", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}, {"id": "naukri:020725503250", "board": "Naukri", "title": "Coordinator Visa & Documentation", "company": "Visas Avenue", "location": "New Delhi", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-6 Yrs", "posted": "30+ Days Ago", "age": 475, "rank": 23.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-coordinator-visa-documentation-visas-avenue-pvt-ltd-new-delhi-2-to-6-years-020725503250", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-10-20", "status": "", "status_note": ""}]</script>
+<script>
+  const ROWS = JSON.parse(document.getElementById('data').textContent);
+  const KEY = 'jobtracker.applied';
+  const TODAY = '2026-10-20';
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  let applied = load();
+  let filter = 'all';
+  let postedMax = null;   // null = any age
+  let query = '';
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function visible(r) {
+    if (filter === 'new' && !r.new) return false;
+    if (filter === 'remote' && !r.remote) return false;
+    if (filter === 'easy' && !r.easy) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    if (filter === 'mnc' && !r.mnc) return false;
+    if (filter === 'pay' && !((r.lpa || 0) >= 10)) return false;
+    // Posted is a separate axis, so "remote" and "2 days" combine rather than
+    // replacing each other. A row with no readable date is excluded whenever a
+    // date filter is on - it cannot be shown to satisfy it.
+    if (postedMax !== null && (r.age === null || r.age > postedMax)) return false;
+    if (query) {
+      const hay = (r.title + ' ' + r.company + ' ' + r.location).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  }
+
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
+  function rowHtml(r) {
+    const done = !!applied[r.id] || r.status === 'applied';
+    const tags = [
+      statusTag(r),
+      r.new ? '<span class="tag new">New</span>' : '',
+      r.remote ? '<span class="tag remote">Remote</span>' : '',
+      r.easy ? '<span class="tag easy">One-click</span>' : '',
+      r.mnc ? '<span class="tag new" title="' + esc(r.mnc_name || '') + '">MNC' + (r.mnc_tier ? ' · ' + esc(r.mnc_tier) : '') + '</span>' : '',
+      r.lpa ? '<span class="tag' + (r.lpa >= 10 ? ' easy' : '') + '" title="' + esc(r.lpa_source || '') + '">' +
+                (r.lpa_kind === 'stated' ? '' : '~') + '₹' + esc(r.lpa) + ' LPA' + (r.lpa_kind === 'stated' ? '' : ' (' + esc(r.lpa_kind) + ')') + '</span>' : '',
+      '<span class="tag">' + esc(r.board) + '</span>',
+      (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
+    ].join('');
+    return '' +
+      '<div class="row' + (done ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<input type="checkbox" ' + (done ? 'checked' : '') +
+          ' aria-label="Mark ' + esc(r.title) + ' as applied">' +
+        '<div>' +
+          '<div class="title"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></div>' +
+          '<div class="company">' + esc(r.company) + '</div>' +
+          '<div class="tags">' + tags + '</div>' +
+          (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
+        '</div>' +
+        '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
+          (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +
+        '<div class="meta">' + (r.experience ? '<div>' + esc(r.experience) + '</div>' : '') +
+          (r.posted ? '<div>' + esc(r.posted) + '</div>' : '') + '</div>' +
+        '<div class="rank">' + (r.rank == null ? '&mdash;' : esc(r.rank)) +
+          '<small>' + esc(r.rank_label) + '</small></div>' +
+      '</div>';
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    const shown = ROWS.filter(visible);
+    const boards = ['Naukri', 'LinkedIn'];
+    let html = '';
+    boards.forEach(board => {
+      const group = shown.filter(r => r.board === board);
+      if (!group.length) return;
+      html += '<div class="group-head"><h2>' + board + '</h2>' +
+              '<span class="count">' + group.length + ' shown</span></div>';
+      html += group.map(rowHtml).join('');
+    });
+    list.innerHTML = html || '<p class="empty">Nothing matches this filter.</p>';
+    stats();
+  }
+
+  function stats() {
+    const n = (id, v) => document.getElementById(id).textContent = v;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
+    n('s-total', ROWS.length);
+    n('s-new', ROWS.filter(r => r.new).length);
+    n('s-remote', ROWS.filter(r => r.remote).length);
+    n('s-applied', doneCount);
+    n('s-left', ROWS.length - doneCount);
+  }
+
+  document.getElementById('list').addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const row = e.target.closest('.row');
+    const id = row.getAttribute('data-id');
+    if (e.target.checked) applied[id] = { date: TODAY };
+    else delete applied[id];
+    save(applied);
+    row.classList.toggle('done', e.target.checked);
+    if (filter === 'todo') render(); else stats();
+  });
+
+  function wire(selector, apply) {
+    document.querySelectorAll(selector).forEach(chip => {
+      chip.addEventListener('click', () => {
+        apply(chip);
+        document.querySelectorAll(selector).forEach(c =>
+          c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      });
+    });
+  }
+  wire('.chip[data-filter]', chip => { filter = chip.dataset.filter; });
+  wire('.chip[data-posted]', chip => {
+    postedMax = chip.dataset.posted === 'any' ? null : Number(chip.dataset.posted);
+  });
+
+  document.getElementById('q').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 0.625rem; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+  /* a filter field: a labelled group, always open - only the whole toolbar collapses */
+  span.fgrp { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; vertical-align: middle;
+    border: 1px solid rgba(127,127,127,.28); border-radius: 12px; padding: 3px 8px; }
+  span.fgrp > .flabel { font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .7; padding: 4px 2px; white-space: nowrap; }
+  span.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+  /* the whole filter toolbar can be hidden: only its Filters button stays */
+  .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(127,127,127,.35);
+    background: transparent; color: inherit; opacity: .85; flex: none; }
+  .tb-toggle:hover { opacity: 1; }
+  .tb-toggle::after { content: "\25B4"; font-size: 0.7rem; }
+  .tb-hidden .tb-toggle::after { content: "\25BE"; }
+  .tb-hidden > :not(.tb-toggle) { display: none !important; }
+  .tb-hidden { padding-top: 4px !important; padding-bottom: 4px !important; }
+
+  /* thin scrollbars that follow the page's light / dark theme */
+  :root { color-scheme: light dark; } :root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+  * { scrollbar-width: thin; }
+
+  /* V2 skin (the site's portfolio look): one layer over each page's own variables */
+  :root[data-ui="v2"] {
+    --bg: #E9EAE4; --surface: #FFFFFF; --surface-2: #F5F6F2; --card: #FFFFFF; --card2: #F5F6F2;
+    --ink: #11151A; --fg: #11151A; --muted: #4E575F; --line: #11151A; --line2: #C9CCC3;
+    --accent: #EE3D28; --accent-on: #FFFFFF; --accent-soft: rgba(238,61,40,.12); --accent-bg: rgba(238,61,40,.12);
+    --v2-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; --v2-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root[data-ui="v2"]:not([data-theme="light"]) {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); } }
+  :root[data-ui="v2"][data-theme="dark"] {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); }
+  :root[data-ui="v2"] body, :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea {
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] span.fgrp > .flabel, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+    font-family: var(--v2-mono); letter-spacing: .02em; }
+  :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp, :root[data-ui="v2"] span.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
+  :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
+  :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,
+  :root[data-ui="v2"] .q, :root[data-ui="v2"] .row, :root[data-ui="v2"] article { border-color: var(--line) !important; box-shadow: 3px 3px 0 var(--line); }
+</style>
+<script>
+(function () {
+  "use strict";
+  // collapsible filter groups, open / closed remembered
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+
+  // a Filters button on every filter toolbar: hides / shows the whole bar
+  var kind = (document.title || "page").split(/\s+/).slice(0, 2).join("-").toLowerCase();
+  var bars = Array.prototype.filter.call(document.querySelectorAll(".bar-tools, section.controls, div.bar"), function (el) {
+    return el.querySelector(".chip, input[type=search], .search, select");   // a real filter bar, not a progress bar
+  });
+  bars.forEach(function (bar, i) {
+    if (bar.querySelector(":scope > .tb-toggle")) return;
+    var key = "tb:" + kind + ":" + i, btn = document.createElement("button");
+    btn.type = "button"; btn.className = "tb-toggle";
+    function paint(hidden) {
+      bar.classList.toggle("tb-hidden", hidden);
+      btn.textContent = hidden ? "Show filters" : "Filters";
+      btn.setAttribute("aria-expanded", hidden ? "false" : "true");
+      btn.title = hidden ? "Show the filters" : "Hide the filters";
+    }
+    var hidden = false;
+    try { hidden = localStorage.getItem(key) === "1"; } catch (e) {}
+    bar.insertBefore(btn, bar.firstChild);
+    paint(hidden);
+    btn.addEventListener("click", function () {
+      var h = !bar.classList.contains("tb-hidden"); paint(h);
+      try { h ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch (e) {}
+    });
+  });
+
+  // the site's theme / skin changed while this page is open: follow it
+  window.addEventListener("storage", function (e) {
+    if (e.key !== "jh:theme" && e.key !== "jh:ui") return;
+    var r = document.documentElement, t = localStorage.getItem("jh:theme") || "auto";
+    if (t === "light" || t === "dark") r.setAttribute("data-theme", t); else r.removeAttribute("data-theme");
+    if (localStorage.getItem("jh:ui") === "v2") r.setAttribute("data-ui", "v2"); else r.removeAttribute("data-ui");
+  });
+})();
+</script>
+
