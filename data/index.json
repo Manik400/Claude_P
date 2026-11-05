@@ -1,6 +1,17 @@
 {
- "updated": "2026-11-05T11:22:59Z",
+ "updated": "2026-11-05T12:03:03Z",
  "items": [
+  {
+   "id": "naukri-20261105-120303-naukri-openings-2026-10-21-run-3",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-10-21 run 3",
+   "when": "2026-11-05T12:03:03Z",
+   "file": "data/naukri/naukri-20261105-120303-naukri-openings-2026-10-21-run-3.html",
+   "bytes": 55255,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261105-120303-naukri-openings-2026-10-21-run-3.jobs.json"
+   }
+  },
   {
    "id": "jobhunt-20261105-112259-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1964,17 +1975,6 @@
    }
   },
   {
-   "id": "naukri-20261021-065319-naukri-openings-2026-10-21-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-21 run 2 - Early",
-   "when": "2026-10-21T06:53:19Z",
-   "file": "data/naukri/naukri-20261021-065319-naukri-openings-2026-10-21-run-2-early.html",
-   "bytes": 31176,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261021-065319-naukri-openings-2026-10-21-run-2-early.jobs.json"
-   }
-  },
-  {
    "id": "jobhunt-20261021-051702-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -2079,18 +2079,6 @@
     "platforms_asked": "",
     "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,remotive,remoteok,jobicy,workingnomads,himalayas,weworkremotely,adzuna,jooble,jsearch,firecrawl,apify-naukri",
     "jobs_file": "data/jobhunt/jobhunt-20261006-163111-software-engineer-software-developer-bac.jobs.json"
-   }
-  },
-  {
-   "id": "jobhunt-20261006-115227-software-engineer-software-developer-bac",
-   "kind": "jobhunt",
-   "title": "software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, developer, SWE, SDE, engineer",
-   "when": "2026-10-06T11:52:27Z",
-   "file": "data/jobhunt/jobhunt-20261006-115227-software-engineer-software-developer-bac.html",
-   "bytes": 2978054,
-   "meta": {
-    "jobs_file": "data/jobhunt/jobhunt-20261006-115227-software-engineer-software-developer-bac.jobs.json",
-    "jobs": "1232"
    }
   }
  ],
