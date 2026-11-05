@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-05T12:03:03Z",
+ "updated": "2026-11-05T13:10:38Z",
  "items": [
+  {
+   "id": "careers-20261105-131038-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-11-05T13:10:38Z",
+   "file": "data/careers/careers-20261105-131038-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2735138,
+   "meta": {
+    "jobs": "1",
+    "relocation": "0",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "naukri-20261105-120303-naukri-openings-2026-10-21-run-3",
    "kind": "naukri",
@@ -1897,26 +1917,6 @@
    "bytes": 81029,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261022-080624-naukri-openings-2026-10-22-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "careers-20261022-063733-engineer-senior-software-developer-sse-s",
-   "kind": "careers",
-   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-22T06:37:33Z",
-   "file": "data/careers/careers-20261022-063733-engineer-senior-software-developer-sse-s.json",
-   "bytes": 2816820,
-   "meta": {
-    "jobs": "137",
-    "relocation": "0",
-    "countries": "IN",
-    "experience": "0-3",
-    "reloc_mode": "any",
-    "days": "2",
-    "hours": "",
-    "min_salary": "12 LPA",
-    "list_sha": "ec840ae28566",
-    "list_count": "9110"
    }
   },
   {
