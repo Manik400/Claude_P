@@ -1,0 +1,1757 @@
+[
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "SDE 1 (Frontend)",
+  "company": "Swiggy",
+  "url": "https://www.instahyre.com/job-360573-sde-1-frontend-at-swiggy-work-from-home/",
+  "country": "IN",
+  "location": "Work From Home",
+  "remote": null,
+  "posted": "2025-02-28",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "decoding hyperlocal",
+  "description": "Responsibilities: Develop and maintain scalable, high-performance web applications using React.js and related technologies. Work closely with UI/UX designers to implement intuitive and visually appealing user interfaces. Optimize components for maximum performance across different devices and browsers. Collaborate with backend developers to integrate APIs and ensure seamless data flow. Implement best practices in front-end architecture, including state management (Redux, Zustand, or Context API) Ensure code quality, maintainability, and scalability by following coding standards and performing code reviews. Troubleshoot and resolve frontend performance and security issues. Stay updated with the latest industry trends and advancements in front-end development. Requirements: 1-3 years of experience in developing web applications with React.js, JavaScript (ES6+), and TypeScript. Proficiency in HTML5 CSS3 SCSS, and responsive web design. Experience with state management libraries like Redux, Zustand, or Context API. Strong understanding of React Hooks, functional components, and component lifecycle. Familiarity with frontend build tools like Webpack, Babel, Vite, or Parcel. Hands-on experience with RESTful APIs, GraphQL, and WebSockets. Knowledge of UI libraries such as Material-UI, Tailwind CSS, or Ant Design. Experience with Unit Testing (Jest, React Testing Library) and debugging tools. Understanding of performance optimization techniques like lazy loading, code splitting, and memoization. Strong problem-solving skills and the ability to work in a fast-paced, agile environment.",
+  "skills": [
+   "ECMAScript",
+   "JavaScript",
+   "JS",
+   "React",
+   "React.js",
+   "Redux",
+   "TypeScript",
+   "Zustand"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 72.4,
+  "matched_skills": [
+   "react",
+   "javascript",
+   "typescript",
+   "code review",
+   "html",
+   "css",
+   "rest api",
+   "websockets",
+   "unit testing",
+   "performance optimization",
+   "agile"
+  ],
+  "missing_skills": [
+   "redux",
+   "ui/ux",
+   "scalability",
+   "sass",
+   "webpack",
+   "vite",
+   "graphql",
+   "tailwind"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih360573",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.416,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong React/TypeScript background with 2 years of production experience, proven performance optimization, and agile methodology.",
+    "gaps": "Limited experience with Redux, Tailwind, and modern frontend build tools like Vite."
+   },
+   "is_mnc": true,
+   "mnc_tier": "unicorn",
+   "mnc_name": "Swiggy",
+   "lpa": 25.0,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for Swiggy (Unicorn / startup, 0-2 yrs)",
+   "lpa_url": "https://careers.swiggy.com/",
+   "lpa_lo": 18.0,
+   "lpa_hi": 32.0,
+   "pay_bonus": 12.0,
+   "contacts": {
+    "domain": "swiggy.in",
+    "site": "",
+    "emails": [
+     "rohit.kapoor@swiggy.in",
+     "suresh.k@swiggy.in",
+     "revathy.jeevan@swiggy.in",
+     "ravi.sharma@swiggy.in",
+     "arjun.r@swiggy.in",
+     "mahesh.n@swiggy.in",
+     "akshay.bhansali@swiggy.in",
+     "raghav.singh@swiggy.in",
+     "shivam.ratnam@swiggy.in",
+     "pranav.jadhav@swiggy.in"
+    ],
+    "people": [
+     {
+      "name": "Rohit Kapoor",
+      "title": "CEO",
+      "company": "Swiggy",
+      "location": "",
+      "email": "rohit.kapoor@swiggy.in",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Suresh K",
+      "title": "City Head",
+      "company": "Swiggy",
+      "location": "",
+      "email": "suresh.k@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/suresh-p-k-47a619a7",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Revathy Jeevan",
+      "title": "General Manager",
+      "company": "Swiggy",
+      "location": "",
+      "email": "revathy.jeevan@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/revathy-jeevan-b37510139",
+      "source": "hunter",
+      "confidence": 74
+     },
+     {
+      "name": "Ravi Sharma",
+      "title": "System Administrator",
+      "company": "Swiggy",
+      "location": "",
+      "email": "ravi.sharma@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/ravi-sharma-51a518104",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Arjun Rawat",
+      "title": "QC Lead",
+      "company": "Swiggy",
+      "location": "",
+      "email": "arjun.r@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/arjun-rawat-50a204251",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Mahesh Nagar",
+      "title": "Delivery Executive",
+      "company": "Swiggy",
+      "location": "",
+      "email": "mahesh.n@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/mahesh-nagar-56224b18b",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Akshay Bhansali",
+      "title": "Software Engineer",
+      "company": "Swiggy",
+      "location": "",
+      "email": "akshay.bhansali@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/akshay-bhansali-5149b6193",
+      "source": "hunter",
+      "confidence": 93
+     },
+     {
+      "name": "Raghav Singh",
+      "title": "Chatbot Developer",
+      "company": "Swiggy",
+      "location": "",
+      "email": "raghav.singh@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/raghav-singh-4130a1276",
+      "source": "hunter",
+      "confidence": 76
+     },
+     {
+      "name": "Shivam Ratnam",
+      "title": "iOS Developer",
+      "company": "Swiggy",
+      "location": "",
+      "email": "shivam.ratnam@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/shivam-ratnam-97070b208",
+      "source": "hunter",
+      "confidence": 76
+     },
+     {
+      "name": "Pranav Jadhav",
+      "title": "Software Development Engineer",
+      "company": "Swiggy",
+      "location": "",
+      "email": "pranav.jadhav@swiggy.in",
+      "linkedin": "https://www.linkedin.com/in/actualpranav",
+      "source": "hunter",
+      "confidence": 76
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Swiggy%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Work%20From%20Home%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Swiggy%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Work%20From%20Home%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Swiggy%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Work%20From%20Home%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Swiggy%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Work%20From%20Home%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Swiggy%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Work%20From%20Home%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Swiggy%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Work%20From%20Home%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Swiggy%22%20%28%22Senior%20engineer%22%29%20%22Work%20From%20Home%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Swiggy%22%20%28%22Senior%20engineer%22%29%20%22Work%20From%20Home%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Backend Engineer",
+  "company": "Consuma",
+  "url": "https://www.instahyre.com/job-448159-backend-engineer-at-consuma-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-10-27",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Rapid research platform for brands",
+  "description": "Our backend is primarily written in Rust, but prior Rust experience is not required. Strong engineering fundamentals matter much more than familiarity with a particular language. If you are an excellent backend engineer with experience in Java, Go, C++, or another relevant language, we'll help you ramp up on Rust. Requirements: 1-5 years of professional software engineering experience. Experience building and maintaining production systems. Strong proficiency in Java, Go, C++, Python, Rust, or another mainstream backend language. Solid data structures, algorithms, and computer science fundamentals. Either a good grasp of system design or experience working on a genuinely complex production system. Strong debugging instincts and the ability to trace problems through multiple layers of a system. Ownership mindset with the ability to make progress without everything being broken into tickets and to make decisions under ambiguity. A bias toward learning quickly, shipping, and understanding the trade-offs behind decisions. Good To Have: Rust, Distributed systems, concurrency, or async; developer tools and infrastructure; cloud infrastructure and production operations; AI/LLM applications; open-source contributions; early-stage experience.",
+  "skills": [
+   "Backend",
+   "C++",
+   "Distributed Systems",
+   "Go",
+   "Java",
+   "Python",
+   "Rust",
+   "System Design"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 5.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 61.4,
+  "matched_skills": [
+   "java",
+   "system design",
+   "distributed systems",
+   "data structures",
+   "concurrency"
+  ],
+  "missing_skills": [
+   "rust",
+   "c++",
+   "python",
+   "artificial intelligence",
+   "llm"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih448159",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.452,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong 2+ years of experience in distributed systems, Kafka, and system design with proven ability to optimize high-throughput production services.",
+    "gaps": "Lacks direct Rust experience; candidate needs to ramp up on Rust fundamentals."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "consuma.com.br",
+    "site": "",
+    "emails": [
+     "sandra.campos@consuma.com.br",
+     "camila.haine@consuma.com.br",
+     "thais.belo@consuma.com.br",
+     "rayra.siqueira@consuma.com.br",
+     "elisandra.santos@consuma.com.br",
+     "henrique.lima@consuma.com.br",
+     "viviane.puglesi@consuma.com.br",
+     "adriana.proenca@consuma.com.br",
+     "natalia.carvalho@consuma.com.br",
+     "ticiano.lemos@consuma.com.br"
+    ],
+    "people": [
+     {
+      "name": "Sandra Campos",
+      "title": "Executive Director of Expansion",
+      "company": "Consuma",
+      "location": "",
+      "email": "sandra.campos@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/sandramariacampos",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Camila Haine",
+      "title": "Human Resources Analyst",
+      "company": "Consuma",
+      "location": "",
+      "email": "camila.haine@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/camila-nunes-da-silva-32ac",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Thais Belo",
+      "title": "Recruitment Analyst",
+      "company": "Consuma",
+      "location": "",
+      "email": "thais.belo@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/thais-belo-351473313",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Rayra Siqueira",
+      "title": "HR Analyst",
+      "company": "Consuma",
+      "location": "",
+      "email": "rayra.siqueira@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/rayra-siqueira",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Elisandra Santos",
+      "title": "Recruitment Analyst",
+      "company": "Consuma",
+      "location": "",
+      "email": "elisandra.santos@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/elisandra-santos-5763b332",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Henrique Lima",
+      "title": "HR Coordinator",
+      "company": "Consuma",
+      "location": "",
+      "email": "henrique.lima@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/henrique-lima-721a63131",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Viviane Puglesi",
+      "title": "Human Resources Manager",
+      "company": "Consuma",
+      "location": "",
+      "email": "viviane.puglesi@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/viviane-zaarour-puglesi",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Adriana Proença",
+      "title": "Unit Manager",
+      "company": "Consuma",
+      "location": "",
+      "email": "adriana.proenca@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/adriana-proença-5777a72a1",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Natalia Carvalho",
+      "title": "Unit Manager",
+      "company": "Consuma",
+      "location": "",
+      "email": "natalia.carvalho@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/natalia-brasssoloto-garcia-de-carvalho-01655858",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Ticiano Lemos",
+      "title": "Gastronomy Department Manager",
+      "company": "Consuma",
+      "location": "",
+      "email": "ticiano.lemos@consuma.com.br",
+      "linkedin": "https://www.linkedin.com/in/ticiano-lemos-819bb7125",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consuma%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consuma%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consuma%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consuma%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consuma%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consuma%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Consuma%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Consuma%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.5,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "chitrank.tyagi@valiancesolutions.com",
+     "vivek.yadav@valiancesolutions.com",
+     "riddhi.sharma@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "deepanker.negi@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chitrank Tyagi",
+      "title": "Technical Architect",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chitrank.tyagi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chitrank-tyagi-b08030165",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Vivek Yadav",
+      "title": "Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vivek.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vivek-yadav-7774241b2",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Riddhi Sharma",
+      "title": "HR Associate",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "riddhi.sharma@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/riddhi-sharma-150415218",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Deepanker Negi",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "deepanker.negi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/deepanker-negi-506a76213",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Infrastructure Engineering Associate",
+  "company": "MSCI",
+  "url": "https://www.adzuna.in/land/ad/5953041716?se=-jitcOfY8RGAdtnZUYW2Cw&utm_medium=api&utm_source=28f9775f&v=3AB0A0A695847209B23068DB8CA1473BD29F9D33",
+  "country": "IN",
+  "location": "Mumbai, Maharashtra",
+  "remote": null,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T19:59:22+00:00",
+  "posted_raw": "2026-11-04T19:59:22Z",
+  "salary": "",
+  "snippet": "This job is with MSCI, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. Your Team Responsibilities: The Wintel Operations team provides infrastructure support for core Microsoft technologies - Active Directory/Domain Controllers, Entra AD Connect, ADFS/SSO, Exchange Server platform - alongsid",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 32.4,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "f4cb6b8feef4",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.156,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong experience with cloud infrastructure (AWS), containerization (Docker), and observability tools (Grafana, Prometheus) aligns well with MSCI's Wintel Operations focus on Microsoft technologies.",
+    "gaps": "Lacks direct experience with Microsoft-specific technologies like Active Directory, Entra AD, Exchange Server, or ADFS/SSO, which are core to this role."
+   },
+   "is_mnc": true,
+   "mnc_tier": "gcc",
+   "mnc_name": "MSCI",
+   "lpa": 14.0,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for MSCI (MNC engineering centre, 0-2 yrs)",
+   "lpa_url": "https://www.msci.com/careers",
+   "lpa_lo": 10.0,
+   "lpa_hi": 18.0,
+   "pay_bonus": 7.0,
+   "contacts": {
+    "domain": "msci.com",
+    "site": "",
+    "emails": [
+     "lizeth.arreola@msci.com",
+     "yihai.yu@msci.com",
+     "daniel.schroeder@msci.com",
+     "wendy.hu@msci.com",
+     "jerry.lettieri@msci.com",
+     "astrid.lambert@msci.com",
+     "cedric.lagrange@msci.com",
+     "jenny.adamson@msci.com",
+     "will.robson@msci.com",
+     "francesco.faiola@msci.com"
+    ],
+    "people": [
+     {
+      "name": "Lizeth Arreola",
+      "title": "HR Director",
+      "company": "MSCI",
+      "location": "",
+      "email": "lizeth.arreola@msci.com",
+      "linkedin": "https://www.linkedin.com/in/lizeth-arreola-5919136a",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Yihai Yu",
+      "title": "Executive Director",
+      "company": "MSCI",
+      "location": "",
+      "email": "yihai.yu@msci.com",
+      "linkedin": "https://www.linkedin.com/in/yihai-yu-78aa474",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Daniel Schröder",
+      "title": "Vice President of Real Assets",
+      "company": "MSCI",
+      "location": "",
+      "email": "daniel.schroeder@msci.com",
+      "linkedin": "https://www.linkedin.com/in/daniel-schroeder-64687b40",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Wendy Hu",
+      "title": "Vice President",
+      "company": "MSCI",
+      "location": "",
+      "email": "wendy.hu@msci.com",
+      "linkedin": "https://www.linkedin.com/in/wendy-hu-09a74922",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Jerry Lettieri",
+      "title": "Managing Director",
+      "company": "MSCI",
+      "location": "",
+      "email": "jerry.lettieri@msci.com",
+      "linkedin": "https://www.linkedin.com/in/jerry-s-lettieri-04791332",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Astrid Lambert",
+      "title": "Vice President of Human Resources",
+      "company": "MSCI",
+      "location": "",
+      "email": "astrid.lambert@msci.com",
+      "linkedin": "https://www.linkedin.com/in/astrid-lambert-8903a163",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Cedric Lagrange",
+      "title": "Head of ESG",
+      "company": "MSCI",
+      "location": "",
+      "email": "cedric.lagrange@msci.com",
+      "linkedin": "https://www.linkedin.com/in/cedric-lagrange-3a83a68",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Jenny Adamson",
+      "title": "Executive Director",
+      "company": "MSCI",
+      "location": "",
+      "email": "jenny.adamson@msci.com",
+      "linkedin": "https://www.linkedin.com/in/jennyeadamson",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Will Robson",
+      "title": "Executive Director",
+      "company": "MSCI",
+      "location": "",
+      "email": "will.robson@msci.com",
+      "linkedin": "https://www.linkedin.com/in/willmrobson",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Francesco Faiola",
+      "title": "Managing Director",
+      "company": "MSCI",
+      "location": "",
+      "email": "francesco.faiola@msci.com",
+      "linkedin": "https://www.linkedin.com/in/francescofaiola",
+      "source": "hunter",
+      "confidence": 98
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MSCI%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MSCI%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mumbai%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MSCI%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MSCI%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mumbai%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MSCI%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MSCI%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mumbai%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22MSCI%22%20%28%22Senior%20engineer%22%29%20%22Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22MSCI%22%20%28%22Senior%20engineer%22%29%20%22Mumbai%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Firmware Engineer",
+  "company": "FloMobility",
+  "url": "https://wellfound.com/jobs/4985524-firmware-engineer",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": false,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T13:07:19+00:00",
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "**Company Overview** The world is moving towards an autonomous future where sooner or later everything that is driven, pushed or pulled today, will be moving by itself. At Flo Mobility, we believe that the true adaptation of autonomy lies in the seamless coexistence of humans and bots. By leveraging the power of sensors, computer vision, edge computing, and actuators, we optimize this relationship",
+  "description": "**Company Overview** The world is moving towards an autonomous future where sooner or later everything that is driven, pushed or pulled today, will be moving by itself. At Flo Mobility, we believe that the true adaptation of autonomy lies in the seamless coexistence of humans and bots. By leveraging the power of sensors, computer vision, edge computing, and actuators, we optimize this relationship to deliver the best speed, agility, comfort and control. Our hero product, FLO Hauler, is an Autonomous Electric Material mover, helping customers reduce time and cost of moving material across Construction, Agriculture, Mining and Warehousing industries. Flo Hauler is being used by industry leaders like L&T, PSP, Total Environment to gain 50% savings on cost and time for the last mile of material movement. Our solutions are offered on Raas (Robot-as-a-service) model. The no capex approach makes it easy for our clients to adopt our MMRs (Material Movement Robots). **Role Overview** We are looking for a Firmware Engineer with 1 to 2 years of hands-on experience to join our robotics team and build the next generation of autonomous systems. You will design, develop, and debug embedded firmware that controls and communicates with our MMRs and autonomous platforms, working closely with electronics, mechanical, software, and systems engineers. This role offers real ownership of production-grade firmware on robots deployed in the field, along with the chance to deepen your expertise in STM32, ESP32, CAN, and robotics communication stacks. You will collaborate with firmware and cross-functional engineering teams to troubleshoot hardware-software issues, optimize system performance, and develop robust firmware for production-grade robotic platforms. **Responsibilities** **Embedded Firmware Development:** Design, develop, and maintain firmware in C/C++ for robotics platforms, primarily on STM32 and ESP32 microcontrollers. **STM32 Development:** Use STM32CubeIDE, STM32CubeMX, HAL, and CMSIS for peripheral configuration, driver development, hardware bring-up, and debugging. **ESP32 Development:** Build embedded applications using PlatformIO, Arduino framework, or ESP-IDF, including sensor integration, wireless connectivity, and system-level firmware. **Peripheral Interfacing:** Develop and debug drivers for GPIO, UART, SPI, I2C, ADC, DAC, PWM, timers, interrupts, DMA, and watchdogs. **CAN Communication:** Implement and debug CAN-based communication between STM32 controllers, motor controllers, sensors, and other embedded nodes, including frame design, IDs, baud rates, filtering, termination, and error handling. **Protocol & Sensor Integration:** Integrate sensors, motor drivers, displays, and other devices over UART, I2C, SPI, CAN, RS485, and similar interfaces. Exposure to higher-level protocols such as Modbus or CANopen is a plus. **Debugging & Diagnostics:** Debug firmware and hardware issues using ST-LINK/SWD, JTAG, oscilloscopes, logic analyzers, multimeters, CAN analyzers, and serial terminals. Analyze logs, reproduce field issues, and drive problems to root cause. **Python Tooling & Automation:** Write Python scripts for firmware testing, log analysis, CAN/serial data parsing, test automation, and diagnostic tools. **Testing & Validation:** Create test procedures, perform functional and integration testing, and validate firmware against system requirements. **Firmware Architecture:** Design modular, non-blocking, interrupt-driven firmware with state machines, fault handling, and clean driver abstractions. **Cross-functional Collaboration:** Work with electronics, mechanical, and software teams to resolve hardware-software integration issues and improve system performance. **Version Control & Releases:** Use Git for branching, merging, code reviews, and maintaining versioned firmware releases. Contribute to documentation of firmware design and release notes. **Education Background** Bachelor's degree (B.E./B.Tech.) in Electronics & Communication Engineering (ECE), Electrical & Electronics Engineering (EEE), Instrumentation Engineering, or a related field. Relevant certifications in Firmware Design (ESP32, STM32,Arduino), Embedded Systems **Skills** 1. 1 to 2 years of hands-on experience in embedded firmware development 2. Strong fundamentals in Embedded C/C++ (pointers, structures, enums, bit manipulation, memory management, interrupts) 3. Hands-on experience with STM32 microcontrollers using STM32CubeIDE / STM32CubeMX, HAL, and CMSIS 4. Hands-on experience with ESP32 (PlatformIO, Arduino framework, or ESP-IDF) 5. Solid understanding of UART, SPI, I2C, GPIO, ADC, PWM, timers, interrupts, and DMA 6. Practical experience with CAN protocol: frames, standard/extended IDs, arbitration, baud rates, acceptance filters, and error handling 7. Proficiency in Python for scripting, tooling, and test automation 8. Strong debugging skills using ST-LINK/SWD, JTAG, breakpoints, watchpoints, register inspection, and serial logs 9. Comfortable with lab equipment: oscilloscopes, logic analyzers, multimeters, bench power supplies, and CAN/serial analyzers 10. Proficiency with Git (repositories, branches, merges, tags, releases) **What We Look For** 1. A strong foundation in embedded C/C++, microcontrollers, communication protocols, and basic electronics 2. A debugging mindset: the ability to analyze logs, reproduce failures, find root causes, and fix issues on real hardware 3. Candidates who have shipped STM32/ESP32 projects, CAN-based systems, sensor or motor-controller interfaces, or other embedded products will be preferred 4. Hands-on experience and the ability to solve real hardware/firmware problems are valued more than purely theoretical knowledge 5. Ownership, curiosity, and the ability to work collaboratively in a fast-moving robotics startup",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 26.1,
+  "matched_skills": [
+   "test automation",
+   "code review"
+  ],
+  "missing_skills": [
+   "firmware",
+   "embedded",
+   "stm32",
+   "esp32",
+   "robotics",
+   "c++",
+   "arduino",
+   "python"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "wf4985524",
+  "extra": {
+   "company_size": "SIZE_11_50",
+   "posted_source": "page:json-ld",
+   "posted_checked": "json-ld",
+   "salary_stated": false,
+   "semantic": 0.318,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with embedded systems' need for robust communication and data processing.",
+    "gaps": "Lacks specific embedded firmware (STM32/ESP32) and robotics domain knowledge required for this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "flomobility.com",
+    "site": "",
+    "emails": [
+     "pratik@flomobility.com",
+     "manesh@flomobility.com",
+     "careers@flomobility.com",
+     "dinesh@flomobility.com",
+     "puneet@flomobility.com",
+     "akash@flomobility.com",
+     "sunny@flomobility.com",
+     "prashant@flomobility.com",
+     "gautham@flomobility.com",
+     "nandan@flomobility.com"
+    ],
+    "people": [
+     {
+      "name": "Pratik Patel",
+      "title": "Co-Founder",
+      "company": "FloMobility",
+      "location": "",
+      "email": "pratik@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/pratikpatel0929",
+      "source": "hunter",
+      "confidence": 85
+     },
+     {
+      "name": "Manesh Jain",
+      "title": "CEO",
+      "company": "FloMobility",
+      "location": "",
+      "email": "manesh@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/maneshjain",
+      "source": "hunter",
+      "confidence": 69
+     },
+     {
+      "name": "careers@flomobility.com",
+      "title": "",
+      "company": "FloMobility",
+      "location": "",
+      "email": "careers@flomobility.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Dinesh S",
+      "title": "Electronic Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "dinesh@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/dinesh-p-s-49911b241",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Puneet Kukreja",
+      "title": "Mechatronics Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "puneet@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/puneet-kukreja09",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Akash Manirathinam",
+      "title": "Robotics Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "akash@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/akash-manirathinam-17328b359",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Sunny Rana",
+      "title": "Design Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "sunny@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/sunnymaheshrana",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Prashant Bhati",
+      "title": "Electrical and Automation Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "prashant@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/prashant-bhati-60ab6b239",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Gautham Ramkumar",
+      "title": "Robotics Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "gautham@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/gautham-ramkumar",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Nandan Natesan",
+      "title": "Robotics and AI Intern",
+      "company": "FloMobility",
+      "location": "",
+      "email": "nandan@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/nandan-natesan-6331b3251",
+      "source": "hunter",
+      "confidence": 75
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Jr. Automation Engineer IV",
+  "company": "Jabil",
+  "url": "https://www.adzuna.in/land/ad/5953492443?se=-jitcOfY8RGAdtnZUYW2Cw&utm_medium=api&utm_source=28f9775f&v=3E514D4EA630DB38F64031D23672561FAC081E69",
+  "country": "IN",
+  "location": "India",
+  "remote": null,
+  "posted": "2026-11-05",
+  "posted_at": "2026-11-05T05:26:07+00:00",
+  "posted_raw": "2026-11-05T05:26:07Z",
+  "salary": "",
+  "snippet": "This job is with Jabil, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At Jabil (NYSE: JBL), we are proud to be a trusted partner for the world's top brands, offering comprehensive engineering, supply chain, and manufacturing solutions. With 60 years of experience across industries and a va",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 25.6,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "e99d420f15e6",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.175,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong Java/Python background with Kafka, PostgreSQL, and AWS experience aligns well with automation engineering workflows.",
+    "gaps": "Lacks direct automation framework (e.g., Selenium, Playwright) and cloud-native CI/CD automation experience."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "jabil.com",
+    "site": "",
+    "emails": [
+     "iris_iniguez@jabil.com",
+     "jitendra_khare@jabil.com",
+     "john_casali@jabil.com",
+     "prebesh_pavithran@jabil.com",
+     "tuan_nguyen@jabil.com",
+     "jason_tham@jabil.com",
+     "ron_anderson@jabil.com",
+     "craig_lawrence@jabil.com",
+     "sriram_patnaik@jabil.com",
+     "jason_wildt@jabil.com"
+    ],
+    "people": [
+     {
+      "name": "Iris Iñiguez",
+      "title": "Human Resources Director",
+      "company": "Jabil",
+      "location": "",
+      "email": "iris_iniguez@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/iris-iñiguez-54a04066",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Jitendra Khare",
+      "title": "General Manager",
+      "company": "Jabil",
+      "location": "",
+      "email": "jitendra_khare@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/khare",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "John Casali",
+      "title": "Director of Engineering",
+      "company": "Jabil",
+      "location": "",
+      "email": "john_casali@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/john-casali-710557a",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Prebesh Pavithran",
+      "title": "Site Engineering Director",
+      "company": "Jabil",
+      "location": "",
+      "email": "prebesh_pavithran@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/prebessh",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Tuan Nguyen",
+      "title": "Director of Engineering",
+      "company": "Jabil",
+      "location": "",
+      "email": "tuan_nguyen@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/tuan-nguyen-3a188911",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Jason Tham",
+      "title": "Director of Technology Strategy",
+      "company": "Jabil",
+      "location": "",
+      "email": "jason_tham@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/jason-tham-b596b24",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Ron Anderson",
+      "title": "Director of Manufacturing",
+      "company": "Jabil",
+      "location": "",
+      "email": "ron_anderson@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/ron-anderson-1b220074",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Craig Lawrence",
+      "title": "Director of Advanced Planning",
+      "company": "Jabil",
+      "location": "",
+      "email": "craig_lawrence@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/craig-lawrence-8156077",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Sriram Patnaik",
+      "title": "Global BU Head",
+      "company": "Jabil",
+      "location": "",
+      "email": "sriram_patnaik@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/sriram-patnaik-b1a84aa",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Jason Wildt",
+      "title": "Vice President, General Manager",
+      "company": "Jabil",
+      "location": "",
+      "email": "jason_wildt@jabil.com",
+      "linkedin": "https://www.linkedin.com/in/jasonwildt",
+      "source": "hunter",
+      "confidence": 94
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jabil%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jabil%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22India%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jabil%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jabil%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22India%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jabil%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jabil%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22India%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Jabil%22%20%28%22Senior%20engineer%22%29%20%22India%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Jabil%22%20%28%22Senior%20engineer%22%29%20%22India%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "associate project Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5952402097?se=-jitcOfY8RGAdtnZUYW2Cw&utm_medium=api&utm_source=28f9775f&v=53D54A6FE87631C9FA0EB1191D367B9284CFE93A",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T09:21:39+00:00",
+  "posted_raw": "2026-11-04T09:21:39Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.6,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "69438516ddd9",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.115,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with Kafka, PostgreSQL, and AWS, aligning with the backend engineering role. Strong focus on performance optimization and distributed systems matches the project engineer's technical requirements.",
+    "gaps": "Candidate lacks direct experience with ABB's specific technologies (e.g., PLCs, SCADA systems) and the role's emphasis on lean manufacturing methodologies."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "peter.terwiesch@abb.com",
+     "erich.labuda@abb.com",
+     "morten.wierod@abb.com",
+     "alberto.garanzini@abb.com",
+     "boris.fiedler@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "marc.segura@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate R&D Engineer",
+  "company": "ABB",
+  "url": "https://www.adzuna.in/land/ad/5952402347?se=-jitcOfY8RGAdtnZUYW2Cw&utm_medium=api&utm_source=28f9775f&v=15CA661465D23F9560770E573C0737BC1AE700BE",
+  "country": "IN",
+  "location": "Bangalore, Karnataka",
+  "remote": null,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T09:21:41+00:00",
+  "posted_raw": "2026-11-04T09:21:41Z",
+  "salary": "",
+  "snippet": "This job is with ABB, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. At ABB, we help industries run leaner and cleaner-and every person here makes that happen. You'll be empowered to lead, supported to grow, and proud of the impact we create together. Join us and help run what runs the worl",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 23.5,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "6665ae7b3b67",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.11,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with video analytics, Kafka, and PostgreSQL, aligning with the R&D role's focus on distributed systems and event processing.",
+    "gaps": "Candidate lacks direct experience with ABB's specific technologies (C++, Python, C#) and the company's inclusive culture, though technical skills are strong."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "abb.com",
+    "site": "",
+    "emails": [
+     "peter.terwiesch@abb.com",
+     "erich.labuda@abb.com",
+     "morten.wierod@abb.com",
+     "alberto.garanzini@abb.com",
+     "boris.fiedler@abb.com",
+     "tuomo.hoysniemi@abb.com",
+     "marc.segura@abb.com",
+     "alice.chen@abb.com",
+     "frederic.grommen@abb.com",
+     "patryk.madaj@abb.com"
+    ],
+    "people": [
+     {
+      "name": "Peter Terwiesch",
+      "title": "President",
+      "company": "ABB",
+      "location": "",
+      "email": "peter.terwiesch@abb.com",
+      "linkedin": "https://www.linkedin.com/in/peter-terwiesch-3bb33388",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Erich Labuda",
+      "title": "Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "erich.labuda@abb.com",
+      "linkedin": "https://www.linkedin.com/in/erichlabuda",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Morten Wierod",
+      "title": "Chief Executive Officer",
+      "company": "ABB",
+      "location": "",
+      "email": "morten.wierod@abb.com",
+      "linkedin": "https://www.linkedin.com/in/morten-wierod",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Alberto Garanzini",
+      "title": "Group Vice President",
+      "company": "ABB",
+      "location": "",
+      "email": "alberto.garanzini@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alberto-garanzini-57772011",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Boris Fiedler",
+      "title": "Head of Digital",
+      "company": "ABB",
+      "location": "",
+      "email": "boris.fiedler@abb.com",
+      "linkedin": "https://www.linkedin.com/in/boris-fiedler-3b2423140",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Tuomo Hoysniemi",
+      "title": "Division President",
+      "company": "ABB",
+      "location": "",
+      "email": "tuomo.hoysniemi@abb.com",
+      "linkedin": "https://www.linkedin.com/in/tuomo-hoysniemi-707278",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marc Segura",
+      "title": "Vice President of Robotics",
+      "company": "ABB",
+      "location": "",
+      "email": "marc.segura@abb.com",
+      "linkedin": "https://www.linkedin.com/in/marc-segura-1120425",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Alice Chen",
+      "title": "Talent Acquisition Partner",
+      "company": "ABB",
+      "location": "",
+      "email": "alice.chen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/alice-chen-82891522",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Frederic Grommen",
+      "title": "HR Country Manager",
+      "company": "ABB",
+      "location": "",
+      "email": "frederic.grommen@abb.com",
+      "linkedin": "https://www.linkedin.com/in/frederic-grommen-9354544",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Patryk Madaj",
+      "title": "HR Director",
+      "company": "ABB",
+      "location": "",
+      "email": "patryk.madaj@abb.com",
+      "linkedin": "https://www.linkedin.com/in/patrykmadaj",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ABB%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Electronics hardware Engineer - Intern",
+  "company": "FloMobility",
+  "url": "https://wellfound.com/jobs/4985007-electronics-hardware-engineer-intern",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": true,
+  "posted": "2026-11-04",
+  "posted_at": "2026-11-04T10:22:31+00:00",
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "**About the Role** We are looking for a skilled Hardware Design Engineer with hands-on experience in schematic design, multi-layer PCB development, power electronics and motor controller systems. The candidate should have practical knowledge of hardware design, testing, debugging and manufacturing. **Key Responsibilities** 1. Design and develop electronic schematics for STM32 and ESP32-based platf",
+  "description": "**About the Role** We are looking for a skilled Hardware Design Engineer with hands-on experience in schematic design, multi-layer PCB development, power electronics and motor controller systems. The candidate should have practical knowledge of hardware design, testing, debugging and manufacturing. **Key Responsibilities** 1. Design and develop electronic schematics for STM32 and ESP32-based platforms. 2.Design and develop multi-layer PCBs using KiCad, Altium Designer or EasyEDA. 3. Select and analyze electronic components such as MCUs, MOSFETs, IGBTs, gate drivers and regulators. 4. Design DC-DC converters (Buck, Boost and Buck-Boost). 5. Develop high-power BLDC and DC motor driver circuits. 6. Implement CAN, SPI, I2C and UART communication interfaces. 7. Ensure proper signal integrity, power integrity and EMI/EMC management. 8. Perform hardware bring-up, testing, debugging and troubleshooting. 9. Prepare Gerber files, BOMs and manufacturing documentation. 10. Maintain hardware design revisions and documentation using Git. **Required Skills & Qualifications** 1. Bachelor's degree in ECE, EEE or a related engineering field. 2. Hands-on experience in PCB design and schematic development. 3. Proficiency in KiCad, Altium Designer or EasyEDA. 4. Knowledge of STM32 and ESP32 microcontrollers. 5. Strong understanding of power electronics and DC-DC converters. 6. Experience with BLDC/DC motor controllers and gate driver circuits. 7. Knowledge of MOSFETs, IGBTs and power management circuits. 8. Understanding of CAN, SPI, I2C and UART protocols. 9. Experience with oscilloscopes, multimeters and logic analyzers. 10. Knowledge of PCB manufacturing, DFM and EMI/EMC. **Preferred Candidate Profile** 1. Practical experience in multi-layer PCB design. 2. Experience in high-power electronics and motor control systems. 3. Strong hardware debugging and problem-solving skills. 4. Ability to independently handle hardware development from design to testing",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "intern",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 17.8,
+  "matched_skills": [],
+  "missing_skills": [
+   "stm32",
+   "esp32",
+   "git"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "wf4985007",
+  "extra": {
+   "company_size": "SIZE_11_50",
+   "posted_source": "page:json-ld",
+   "posted_checked": "json-ld",
+   "salary_stated": false,
+   "semantic": 0.114,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with the candidate's technical background, though hardware design skills are missing.",
+    "gaps": "Lacks hands-on PCB design, microcontroller (STM32/ESP32), and power electronics experience."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "flomobility.com",
+    "site": "",
+    "emails": [
+     "pratik@flomobility.com",
+     "manesh@flomobility.com",
+     "careers@flomobility.com",
+     "dinesh@flomobility.com",
+     "puneet@flomobility.com",
+     "akash@flomobility.com",
+     "sunny@flomobility.com",
+     "prashant@flomobility.com",
+     "gautham@flomobility.com",
+     "nandan@flomobility.com"
+    ],
+    "people": [
+     {
+      "name": "Pratik Patel",
+      "title": "Co-Founder",
+      "company": "FloMobility",
+      "location": "",
+      "email": "pratik@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/pratikpatel0929",
+      "source": "hunter",
+      "confidence": 85
+     },
+     {
+      "name": "Manesh Jain",
+      "title": "CEO",
+      "company": "FloMobility",
+      "location": "",
+      "email": "manesh@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/maneshjain",
+      "source": "hunter",
+      "confidence": 69
+     },
+     {
+      "name": "careers@flomobility.com",
+      "title": "",
+      "company": "FloMobility",
+      "location": "",
+      "email": "careers@flomobility.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Dinesh S",
+      "title": "Electronic Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "dinesh@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/dinesh-p-s-49911b241",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Puneet Kukreja",
+      "title": "Mechatronics Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "puneet@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/puneet-kukreja09",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Akash Manirathinam",
+      "title": "Robotics Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "akash@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/akash-manirathinam-17328b359",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Sunny Rana",
+      "title": "Design Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "sunny@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/sunnymaheshrana",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Prashant Bhati",
+      "title": "Electrical and Automation Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "prashant@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/prashant-bhati-60ab6b239",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Gautham Ramkumar",
+      "title": "Robotics Engineer",
+      "company": "FloMobility",
+      "location": "",
+      "email": "gautham@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/gautham-ramkumar",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Nandan Natesan",
+      "title": "Robotics and AI Intern",
+      "company": "FloMobility",
+      "location": "",
+      "email": "nandan@flomobility.com",
+      "linkedin": "https://www.linkedin.com/in/nandan-natesan-6331b3251",
+      "source": "hunter",
+      "confidence": 75
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22FloMobility%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22FloMobility%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Junior Engineer",
+  "company": "EVERGREEN ENTERPRISES",
+  "url": "https://www.adzuna.in/details/5953363538?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "Namakkal, Erode",
+  "remote": null,
+  "posted": "2026-11-05",
+  "posted_at": "2026-11-05T00:14:03+00:00",
+  "posted_raw": "2026-11-05T00:14:03Z",
+  "salary": "",
+  "snippet": "1. Job Summary We are looking for a motivated and enthusiastic Junior Engineer to support our engineering and project execution activities. The candidate will assist senior engineers in site coordination, project execution, technical documentation, measurements, and monitoring daily work progress. Freshers with good technical knowledge and a willingness to learn are also welcome to apply. 2. Key R",
+  "description": "1. Job Summary We are looking for a motivated and enthusiastic Junior Engineer to support our engineering and project execution activities. The candidate will assist senior engineers in site coordination, project execution, technical documentation, measurements, and monitoring daily work progress. Freshers with good technical knowledge and a willingness to learn are also welcome to apply. 2. Key Responsibilities Assist senior engineers in daily project execution and site activities. Coordinate with site supervisors, workers, and project teams. Monitor daily work progress and maintain site records. Assist in preparing Daily Progress Reports (DPRs). Read and understand engineering drawings and technical specifications. Monitor manpower, materials, and equipment at project sites. Assist in measurements, quantity calculations, and material requirements. Ensure work is carried out as per approved drawings and instructions. Follow company safety procedures and quality standards. Prepare and maintain project-related documentation. Coordinate with the engineering and project execution teams. RequirementsTechnical Skills Basic knowledge of Civil Engineering concepts. Understanding of construction activities and site execution. Ability to read and understand engineering drawings. Basic knowledge of AutoCAD and MS Excel. Knowledge of quantity estimation and measurements. Good documentation and reporting skills. Candidate Requirements Diploma / B.E. / B.Tech in Civil Engineering. 0–2 years of relevant experience. Freshers can also apply. Good communication and coordination skills. Willingness to learn and take responsibility. Candidates should be willing to travel to project sites if required.",
+  "skills": [],
+  "employment_type": "permanent",
+  "exp_min": 0.0,
+  "exp_max": 2.0,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 16.9,
+  "matched_skills": [],
+  "missing_skills": [
+   "technical documentation",
+   "monitoring",
+   "r"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "34ad3b8e2a60",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.045,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "The candidate has strong backend skills in Java, Kafka, and PostgreSQL, but lacks the required Civil Engineering background and site execution experience.",
+    "gaps": "Missing Civil Engineering diploma and site coordination experience."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "evergreenenterprises.co.in",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22EVERGREEN%20ENTERPRISES%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Namakkal%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22EVERGREEN%20ENTERPRISES%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Namakkal%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22EVERGREEN%20ENTERPRISES%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Namakkal%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22EVERGREEN%20ENTERPRISES%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Namakkal%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22EVERGREEN%20ENTERPRISES%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Namakkal%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22EVERGREEN%20ENTERPRISES%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Namakkal%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22EVERGREEN%20ENTERPRISES%22%20%28%22Senior%20engineer%22%29%20%22Namakkal%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22EVERGREEN%20ENTERPRISES%22%20%28%22Senior%20engineer%22%29%20%22Namakkal%22"
+     }
+    }
+   }
+  }
+ }
+]
