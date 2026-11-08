@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-08T10:45:45Z",
+ "updated": "2026-11-08T11:57:30Z",
  "items": [
+  {
+   "id": "careers-20261108-115730-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+   "when": "2026-11-08T11:57:30Z",
+   "file": "data/careers/careers-20261108-115730-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2734860,
+   "meta": {
+    "jobs": "0",
+    "relocation": "0",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "jobhunt-20261108-104545-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1749,26 +1769,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261025-064758-naukri-openings-2026-10-25-run-2-early.jobs.json",
     "jobs": "31"
-   }
-  },
-  {
-   "id": "careers-20261025-064701-engineer-senior-software-developer-sse-s",
-   "kind": "careers",
-   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-25T06:47:01Z",
-   "file": "data/careers/careers-20261025-064701-engineer-senior-software-developer-sse-s.json",
-   "bytes": 2796828,
-   "meta": {
-    "jobs": "106",
-    "relocation": "1",
-    "countries": "IN",
-    "experience": "0-3",
-    "reloc_mode": "any",
-    "days": "2",
-    "hours": "",
-    "min_salary": "12 LPA",
-    "list_sha": "ec840ae28566",
-    "list_count": "9110"
    }
   },
   {
