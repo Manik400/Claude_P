@@ -1,0 +1,932 @@
+[
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Backend Engineer – GTM Engineering (Fresh grad, India)",
+  "company": "Secfix",
+  "url": "https://wellfound.com/jobs/5008726-backend-engineer-gtm-engineering-fresh-grad-india",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": true,
+  "posted": "2026-11-07",
+  "posted_at": "2026-11-07T00:25:19+00:00",
+  "posted_raw": "",
+  "salary": "$20k – $32k",
+  "snippet": "**Please do not contact anyone at Secfix by email, phone, or LinkedIn about this role. We only accept applications submitted through the form on our careers page, and messages sent any other way will not be answered.** **Location**: 100% Remote from India, min. 4h overlap with CET (e.g. 9:00–13:00 CET). Fluent English, spoken and written. German is not required. **Compensation**: 20k-32k USD per y",
+  "description": "**Please do not contact anyone at Secfix by email, phone, or LinkedIn about this role. We only accept applications submitted through the form on our careers page, and messages sent any other way will not be answered.** **Location**: 100% Remote from India, min. 4h overlap with CET (e.g. 9:00–13:00 CET). Fluent English, spoken and written. German is not required. **Compensation**: 20k-32k USD per year (depending on location) + Shares + Generous Benefits. We pay local rates that are at or above the market. We share this [philosophy with GitLab](https://about.gitlab.com/blog/2019/02/28/why-we-pay-local-rates/). **About Secfix** Secfix automates security compliance for SMBs and mid-market companies in Europe and gets them compliant with ISO 27001, GDPR, TISAX and SOC 2 in weeks instead of months. We’re a fast-growing team of 36 people, backed by a $12M Series A from Alstin Capital, Neosfer (Commerzbank) and Bayern Capital. **About the Role** You’ll be the **first engineer dedicated to our go-to-market team**. You build and own the backend systems our BDRs and AEs run on every day: data pipelines, integrations, internal services and AI agents. Today, everyone runs their own setup for data, outreach and communication. You’ll replace that with one central, reliable system that scales with us. This is a hands-on engineering role: you’ll write code (Python, SQL) every day, connect APIs and build data pipelines and AI workflows, not configure tools or run RevOps. You report to our Head of GTM, work closely with Sales and exchange with our Engineering team on architecture and best practices. We own products and outcomes, not Jira tickets. **What You'll Do** - **Data pipelines:** Design and build pipelines that pull account and contact data from multiple sources and APIs, clean, deduplicate and score it, and sync it to our CRM as the single source of truth. - **Data layer:** Design the data model and central database behind our GTM, connecting CRM, outreach and product data. - **Integrations & services:** Integrate internal and third-party tools via REST APIs and webhooks, and build small internal services and tools where off-the-shelf tools fall short. - **Signals & automation:** Build signal detection, lead scoring and routing, and alerts that tell the right rep which account to call today and why. - **AI agents:** Build AI-powered tools and agents that take repetitive work off our AEs, from research to proposals to CRM updates. - **Reliability:** Deploy, schedule, monitor and maintain everything you build: error handling, retries, rate limits, logging and alerts when something breaks. - **Ownership end-to-end:** Investigate problems, find the root cause, ship the fix and document it so nothing depends on one person. Your success: reps spend less time on manual work and more time with customers, and more pipeline comes from systems that run reliably and are actually used. **About You** You’re a backend engineer who loves building things real people use every day, and curious about the business: why a customer buys, which signal means a company is ready. You build systems that run reliably at 10x volume, not one-off scripts. - Recent graduate (0–2 years) in Computer Science or a related engineering field with a strong academic record. - 1+ years of backend experience through your first full-time job or internships in a startup environment. - Strong engineering fundamentals: solid Python (or another backend language), SQL and data modeling. - Experience building and consuming REST APIs and working with webhooks. - You know how to run code in production: Git, deployment, scheduling, testing, logging and debugging. - You think in systems: you understand how components depend on each other and what breaks when you change one part. - Hands-on experience with AI coding tools and LLM APIs (e.g. Claude Code or the Claude API). - You’ve built and shipped real things (a feature, service, data pipeline or internal tool) and can show them. - Smart, structured problem solver and fast learner: you pick up new tools on your own and bring complexity down. - Independent, proactive and comfortable communicating remotely, especially in writing. **Nice to have:** Experience with a cloud platform (AWS or GCP), a data warehouse, a CRM and its API, or GTM tools like Clay. You **should not apply** if: - You need detailed tickets telling you what to build. - You only want to write code and don’t care about business impact. - You don’t want to test, monitor and maintain what you ship. - You’d rather be led than lead your own projects. - You don’t want to work closely with Sales and the people who use your tools. **Interview Process** - ~30 min – Introductory call with our Talent team - Technical take home challenge (~8–10h, 7 days to submit) - ~90 min – Interview incl. live coding with our Head of GTM - Final interview with our co-founder and Head of GTM **What we offer** - **Remote Work:** 100% remote work with a virtual office in Gather. - **Competitive Salary:** Industry-competitive local salaries. We pay local rates that are at or above the market. We share this [philosophy with GitLab](https://about.gitlab.com/blog/2019/02/28/why-we-pay-local-rates/). - **Equity:** Generous equity package – we’re all owners of Secfix and beneficiaries of our collective success. - **Holidays**: 26 days holiday + local public holidays. - **Health Insurance:** Comprehensive health coverage. - **Development Budget:** €1,000 annual personal development budget. - **Workspace Budget:** Remote workspace budget and access to co-working spaces. - **Annual Retreat**: Annual retreat to build connections and inspire ideas (this year we’re headed to Alicante, Spain!). - **Tech Equipment**: Latest tech equipment (MacBook, monitors, headphones). - **Company Events:** Company-wide events to build relationships and have some fun! - **Mentorship:** We are backed by top VCs and accelerators and have direct access to world-class mentors. Our values: we are obsessed with our customers, we build smart, we create trust, we are hacky, we take ownership, and we are leaders of remote. *We are an equal-opportunity employer and remote-only company. We work in sync using Gather as our virtual office and therefore cannot support 100% asynchronous work.* [*Read more about our Remote Culture here*](https://app.notion.com/p/Remote-Culture-93bf571583904c5e814b7afd83c240f2?pvs=21)*.*",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 48.9,
+  "matched_skills": [
+   "english",
+   "german",
+   "sql",
+   "rest api",
+   "aws"
+  ],
+  "missing_skills": [
+   "data pipelines",
+   "artificial intelligence",
+   "gitlab ci",
+   "ai agents",
+   "python",
+   "logging",
+   "iso 27001",
+   "gdpr"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "wf5008726",
+  "extra": {
+   "company_size": "SIZE_11_50",
+   "posted_source": "page:json-ld",
+   "posted_checked": "json-ld",
+   "salary_stated": true,
+   "salary_inr": 2688000,
+   "salary_lpa": 26.9,
+   "salary_text": "$20k – $32k",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong Java/SQL background with Kafka and AWS experience aligns well with GTM's data pipeline and integration needs.",
+    "gaps": "Lacks specific Python, AI/ML agent, GitLab CI, and ISO 27001/GDPR knowledge required for this role."
+   },
+   "is_mnc": false,
+   "lpa": 26.9,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "secfix.com",
+    "site": "",
+    "emails": [
+     "branko@secfix.com",
+     "fabiola@secfix.com",
+     "grigory@secfix.com",
+     "marie-isabelle@secfix.com",
+     "shreshtha@secfix.com",
+     "rachit@secfix.com",
+     "chris@secfix.com",
+     "amreesh@secfix.com",
+     "pattern: {first}@secfix.com"
+    ],
+    "people": [
+     {
+      "name": "Branko Džakula",
+      "title": "Co-Founder",
+      "company": "Secfix",
+      "location": "",
+      "email": "branko@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/brankodzakula",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Fabiola Munguia",
+      "title": "CEO",
+      "company": "Secfix",
+      "location": "",
+      "email": "fabiola@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/fabiola-munguia",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Grigory Emelianov",
+      "title": "Co-Founder",
+      "company": "Secfix",
+      "location": "",
+      "email": "grigory@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/grigoryemelianov",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marie-Isabelle Schönborn",
+      "title": "Founder",
+      "company": "Secfix",
+      "location": "",
+      "email": "marie-isabelle@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/marie-isabelle-schönborn",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Shreshtha Gupta",
+      "title": "Back End Developer",
+      "company": "Secfix",
+      "location": "",
+      "email": "shreshtha@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/shreshtha-gupta1835",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Rachit Jain",
+      "title": "Software Developer",
+      "company": "Secfix",
+      "location": "",
+      "email": "rachit@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/rachit-jain-852a00206",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chris Stylianidou",
+      "title": "Founding Engineer",
+      "company": "Secfix",
+      "location": "",
+      "email": "chris@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/chris-stylianidou",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Amreesh Tyagi",
+      "title": "Senior Engineer",
+      "company": "Secfix",
+      "location": "",
+      "email": "amreesh@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/amreeshtyagi",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Custom Software Engineer - Salesforce Data 360",
+  "company": "Accenture",
+  "url": "https://www.instahyre.com/job-445185-custom-software-engineer-salesforce-data-360-at-accenture-2-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-09-30",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Let there be change",
+  "description": "As a Salesforce Data 360 Developer, you will configure, build, and support customer data solutions on Salesforce Data Cloud (Data 360). You will contribute as a senior developer, working on data ingestion, data modeling, identity resolution, data transformations, calculated insights, and segmentation, working closely with architects and business teams to deliver implementations aligned with business requirements. Responsibilities: Develop custom software solutions to design, code, and enhance components across systems or applications. Use modern frameworks and agile practices to deliver scalable, high-performing solutions tailored to specific business needs. Configure and maintain data streams from Salesforce (Sales Cloud, Service Cloud, and Marketing Cloud) and external systems. Build and maintain Data Model Objects (DMOs), configure Identity Resolution rules, develop Data Transforms, and write and optimize SQL for Calculated Insights. Create and test segments for downstream activation. Debug issues related to missing data, incorrect unification, or data mismatches. Support UAT, deployment, and post-go-live production issues. Work with architects and analysts to implement technical designs. Participate in code reviews, testing, and release cycles. Support defect resolution and optimization activities. Document Data 360 configurations and technical flows. Requirements: Hands-on experience with Salesforce Data Cloud (Data 360) configuration and development. Solid understanding of Data Streams and DMOs, Identity Resolution and Match Rules, Data Transforms, Calculated Insights (SQL), and Segmentation and Activation. Ability to develop maintainable and scalable solutions. Strong problem-solving and communication skills. Strong SQL skills (joins, aggregations, and window functions preferred). Experience working with JSON, APIs, and data integration pipelines. Understanding of event-based data and customer engagement tracking. Basic understanding of Salesforce metadata, objects, and permissions. Good-to-have skills: Sales Cloud / Service Cloud knowledge. Exposure to Zero Copy, Document AI, or Semantic Layer is a plus. Knowledge of Salesforce Agentforce integrated with Data Cloud (Data 360) to enable real-time, data-driven AI agent experiences. Certifications Required: Salesforce Data Cloud Consultant Mandatory, Salesforce Administrator Mandatory, Agentforce Specialist Preferred, Salesforce AI Associate Preferred. Additional Information: 3.5 years of Salesforce experience. 1 year of experience in Data 360 implementation projects is preferred. Experience working in Agile teams. 15 years of full-time education is required.",
+  "skills": [
+   "Data 360",
+   "Salesforce"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 1.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 45.3,
+  "matched_skills": [
+   "sql",
+   "agile",
+   "code review"
+  ],
+  "missing_skills": [
+   "salesforce",
+   "artificial intelligence",
+   "ai agents"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih445185",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.443,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong SQL and Java skills with 2 years of production experience, matching the core technical requirements.",
+    "gaps": "Missing Salesforce Data Cloud certification and specific experience with Salesforce Data 360."
+   },
+   "is_mnc": true,
+   "mnc_tier": "itservices",
+   "mnc_name": "Accenture",
+   "lpa": 6.5,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for Accenture (IT services MNC, 0-2 yrs)",
+   "lpa_url": "https://www.accenture.com/in-en/careers",
+   "lpa_lo": 4.5,
+   "lpa_hi": 8.5,
+   "pay_bonus": 1.0,
+   "contacts": {
+    "domain": "accenture.hu",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "GTM Engineer (Fresh grad, India)",
+  "company": "Secfix",
+  "url": "https://wellfound.com/jobs/5008727-gtm-engineer-fresh-grad-india",
+  "country": "IN",
+  "location": "Bengaluru",
+  "remote": true,
+  "posted": "2026-11-07",
+  "posted_at": "2026-11-07T00:25:23+00:00",
+  "posted_raw": "",
+  "salary": "$20k – $32k",
+  "snippet": "**Please do not contact anyone at Secfix by email, phone, or LinkedIn about this role. We only accept applications submitted through the form on our careers page, and messages sent any other way will not be answered.** **Location**: 100% Remote from India, min. 4h overlap with CET (e.g. 9:00–13:00 CET). Fluent English, spoken and written. German is not required. **Compensation**: 20k-32k USD per y",
+  "description": "**Please do not contact anyone at Secfix by email, phone, or LinkedIn about this role. We only accept applications submitted through the form on our careers page, and messages sent any other way will not be answered.** **Location**: 100% Remote from India, min. 4h overlap with CET (e.g. 9:00–13:00 CET). Fluent English, spoken and written. German is not required. **Compensation**: 20k-32k USD per year (depending on location) + Shares + Generous Benefits. We pay local rates that are at or above the market. We share this [philosophy with GitLab](https://about.gitlab.com/blog/2019/02/28/why-we-pay-local-rates/). **About Secfix** Secfix automates security compliance for SMBs and mid-market companies in Europe and gets them compliant with ISO 27001, GDPR, TISAX and SOC 2 in weeks instead of months. We’re a fast-growing team of 36 people, backed by a $12M Series A from Alstin Capital, Neosfer (Commerzbank) and Bayern Capital. **About the Role** You’ll be our first GTM Engineer and build the system our entire go-to-market team runs on, from BDRs to AEs. Today, everyone runs their own setup for data, outreach and communication. You’ll replace that with one central, automated system and keep it reliable as we grow. This is a hands-on engineering role: you’ll write code (Python, SQL) every day, connect APIs and build data pipelines and AI workflows, not configure tools or run RevOps. You report to our Head of GTM, talk to everyone in GTM, spot the biggest bottlenecks and decide together what to build next. We own products and outcomes, not Jira tickets. **What You'll Do** - **Data:** Make our CRM the single source of truth for every target account. Model accounts, contacts and buying committees, and build automated pipelines that pull data from multiple sources, deduplicate, score and write it back. - **Pipeline generation:** Build signal-based outbound, inbound scoring and routing, and alerts that tell the right rep which account to call today and why. - **Sales automation:** Build AI tools and agents that take repetitive work off our AEs, from research to proposals to CRM updates. - **GTM infrastructure:** Design our central data layer, integrate new tools via APIs and webhooks, and make sure everything runs reliably: scheduled jobs, error handling, monitoring and alerts when something breaks. - **Ownership end-to-end:** Investigate problems, find the root cause, ship the fix and document it so nothing depends on one person. Your success: reps spend less time on manual work and more time with customers, and more pipeline comes from systems that run reliably and are actually used. **About You** You’re an engineer who loves building things real people use every day, and are curious about the business. You build systems that run reliably at 10x volume, not one-off scripts. - Recent graduate (0–2 years) in Computer Science or another engineering field with a strong academic record. - 1+ years of experience through your first full-time job or internships in a startup environment. - Solid Python and hands-on experience with APIs and webhooks. - You know how to run code in production: version control (Git), scheduling, handling errors and rate limits, logging and debugging. - You think in systems: you understand how components depend on each other and what breaks when you change one part. - Smart, structured problem solver and fast learner: you pick up new tools and technologies on your own and bring complexity down. - Hands-on experience with Claude (incl. Claude Code or the API). This is a must-have. - You’ve built and shipped real things (an automation, scraper, data pipeline or internal tool) and can show them. - Independent, proactive and comfortable communicating remotely, especially in writing. **Nice to have:** SQL and data modeling, experience with a CRM, GTM tools like Clay, a data warehouse or a cloud platform. You **should not apply** if: - You need detailed tickets telling you what to build. - You only want to write code and don’t care about business impact. - You don’t want to test, monitor and maintain what you ship. - You’d rather be led than lead your own projects. - You don’t want to work closely with Sales and the people who use your tools. **Interview Process** - ~30 min – Introductory call with our Talent team - Technical take-home challenge (~8–10h, 7 days to submit) - ~90 min – Interview incl. live coding with our Head of GTM - Final interview with our co-founder and Head of GTM **What we offer** - **Remote Work:** 100% remote work with a virtual office in Gather. - **Competitive Salary:** Industry-competitive local salaries. We pay local rates that are at or above the market. We share this [philosophy with GitLab](https://about.gitlab.com/blog/2019/02/28/why-we-pay-local-rates/). - **Equity:** Generous equity package – we’re all owners of Secfix and beneficiaries of our collective success. - **Holidays**: 26 days holiday + local public holidays. - **Health Insurance:** Comprehensive health coverage. - **Development Budget:** €1,000 annual personal development budget. - **Workspace Budget:** Remote workspace budget and access to co-working spaces. - **Annual Retreat**: Annual retreat to build connections and inspire ideas (this year we’re headed to Alicante, Spain!). - **Tech Equipment**: Latest tech equipment (MacBook, monitors, headphones). - **Company Events:** Company-wide events to build relationships and have some fun! - **Mentorship:** We are backed by top VCs and accelerators and have direct access to world-class mentors. Our values: we are obsessed with our customers, we build smart, we create trust, we are hacky, we take ownership, and we are leaders of remote. *We are an equal-opportunity employer and remote-only company. We work in sync using Gather as our virtual office and therefore cannot support 100% asynchronous work.* [*Read more about our Remote Culture here*](https://app.notion.com/p/Remote-Culture-93bf571583904c5e814b7afd83c240f2?pvs=21)*.*",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 44.5,
+  "matched_skills": [
+   "english",
+   "german",
+   "sql"
+  ],
+  "missing_skills": [
+   "gitlab ci",
+   "python",
+   "data pipelines",
+   "artificial intelligence",
+   "iso 27001",
+   "gdpr",
+   "soc 2",
+   "jira"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "wf5008727",
+  "extra": {
+   "company_size": "SIZE_11_50",
+   "posted_source": "page:json-ld",
+   "posted_checked": "json-ld",
+   "salary_stated": true,
+   "salary_inr": 2688000,
+   "salary_lpa": 26.9,
+   "salary_text": "$20k – $32k",
+   "semantic": 0.333,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend background in Java, Kafka, and PostgreSQL aligns with GTM's data pipeline and SQL requirements. Experience with cloud infrastructure and observability supports the need for reliable, automated systems.",
+    "gaps": "Lacks direct experience with Python, GitLab CI, and AI/ML workflows, which are core to this GTM role."
+   },
+   "is_mnc": false,
+   "lpa": 26.9,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "secfix.com",
+    "site": "",
+    "emails": [
+     "branko@secfix.com",
+     "fabiola@secfix.com",
+     "grigory@secfix.com",
+     "marie-isabelle@secfix.com",
+     "shreshtha@secfix.com",
+     "rachit@secfix.com",
+     "chris@secfix.com",
+     "amreesh@secfix.com",
+     "pattern: {first}@secfix.com"
+    ],
+    "people": [
+     {
+      "name": "Branko Džakula",
+      "title": "Co-Founder",
+      "company": "Secfix",
+      "location": "",
+      "email": "branko@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/brankodzakula",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Fabiola Munguia",
+      "title": "CEO",
+      "company": "Secfix",
+      "location": "",
+      "email": "fabiola@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/fabiola-munguia",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Grigory Emelianov",
+      "title": "Co-Founder",
+      "company": "Secfix",
+      "location": "",
+      "email": "grigory@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/grigoryemelianov",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Marie-Isabelle Schönborn",
+      "title": "Founder",
+      "company": "Secfix",
+      "location": "",
+      "email": "marie-isabelle@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/marie-isabelle-schönborn",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Shreshtha Gupta",
+      "title": "Back End Developer",
+      "company": "Secfix",
+      "location": "",
+      "email": "shreshtha@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/shreshtha-gupta1835",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Rachit Jain",
+      "title": "Software Developer",
+      "company": "Secfix",
+      "location": "",
+      "email": "rachit@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/rachit-jain-852a00206",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chris Stylianidou",
+      "title": "Founding Engineer",
+      "company": "Secfix",
+      "location": "",
+      "email": "chris@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/chris-stylianidou",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Amreesh Tyagi",
+      "title": "Senior Engineer",
+      "company": "Secfix",
+      "location": "",
+      "email": "amreesh@secfix.com",
+      "linkedin": "https://www.linkedin.com/in/amreeshtyagi",
+      "source": "hunter",
+      "confidence": 95
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bengaluru%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bengaluru%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bengaluru%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Secfix%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Secfix%22%20%28%22Senior%20engineer%22%29%20%22Bengaluru%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Backend AI Engineer",
+  "company": "Zomato",
+  "url": "https://www.instahyre.com/job-448261-backend-ai-engineer-at-zomato-gurgaon/",
+  "country": "IN",
+  "location": "Gurgaon",
+  "remote": null,
+  "posted": "2026-10-27",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Discover great places to eat around you",
+  "description": "We're looking for engineers who bring strong backend fundamentals along with hands-on AI exposure, with AI being the primary focus of the role. Requirements: Experience: 1-2 years. Strong backend development experience using Go (Golang) or Python. Hands-on exposure to AI/ML, generative AI, or LLM-based applications. Interest and experience in building AI-powered features, intelligent workflows, and scalable backend systems. Good understanding of APIs, system integration, and backend architecture. Ability to build, experiment, and contribute to AI-driven product development.",
+  "skills": [
+   "AI",
+   "Backend",
+   "Generative AI",
+   "Go",
+   "Golang",
+   "LLM",
+   "ML",
+   "Python"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 2.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 42.4,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "golang",
+   "python",
+   "machine learning",
+   "generative ai",
+   "llm"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih448261",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.408,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS, plus 2 years of production scaling. Ready to integrate AI/ML concepts and build generative AI features.",
+    "gaps": "Lacks direct Go/Python experience and hands-on AI/ML exposure required for this role."
+   },
+   "is_mnc": true,
+   "mnc_tier": "unicorn",
+   "mnc_name": "Zomato",
+   "lpa": 22.5,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for Zomato (Unicorn / startup, 0-2 yrs)",
+   "lpa_url": "https://www.eternal.com/careers/",
+   "lpa_lo": 15.0,
+   "lpa_hi": 30.0,
+   "pay_bonus": 12.0,
+   "contacts": {
+    "domain": "zomato.com",
+    "site": "",
+    "emails": [
+     "deepinder@zomato.com",
+     "ruhi@zomato.com",
+     "umar.ahmad@zomato.com",
+     "lalit@zomato.com",
+     "amandeep.kohli@zomato.com",
+     "pravesh.saxena@zomato.com",
+     "sanchit.trivedi@zomato.com",
+     "kunal@zomato.com",
+     "akshay@zomato.com",
+     "daksh.vincent@zomato.com"
+    ],
+    "people": [
+     {
+      "name": "Gaurav Deepinder",
+      "title": "CEO",
+      "company": "Zomato",
+      "location": "",
+      "email": "deepinder@zomato.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 84
+     },
+     {
+      "name": "Ruhi Gupta",
+      "title": "Director of Human Resources",
+      "company": "Zomato",
+      "location": "",
+      "email": "ruhi@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/ruhi-gupta-29856b48",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Umar Ahmad",
+      "title": "AVP Engineering",
+      "company": "Zomato",
+      "location": "",
+      "email": "umar.ahmad@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/ahmadumar",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Lalit Verma",
+      "title": "Chief Technology Officer",
+      "company": "Zomato",
+      "location": "",
+      "email": "lalit@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/lalitsverma",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Amandeep Kohli",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "amandeep.kohli@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/amandeep-singh-kohli-0825aa128",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Pravesh Saxena",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "pravesh.saxena@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/pravesh-saxena-102416166",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Sanchit Trivedi",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "sanchit.trivedi@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/sanchit-trivedi-435a92138",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Kunal Gaurav",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "kunal@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/kunal-gaurav-638012136",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Akshay Shine",
+      "title": "Regional Manager",
+      "company": "Zomato",
+      "location": "",
+      "email": "akshay@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/akshayshine",
+      "source": "hunter",
+      "confidence": 75
+     },
+     {
+      "name": "Daksh Vincent",
+      "title": "Head",
+      "company": "Zomato",
+      "location": "",
+      "email": "daksh.vincent@zomato.com",
+      "linkedin": "https://www.linkedin.com/in/daksh-vincent",
+      "source": "hunter",
+      "confidence": 75
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurgaon%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurgaon%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurgaon%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Zomato%22%20%28%22Senior%20engineer%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Zomato%22%20%28%22Senior%20engineer%22%29%20%22Gurgaon%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.2,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "avi.porwal@valiancesolutions.com",
+     "chinmaya.sahu@valiancesolutions.com",
+     "ashish.choudhary@valiancesolutions.com",
+     "vishrut.kukreja@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Avi Porwal",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "avi.porwal@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/avi-porwal-421b20246",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Chinmaya Sahu",
+      "title": "Field Site Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chinmaya.sahu@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chinmaya-sahu-139179281",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Ashish Choudhary",
+      "title": "Cloud Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ashish.choudhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ashish-choudhary-a179a6143",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Vishrut Kukreja",
+      "title": "AI Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vishrut.kukreja@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vishrutkukreja",
+      "source": "hunter",
+      "confidence": 97
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Quality Engineer",
+  "company": "JetStream Security",
+  "url": "https://www.instahyre.com/job-430680-quality-engineer-at-jetstream-security-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-06-25",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Accelerate enterprise AI adoption",
+  "description": "We are seeking a Quality Engineer with strong experience in automation and testing to build and scale JetStream's AI security and governance platform. You will work across the stack to develop intuitive user interfaces and robust backend services that power real-time visibility, policy enforcement, and access control for enterprise AI systems. You will collaborate closely with product, platform, and security engineers to deliver features that translate complex AI and security concepts into clear, actionable user experiences. Responsibilities: Design, develop, and maintain automated test suites for web applications, APIs, and backend services. Create and execute functional, integration, regression, and end-to-end test scenarios. Collaborate with software engineers during feature development to identify quality risks early. Validate platform functionality across AI workflows, policy enforcement systems, access controls, and enterprise integrations. Develop test plans, test cases, and quality metrics for new product releases. Participate in CI/CD pipelines and help automate quality checks across the development lifecycle. Investigate, reproduce, and document defects with clear root-cause analysis. Contribute to improving test frameworks, tooling, and engineering best practices. Work closely with product and engineering teams to ensure a seamless user experience and high platform reliability. Requirements: 1-3 years of experience in Quality Engineering, Software Testing, or Test Automation. Strong understanding of software testing fundamentals and SDLC/STLC concepts. Hands-on experience with manual testing and AI Knowledge. Experience writing automated tests using frameworks such as Selenium, Playwright, Cypress, Pytest, TestNG, or similar is desirable. Basic programming skills in at least one language such as Python, Java, JavaScript, or TypeScript. Experience testing REST APIs using tools such as Postman, Insomnia, or automation frameworks. Familiarity with Git and modern software development workflows. Strong analytical and problem-solving skills. Excellent communication and collaboration abilities. Experience working in the security domain (identity, access control, governance, monitoring, or compliance). Experience working in a high-growth startup environment. Exposure to cloud platforms such as AWS, Azure, or GCP. Familiarity with CI/CD tools such as GitHub Actions, Jenkins, or GitLab CI. Understanding of container technologies such as Docker and Kubernetes. Exposure to security testing, performance testing, or observability tools. Interest in AI/ML systems, LLMs, or AI-powered applications.",
+  "skills": [
+   "Agentic AI",
+   "AI Testing",
+   "Artificial Intelligence",
+   "Framework",
+   "Playwright",
+   "pytest",
+   "Python",
+   "Selenium"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 38.1,
+  "matched_skills": [
+   "ci/cd",
+   "test automation",
+   "java",
+   "javascript",
+   "typescript",
+   "rest api",
+   "postman",
+   "aws",
+   "github actions",
+   "docker",
+   "observability"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "selenium",
+   "playwright",
+   "pytest",
+   "python",
+   "ai agents",
+   "ui/ux",
+   "manual testing"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih430680",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.422,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with the platform's core infrastructure needs.",
+    "gaps": "Lacks specific experience in AI security testing, Playwright, or manual testing for AI workflows."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22JetStream%20Security%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22JetStream%20Security%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22JetStream%20Security%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22JetStream%20Security%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22JetStream%20Security%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22JetStream%20Security%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22JetStream%20Security%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22JetStream%20Security%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ }
+]
