@@ -1,0 +1,417 @@
+[
+ {
+  "source": "instahyre",
+  "source_name": "Instahyre",
+  "title": "Custom Software Engineer - Salesforce Data 360",
+  "company": "Accenture",
+  "url": "https://www.instahyre.com/job-445185-custom-software-engineer-salesforce-data-360-at-accenture-2-bangalore/",
+  "country": "IN",
+  "location": "Bangalore",
+  "remote": null,
+  "posted": "2026-09-30",
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "",
+  "snippet": "Let there be change",
+  "description": "As a Salesforce Data 360 Developer, you will configure, build, and support customer data solutions on Salesforce Data Cloud (Data 360). You will contribute as a senior developer, working on data ingestion, data modeling, identity resolution, data transformations, calculated insights, and segmentation, working closely with architects and business teams to deliver implementations aligned with business requirements. Responsibilities: Develop custom software solutions to design, code, and enhance components across systems or applications. Use modern frameworks and agile practices to deliver scalable, high-performing solutions tailored to specific business needs. Configure and maintain data streams from Salesforce (Sales Cloud, Service Cloud, and Marketing Cloud) and external systems. Build and maintain Data Model Objects (DMOs), configure Identity Resolution rules, develop Data Transforms, and write and optimize SQL for Calculated Insights. Create and test segments for downstream activation. Debug issues related to missing data, incorrect unification, or data mismatches. Support UAT, deployment, and post-go-live production issues. Work with architects and analysts to implement technical designs. Participate in code reviews, testing, and release cycles. Support defect resolution and optimization activities. Document Data 360 configurations and technical flows. Requirements: Hands-on experience with Salesforce Data Cloud (Data 360) configuration and development. Solid understanding of Data Streams and DMOs, Identity Resolution and Match Rules, Data Transforms, Calculated Insights (SQL), and Segmentation and Activation. Ability to develop maintainable and scalable solutions. Strong problem-solving and communication skills. Strong SQL skills (joins, aggregations, and window functions preferred). Experience working with JSON, APIs, and data integration pipelines. Understanding of event-based data and customer engagement tracking. Basic understanding of Salesforce metadata, objects, and permissions. Good-to-have skills: Sales Cloud / Service Cloud knowledge. Exposure to Zero Copy, Document AI, or Semantic Layer is a plus. Knowledge of Salesforce Agentforce integrated with Data Cloud (Data 360) to enable real-time, data-driven AI agent experiences. Certifications Required: Salesforce Data Cloud Consultant Mandatory, Salesforce Administrator Mandatory, Agentforce Specialist Preferred, Salesforce AI Associate Preferred. Additional Information: 3.5 years of Salesforce experience. 1 year of experience in Data 360 implementation projects is preferred. Experience working in Agile teams. 15 years of full-time education is required.",
+  "skills": [
+   "Salesforce",
+   "Salesforce Data 360",
+   "Salesforce Data Cloud"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 1.0,
+  "exp_max": 1.0,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 44.6,
+  "matched_skills": [
+   "sql",
+   "agile",
+   "code review"
+  ],
+  "missing_skills": [
+   "salesforce",
+   "artificial intelligence",
+   "ai agents"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "ih445185",
+  "extra": {
+   "posted_source": "page:json-ld",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.443,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong SQL and Java skills with 2 years of production experience, matching the core technical requirements.",
+    "gaps": "Missing Salesforce Data Cloud certification and specific experience with Salesforce Data 360."
+   },
+   "is_mnc": true,
+   "mnc_tier": "itservices",
+   "mnc_name": "Accenture",
+   "lpa": 6.5,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for Accenture (IT services MNC, 0-2 yrs)",
+   "lpa_url": "https://www.accenture.com/in-en/careers",
+   "lpa_lo": 4.5,
+   "lpa_hi": 8.5,
+   "pay_bonus": 1.0,
+   "contacts": {
+    "domain": "accenture.hu",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Accenture%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Accenture%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Associate Engineer Mechanical Engineering VIII",
+  "company": "Vertiv Group",
+  "url": "https://www.adzuna.in/details/5957254300?utm_medium=api&utm_source=28f9775f",
+  "country": "IN",
+  "location": "Pune, Maharashtra",
+  "remote": null,
+  "posted": "2026-11-07",
+  "posted_at": "2026-11-07T22:56:51+00:00",
+  "posted_raw": "2026-11-07T22:56:51Z",
+  "salary": "ience in handling large CAD assemblies in creo and managing modifications as required. 10. Workin",
+  "snippet": "Description Short Description for Internal Candidates Description for Internal Candidates Brief Job Description: • To work in Global Environment for Design Engineering support activities for New Product development, VAVE and Improvement projects. • To Work on projects/assignments (short or long term) such as on Concept design, NPD, Bills of Materials, CAD Modelling & its detailing (using Solidwork",
+  "description": "Description Short Description for Internal Candidates Description for Internal Candidates Brief Job Description: • To work in Global Environment for Design Engineering support activities for New Product development, VAVE and Improvement projects. • To Work on projects/assignments (short or long term) such as on Concept design, NPD, Bills of Materials, CAD Modelling & its detailing (using Solidworks Tool) & Change Orders to maintain desired quality levels set by organization. • Work on design and developments of part/assembly & Provide design packages including 3D models, assemblies, drawings, and BOM structures. • Must also be able to work independently with little guidance. • Adherence to project management process set by organization. R esponsibilities and Measurement Criteria with Time investment Needed on Each: (This will describe the overall core responsibilities of the role, decision making responsibilities etc.) 1. Minimum bachelor's degree in mechanical engineering with relevant exposure to design environment. 2. 1-3 years of experience on Creo platform in Sheet metal domain is a must. 3. Must have good working experience in 3D modelling and detailing work on Creo with experience on generating Bills of Materials. Should also possess relevant experience and understanding of CO process. 4. Working experience on any PLM tools. Agile or PD cloud will be added advantage. 5. Knowledge of sheet metal fabrication process will be an added advantage. 6. Experience on telecom/electrical enclosure design is added advantage. 7. Good Interpersonal skills & ability to communicate effectively in both written and spoken English. 8. Self-motivated, disciplined, passionate, Willingness to learn and organized. 9. Experience in handling large CAD assemblies in creo and managing modifications as required. 10. Working experience on External Simplified representation will be an added advantage. Qualifications: Required/ Minimum Qualifications: 1. Minimum Bachelor Degree in Mechanical Engineering with relevant exposure to design environment. 2. 1-3 years of experience on Solidworks platform in Sheet metal domain is a must. Additional / Preferred Qualifications: 1. Experience in handling large CAD assemblies in SOLIDWORKS and managing modifications as required. 2. Working experience on External Simplified representation will be an added advantage. Physical & Environmental Requirements: To be used majorly for manufacturing jobs. Time Travel Needed: No The successful candidate will embrace Vertiv’s Core Principals & Behaviors to help execute our Strategic Priorities. OUR CORE PRINCIPALS: Safety, Integrity, Respect, Teamwork, Diversity & Inclusion. OUR STRATEGIC PRIORITIES Customer Focus Operational Excellence High-Performance Culture Innovation Financial Strength OUR BEHAVIORS Own It Act With Urgency Foster a Customer-First Mindset Think Big and Execute Lead by Example Drive Continuous Improvement Learn and Seek Out Development Vertiv is an Equal Opportunity/Affirmative Action employer. We promote equal opportunities for all with respect to hiring, terms of employment, mobility, training, compensation, and occupational health, without discrimination as to age, race, color, religion, creed, sex, pregnancy status (including childbirth, breastfeeding, or related medical conditions), marital status, sexual orientation, gender identity / expression (including transgender status or sexual stereotypes), genetic information, citizenship status, national origin, protected veteran status, political affiliation, or disability. If you have a disability and are having difficulty accessing or using this website to apply for a position, you can request help by sending an email to help.join@vertivco.com. If you are interested in applying or learning more about this role, please visit the company’s career page located on Vertiv.com/Careers Work Authorization No calls or agencies please. Vertiv will only employ those who are legally authorized to work in the United States. This is not a position for which sponsorship will be provided. Individuals with temporary visas such as E, F-1, H-1, H-2, L, B, J, or TN or who need sponsorship for work authorization now or in the future, are not eligible for hire. Same Posting Description for Internal and External Candidates",
+  "skills": [],
+  "employment_type": "['Full Time']",
+  "exp_min": 1.0,
+  "exp_max": 3.0,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 40.5,
+  "matched_skills": [
+   "agile",
+   "english"
+  ],
+  "missing_skills": [
+   "project management",
+   "telecommunications",
+   "r"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "a1f46527ba58",
+  "extra": {
+   "details_fetched": true,
+   "salary_stated": true,
+   "salary_inr": 1268800,
+   "salary_lpa": 12.7,
+   "salary_text": "ience in handling large CAD assemblies in creo and managing modifications as required. 10. Workin",
+   "semantic": 0.017,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Manik has 2 years of backend engineering experience with strong Java, Kafka, and cloud skills, but lacks mechanical engineering fundamentals, SolidWorks experience, and CAD modeling skills required for this role.",
+    "gaps": "Missing mechanical engineering background, SolidWorks proficiency, and CAD modeling experience."
+   },
+   "is_mnc": false,
+   "lpa": 12.7,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 6.0,
+   "contacts": {
+    "domain": "vertivco.com",
+    "site": "",
+    "emails": [
+     "help.join@vertivco.com",
+     "jim.wiemer@vertivco.com",
+     "aamer.sab@vertivco.com",
+     "matthew.jones@vertivco.com",
+     "phaneendra.vihari@vertivco.com",
+     "john.becker@vertivco.com",
+     "pattern: {first}.{last}@vertivco.com"
+    ],
+    "people": [
+     {
+      "name": "Jim Wiemer",
+      "title": "Director",
+      "company": "Vertiv Group",
+      "location": "",
+      "email": "jim.wiemer@vertivco.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 84
+     },
+     {
+      "name": "Aamer Sab",
+      "title": "Site Engineer",
+      "company": "Vertiv Group",
+      "location": "",
+      "email": "aamer.sab@vertivco.com",
+      "linkedin": "https://www.linkedin.com/in/aamer-sab-479919176",
+      "source": "hunter",
+      "confidence": 77
+     },
+     {
+      "name": "Matthew Jones",
+      "title": "Service Engineer",
+      "company": "Vertiv Group",
+      "location": "",
+      "email": "matthew.jones@vertivco.com",
+      "linkedin": "https://www.linkedin.com/in/matthew-jones-345b09103",
+      "source": "hunter",
+      "confidence": 76
+     },
+     {
+      "name": "Phaneendra Vihari",
+      "title": "Technical Recruiter",
+      "company": "Vertiv Group",
+      "location": "",
+      "email": "phaneendra.vihari@vertivco.com",
+      "linkedin": "https://www.linkedin.com/in/phaneendra-vihari-79aa8721a",
+      "source": "hunter",
+      "confidence": 74
+     },
+     {
+      "name": "John Becker",
+      "title": "",
+      "company": "Vertiv Group",
+      "location": "",
+      "email": "john.becker@vertivco.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 83
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Vertiv%20Group%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Vertiv%20Group%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Vertiv%20Group%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Vertiv%20Group%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Vertiv%20Group%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Vertiv%20Group%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Vertiv%20Group%22%20%28%22Senior%20engineer%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Vertiv%20Group%22%20%28%22Senior%20engineer%22%29%20%22Pune%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 39.2,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "avi.porwal@valiancesolutions.com",
+     "chinmaya.sahu@valiancesolutions.com",
+     "ashish.choudhary@valiancesolutions.com",
+     "vishrut.kukreja@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Avi Porwal",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "avi.porwal@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/avi-porwal-421b20246",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Chinmaya Sahu",
+      "title": "Field Site Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chinmaya.sahu@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chinmaya-sahu-139179281",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Ashish Choudhary",
+      "title": "Cloud Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ashish.choudhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ashish-choudhary-a179a6143",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Vishrut Kukreja",
+      "title": "AI Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vishrut.kukreja@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vishrutkukreja",
+      "source": "hunter",
+      "confidence": 97
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ }
+]
