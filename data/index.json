@@ -1,6 +1,28 @@
 {
- "updated": "2026-11-09T13:44:03Z",
+ "updated": "2026-11-09T18:43:06Z",
  "items": [
+  {
+   "id": "naukri-20261109-184306-naukri-openings-2026-11-09-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-09 run 1 - Last 24h",
+   "when": "2026-11-09T18:43:06Z",
+   "file": "data/naukri/naukri-20261109-184306-naukri-openings-2026-11-09-run-1-last-24.html",
+   "bytes": 54946,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261109-184306-naukri-openings-2026-11-09-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261109-184306-naukri-openings-2026-11-10-run-1-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-10 run 1 - Early",
+   "when": "2026-11-09T18:43:06Z",
+   "file": "data/naukri/naukri-20261109-184306-naukri-openings-2026-11-10-run-1-early.html",
+   "bytes": 39110,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261109-184306-naukri-openings-2026-11-10-run-1-early.jobs.json"
+   }
+  },
   {
    "id": "careers-20261109-134403-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -2082,28 +2104,6 @@
    "bytes": 115976,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261022-080624-naukri-openings-2026-10-22-run-1-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261022-080624-naukri-openings-2026-10-22-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-22 run 2 - Early",
-   "when": "2026-10-22T08:06:24Z",
-   "file": "data/naukri/naukri-20261022-080624-naukri-openings-2026-10-22-run-2-early.html",
-   "bytes": 33422,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261022-080624-naukri-openings-2026-10-22-run-2-early.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261022-080624-naukri-openings-2026-10-22-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-22 run 3",
-   "when": "2026-10-22T08:06:24Z",
-   "file": "data/naukri/naukri-20261022-080624-naukri-openings-2026-10-22-run-3.html",
-   "bytes": 81029,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261022-080624-naukri-openings-2026-10-22-run-3.jobs.json"
    }
   },
   {
