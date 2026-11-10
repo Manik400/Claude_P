@@ -1,0 +1,780 @@
+[
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "Software Engineer",
+  "company": "ARPM",
+  "url": "https://wellfound.com/jobs/4970038-software-engineer",
+  "country": "IN",
+  "location": "Gurgaon",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹9.6L – ₹12L • No equity",
+  "snippet": "Join the in-person Gurugram team building ARPM's visual programming language and next-generation development environment. You will own slices of a live C# / .NET product spanning a headless graph engine, a cross-platform editor, backend and session transport, plugins and host interop, and AI-assisted authoring - design, implement, test, and ship. **What you'll do** * Extend the execution model: co",
+  "description": "Join the in-person Gurugram team building ARPM's visual programming language and next-generation development environment. You will own slices of a live C# / .NET product spanning a headless graph engine, a cross-platform editor, backend and session transport, plugins and host interop, and AI-assisted authoring - design, implement, test, and ship. **What you'll do** * Extend the execution model: components, ports, wires, events, validation, and error propagation. * Improve the editor: canvas behaviour, responsiveness, and the line between local interaction and server sync. * Keep a strict split between core computation, transport, and UI - the engine should run headless. * Ship plugins and host-side runtimes so one graph can target Rhino, Revit, Unity, and similar applications. * Write tests that exercise runtime behaviour - event ordering, cross-thread events, and data-plus-event graphs - not only isolated functions. * Help design how agents propose graph edits, and how those edits are judged against explicit evaluations. * Work across ASP.NET, gRPC, and related transports between the editor, compute workers, and host runtimes. * Read existing architecture before adding surface area, then own the slice through to ship. **What we're looking for** * Professional fluency in C# and .NET. This is a C# product - this is not a pick-up-C#-on-the-job role. * Comfort with systems software, not only CRUD apps: graph data structures, execution order, concurrency, serialisation, plugin loading, and clear module boundaries. * Ability to work in a multi-process / client-server product (editor, backend, compute hosts) and decide what belongs on which side of the wire. * Solid git hygiene, willingness to write unit and behavioural tests, and the habit of reading before rewriting. * Clear written and spoken English, and the ability to discuss design trade-offs in person. * Comfort working full-time on-site in Gurugram. This is not a remote or hybrid-by-default role; relocate to NCR if you are not already here. * Demonstrated work. A computer-science degree is not required. * Willingness to show skill through an open-ended assignment or a research/prototype proposal you suggest - we do not hire on timed algorithm drills. **Nice to have** * AEC technology: Grasshopper, RhinoCommon, Revit API, Dynamo, ShapeDiver, Speckle, or shipping plugins and configurators. * AI agent loops: tool-calling agents, MCP servers or clients, eval harnesses, or spec-driven agentic products - not only using a chatbot. * IDE / language tooling: editors, language servers, compilers, REPLs, debuggers, node canvases, or developer-tool UX. * Visual / dataflow programming: node-wire environments, event-driven runtimes, or comparable graph UIs. * Avalonia, WPF, canvas/Skia, WebAssembly, gRPC, Protocol Buffers, or ASP.NET Core. * C++, Unity, Python for embedding, or collaborative editing (CRDT or OT).",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 1,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 63.6,
+  "matched_skills": [
+   "c#",
+   ".net",
+   "data structures",
+   "concurrency",
+   "english"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "unity",
+   "grpc",
+   "ai agents",
+   "node.js",
+   "git",
+   "ui/ux",
+   "event-driven"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf4970038",
+  "extra": {
+   "company_size": "SIZE_1_10",
+   "salary_stated": true,
+   "salary_inr": 1200000,
+   "salary_lpa": 12.0,
+   "salary_text": "₹9.6L – ₹12L • No equity",
+   "semantic": 0.487,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong C#/.NET fluency and experience with distributed systems, event-driven architectures, and high-throughput data processing align well with this role.",
+    "gaps": "Limited experience with AI agents, graph data structures, and specific C# product development tools like Rhino/Revit."
+   },
+   "is_mnc": false,
+   "lpa": 12.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 6.0,
+   "contacts": {
+    "domain": "arpm.co",
+    "site": "",
+    "emails": [
+     "attilio.meucci@arpm.co",
+     "amir.babaei@arpm.co",
+     "faraz.samapoor@arpm.co",
+     "pattern: {first}.{last}@arpm.co"
+    ],
+    "people": [
+     {
+      "name": "Attilio Meucci",
+      "title": "Founder",
+      "company": "ARPM",
+      "location": "",
+      "email": "attilio.meucci@arpm.co",
+      "linkedin": "https://www.linkedin.com/in/attilio-meucci-72580013",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Amir Babaei",
+      "title": "Back End Developer",
+      "company": "ARPM",
+      "location": "",
+      "email": "amir.babaei@arpm.co",
+      "linkedin": "https://www.linkedin.com/in/amir-mohamamd-babaei",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Faraz Samapoor",
+      "title": "Backend Developer",
+      "company": "ARPM",
+      "location": "",
+      "email": "faraz.samapoor@arpm.co",
+      "linkedin": "https://www.linkedin.com/in/fsamapoor",
+      "source": "hunter",
+      "confidence": 98
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ARPM%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ARPM%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Gurgaon%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ARPM%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ARPM%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Gurgaon%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ARPM%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ARPM%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Gurgaon%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22ARPM%22%20%28%22Senior%20engineer%22%29%20%22Gurgaon%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22ARPM%22%20%28%22Senior%20engineer%22%29%20%22Gurgaon%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "Graduate Mechanical Engineer",
+  "company": "Arcadis",
+  "url": "https://www.linkedin.com/jobs/view/4487154034",
+  "country": "IN",
+  "location": "Navi Mumbai, Maharashtra, India",
+  "remote": null,
+  "posted": "2026-11-09",
+  "posted_at": "2026-11-09T10:33:44.573083+00:00",
+  "posted_raw": "21 hours ago",
+  "salary": "",
+  "snippet": "Arcadis is the world's leading company delivering sustainable design, engineering, and consultancy solutions for natural and built assets. We are more than 34,000 people, in over 30 countries, dedicated to improving quality of life. Everyone has an important role to play. With the power of many curious minds, together we can solve the world’s most complex challenges and deliver more impact togethe",
+  "description": "Arcadis is the world's leading company delivering sustainable design, engineering, and consultancy solutions for natural and built assets. We are more than 34,000 people, in over 30 countries, dedicated to improving quality of life. Everyone has an important role to play. With the power of many curious minds, together we can solve the world’s most complex challenges and deliver more impact together. Role description: This role will form an integral part of our Global Excellence Centre (GEC) – Arcadis’ centralized and fully integrated project delivery group. Our GEC is made up of more than 3,000 talented individuals working in offices across Romania, India and Philippines, providing Capability, Capacity and a Competitive Advantage across a wide array of unique projects and services, in collaboration with our global businesses. The MEPF Discipline (Mechanical, Electrical, Plumbing, and Fire Protection) in the GECs is comprised of cross-functional teams, that contribute to the development of innovative MEPF solutions that optimize energy efficiency, sustainability, and occupant comfort. Our ability to effectively manage projects, assess client needs, and provide technical guidance is crucial in delivering successful outcomes, using the most innovative way of doing computational design. Role accountabilities: Conducts engineering design of ventilation, heating and colling installations under the supervision of an experienced engineer. Conducts engineering design of water distribution (cold, hot, industrial, etc), wastewater distribution and rainwater distribution under the supervision of an experienced engineer. Conducts engineering design of general lighting, emergency lighting, power distribution (up to 1kV), fire signaling systems, burglary and CCTV systems, under the supervision of an experienced engineer. Designs, calculates, sketches, 3D modeling, diagrams, schematic drawings, and final working drawings under the supervision of an experienced engineer. Build proficiency in REVIT and other software used in the design process. Performs the tasks within the agreed-upon budget and schedule. Prepare reports and presentations as directed by senior engineers. Follow company standards and procedures including design and checking. Preparing all the necessary drawings for the specific phase of projects (report, 2D plans, schematics, sections). Qualifications & Experience: Mandatory: Bachelor’s degree in building services. Good knowledge of design software (e.g. AutoCAD) and calculation software, specific for each discipline. Minimum of 1 year experience in HVAC engineering is required. Strong English language skills. Eager to learn new capabilities and skills. Good understanding of norms and standards related to HVAC. Candidate to show problem solving skills, creativity, to show proactivity and analytical skills. Good planning, organizational, and communication skills are necessary for success in this position. To show interest in personal and professional growth, in a challenging, rewarding, and competitive professional environment. To be able to perform his/her own quality check and to be conscious around safety in design principles. Nice to have: Master’s degree in building services. Basic knowledge of Revit MEP. Basic knowledge of electrical specialized software (Revit, EPLAN, Amtech, Intelec, etc.). Basic knowledge of mechanical (building services) specialized software (Revit, HAP, Design Builder etc.). Participation in internships for AEC companies. Candidate to show out-of-the box thinking in order to identify any opportunities for automation or innovation. Key attributes: Professional approach to time, costs, and deadlines. Capable of working withing a team. Has a supportive attitude. Proactive in asking questions. Good communication skills, both verbal and written. Why Arcadis? We can only achieve our goals when everyone is empowered to be their best. We believe everyone's contribution matters. It’s why we are pioneering a skills-based approach, where you can harness your unique experience and expertise to carve your career path and maximize the impact we can make together. You’ll do meaningful work, and no matter what role, you’ll be helping to deliver sustainable solutions for a more prosperous planet. Make your mark, on your career, your colleagues, your clients, your life and the world around you. Together, we can create a lasting legacy. Join Arcadis. Create a Legacy. Our Commitment to Equality, Diversity, Inclusion & Belonging We want you to be able to bring your best self to work every day which is why equality and inclusion is at the forefront of all our activities. Our ambition is to be an employer of choice and provide a great place to work for all our people. We are an equal opportunity employer; women, minorities, and people with disabilities are strongly encouraged to apply. We are dedicated to a policy of non-discrimination in employment on any basis including race, caste, creed, colour, religion, sex, age, disability, marital status, sexual orientation, and gender identity.",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": 1.0,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 63.5,
+  "matched_skills": [
+   "video analytics",
+   "english"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4487154034",
+  "extra": {
+   "linkedin_id": "4487154034",
+   "seniority_level": "Mid-Senior level",
+   "details_fetched": true,
+   "salary_stated": false,
+   "semantic": 0.115,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend and data engineering skills in Java, Kafka, and PostgreSQL align with Arcadis' need for computational design and data-driven engineering solutions.",
+    "gaps": "Lacks specific mechanical design software proficiency (Revit) and formal building services degree required for MEPF discipline."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "arcadis.com",
+    "site": "",
+    "emails": [
+     "mark.harrop@arcadis.com",
+     "zac.payne@arcadis.com",
+     "josh.nothwang@arcadis.com",
+     "megan.eves@arcadis.com",
+     "mark.knight@arcadis.com",
+     "felipe.martinelli@arcadis.com",
+     "louis.marracci@arcadis.com",
+     "john.howarth@arcadis.com",
+     "steef.swart@arcadis.com",
+     "kate.gallagher@arcadis.com"
+    ],
+    "people": [
+     {
+      "name": "Mark Harrop",
+      "title": "Director of Strategic Opportunities",
+      "company": "Arcadis",
+      "location": "",
+      "email": "mark.harrop@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/markharrop",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Zac Payne",
+      "title": "Technical Director",
+      "company": "Arcadis",
+      "location": "",
+      "email": "zac.payne@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/zac-payne-4339632b",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Josh Nothwang",
+      "title": "SVP, Global Solutions Director",
+      "company": "Arcadis",
+      "location": "",
+      "email": "josh.nothwang@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/joshnothwang",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Megan Eves",
+      "title": "Vice President",
+      "company": "Arcadis",
+      "location": "",
+      "email": "megan.eves@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/megan-eves-a0396a5",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Mark Knight",
+      "title": "Vice President",
+      "company": "Arcadis",
+      "location": "",
+      "email": "mark.knight@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/markusknight",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Felipe Martinelli",
+      "title": "Commercial Director",
+      "company": "Arcadis",
+      "location": "",
+      "email": "felipe.martinelli@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/felipe-martinelli-aa04293a",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Louis Marracci",
+      "title": "Director of Technical Development and Digital Transformation",
+      "company": "Arcadis",
+      "location": "",
+      "email": "louis.marracci@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/louis-marracci-b4550946",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "John Howarth",
+      "title": "Technical Director",
+      "company": "Arcadis",
+      "location": "",
+      "email": "john.howarth@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/john-howarth-6255a8176",
+      "source": "hunter",
+      "confidence": 98
+     },
+     {
+      "name": "Steef Swart",
+      "title": "Director Water Authorities",
+      "company": "Arcadis",
+      "location": "",
+      "email": "steef.swart@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/steef-swart-79b73811",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Kate Gallagher",
+      "title": "Director, Government and Civic Affairs",
+      "company": "Arcadis",
+      "location": "",
+      "email": "kate.gallagher@arcadis.com",
+      "linkedin": "https://www.linkedin.com/in/kate-gallagher-2295385",
+      "source": "hunter",
+      "confidence": 97
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arcadis%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Navi%20Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arcadis%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Navi%20Mumbai%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arcadis%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Navi%20Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arcadis%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Navi%20Mumbai%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arcadis%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Navi%20Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arcadis%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Navi%20Mumbai%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Arcadis%22%20%28%22Senior%20engineer%22%29%20%22Navi%20Mumbai%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Arcadis%22%20%28%22Senior%20engineer%22%29%20%22Navi%20Mumbai%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Google Cloud Engineer, Associate",
+  "company": "Deutsche Bank",
+  "url": "https://www.adzuna.in/land/ad/5959383241?se=wExKDtnc8RGMldQtWIx3hg&utm_medium=api&utm_source=28f9775f&v=AEB38D70B3088D469517F6A01C3D51C711DB33FB",
+  "country": "IN",
+  "location": "Pune, Maharashtra",
+  "remote": null,
+  "posted": "2026-11-09",
+  "posted_at": "2026-11-09T22:37:24+00:00",
+  "posted_raw": "2026-11-09T22:37:24Z",
+  "salary": "",
+  "snippet": "This job is with Deutsche Bank, an inclusive employer and a member of myGwork – the largest global platform for the LGBTQ business community. Please do not contact the recruiter directly. Position Overview Role Description This role is for Engineer responsible for design, development, and unit testing software applications. The candidate is expected to ensure good quality, maintainable, scalable,",
+  "description": "",
+  "skills": [],
+  "employment_type": "",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 56.8,
+  "matched_skills": [
+   "unit testing"
+  ],
+  "missing_skills": [
+   "gcp"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "855261faaac8",
+  "extra": {
+   "salary_stated": false,
+   "semantic": 0.26,
+   "score_confidence": "medium",
+   "ai_summary": {
+    "why": "Candidate has 2 years of experience with unit testing, clean architecture, and microservices, matching the core requirement for this role.",
+    "gaps": "Candidate lacks direct GCP (Google Cloud Platform) experience, which is a key requirement for this position."
+   },
+   "is_mnc": true,
+   "mnc_tier": "finance",
+   "mnc_name": "Deutsche Bank",
+   "lpa": 17.0,
+   "lpa_kind": "typical",
+   "lpa_source": "typical for Deutsche Bank (Finance / bank, 0-2 yrs)",
+   "lpa_url": "https://careers.db.com/",
+   "lpa_lo": 12.0,
+   "lpa_hi": 22.0,
+   "pay_bonus": 9.0,
+   "contacts": {
+    "domain": "db.com",
+    "site": "",
+    "emails": [
+     "neha.dua@db.com",
+     "christiane.lorch@db.com",
+     "steven.zeng@db.com",
+     "stefan.balko@db.com",
+     "manuel.klein@db.com",
+     "mark.devries@db.com",
+     "naveed.asghar@db.com",
+     "michele.bovenzi@db.com",
+     "gary.zhou@db.com",
+     "gauri.chaudhari@db.com"
+    ],
+    "people": [
+     {
+      "name": "Neha Dua",
+      "title": "Vice President of Human Resources",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "neha.dua@db.com",
+      "linkedin": "https://www.linkedin.com/in/neha-dua-47302a10",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Christiane Lorch",
+      "title": "CIO",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "christiane.lorch@db.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Steven Zeng",
+      "title": "Director of Rates Strategy",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "steven.zeng@db.com",
+      "linkedin": "https://www.linkedin.com/in/stevenzeng1",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Stefan Balko",
+      "title": "Head of SBB",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "stefan.balko@db.com",
+      "linkedin": "https://www.linkedin.com/in/stefan-balko-bba489130",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Manuel Klein",
+      "title": "Director of Market Management",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "manuel.klein@db.com",
+      "linkedin": "https://www.linkedin.com/in/manuel-klein",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Mark Devries",
+      "title": "Director",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "mark.devries@db.com",
+      "linkedin": "https://www.linkedin.com/in/mark-devries-292a799",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Naveed Asghar",
+      "title": "Head of Corporate Coverage",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "naveed.asghar@db.com",
+      "linkedin": "https://www.linkedin.com/in/naveed-asghar-7b724011",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Michele Bovenzi",
+      "title": "Head of Portfolio Management",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "michele.bovenzi@db.com",
+      "linkedin": "https://www.linkedin.com/in/michelebovenzi",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Gary Zhou",
+      "title": "Director",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "gary.zhou@db.com",
+      "linkedin": "https://www.linkedin.com/in/gary-zhou-23b43035",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Gauri Chaudhari",
+      "title": "Department Head",
+      "company": "Deutsche Bank",
+      "location": "",
+      "email": "gauri.chaudhari@db.com",
+      "linkedin": "",
+      "source": "hunter",
+      "confidence": 99
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Deutsche%20Bank%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Deutsche%20Bank%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Pune%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Deutsche%20Bank%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Deutsche%20Bank%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Pune%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Deutsche%20Bank%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Deutsche%20Bank%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Pune%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Deutsche%20Bank%22%20%28%22Senior%20engineer%22%29%20%22Pune%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Deutsche%20Bank%22%20%28%22Senior%20engineer%22%29%20%22Pune%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "Associate Data Engineer",
+  "company": "Flutter Entertainment India",
+  "url": "https://www.linkedin.com/jobs/view/4487909157",
+  "country": "IN",
+  "location": "Hyderabad, Telangana, India",
+  "remote": null,
+  "posted": "2026-11-09",
+  "posted_at": "2026-11-09T12:33:44.572183+00:00",
+  "posted_raw": "19 hours ago",
+  "salary": "nd an annual revenue of $16.4 billion in 2025. We have a portfolio of iconic brands , including",
+  "snippet": "About Flutter Entertainment Flutter Entertainment is the world’s largest sports betting and iGaming operator with 15.9 million Average Monthly Players worldwide and an annual revenue of $16.4 billion in 2025. We have a portfolio of iconic brands , including FanDuel, Paddy Power, Betfair, PokerStars, Sisal, and Sportsbet. Flutter Entertainment is listed on the New York Stock Exchange (NYSE). We’re ",
+  "description": "About Flutter Entertainment Flutter Entertainment is the world’s largest sports betting and iGaming operator with 15.9 million Average Monthly Players worldwide and an annual revenue of $16.4 billion in 2025. We have a portfolio of iconic brands , including FanDuel, Paddy Power, Betfair, PokerStars, Sisal, and Sportsbet. Flutter Entertainment is listed on the New York Stock Exchange (NYSE). We’re proud to be recognized by TIME as one of the World’s Best Companies 2025 — a reflection of the passion and commitment of our colleagues across the globe. Working at Flutter is a chance to work with a growing portfolio of brands across a range of opportunities. We will support you every step of the way to help you grow. Just like our brands, we ensure our people have everything they need to succeed. FLUTTER ENTERTAINMENT INDIA Our office in the heart of Hi-Tech City , Hyderabad, serves as Flutter Entertainment’s Global Capability Center (GCC). Now home to 1,000+ talented colleagues, we are shaping the future of entertainment across critical areas such as Customer Support Operations, Data & Technology, Business Operations (Finance, HR, Procurement), and HR Tech & Analytics. We are committed to crafting impactful solutions for all our brands and divisions to power Flutter's incredible growth and global impact. Our portfolio of world-class brands, global scale, and challenger mindset presents a powerful combination. We have ambitious growth plans and goals for the future and the global and local scale to achieve them. Overview Of The Role We are looking for an Associate Data Engineer to join the Data & Platforms team within Flutter Functions Global Platforms. You’ll work with various business verticals, helping shape the future of Global platforms and solutions. This is an opportunity to grow your career while helping build our next-generation data platform within a modern Data as a Product operating model. You’ll work alongside and learn from senior engineers, using cutting-edge technologies to unlock business value and drive innovation. Key Responsibilities Help transform raw data into useful products by building and maintaining data pipelines under the guidance of senior engineers Develop and maintain ELT/ETL workflows using SQL, Python and Spark/PySpark Follow our data ingestion and data modelling standards (medallion bronze/silver/gold) and add data quality checks to your pipelines Support our implemented BI solutions by monitoring jobs and queries and helping to tune performance Respond to user queries on data integrity, access and permissions, and escalate functional and technical issues where needed Provide day-to-day platform support : troubleshoot user requests across Databricks, AWS, permissions, compute and CI/CD Help monitor Databricks and AWS usage and build cost and usage reports/dashboards Write clean, tested, production quality code and keep documentation and runbooks up to date Join the on-call rota once onboarded, including support for specific events during large sporting events Actively learn new tools and practices, and share knowledge within your squad TO EXCEL IN THIS ROLE, YOU WILL NEED TO HAVE 1+ years of experience in data engineering, software engineering, BI or a related role (including internships/graduate programmes) A degree in Computer Science, Engineering, Mathematics or a related field, or equivalent practical experience Good working knowledge of SQL and Python Exposure to Spark/PySpark or other distributed data processing technologies Basic understanding of cloud platforms such as AWS (S3, IAM, EC2) Understanding of data warehousing concepts: ETL/ELT, data modelling, and relational databases Familiarity with Git and version control workflows (branches, pull requests, code reviews) Exposure to Agile ways of working Strong problem-solving skills, attention to detail, and a willingness to learn Good communication skills and the ability to work with both technical and business users Willingness to be part of the on-call rota GOOD TO HAVE Hands-on experience with Databricks (notebooks, Workflows/Lakeflow Jobs, Databricks SQL) Databricks certifications (Data Engineer Associate) and/or AWS certifications (Cloud Practitioner, Data Engineer Associate) Knowledge of Delta Lake and the lakehouse / medallion architecture Awareness of Unity Catalog concepts: catalogs, schemas, grants, groups and service principals Lakeflow Declarative Pipelines (DLT) , Auto Loader or Structured Streaming Exposure to streaming technologies such as Kafka and/or Apache Pulsar CI/CD with GitHub Actions; working with YAML configuration, Databricks Asset Bundles or Terraform Databricks CLI/SDK, REST APIs, and Linux/shell scripting AI/BI dashboards, Genie spaces or other BI tools (e.g., Power BI, Tableau) Exposure to GenAI on Databricks (Model Serving, Vector Search, AI functions) and AI coding assistants (e.g., Claude Code, GitHub Copilot) Basic knowledge of Kubernetes , Docker or ArgoCD Understanding of identity and access concepts (Okta/SSO, SCIM, AWS IAM) Interest in sports betting & gaming, or Finance data domains Benefits We Offer Access to Learnerbly, Udemy , and a Self-Development Fund for upskilling. Career growth through Internal Mobility Programs . Comprehensive Health Insurance for you and dependents. Coverage of OPD Consultations and Full Body health checkup every year. Well-Being Fund and 24/7 Assistance Program for holistic wellness. Hybrid Model : 2 office days/week with flexible leave policies, including maternity, paternity, and sabbaticals. Free Meals, Cab Allowance , and a Home Office Setup Allowance. Employer PF Contribution , gratuity, Personal Accident & Life Insurance. Sharesave Plan to purchase discounted company shares. Volunteering Leave and Team Events to build connections. Recognition through the Kudos Platform and Referral Rewards . WHY CHOOSE US Flutter is an Equal Opportunity Employer and values the unique perspectives and experiences that everyone brings. We are committed to a fair and inclusive recruitment process where every candidate has an equal opportunity to succeed, with hiring decisions based on skills, experience and potential. We have ambitious growth plans and goals for the future. Here's an opportunity for you to play a pivotal role in shaping the future of Flutter Entertainment India. If you're passionate about this opportunity but don't meet every requirement, we still encourage you to apply. Your skills, experiences, and perspective could make you a great fit for our team.",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": 1.0,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 45.0,
+  "matched_skills": [
+   "aws",
+   "sql",
+   "ci/cd",
+   "s3",
+   "ec2",
+   "code review",
+   "agile",
+   "kafka",
+   "github actions",
+   "rest api",
+   "linux",
+   "docker"
+  ],
+  "missing_skills": [
+   "flutter",
+   "databricks",
+   "etl",
+   "spark",
+   "artificial intelligence",
+   "python",
+   "iam",
+   "data pipelines"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4487909157",
+  "extra": {
+   "linkedin_id": "4487909157",
+   "seniority_level": "Not Applicable",
+   "details_fetched": true,
+   "salary_stated": true,
+   "salary_inr": 2865408,
+   "salary_lpa": 28.7,
+   "salary_text": "nd an annual revenue of $16.4 billion in 2025. We have a portfolio of iconic brands , including",
+   "semantic": 0.26,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong match with Kafka, PostgreSQL, AWS, and CI/CD skills; 2 years of production experience aligns with Associate Data Engineer requirements.",
+    "gaps": "Limited Spark/Python experience and lack of explicit data pipeline design skills compared to job requirements."
+   },
+   "is_mnc": false,
+   "lpa": 28.7,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Flutter%20Entertainment%20India%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Flutter%20Entertainment%20India%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Hyderabad%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Flutter%20Entertainment%20India%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Flutter%20Entertainment%20India%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Hyderabad%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Flutter%20Entertainment%20India%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Flutter%20Entertainment%20India%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Hyderabad%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Flutter%20Entertainment%20India%22%20%28%22Senior%20engineer%22%29%20%22Hyderabad%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Flutter%20Entertainment%20India%22%20%28%22Senior%20engineer%22%29%20%22Hyderabad%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "wellfound",
+  "source_name": "Wellfound",
+  "title": "AI Software Engineer",
+  "company": "Valiance Solutions",
+  "url": "https://wellfound.com/jobs/248309-ai-software-engineer",
+  "country": "IN",
+  "location": "Bangalore Urban",
+  "remote": false,
+  "posted": null,
+  "posted_at": null,
+  "posted_raw": "",
+  "salary": "₹12L – ₹20L • No equity",
+  "snippet": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learni",
+  "description": "**About Us** Valiance is a global AI & Data analytics firm helping clients build cutting-edge technology solutions for digital transformation. We work with some of the marquee brands across India, US and APAC to build transformative solutions for Credit Risk, Fraud, Predictive Maintenance, Quality Inspection, Data lake, IOT analytics etc. Our team comprises 120+ professionals across Machine Learning, Data Engineering & Cloud expertise. As a Generative AI Engineer, you will be responsible for developing and implementing cutting-edge generative AI models to solve complex problems. You will work closely with various stakeholders to design, build, and deploy AI-powered solutions that enhance ABG products and services. **Key Roles and Responsibilities** 1. Define, build and deploy enterprise focused Generative AI solutions on Microsoft Azure cloud services. 2. Comfortable working in the cloud and high-performance computing environments -Azure/ GCP. 3. Utilize off-the-shelf Azure (OpenAI) services, to integrate LLM capabilities into applications, and collaborate with the business and IT teams. 4. Create, Modify and deploying code libraries, accelerators (GitHub) programming languages such as Python, R. 5. Build Rapid prototypes and do proof of concepts (PoC) in one or all the following areas: LLM, NLP, DL (Deep Learning), ML (Machine Learning), object detection / classification, tracking, etc. 6. Apply prompt-engineering techniques to specific use cases and types of models. 7. Stay informed about the latest advancements in Gen AI, machine learning, and AI technologies to optimize our technical stack. 8. Co-ordinate for Tech Support and Continuous improvements **Skills required** 1. The ideal candidate will have a strong background in generative AI and experience working with LLM (Large Language Models) in particular. 2. 2-3yrs experience with AI technology and Azure cloud services, Cognitive services (AI, ML, LLM, algorithm), Python, NLP, Generative AI. 3. Strong understanding of Open AI (Chat GPT, GPT, Chatbot) 4. Better understanding on fine-tuning with Azure OpenAI distributed OpenAI models such as DaVinci, curie, Babbage, ADA. 5. You are proficient in Python and have experience with various machine learning libraries and frameworks with necessary Azure cloud experience of configurations, troubleshooting etc. 6. Good communication skills and basic customer mgmt.",
+  "skills": [],
+  "employment_type": "full-time",
+  "exp_min": 0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "fit",
+  "relevance": 1.0,
+  "score": 38.9,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "generative ai",
+   "azure",
+   "llm",
+   "openai",
+   "python",
+   "data analysis"
+  ],
+  "also_on": [],
+  "query": "software-engineer",
+  "id": "wf248309",
+  "extra": {
+   "company_size": "SIZE_51_200",
+   "salary_stated": true,
+   "salary_inr": 2000000,
+   "salary_lpa": 20.0,
+   "salary_text": "₹12L – ₹20L • No equity",
+   "semantic": 0.421,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with Valiance's cloud and data engineering needs. However, the candidate lacks specific AI/ML expertise, Azure cloud services, and Python proficiency required for Generative AI and LL",
+    "gaps": "Missing critical skills in AI/ML, Azure cloud services, Python, and Generative AI."
+   },
+   "is_mnc": false,
+   "lpa": 20.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "valiancesolutions.com",
+    "site": "",
+    "emails": [
+     "vikas.kamra@valiancesolutions.com",
+     "anindya.palit@valiancesolutions.com",
+     "kavita.yadav@valiancesolutions.com",
+     "ankit.chauhan@valiancesolutions.com",
+     "kaberi.s@valiancesolutions.com",
+     "chitrank.tyagi@valiancesolutions.com",
+     "riddhi.sharma@valiancesolutions.com",
+     "priya.chowdhary@valiancesolutions.com",
+     "anand.sharma@valiancesolutions.com",
+     "deepanker.negi@valiancesolutions.com"
+    ],
+    "people": [
+     {
+      "name": "Vikas Kamra",
+      "title": "CEO",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "vikas.kamra@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/vikaskamra",
+      "source": "hunter",
+      "confidence": 99
+     },
+     {
+      "name": "Anindya Palit",
+      "title": "Chief Strategy Officer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anindya.palit@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anindyapalit",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Kavita Yadav",
+      "title": "Vice President of Human Resources",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kavita.yadav@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kavita-yadav-39b13923",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Ankit Chauhan",
+      "title": "Site Manager",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "ankit.chauhan@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/ankit-chauhan-1a9927200",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Kaberi S",
+      "title": "Senior Vice President of Technology",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "kaberi.s@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/kaberi-s-727956153",
+      "source": "hunter",
+      "confidence": 95
+     },
+     {
+      "name": "Chitrank Tyagi",
+      "title": "Technical Architect",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "chitrank.tyagi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/chitrank-tyagi-b08030165",
+      "source": "hunter",
+      "confidence": 97
+     },
+     {
+      "name": "Riddhi Sharma",
+      "title": "HR Associate",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "riddhi.sharma@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/riddhi-sharma-150415218",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Priya Chowdhary",
+      "title": "Senior Associate, Talent Acquisition",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "priya.chowdhary@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/priya-chowdhary-hr",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Anand Sharma",
+      "title": "Embedded Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "anand.sharma@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/anandkrsharma",
+      "source": "hunter",
+      "confidence": 96
+     },
+     {
+      "name": "Deepanker Negi",
+      "title": "Artificial Intelligence Engineer",
+      "company": "Valiance Solutions",
+      "location": "",
+      "email": "deepanker.negi@valiancesolutions.com",
+      "linkedin": "https://www.linkedin.com/in/deepanker-negi-506a76213",
+      "source": "hunter",
+      "confidence": 96
+     }
+    ],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bangalore%20Urban%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Valiance%20Solutions%22%20%28%22Senior%20engineer%22%29%20%22Bangalore%20Urban%22"
+     }
+    }
+   }
+  }
+ }
+]
