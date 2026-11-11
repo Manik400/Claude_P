@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-11T07:03:54Z",
+ "updated": "2026-11-11T07:17:46Z",
  "items": [
+  {
+   "id": "applications-20261111-071746-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-11-11T07:17:46Z",
+   "file": "data/applications/applications-20261111-071746-applications-sent.html",
+   "bytes": 17491302,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261111-071745-naukri-openings-2026-11-11-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-11 run 1 - Last 24h",
+   "when": "2026-11-11T07:17:45Z",
+   "file": "data/naukri/naukri-20261111-071745-naukri-openings-2026-11-11-run-1-last-24.html",
+   "bytes": 90217,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261111-071745-naukri-openings-2026-11-11-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "jobhunt-20261111-070354-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1009,15 +1029,6 @@
     "list_sha": "ec840ae28566",
     "list_count": "9110"
    }
-  },
-  {
-   "id": "applications-20261102-075806-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-11-02T07:58:06Z",
-   "file": "data/applications/applications-20261102-075806-applications-sent.html",
-   "bytes": 15682563,
-   "meta": {}
   },
   {
    "id": "jobhunt-20261102-063901-engineer-senior-software-developer-sse-s",
@@ -2113,17 +2124,6 @@
    "bytes": 116268,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261023-084910-naukri-openings-2026-10-23-run-1-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261023-084910-naukri-openings-2026-10-23-run-2-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-23 run 2 - Early",
-   "when": "2026-10-23T08:49:10Z",
-   "file": "data/naukri/naukri-20261023-084910-naukri-openings-2026-10-23-run-2-early.html",
-   "bytes": 36463,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261023-084910-naukri-openings-2026-10-23-run-2-early.jobs.json"
    }
   },
   {
