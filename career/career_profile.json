@@ -1,0 +1,159 @@
+{
+  "schema_version": "2.0",
+  "updated": "2026-11-11",
+  "_about": "Machine-readable form of the Career OS directive V2.0. It ADDS to each project's existing profile, data and rules; it does not replace them. Where an older project rule disagrees, the note next to the setting says which one wins. Human-readable rules: CAREER_OS_DIRECTIVE.md.",
+
+  "source_of_truth": {
+    "rule": "The newest resume is the only source of professional facts. Never fabricate or inflate.",
+    "latest_resume": "D:/MANIK/Projects/ResumeTechSpecific/MY_RESUMES/Manik_Goyal_Resume.pdf",
+    "latest_resume_date": "2026-10-31",
+    "pipeline_master": "D:/MANIK/Projects/ResumeTechSpecific/Outreach/_master/Manik_Goyal_Resume.pdf",
+    "pipeline_master_date": "2026-10-23",
+    "known_difference": "The 31 Oct resume lists Kubernetes under DevOps; the 23 Oct _master and the _flagship_fullstack .tex do not. Until _master is refreshed, tailored resumes built from the flagship must not add Kubernetes."
+  },
+
+  "candidate": {
+    "name": "Manik Goyal",
+    "headline": "Full Stack Software Engineer",
+    "location": "Gurugram, Haryana, India",
+    "total_experience_years": 2.2,
+    "experience_wording": "2+ years (state the real figure, 2.2 years, when a form asks for a number)",
+    "current_role": "Software Engineer, I2V Systems Pvt. Ltd., Gurugram",
+    "current_role_since": "2024-10",
+    "education": "B.Tech Information Technology, USICT, GGSIP University, Delhi (Dec 2021 - Jun 2025), CGPA 8.55/10",
+    "languages": {"English": "Professional", "Hindi": "Native", "German": "A1 (Basic)"},
+    "objective": "A significantly better software engineering role and compensation, in India or abroad, with relocation to Germany (or another suitable country) as the long-term goal.",
+    "open_to": ["India", "international", "remote"],
+    "relocation_first_choice": "Germany",
+    "needs_visa_sponsorship_abroad": true
+  },
+
+  "skills": {
+    "_rule": "Only 'verified' skills may be claimed in a resume, email or form answer. Each one appears in the latest resume.",
+    "verified": {
+      "languages": ["C#", "Java", "TypeScript", "JavaScript", "SQL", "HTML5", "CSS3"],
+      "backend": [".NET 8/7", "ASP.NET Core", "EF Core", "LINQ", "SignalR", "Hibernate", "Spring Boot", "REST APIs", "Microservices", "Event-Driven Architecture", "Distributed Systems"],
+      "frontend": ["Angular 18", "Reactive JS", "Flutter"],
+      "ai": ["LLM Integration", "Agentic AI Workflows", "RAG", "Vector Embeddings", "Semantic Search", "Milvus", "Prompt Engineering"],
+      "messaging_data": ["RabbitMQ", "MQTT", "Pub/Sub", "PostgreSQL", "TimescaleDB", "PostGIS", "Redis", "Kafka"],
+      "devops_observability": ["Docker", "Kubernetes", "GitHub Actions", "CI/CD", "Linux", "AWS", "Grafana", "Prometheus"],
+      "practices": ["System Design", "Clean Architecture", "SOLID", "Design Patterns", "API Design", "Agile/Scrum", "Unit Testing"]
+    },
+    "listed_in_directive_but_not_in_resume": ["React", "Python"],
+    "_unverified_note": "The directive lists React and Python 'subject to validation against my latest resume'. The resume names neither (it says 'Reactive JS', not React). Treat them as skill gaps to learn, never as claims, until the resume is updated."
+  },
+
+  "search": {
+    "experience_range_years": [0, 3],
+    "_experience_note": "Updated requirement (V2.0). Replaces the earlier 0-2 band wherever one is still configured.",
+    "allow_stretch_beyond_range": true,
+    "reject_on_title_alone": false,
+    "include_jobs_with_no_stated_experience": true,
+    "match_on": ["responsibilities", "technology stack", "stated requirements"],
+    "titles": [
+      "Software Engineer", "Software Developer", "Software Engineer I", "Software Engineer II",
+      "SDE I", "SDE II", "Backend Engineer", "Backend Developer", "Senior Software Engineer",
+      "Senior Backend Engineer", "Full Stack Engineer", "Full Stack Developer", ".NET Developer",
+      "C# Developer", "Java Developer", "Spring Boot Developer", "Distributed Systems Engineer",
+      "Platform Engineer", "Cloud Engineer", "Infrastructure Engineer", "Application Developer",
+      "Product Engineer", "API Developer", "Systems Engineer"
+    ],
+    "india_locations": ["Gurgaon", "Delhi NCR", "Bangalore", "Hyderabad", "Pune", "Mumbai", "Chennai", "Noida", "Remote India"],
+    "countries_priority": ["Germany", "Netherlands", "Ireland", "Sweden", "Finland", "Denmark", "Norway", "United Kingdom", "Switzerland", "Australia"],
+    "company_preferences_india": ["product-based", "high-growth technology", "established engineering organisations", "global capability centres", "international companies with Indian offices", "strong backend engineering teams"],
+    "company_preferences_abroad": ["hires candidates living in India", "visa sponsorship", "relocation assistance", "English-speaking engineering teams", "considers about 2 years of experience"],
+    "_sponsorship_rule": "An office in Germany is not evidence of sponsorship. Record sponsorship only when the posting or the employer's own page says so."
+  },
+
+  "classification": {
+    "_rule": "Classify from the stated requirement in the description, never from the title. C is always shown, in its own group, never silently dropped.",
+    "A": {"label": "DIRECT MATCH", "meaning": "Stated experience is explicitly compatible with 2.2 years."},
+    "B": {"label": "STRONG POTENTIAL MATCH", "meaning": "Range is compatible or flexible, or no experience is stated."},
+    "C": {"label": "STRETCH OPPORTUNITY", "meaning": "Senior title or a slightly higher requirement, responsibilities look achievable. Flag it clearly."},
+    "D": {"label": "EXPERIENCE MISMATCH", "meaning": "Clearly requires substantially more experience or expertise."}
+  },
+
+  "freshness": [
+    {"max_days": 3, "label": "Very fresh"},
+    {"max_days": 7, "label": "Fresh"},
+    {"max_days": 14, "label": "Recent"},
+    {"max_days": 30, "label": "Older but potentially active"},
+    {"max_days": null, "label": "Verify before recommending"}
+  ],
+  "_freshness_rule": "Never invent a posting date. A job with no evidence of its date is 'Unknown date', not fresh.",
+
+  "match_weights": {
+    "technical_compatibility": 0.30,
+    "experience_compatibility": 0.20,
+    "role_relevance": 0.15,
+    "location_and_eligibility": 0.15,
+    "compensation": 0.10,
+    "career_growth": 0.10
+  },
+  "match_subscores": ["skills", "experience", "responsibilities", "seniority", "location", "work_authorization", "sponsorship", "compensation", "overall"],
+
+  "application_states": [
+    "DISCOVERED", "ANALYZED", "SHORTLISTED", "RESUME_PREPARED", "READY_TO_APPLY", "SUBMITTED",
+    "SUBMISSION_VERIFIED", "RECRUITER_CONTACTED", "INTERVIEW", "OFFER", "REJECTED", "WITHDRAWN"
+  ],
+  "_state_rule": "Clicking Apply is not SUBMITTED. SUBMISSION_VERIFIED needs page evidence (confirmation text, reference id or confirmation URL).",
+
+  "resume_variants": [
+    {"key": "dotnet_backend", "name": ".NET / C# Backend"},
+    {"key": "java_backend", "name": "Java / Spring Boot Backend"},
+    {"key": "fullstack", "name": "Full Stack"},
+    {"key": "distributed_systems", "name": "Distributed Systems"},
+    {"key": "general_swe", "name": "General Software Engineer"},
+    {"key": "international_swe", "name": "International Software Engineer"}
+  ],
+  "_variant_rule": "Variants only reorder, reword and trim facts already in the master resume. The original is preserved and every job gets its own copy.",
+
+  "platforms": {
+    "_rule": "One entry per platform. 'verified_on' is the date the platform's current terms were last read; null means not yet checked, so check before turning automation on. Never bypass CAPTCHA, rate limits or account restrictions anywhere.",
+    "linkedin": {
+      "mode": "manual_assist",
+      "automation_allowed": false,
+      "verified_on": null,
+      "allowed": ["generate job-search URLs", "generate Boolean queries", "generate recruiter and hiring-post search queries", "analyse job text the user supplies", "draft connection notes, outreach and follow-ups", "application checklists", "open pages for the user to act on", "track outcomes the user confirms"],
+      "forbidden": ["Playwright or extension automation on linkedin.com", "scraping profiles or search results with the user's account", "auto connect / message / InMail / like / comment / follow / share", "auto-submitting LinkedIn applications", "CAPTCHA or rate-limit bypass", "cookie or session manipulation", "multiple accounts", "stealth or fingerprint evasion"],
+      "note": "A delay between automated actions does not make them permitted."
+    },
+    "greenhouse": {"mode": "automation_permitted", "automation_allowed": true, "verified_on": null, "note": "Public Job Board API for discovery. Human confirms final submission when declarations, eligibility, salary or legal answers are involved."},
+    "lever": {"mode": "automation_permitted", "automation_allowed": true, "verified_on": null, "note": "Public Postings API for discovery. Same confirmation rule."},
+    "ashby": {"mode": "evaluate", "automation_allowed": false, "verified_on": null},
+    "company_career_sites": {"mode": "evaluate_per_site", "automation_allowed": null, "verified_on": null, "note": "Preferred source for verifying that a listing is real and still open."},
+    "naukri": {"mode": "links_only", "automation_allowed": false, "verified_on": null},
+    "indeed": {"mode": "links_only", "automation_allowed": false, "verified_on": null},
+    "glassdoor": {"mode": "links_only", "automation_allowed": false, "verified_on": null},
+    "instahyre": {"mode": "evaluate", "automation_allowed": null, "verified_on": null},
+    "wellfound": {"mode": "evaluate", "automation_allowed": null, "verified_on": null},
+    "foundit": {"mode": "evaluate", "automation_allowed": null, "verified_on": null},
+    "cutshort": {"mode": "evaluate", "automation_allowed": null, "verified_on": null},
+    "relocate_me": {"mode": "evaluate", "automation_allowed": null, "verified_on": null},
+    "wearedevelopers": {"mode": "evaluate", "automation_allowed": null, "verified_on": null}
+  },
+
+  "limits": {
+    "_rule": "No arbitrary caps on discovery, analysis, local records or application preparation. Caps that exist to respect a platform, a mailbox or a paid API stay. Never apply to the same vacancy twice, never send duplicates, never misstate qualifications.",
+    "discovery_cap": null,
+    "analysis_cap": null,
+    "duplicate_applications": "forbidden",
+    "human_confirmation_required_for": ["legal declarations", "eligibility / work authorisation", "salary", "sponsorship", "notice period", "any uncertain answer"]
+  },
+
+  "model_routing": {
+    "priority": ["accuracy", "reliability", "resource_efficiency", "speed", "features"],
+    "deterministic_code": ["DOM interaction", "form-field detection", "job deduplication", "URL validation", "database operations", "status tracking", "basic text parsing", "search filtering"],
+    "small_model": ["job classification", "keyword extraction", "basic resume matching", "simple question answering"],
+    "large_model": ["complex job analysis", "resume tailoring", "technical assessments", "cover letters", "interview preparation", "career strategy", "ambiguous decisions"],
+    "rules": ["never call a model when code can decide", "one large model loaded at a time", "cache reusable analysis", "structured outputs", "timeouts and fallback", "unload idle models", "benchmark before claiming an improvement"],
+    "hardware": {"ram_gb": 32, "gpu": "NVIDIA GeForce MX550 2 GB VRAM + Intel Iris Xe", "ollama_endpoint": "http://127.0.0.1:11434/v1"}
+  },
+
+  "recruiter_record_fields": ["name", "company", "professional_title", "public_profile_link", "relevant_hiring_post", "associated_job", "country", "recruitment_specialization", "source", "last_verified_date", "outreach_status"],
+  "_recruiter_rule": "Only publicly posted professional details. No mass messaging: each message is written for one actual job.",
+
+  "learning_priorities": ["DSA", "C# and .NET internals", "Java and Spring Boot", "SQL and database internals", "Distributed systems", "Microservices", "Networking", "Operating systems", "System design (HLD, LLD)", "AWS", "Docker", "Kubernetes", "Messaging", "Concurrency", "Production debugging"],
+
+  "safety": ["no plaintext passwords or tokens", "never delete configurations, models, databases, browser profiles or scheduled tasks without explicit permission", "preserve the original resume", "measure improvements rather than claiming them"]
+}

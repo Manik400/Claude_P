@@ -1,13 +1,13 @@
 {
-  "_about": "Daily searches GitHub starts on a timer (.github/workflows/jobhunt.yml and careers.yml, on: schedule). Each entry's cron must match one cron line in that workflow, in UTC (IST = UTC + 5:30). Keys are the workflow inputs; relocation: strict | visa | any. Edit here, no workflow change needed unless a time changes.",
-  "roles": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
+  "_about": "Daily searches GitHub starts on a timer (.github/workflows/jobhunt.yml and careers.yml, on: schedule). Each entry's cron must match one cron line in that workflow, in UTC (IST = UTC + 5:30). Keys are the workflow inputs; relocation: strict | visa | any. Edit here, no workflow change needed unless a time changes. Career OS directive V2.0 (2026-11-11, see career/): every entry's fit was \"strict\" (only postings classed 'fit'; stretch and experience-not-stated postings were dropped) and is now \"default\" (drops only clear mismatches, fit 'no'; stretch jobs stay, flagged as class C). The roles list ended at 'SWE, SDE' before that date; 'senior backend engineer, .NET developer, C# developer, spring boot developer, API developer' were added. Platform / cloud / application / product / systems / distributed systems engineer were deliberately NOT added as roles: the title filter treats a role's distinctive word alone as a match, so they would let in Product Manager, Cloud Sales, Application Support and Systems Administrator titles, while their engineer / developer titles are already kept by the existing 'engineer' and 'software developer' roles.",
+  "roles": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE, senior backend engineer, .NET developer, C# developer, spring boot developer, API developer",
   "jobhunt": [
     {
       "cron": "30 0 * * *",
       "name": "India",
       "countries": "IN",
       "experience": "0-3",
-      "fit": "strict",
+      "fit": "default",
       "relocation": "any",
       "min_salary": "12 LPA",
       "days": "2",
@@ -18,7 +18,7 @@
       "name": "Germany + Australia, relocation / visa",
       "countries": "DE,AU",
       "experience": "0-3",
-      "fit": "strict",
+      "fit": "default",
       "relocation": "visa",
       "min_salary": "12 LPA",
       "days": "2",
@@ -31,7 +31,7 @@
       "name": "India",
       "countries": "IN",
       "experience": "0-3",
-      "fit": "strict",
+      "fit": "default",
       "relocation": "any",
       "min_salary": "12 LPA",
       "days": "2"
@@ -41,7 +41,7 @@
       "name": "Germany + Australia, relocation / visa",
       "countries": "DE,AU",
       "experience": "0-3",
-      "fit": "strict",
+      "fit": "default",
       "relocation": "visa",
       "min_salary": "12 LPA",
       "days": "2"

@@ -36,7 +36,7 @@ from jobbot.config import (COUNTRIES, DEFAULT_COUNTRIES, DEFAULT_DAYS, DEFAULT_D
                            DEFAULT_OUT_ROOT, REMOTE, country_name, resolve_country)
 from jobbot.details import fetch_details  # noqa: E402
 from jobbot.dotenv import load_env  # noqa: E402
-from jobbot.experience import parse_user_experience  # noqa: E402
+from jobbot.experience import candidate_years, parse_user_experience  # noqa: E402
 from jobbot.fallback import fallback_queries, load_extra_file, merge_extra  # noqa: E402
 from jobbot.http import Http  # noqa: E402
 from jobbot import localai  # noqa: E402
@@ -170,7 +170,7 @@ def salary_floor(args):
 
 
 def build_context(args, log, countries):
-    user_years = parse_user_experience(args.experience)
+    user_years = candidate_years(args.experience)
     http = Http(log=log, min_interval=args.interval)
     ctx = SearchContext(
         roles=args.role, countries=countries, user_years=user_years, days=args.days,

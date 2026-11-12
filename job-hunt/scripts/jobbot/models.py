@@ -31,6 +31,11 @@ class Job:
     exp_max: Optional[float] = None
     seniority: str = ""
     fit: str = "unknown"            # fit | stretch | over | no | unknown
+    # Career OS directive V2.0 (career/): additive, derived by code from `fit` and the dates
+    # above. Defaults are safe for jobs.json files written before these fields existed.
+    exp_class: str = ""             # A | B | C | D ("" = not classified), see experience.exp_class
+    exp_class_label: str = ""       # DIRECT MATCH | STRONG POTENTIAL MATCH | STRETCH OPPORTUNITY | EXPERIENCE MISMATCH
+    freshness: str = "Unknown date" # dates.freshness_label(posted); refreshed whenever the job is written out
     relevance: float = 0.0          # 0..1, how well the title/text matches the requested role
     score: Optional[float] = None   # 0..100 resume match score
     matched_skills: List[str] = field(default_factory=list)
@@ -63,6 +68,7 @@ class Job:
         self.snippet = re.sub(r"\s+", " ", self.snippet or "").strip()[:600]
         self.url = (self.url or "").strip()
         self.skills = sorted({s.strip() for s in self.skills if s and s.strip()}, key=str.lower)
+        self.refresh_freshness()
         if not self.id:
             self.id = hashlib.sha1(self.dedup_url().encode("utf-8")).hexdigest()[:12]
         return self
@@ -78,7 +84,15 @@ class Job:
     def text_blob(self):
         return " ".join([self.title, self.company, self.snippet, " ".join(self.skills), self.description])
 
+    def refresh_freshness(self):
+        """Set `freshness` from the posting date this record holds right now (the date can
+        arrive late: dedup copies it from a twin, dates.verify reads it off the page)."""
+        from .dates import freshness_label
+        self.freshness = freshness_label(self.posted_at or self.posted)
+        return self.freshness
+
     def to_dict(self):
+        self.refresh_freshness()
         return asdict(self)
 
     @classmethod

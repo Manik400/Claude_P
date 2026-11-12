@@ -32,6 +32,18 @@ ROOT = Path(__file__).resolve().parent.parent.parent
 MODELFILE = ROOT / "data" / "metrics" / "Modelfile"
 STATE = ROOT / "data" / "metrics" / "personal_model.json"
 MAX_EXAMPLES = 80
+# What goes into the model has to fit its context window WITH the facts sheet and the
+# question being asked. Before 2026-11-11 the last 80 bank entries went in whole: one of
+# them was a 3,302-option dropdown (105,000 characters), so the built prompt was ~30,000
+# tokens against a 4,096-token window. Ollama then cut examples off the front on every
+# call and still had to read a full window (about two minutes at 33 tokens/s here).
+NUM_CTX = 4096                 # stated in the Modelfile so the budget below is what runs
+MAX_EXAMPLE_CHARS = 400        # one question with its options; longer ones teach nothing
+EXAMPLE_BUDGET_CHARS = 3000    # all examples together: with the MESSAGE wrappers and the
+                               # facts sheet the built prompt is about 2,000 tokens, which
+                               # leaves half the window for the question (answers.py sends
+                               # the facts sheet again with it) and the reply
+PLACEHOLDER_ANSWERS = {"free text", "n/a", "na", "none", "-", "."}
 
 
 def _q(text: str) -> str:
@@ -49,12 +61,52 @@ def modelfile(base: str) -> tuple[str, int]:
     lines = [f"FROM {base}", f"SYSTEM {_q(system)}", "PARAMETER temperature 0.1"]
     bank = [e for e in questions._read_list(questions.BANK_PATH)
             if str(e.get("answer") or "").strip() and str(e.get("answer")).strip().lower() != questions.SKIP]
-    examples = bank[-MAX_EXAMPLES:]
-    for e in examples:
-        options = e.get("options") or []
-        ask = e["question"] + (("\nOPTIONS: " + " | ".join(map(str, options))) if options else "")
-        lines += [f"MESSAGE user {_q(ask)}", f"MESSAGE assistant {_q(e['answer'])}"]
+    lines.insert(2, f"PARAMETER num_ctx {NUM_CTX}")
+    examples = select_examples(bank)
+    for ask, answer in examples:
+        lines += [f"MESSAGE user {_q(ask)}", f"MESSAGE assistant {_q(answer)}"]
     return "\n".join(lines) + "\n", len(examples)
+
+
+def _norm(text) -> str:
+    return " ".join(str(text or "").lower().split())
+
+
+def select_examples(bank: list[dict]) -> list[tuple[str, str]]:
+    """The (question, answer) pairs worth baking in, oldest first, inside the size budget.
+
+    Left out, because each one teaches the model something wrong or costs more than it gives:
+      - an answer that is not one of the question's own options (a "Yes" saved against a list
+        of visa choices, a degree name against a list of degree levels): the form could never
+        have taken it, so as an example it trains the model to answer off the list;
+      - placeholder answers ("free text");
+      - a question longer than MAX_EXAMPLE_CHARS with its options (country / university lists);
+      - an older copy of a question that was answered again later (the latest answer wins).
+    The newest answers are kept first until EXAMPLE_BUDGET_CHARS or MAX_EXAMPLES is reached.
+    """
+    picked, seen, spent = [], set(), 0
+    for e in reversed(bank):
+        question = str(e.get("question") or "").strip()
+        answer = str(e.get("answer") or "").strip()
+        options = [str(o).strip() for o in (e.get("options") or []) if str(o).strip()]
+        if not question or not answer or _norm(answer) in PLACEHOLDER_ANSWERS:
+            continue
+        if options and _norm(answer) not in {_norm(o) for o in options}:
+            continue
+        ask = question + (("\nOPTIONS: " + " | ".join(options)) if options else "")
+        size = len(ask) + len(answer)
+        key = _norm(ask)
+        if size > MAX_EXAMPLE_CHARS or key in seen:
+            continue
+        if spent + size > EXAMPLE_BUDGET_CHARS:
+            continue  # a shorter, older one may still fit
+        seen.add(key)
+        picked.append((ask, answer))
+        spent += size
+        if len(picked) >= MAX_EXAMPLES:
+            break
+    picked.reverse()
+    return picked
 
 
 def rebuild_if_changed(force: bool = False) -> dict:
