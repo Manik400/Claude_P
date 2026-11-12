@@ -42,7 +42,8 @@ from jobbot.careers.relocation import assess, excerpt_for_model, merge_opinion  
 from jobbot import localai  # noqa: E402
 from jobbot import salary as salary_mod  # noqa: E402
 from jobbot.config import REMOTE  # noqa: E402
-from jobbot.experience import parse_experience, seniority_from_title  # noqa: E402
+from jobbot.dates import freshness_label  # noqa: E402
+from jobbot.experience import exp_class, exp_class_label, parse_experience, seniority_from_title  # noqa: E402
 from jobbot.http import Http  # noqa: E402
 from jobbot.resume import ResumeError, extract_text  # noqa: E402
 from jobbot.scoring import score_jobs  # noqa: E402
@@ -162,14 +163,20 @@ def fit_for_range(lo, hi, jmin, jmax, seniority):
     """fit / stretch / over / no / unknown for someone with lo..hi years against a posting asking jmin..jmax."""
     if lo is None:
         return "unknown"
+    from_title = ""
     if jmin is None and jmax is None and seniority:
         if seniority[0] == "intern":
             return "over" if lo > 1 else "fit"
         jmin, jmax = seniority[1]
+        from_title = seniority[0]
     if jmin is None and jmax is None:
         return "unknown"
     jmin = jmin or 0
     if jmin > hi:
+        # Career OS directive V2.0 rule 4: a "senior" title with no stated number is never a "no"
+        # (it was, for a band topping out under 3 years, until 2026-11-11) - same as jobbot.experience.
+        if from_title == "senior":
+            return "stretch"
         return "stretch" if jmin - hi <= 2 else "no"
     if jmax is not None and jmax + 2 < lo:
         return "over"
@@ -406,6 +413,8 @@ def cmd_run(a):
         sen = seniority_from_title(j.title)
         j.exp_min, j.exp_max, j.seniority = jmin, jmax, (sen[0] if sen else "")
         j.fit = fit_for_range(lo, hi, jmin, jmax, sen)
+        j.exp_class = exp_class(j.fit, jmin, jmax)          # directive V2.0: A / B / C / D, additive
+        j.exp_class_label = exp_class_label(j.exp_class)
         j.extra["reloc"] = assess(j.title, j.description)
         relevant.append(j)
 
@@ -503,6 +512,8 @@ def cmd_run(a):
             "salary_stated": bool(j.extra.get("salary_stated")),
             "department": j.extra.get("department", ""), "type": j.employment_type,
             "exp": [j.exp_min, j.exp_max], "seniority": j.seniority, "fit": j.fit,
+            "exp_class": j.exp_class, "exp_class_label": j.exp_class_label,
+            "freshness": freshness_label(j.posted_at or j.posted),
             "reloc": j.extra["reloc"]["label"], "visa": j.extra["reloc"]["visa"], "evidence": j.extra["reloc"]["evidence"],
             "score": j.score, "matched": j.matched_skills[:10], "missing": j.missing_skills[:6],
             "chance": j.extra["chance"], "recruiter": j.extra.get("recruiter", ""),

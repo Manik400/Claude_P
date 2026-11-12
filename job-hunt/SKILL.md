@@ -113,3 +113,15 @@ Fit labels: **Fit** (meets the stated requirement), **Stretch** (≤2 years shor
 ## When a source breaks
 
 Job sites change markup often. If `run.log` shows a source with `ERROR` or 0 results everywhere, check `references/platforms.md` for how that adapter works, test it with `job_bot.py selftest --countries <cc>`, and fix the adapter in `scripts/jobbot/sources/`. A failing source never stops the run, so a quick fix can wait until the user asks.
+
+## Career OS directive V2.0 (added 2026-11-11)
+
+The owner's standing rules for this job search are in `../career/CAREER_OS_DIRECTIVE.md` (human-readable) and `../career/career_profile.json` (machine-readable). They add to everything above; nothing above is withdrawn. What they change in this skill:
+
+- **Experience band 0-3 years** (was 0-2 where it was still configured). The candidate has 2.2 years.
+- **A "senior" title is never a reason to drop a job.** A posting that states a number is judged on the number. One that states none and has a senior title is **Stretch**, not "Too senior" (`scripts/jobbot/experience.py`). Lead / principal / staff titles with no number are judged as before.
+- **Every job carries a class** in `jobs.json` and on the report card, derived by code from the fit label (no model): `exp_class` A / B / C / D and `exp_class_label` (DIRECT MATCH, STRONG POTENTIAL MATCH, STRETCH OPPORTUNITY, EXPERIENCE MISMATCH). A = fit on a stated requirement; B = nothing stated, or a fit read off the title only, or overqualified; C = stretch; D = too senior. The existing fit labels are unchanged and still drive the filters.
+- **Stretch jobs are shown, flagged, never silently dropped.** Use `--fit default` (drops only class D) or `--fit all`. `--fit strict` keeps only "fit" and so hides class B and C; the scheduled searches in `../site/scheduled_searches.json` no longer use it.
+- **Every job carries a freshness label** (`freshness`): Very fresh (0-3 days), Fresh (4-7), Recent (8-14), Older but potentially active (15-30), Verify before recommending (over 30), Unknown date (no date evidence). `scripts/jobbot/dates.py: freshness_label`. A date is never invented.
+- **Platform modes** are in `career_profile.json` -> `platforms` and can be asked through `scripts/jobbot/compliance.py` (`mode(platform)`, `automation_allowed(platform)`). LinkedIn is `manual_assist`. The helper is advisory: it blocks nothing. See `references/platforms.md` for what currently conflicts with it.
+- Only skills named in the newest resume may be claimed. React and Python are in the directive's wish list but not in the resume: treat them as gaps, not claims.

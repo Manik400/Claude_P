@@ -20,10 +20,13 @@ One pass, in order, every step on its own so a broken one never stops the rest:
                 move to. Each candidate's page is opened (at most `open_per_pass`): the Premium
                 applicant insight ("you'd be a top applicant", the applicant count), the hiring
                 team named on the page, and - for jobs abroad - whether the posting offers visa
-                sponsorship or relocation. Everything is ranked; the best Easy Apply postings are
-                applied to through the same walker, answers and daily cap as the rest of the
-                project (naukri/jobs/linkedin_apply.py), `apply_per_day` of them a day. Offsite
-                ones are listed for you, best first.
+                sponsorship or relocation. Everything is ranked. Postings whose Apply leads OFF
+                LinkedIn are followed to the company's own form, which is filled from your
+                current details and resume and submitted (naukri/jobs/career_apply.py) - the ones
+                it could not finish are listed for you, best first. Easy Apply is pressed ONLY
+                while LinkedIn's switch is on (platform_switch.py: dashboard Settings / phone
+                Rules; off by default), through the same walker, answers and daily cap as the
+                rest of the project (linkedin_apply.py), `apply_per_day` of them a day.
   4. INMAILS    for the best jobs whose hiring manager / recruiter is named, a short InMail is
                 drafted (under 80 words) and put in the report with the person's link. You have 5
                 InMail credits a month: sending stays yours.
@@ -1560,16 +1563,17 @@ def write_report(cfg: dict, state: dict, now: datetime | None = None) -> Path:
                          + (f" · {p.get('status')} {p.get('at', '')[:16]}" if p else ""))
         lines.append("")
     if d["applied_jobs"]:
-        lines.append("## Applied this day (Easy Apply, by this module)")
+        lines.append("## Applied this day (by this module: company-site forms; Easy Apply only while LinkedIn's switch is on)")
         lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", "") + _mnc_mark(j), _pay_label(j), j.get("location", ""),
                                  ", ".join(j.get("why") or []), f"[open]({j.get('url')})", j.get("status", "")] for j in d["applied_jobs"]],
                                ["score", "title", "company", "pay", "location", "why", "link", "status"]))
         lines.append("")
     if d["offsite"]:
-        lines.append("## Apply yourself (Apply leads off LinkedIn), best first")
+        lines.append("## Apply leads off LinkedIn - company site tried, or left for you - best first")
         lines.append(_md_table([[j.get("score", ""), j.get("title", ""), j.get("company", "") + _mnc_mark(j), _pay_label(j), j.get("location", ""),
-                                 ", ".join(j.get("why") or []), f"[open]({j.get('url')})"] for j in d["offsite"][:25]],
-                               ["score", "title", "company", "pay", "location", "why", "link"]))
+                                 ", ".join(j.get("why") or []), f"[open]({j.get('url')})", j.get("status", "") or "apply yourself"]
+                                for j in d["offsite"][:25]],
+                               ["score", "title", "company", "pay", "location", "why", "link", "status"]))
         lines.append("")
     if d["inmails"]:
         lines.append("## InMail drafts (5 credits a month: send the best ones yourself)")
@@ -1868,6 +1872,66 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
     daily_cap = int(config.get("linkedin_max_applies_per_day") or 25)
     exclude_companies = [str(c).strip().lower() for c in (config.get("exclude_companies") or []) if str(c).strip()]
 
+    # LinkedIn's own switch (platform_switch.py: the dashboard's Settings / the phone's
+    # Queue -> Rules; off unless turned on) rules here too: off, Easy Apply is never
+    # pressed by this runner. Postings whose Apply leads OFF LinkedIn are followed to the
+    # company's form and filled from your current details and resume
+    # (career_apply.py), whatever the switch says - the same as the apply pass does.
+    from . import career_apply as career_mod, platform_switch, tracker
+    from .autoapply import _press
+    from .ledger import Ledger
+    linkedin_on = platform_switch.allowed("linkedin", config)
+    career_on = bool(config.get("career_apply", True))
+    who = career_mod.applicant(profile, config) if career_on else {}
+    if career_on and career_mod.missing_details(who):
+        log.warning("Company-site applies off: missing %s (set applicant: in jobs.yaml)",
+                    ", ".join(career_mod.missing_details(who)))
+        career_on = False
+    tailor_fn = None
+    if career_on and config.get("tailor_resume", True):
+        from . import tailor as tailor_mod
+        tailor_fn = tailor_mod.tailor
+    ledger = Ledger()
+    memory = tracker.Memory.shared()
+    if not linkedin_on:
+        log.info("LinkedIn Easy Apply is off (Settings / phone Rules): Easy Apply postings are left alone; "
+                 "plain-Apply postings %s", "go to the company site" if career_on else "are listed for you")
+
+    def company_site(page, c: dict, info: dict, score: int) -> tuple[str, str]:
+        """Follow a plain Apply off LinkedIn and fill the company's form (career_apply.py).
+        Recorded in the shared ledger and applications log like the apply pass does, so
+        no later run opens the same form again."""
+        job = SimpleNamespace(job_id=f"linkedin:{c['job_id']}", title=c.get("title"), company=c.get("company"),
+                              url=c.get("url"), location=c.get("location"), score=score, description=info.get("text", ""))
+        capture: dict = {}
+        status, note = career_mod.apply_from_page(
+            page, {"title": job.title, "company": job.company, "url": job.url,
+                   "location": job.location or "", "description": job.description},
+            who, facts, dry_run=dry_run, capture=capture,
+            offsite_click=lambda: _press(page, [linkedin_apply.ANY_APPLY_BUTTON]), tailor=tailor_fn)
+        if status == "career-unconfirmed" and not dry_run:
+            status, note = "submitted", "submitted, no confirmation shown on the page: " + note
+        if not dry_run and status != "would-apply" and not career_mod.transient(status, note):
+            ledger.record(job, career_mod.ledger_status(status), career_mod.TRIED + note)
+            ledger.save()
+            applications.record("linkedin", job, {"submitted": "applied", "closed": "skipped"}.get(status, "offsite"),
+                                career_mod.TRIED + note, capture, project="premium")
+            for q in capture.get("blocked_all") or []:
+                if len(q) > 3 and q not in ("a required field", "file upload"):
+                    try:
+                        questions.record(q, capture.get("options") if q == capture.get("question") else [], job, "linkedin")
+                    except Exception as exc:  # noqa: BLE001
+                        log.debug("question not queued: %s", exc)
+        return status, note
+
+    def company_site_done(job_id: str) -> bool:
+        """The company form was already tried (any run), or the job is settled on any board."""
+        entry = ledger.entries.get(f"linkedin:{job_id}") or {}
+        if entry.get("status") in ("applied", "skipped") or str(entry.get("note", "")).startswith(career_mod.TRIED):
+            return True
+        return any(str(e.get("job_id")) in (str(job_id), f"linkedin:{job_id}") and str(e.get("note", "")).startswith(career_mod.TRIED)
+                   for e in applications.load())
+
     with sync_playwright() as p:
         browser, ctx, page = linkedin_mod.open_session(p, headless=headless)
         try:
@@ -1992,9 +2056,29 @@ def run_once(cfg: dict, headless: bool = True, dry_run: bool = False, state_path
                                              "person_url": person.get("url"), "job": c.get("title"), "company": c.get("company"),
                                              "job_url": c.get("url"), "text": inmail_draft(c, person, me)})
                     if not info.get("easy_apply"):
+                        # Apply leads off LinkedIn: the company's own form, filled from your details
                         rec["status"] = "offsite"
+                        if career_on and not company_site_done(c["job_id"]) \
+                                and not memory.blocked(key=f"linkedin:{c['job_id']}", url=c.get("url"),
+                                                       company=c.get("company"), title=c.get("title")):
+                            status, note = company_site(page, c, info, score)
+                            log.info("  company site %-40s %-24s -> %s: %s", (c.get("title") or "")[:40],
+                                     (c.get("company") or "")[:24], status, note[:100])
+                            entry["status"] = f"company site: {status}"
+                            entry["note"] = note[:160]
+                            if status == "submitted":
+                                rec["status"] = "applied"
+                                d["applied_jobs"].append(entry)
+                                save_state(state, state_path)
+                                _pause(6.0, 14.0)
+                                continue
                         if not any(o["url"] == c["url"] for o in d["offsite"]):
                             d["offsite"].append(entry)
+                        continue
+                    if not linkedin_on:
+                        # the switch is off: never pressed; the posting waits for the switch
+                        rec["status"] = "platform-off"
+                        d["skipped"].append(f"Easy Apply is off (Settings / phone Rules): {c.get('title')} at {c.get('company')}")
                         continue
                     if already_tried(c["job_id"]):
                         rec["status"] = "tried-before"

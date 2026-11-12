@@ -58,3 +58,31 @@ python scripts/job_bot.py search --role "python developer" --countries DE --sour
 ```
 
 The per-source status table in `run.log` and the report's "Sources" panel show `ok / blocked / error` per country with the error text.
+
+## Career OS directive V2.0: platform modes (added 2026-11-11)
+
+Source: `../../career/career_profile.json` -> `platforms` and `../../career/CAREER_OS_DIRECTIVE.md` section 5. `scripts/jobbot/compliance.py` reads that file: `mode(platform)`, `automation_allowed(platform)` (True / False / None = not evaluated), `may_automate(platform)` (True only on an explicit true), `platform_for_url(url)`. `verified_on` is null for every platform today: nobody has recorded reading the current terms yet.
+
+| Platform | Mode | Automation allowed |
+|---|---|---|
+| linkedin | manual_assist | no |
+| greenhouse | automation_permitted | yes (public Job Board API; a human confirms the final submission when declarations, eligibility, salary or legal answers are involved) |
+| lever | automation_permitted | yes (public Postings API; same confirmation rule) |
+| ashby | evaluate | no |
+| company_career_sites | evaluate_per_site | not decided |
+| naukri, indeed, glassdoor | links_only | no |
+| instahyre, wellfound, foundit, cutshort, relocate_me, wearedevelopers | evaluate | not decided |
+
+Nowhere: CAPTCHA bypass, rate-limit evasion, misrepresenting qualifications.
+
+### Open conflict, left as it is pending the owner's decision
+
+The compliance helper is **advisory only**. No code path calls it, and nothing was disabled, removed or gated when the directive was added, because the owner also asked that current behaviour be kept. These existing features do not match the modes above:
+
+1. **LinkedIn guest-endpoint source** (`scripts/jobbot/sources/linkedin.py`, key `linkedin`, on by default). It sends logged-out HTTP GETs to `linkedin.com/jobs-guest/jobs/api/seeMoreJobPostings/search` and `.../jobPosting/<id>` and parses the returned HTML cards. No login, no cookies, no account, no browser. It is still automated reading of LinkedIn search results, which the directive lists under "does not scrape ... search results" for LinkedIn.
+2. **Apify LinkedIn source** (`scripts/jobbot/sources/apify.py`, key `apify-linkedin`, only with `APIFY_TOKEN`). A third-party actor scrapes LinkedIn job listings, and the job poster's name and profile link, on the bot's behalf.
+3. **LinkedIn Easy Apply** (`scripts/jobbot/autoapply.py` -> `Profile_Naukri_Screener-main/naukri/jobs/linkedin_apply.py`, reached by `job_bot.py apply` and `run --apply-found`). With `--yes` it drives a Playwright browser on the owner's saved, logged-in LinkedIn session, opens each posting, fills the Easy Apply dialog and clicks "Submit application". Without `--yes` it is a dry run that opens the pages and clicks nothing. This is the directive's "auto-submitting LinkedIn applications" and "Playwright ... automation on linkedin.com".
+4. The same `apply` pass also sends every non-LinkedIn posting URL (other boards, company sites) to the screener's company-site form filler, whatever the platform's mode above (naukri / indeed / glassdoor are `links_only`, ashby is `evaluate`).
+5. The links-only platforms are already handled as links by this bot's search (see "Blocked for scripts" above); the Naukri screener project next door automates Naukri itself, which is outside this file.
+
+To bring the bot in line, the natural switch points are: drop `linkedin` / `apify-linkedin` from the selected sources in `job_bot.py: do_search` when `compliance.may_automate("linkedin")` is false (the fallback already builds LinkedIn search links for the report), and skip `linkedin_cards` in `autoapply.apply_run` on the same test. Neither is wired in.

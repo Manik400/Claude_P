@@ -1,13 +1,21 @@
 
 # ---------------------------------------------------------------------------
-# ANY TITLE, 0-2 YEARS (stated 2026-10-11)
+# ANY TITLE, 0-3 YEARS (Career OS directive V2.0, 2026-11-11; see career/)
 # ---------------------------------------------------------------------------
-# The job's name does not matter; what matters is that it is a software / IT
-# role for 0-2 years. So: the experience band is 0-2 (Naukri's facet searches
-# at 2, the gate drops postings asking 3+); the "is this my field" gate is wide
-# (any of these words anywhere in the posting); and senior / lead / manager /
-# intern titles are dropped on the title alone.
-experience_range: [0, 2]
+# Previous block (stated 2026-10-11) read: "ANY TITLE, 0-2 YEARS ... the
+# experience band is 0-2 (Naukri's facet searches at 2, the gate drops postings
+# asking 3+) ... and senior / lead / manager / intern titles are dropped on the
+# title alone."  Kept here as the record of what changed.
+#
+# Now: the job's name does not matter; what matters is that it is a software /
+# IT role for 0-3 years. The experience band is 0-3 (Naukri's facet searches at
+# 3; the gate in naukri/jobs/score.py measures a posting's stated minimum
+# against the top of the band plus max_experience_gap_years, so a posting
+# asking up to 3 years always passes). The "is this my field" gate is wide (any
+# of these words anywhere in the posting). A "senior" title is NOT dropped on
+# the title alone any more (directive rule 4); lead / principal / staff /
+# architect / manager / director / intern titles still are - see below.
+experience_range: [0, 3]   # was [0, 2] until 2026-11-11 (directive rule 2)
 must_have_any:
   - software
   - developer
@@ -63,9 +71,15 @@ exclude_title_keywords:
   - civil
   - electrical engineer
   - site engineer
-  - senior
-  - "sr."
-  - "sr "
+  # Career OS directive V2.0 rule 4 (2026-11-11): never reject on title alone.
+  # "senior" titles are no longer excluded here; the posting's stated experience
+  # decides. Previous entries, kept for the record:
+  #   - senior
+  #   - "sr."
+  #   - "sr "
+  # The exclusions below (lead / team lead / principal / staff / architect /
+  # manager / director / head of / vp / intern / internship) are unchanged: the
+  # directive's rule is about "Senior", not about these.
   - "lead "
   - "team lead"
   - principal

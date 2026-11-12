@@ -31,6 +31,48 @@ _TEXT_RX = re.compile(r"(?:posted|published|date posted|posting date|listed|adve
 _AGO_RX = re.compile(r"\b(\d+\+?)\s*(minutes?|mins?|hours?|hrs?|days?|weeks?)\s+ago\b", re.I)
 
 
+# Career OS directive V2.0 (career/CAREER_OS_DIRECTIVE.md, section 3): a label for a posting's
+# age. The same bands are in career/career_profile.json -> "freshness".
+FRESHNESS_UNKNOWN = "Unknown date"
+FRESHNESS_BANDS = (
+    (3, "Very fresh"),
+    (7, "Fresh"),
+    (14, "Recent"),
+    (30, "Older but potentially active"),
+    (None, "Verify before recommending"),
+)
+
+
+def freshness_label(posted, today=None):
+    """The directive's freshness label for a posting date.
+
+    `posted` is the ISO date (YYYY-MM-DD) or ISO timestamp the board or the posting's own
+    page gave; `today` (a date, default: today in UTC) exists for tests. Pure: nothing is
+    fetched and nothing is guessed - no date, an unreadable one, or one more than a day in
+    the future is "Unknown date", never "fresh".
+    """
+    from datetime import date, datetime, timezone
+    if not posted:
+        return FRESHNESS_UNKNOWN
+    try:
+        d = datetime.strptime(str(posted).strip()[:10], "%Y-%m-%d").date()
+    except ValueError:
+        return FRESHNESS_UNKNOWN
+    if today is None:
+        today = datetime.now(timezone.utc).date()
+    elif isinstance(today, datetime):
+        today = today.date()
+    elif not isinstance(today, date):
+        today = datetime.strptime(str(today)[:10], "%Y-%m-%d").date()
+    days = (today - d).days
+    if days < -1:              # a day ahead is a timezone; more is not a posting date
+        return FRESHNESS_UNKNOWN
+    for max_days, label in FRESHNESS_BANDS:
+        if max_days is None or days <= max_days:
+            return label
+    return FRESHNESS_UNKNOWN
+
+
 def _ld_items(html):
     for m in _LD_RX.finditer(html):
         raw = m.group(1).strip()

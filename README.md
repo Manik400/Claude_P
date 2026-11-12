@@ -137,3 +137,18 @@ All commands below are run from inside `Profile_Naukri_Screener-main\`.
 | Many fields `MISSING` | Naukri changed its page layout. Update `naukri/selectors.py` |
 
 ⚠️ Automating Naukri is against its terms of service, so there is some risk to your account. Every command is a dry run until you add `--yes`.
+
+## Career OS directive V2.0 (added 2026-11-11)
+
+The standing rules for the whole job search now live in `career/`:
+
+- `career/CAREER_OS_DIRECTIVE.md` - the rules in prose (profile, 0-3 year band, titles, A/B/C/D classes, freshness labels, platform compliance, matching weights, tracking states).
+- `career/career_profile.json` - the same settings for code to read.
+
+They add to what each sub-project already does; nothing was removed. What changed with them:
+
+- Experience band is 0-3 years (`jobs.yaml`, `Profile_Naukri_Screener-main/jobs.yaml`; it was 0-2).
+- "Senior" is no longer a title exclusion in `jobs.yaml`, and `job-hunt` labels a senior title with no stated experience as Stretch instead of Too senior.
+- `job-hunt` adds `exp_class` (A/B/C/D), `exp_class_label` and `freshness` to every job in `jobs.json` and on the report card.
+- The scheduled searches (`site/scheduled_searches.json`) use `fit: default`, which keeps stretch jobs, instead of `strict`.
+- `job-hunt/scripts/jobbot/compliance.py` answers each platform's mode from `career_profile.json`. It is advisory and blocks nothing. LinkedIn is marked manual-assist there, while the existing LinkedIn search and Easy Apply code is still switched on: see `job-hunt/references/platforms.md` for the open decision.

@@ -34,6 +34,7 @@ def _jobs():
 def test_absent_means_off(monkeypatch):
     monkeypatch.setattr(localai, "_HAVE_LLM", False)
     monkeypatch.setattr(localai, "_HAVE_EMBED", False)
+    monkeypatch.setattr(localai, "ollama_ready", lambda *a, **k: False)  # a running Ollama must not decide this test
     assert not localai.available()
     assert not localai.available("llm")
     assert localai.embed(["a"]) is None

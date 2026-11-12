@@ -36,3 +36,28 @@ With user experience `U` and requirement `lo..hi`:
 - **unknown**: nothing stated
 
 `--experience 2-4` uses the midpoint, 3.
+
+## Career OS directive V2.0 (added 2026-11-11)
+
+Source: `../../career/CAREER_OS_DIRECTIVE.md` section 7 and `../../career/career_profile.json` -> `match_weights`. The formula above is NOT changed by this section; this records the target and how today's score relates to it.
+
+Target weights:
+
+| Part | Target | Where it is today |
+|---|---|---|
+| Technical compatibility | 30% | Skill coverage (45%) + text similarity (25%) = 70% of the current score |
+| Experience compatibility | 20% | Experience fit (15%) |
+| Role relevance | 15% | Title alignment (15%); the title relevance filter also runs before scoring |
+| Location and eligibility | 15% | Not in the score. Handled by filters: `--countries`, `--relocation strict / visa / any` |
+| Compensation | 10% | Not in the score. Handled by the `--min-salary` floor and the pay badge on the card |
+| Career growth | 10% | Not measured anywhere |
+
+So the current 45 / 25 / 15 / 15 formula covers three of the six target parts and over-weights technical match (70% against a target of 30%). Moving to 30 / 20 / 15 / 15 / 10 / 10 needs per-job location, compensation and growth sub-scores that the bot does not compute yet; until then scores are comparable with earlier runs and the three missing parts stay as filters.
+
+Changes that did land with the directive (in `scripts/jobbot/experience.py`):
+
+- A posting with a "senior" title and no stated number is **stretch**, not **no**. Before 2026-11-11 the title's default range (senior = 5+) made it "no" for anyone more than 2 years short. A stated number still decides: "Senior Engineer, 6+ years" is "no" for a 2.2-year candidate. Lead / principal / staff / architect titles keep their 7+ default.
+- `exp_class(fit, exp_min, exp_max)` adds the directive's class next to the fit label: A (fit, requirement stated), B (unknown, or fit from the title only, or over), C (stretch), D (no). "over" is B because the posting asks for less than the candidate has, so experience is no barrier; the fit label still says Overqualified. No class is set when the run was given no `--experience`.
+- Wording such as "flexible" or "or equivalent experience" is not detected; such postings are classed from their stated number like any other.
+
+Note on `--experience 0-3`: a range says which jobs to search for, not how experienced the candidate is. `job_bot.py` used to turn it into its midpoint (1.5 years), which labelled every "2-3 years" posting stretch (class C). Since 2026-11-11 `experience.candidate_years` uses the real figure from `career/career_profile.json` (2.2) whenever it lies inside the range, so "2-3 years" is fit (class A) and 4+ is stretch (class C). A range that does not contain the real figure still uses its midpoint, and a single figure (`--experience 2.2`) is used as given. `careers_bot.py` keeps the range and compares a posting's minimum with its top (3).

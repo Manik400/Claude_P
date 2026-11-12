@@ -119,7 +119,9 @@ def test_offsite_button_texts(text):
 def test_release_failed_releases_fixed_failures_only(tmp_path, monkeypatch):
     from naukri.jobs import ledger as ledger_mod
     path = tmp_path / "ledger.json"
-    now = "2026-09-27T10:00:00"
+    # was the fixed date "2026-09-27T10:00:00": release_failed only looks back 30 days, so the
+    # test began failing on its own once that date was more than a month old
+    now = __import__("datetime").datetime.now().isoformat(timespec="seconds")
     entries = {
         "web:1": {"url": "https://careers.acme.com/j/1", "status": "offsite", "at": now,
                   "note": ca.TRIED + "no application form or Apply button found on the company page"},
