@@ -1,6 +1,28 @@
 {
- "updated": "2026-11-14T08:42:44Z",
+ "updated": "2026-11-14T10:55:33Z",
  "items": [
+  {
+   "id": "jobhunt-20261114-105533-engineer-senior-software-developer-sse-s",
+   "kind": "jobhunt",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE, senior backend engineer, .NET developer, C# developer, spring boot developer, API developer",
+   "when": "2026-11-14T10:55:33Z",
+   "file": "data/jobhunt/jobhunt-20261114-105533-engineer-senior-software-developer-sse-s.html",
+   "bytes": 139556,
+   "meta": {
+    "jobs": "8",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "days": "2",
+    "hours": "",
+    "window_hours": "48",
+    "platforms_asked": "",
+    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,adzuna,jooble,jsearch,firecrawl,apify-naukri",
+    "min_salary": "12 LPA",
+    "worldwide": "",
+    "dates_checked": "80",
+    "jobs_file": "data/jobhunt/jobhunt-20261114-105533-engineer-senior-software-developer-sse-s.jobs.json"
+   }
+  },
   {
    "id": "careers-20261114-084244-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -2085,28 +2107,6 @@
     "worldwide": "",
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261026-051006-engineer-senior-software-developer-sse-s.jobs.json"
-   }
-  },
-  {
-   "id": "jobhunt-20261025-084354-engineer-senior-software-developer-sse-s",
-   "kind": "jobhunt",
-   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-10-25T08:43:54Z",
-   "file": "data/jobhunt/jobhunt-20261025-084354-engineer-senior-software-developer-sse-s.html",
-   "bytes": 72013,
-   "meta": {
-    "jobs": "3",
-    "countries": "DE,AU",
-    "experience": "0-3",
-    "days": "2",
-    "hours": "",
-    "window_hours": "48",
-    "platforms_asked": "",
-    "platforms": "linkedin,seek,xing,arbeitnow,duunitori,tecnoempleo,infojobs,wellfound,tokyodev,japandev,daijob,wantedly,jobthai,themuse,landingjobs,relocateme,instahyre,adzuna,jooble,jsearch,firecrawl,apify-naukri",
-    "min_salary": "12 LPA",
-    "worldwide": "",
-    "dates_checked": "80",
-    "jobs_file": "data/jobhunt/jobhunt-20261025-084354-engineer-senior-software-developer-sse-s.jobs.json"
    }
   },
   {
