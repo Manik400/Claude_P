@@ -1,0 +1,351 @@
+[
+ {
+  "source": "linkedin",
+  "source_name": "LinkedIn",
+  "title": "(Junior) iOS Engineer",
+  "company": "Scalable Capital",
+  "url": "https://www.linkedin.com/jobs/view/4483537784",
+  "country": "DE",
+  "location": "Munich, Bavaria, Germany",
+  "remote": null,
+  "posted": "2026-11-16",
+  "posted_at": "2026-11-16T11:47:43.809967+00:00",
+  "posted_raw": "3 minutes ago",
+  "salary": "ady entrusted more than €50 billion to the platform. Founded in 2014, Scalable Capital now empl",
+  "snippet": "Scalable Capital is a leading digital investment and banking platform with a full banking licence, empowering people across Europe to shape their own finances. Scalable Broker makes it easy and affordable for clients to invest professionally in stocks, ETFs, cryptocurrencies, and derivatives, as well as set up savings plans. Scalable Wealth, the digital wealth management service, offers clients pr",
+  "description": "Scalable Capital is a leading digital investment and banking platform with a full banking licence, empowering people across Europe to shape their own finances. Scalable Broker makes it easy and affordable for clients to invest professionally in stocks, ETFs, cryptocurrencies, and derivatives, as well as set up savings plans. Scalable Wealth, the digital wealth management service, offers clients professional investment in ETF portfolios, and is also adopted as a white-label solution by banks and other B2B partners. The company’s offerings are rounded off by attractive interest rates, loans, and private equity. With the European Investor Exchange, Scalable Capital offers an exchange specifically for retail investors. Over one million clients have already entrusted more than €50 billion to the platform. Founded in 2014, Scalable Capital now employs over 700 people across Munich, Berlin, Vienna, Milan, and London. Together with the founding and management team, including Erik Podzuweit and Florian Prucker, they are working on a new generation of financial services. Visit our finance blog or check out our Social Media channels to find out what our Expert Teams have to say. Our Company Values guide us every day in how we work and collaborate. To learn more about them, you can find our values here (English). Job Description Work alongside a highly motivated team of software engineers and academics to help build products that make complex topics like investing more accessible to our users Contribute to the design and implementation of user interfaces and features on iOS Learn to take ownership of parts of the app and gradually grow responsibility across the full development lifecycle Collaborate closely with engineers, product managers, and designers to deliver high-quality user experiences Experiment with iOS technologies and best practices, supported by experienced team members Write clean, testable, and well-documented code, with a strong focus on quality and security Continuously improve your technical skills and stay curious about developments in the iOS ecosystem Qualifications A University degree in a relevant field of study (e.g. computer science, engineering, natural sciences, etc.) or a comparable qualification Hands-on experience in iOS development, including initial experience in a professional setting (such as internships or working student roles), in addition to academic or personal projects.) Familiarity with Swift and the iOS SDK, and basic experience with UIKit and Auto Layout Motivation to learn modern iOS development practices and deepen your understanding of the platform Solid analytical thinking and an interest in understanding both technical and product-related problems Interest in building great user experiences and learning how to implement custom UI components Good communication skills and an openness to ask questions, give feedback, and learn from others Fluent in English, both in writing and reading, German is a plus Ability and motivation to quickly pick up new concepts and adapt to changes in the iOS ecosystem Curiosity about other technology stacks and platforms beyond iOS Prior Fintech experience is not required, but interest in investing or digital finance is a plus. Ideally, you are curious about or already a customer of Scalable Capital Additional Information Be part of one of the fastest-growing and most visible Fintech startups in Europe, creating innovative services that have a substantial impact on the lives of our customers Work with an international, diverse, inclusive, and ever-growing team that loves creating the best products for our clients Be productive with the latest hardware and tools Learn and grow by joining our in-house knowledge sharing or career development sessions and spending your individual Education Budget Learn and experience German culture first hand by joining our free German language classes International relocation support is provided if required Opportunity to work from abroad Benefit from an attractive compensation package and from the company pension scheme Monthly contribution of 50% for the ‘Deutschland Jobticket’ Say goodbye to order commissions and say hello to your complimentary subscription of Scalable Capital's PRIME+ Broker Enjoy flexible and discounted sports activities with Urban Sports Club",
+  "skills": [],
+  "employment_type": "Full-time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "junior",
+  "fit": "fit",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 43.6,
+  "matched_skills": [
+   "german",
+   "english"
+  ],
+  "missing_skills": [
+   "ios",
+   "fintech",
+   "swift",
+   "uikit"
+  ],
+  "also_on": [],
+  "query": "engineer",
+  "id": "li4483537784",
+  "extra": {
+   "linkedin_id": "4483537784",
+   "seniority_level": "Entry level",
+   "details_fetched": true,
+   "salary_stated": true,
+   "salary_inr": 9568000,
+   "salary_lpa": 95.7,
+   "salary_text": "ady entrusted more than €50 billion to the platform. Founded in 2014, Scalable Capital now empl",
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Budget Learn and experience German culture first hand by joining our free German language classes International relocation support is provided if required Opportunity to work from abroad Benefit from an attractive compensation package and from the company pension scheme Monthly…"
+   },
+   "semantic": 0.315,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with the technical skills required for iOS development.",
+    "gaps": "Lacks specific iOS/Swift experience and fintech background."
+   },
+   "is_mnc": false,
+   "lpa": 95.7,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Scalable%20Capital%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Scalable%20Capital%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Scalable%20Capital%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Scalable%20Capital%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Scalable%20Capital%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Scalable%20Capital%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Scalable%20Capital%22%20%28%22Senior%20engineer%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Scalable%20Capital%22%20%28%22Senior%20engineer%22%29%20%22Munich%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Research Engineer - Cybersecurity (RL Environments)",
+  "company": "Mistral.ai",
+  "url": "https://www.arbeitnow.fr/jobs/companies/mistralai/research-engineer-cybersecurity-rl-environments-paris-493165",
+  "country": "DE",
+  "location": "Paris",
+  "remote": false,
+  "posted": "2026-11-15",
+  "posted_at": "2026-11-15T15:40:14+00:00",
+  "posted_raw": 1794757214,
+  "salary": "",
+  "snippet": "About Mistral Mistral provides full-stack AI solutions: from frontier models to developer tools, applications, and compute. We partner with enterprises tackling the hardest problems across high-stakes industries like finance, manufacturing, defense, healthcare, and the public sector, co-creating customized AI systems that they can run on their terms. We are a dynamic, collaborative team passionate",
+  "description": "About Mistral Mistral provides full-stack AI solutions: from frontier models to developer tools, applications, and compute. We partner with enterprises tackling the hardest problems across high-stakes industries like finance, manufacturing, defense, healthcare, and the public sector, co-creating customized AI systems that they can run on their terms. We are a dynamic, collaborative team passionate about AI and its potential to transform society. Our diverse workforce thrives in competitive environments and is committed to driving innovation. Our teams are distributed between Europe, North America, Asia and the Middle East. We are creative, low-ego and team-spirited. The Role Cybersecurity is one of the areas where AI could do the most good — and one where the capability must be built with particular care. As a Research Engineer on this track, you'll push our models' capabilities in vulnerability discovery and remediation, security analysis, incident response , and across the offensive-to-defensive spectrum of cybersecurity, and it will be your job to develop that ability deliberately and safely. The work sits at the meeting point of research and engineering: you'll devise new approaches and be the one to implement them. Concretely, that means designing and building RL environments that reproduce realistic security scenarios, pipelines that generate synthetic training instances at scale , and experiments and evaluations that show what our models can actually do. Your results feed directly into the production training runs that shape our frontier models, in close collaboration with Mistral's researchers, engineers, and security specialists. Security specialists and ML engineers are both welcome here — what matters is that you can hold your own in both worlds, and are eager to go deeper on the one you know less. What You Will Do Design and implement RL environments simulating cybersecurity scenarios. Build the pipelines and infrastructure that generate synthetic cybersecurity training instances at scale — thousands of scenarios, not one hand-crafted exercise. Conduct experiments and evaluations of model capabilities on these environments, from quick prototypes to controlled benchmark runs. Own the infrastructure behind the environments: containers, sandboxes, VMs, cloud deployments, and orchestration (Kubernetes) , all managed as code. Partner with researchers and security specialists across Mistral, distilling their domain expertise into reproducible environments and datasets. Write clear, efficient code in Python and enforce strong software-design practices: testing, code review, CI/CD. What We're Looking For Hands-on expertise in offensive and/or defensive cybersecurity : vulnerability analysis, web/network/cloud security, secure coding practices, and SOC. Strong software engineering skills : clean, reliable, well-tested code — not just exploit scripts. Fluency in Python plus comfort reading lower-level languages (C/C++) for vulnerability analysis. DevOps experience : Docker, Kubernetes, cloud deployments, sandboxed or simulated environments. A pragmatic research-to-engineering mindset: ship a working first version, then refine and scale it. Working knowledge of RL techniques and LLM training methodologies , or strong motivation to develop it. Self-starter, low-ego, collaborative — comfortable working across research and engineering. Nice-to-haves CTF, cyber-range, or bug-bounty experience — as a player, challenge author, or platform builder. A research background in cybersecurity, academic or industrial, or in another experimental discipline. Prior experience building RL environments or large-scale ML training infrastructure. Relevant open-source contributions and projects. What We Offer We offer a comprehensive benefits package designed to support your well-being, growth, and work-life balance. Benefits vary by country and may include healthcare coverage, parental leave, retirement plans, relocation support, wellness programs, meal and transportation allowances, and other location-specific perks. For the most up-to-date details on benefits available in your location, please refer to our Benefits page . Privacy Policy Your privacy matters to us. You can learn more about how we handle your personal data in our Applicant Privacy Policy . Find Jobs in France on Arbeitnow",
+  "skills": [
+   "Science"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 24.5,
+  "matched_skills": [
+   "code review",
+   "ci/cd",
+   "devops",
+   "docker"
+  ],
+  "missing_skills": [
+   "cybersecurity",
+   "artificial intelligence",
+   "machine learning",
+   "kubernetes",
+   "python",
+   "c++",
+   "llm"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "95c8dc410148",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Benefits vary by country and may include healthcare coverage, parental leave, retirement plans, relocation support, wellness programs, meal and transportation allowances, and other location-specific perks.…"
+   },
+   "semantic": 0.201,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with cloud infrastructure, CI/CD, and Kubernetes, aligning with the candidate's DevOps and code review skills.",
+    "gaps": "Lacks direct cybersecurity expertise, AI/ML knowledge, and Python proficiency required for RL environments."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Senior%20engineer%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Senior%20engineer%22%29%20%22Paris%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Location Data engineer",
+  "company": "Amo",
+  "url": "https://www.arbeitnow.fr/jobs/companies/amo/location-data-engineer-paris-221661",
+  "country": "DE",
+  "location": "Paris",
+  "remote": false,
+  "posted": "2026-11-16",
+  "posted_at": "2026-11-16T06:40:18+00:00",
+  "posted_raw": 1794811218,
+  "salary": "",
+  "snippet": "We are seeking a highly skilled Location Data Engineer to join our team. In this role, you will work with large-scale datasets generated by our products and turn raw data into meaningful signals, insights, and features. You will work across the entire data lifecycle: building reliable pipelines, exploring and understanding complex datasets, developing features from them, and creating the tools and",
+  "description": "We are seeking a highly skilled Location Data Engineer to join our team. In this role, you will work with large-scale datasets generated by our products and turn raw data into meaningful signals, insights, and features. You will work across the entire data lifecycle: building reliable pipelines, exploring and understanding complex datasets, developing features from them, and creating the tools and visualizations needed to understand their quality and impact. This is a technical and product-oriented data role. You'll collaborate closely with product, engineering, and data teams to find what we can learn from our data and turn those learnings into production systems. As a Data Engineer, your day-to-day will include: Making Sense of Data Explore large and complex datasets to understand user behavior and identify useful patterns and signals. Transform raw data into reliable, well-defined features that can be used by our products and engineering teams. Develop a deep understanding of our data: where it comes from, what it represents, its limitations, and how it can be combined to answer new questions. Building Data Products Design, build, and maintain pipelines that process large volumes of data efficiently and reliably. Take ideas from exploration to production: prototype them on historical data, evaluate their quality, and build the pipelines needed to run them at scale. Build datasets and features that can power product experiences, internal systems, analytics, and machine learning models. Work with technologies such as Spark, DBT, Dagster, BigQuery, ClickHouse, DuckDB, or similar tools depending on the problem at hand. Exploring & Analyzing Use data to investigate hypotheses, understand behaviors, and answer ambiguous questions. Develop metrics and evaluation frameworks to understand whether the signals and features we build actually work. Create analyses, dashboards, and visualizations that make complex datasets understandable and help the team make better decisions. Build tooling that makes it easier to inspect individual examples, debug data pipelines, and understand why a system produces a particular result. From Data to Intelligence Work closely with engineers and product teams to identify opportunities where data can make our products smarter. Use statistical methods, heuristics, experimentation, or machine learning depending on what is most appropriate for the problem. Iterate on features and models based on real-world data and continuously improve their accuracy and reliability. Help bridge the gap between exploratory data work and robust systems running in production. Continuous Improvement Improve the performance, reliability, and maintainability of our data infrastructure. Monitor data quality and proactively investigate unexpected changes or anomalies. Stay up to date with developments in data engineering, analytics, and machine learning, and bring relevant ideas and technologies into our stack. Contribute to a culture of curiosity, craftsmanship, and learning. Your Skills & Experience Strong software engineering fundamentals and experience working with data-intensive systems. Very comfortable with SQL and manipulating large datasets. Experience with one or more modern data technologies such as Spark, DBT, Dagster, BigQuery, ClickHouse, DuckDB, or equivalent tools. Strong analytical skills: you enjoy digging into data, testing hypotheses, and understanding why something behaves the way it does. Ability to turn exploratory analysis into reliable, production-ready data pipelines and features. Familiarity with data modeling, pipeline orchestration, and large-scale data processing. Ability to communicate findings clearly through metrics, visualizations, dashboards, or other tools. Preferred Qualifications Experience building data products or features directly used by consumer-facing products. Experience working with high-volume event, behavioral, sensor, geospatial, or time-series data. Familiarity with statistics, machine learning, or feature engineering. Experience taking a data problem from an ambiguous question through exploration, prototyping, evaluation, and production. Experience building internal tools or visualizations for exploring and debugging complex datasets. Life at amo To ensure that everyone is set up for success within our way of working, we work together onsite 5 days a week. We wanted to make sure coming to the office was as comfortable as possible for you: We chose a location in central Paris, near Opéra (Metro lines 3, 8, 9 and RER A). We have a beautiful Parisian-style office with high ceilings, balconies, and huge windows. So a lot of natural light! Because life outside of work should also be stress-free, we cover: Health care (100% coverage). Maternity Leave, Paternity Leave, Second Parent Leave (salary maintained at 100%). Vacation days: 8–9 weeks (total) per year: 5 weeks of paid time off; 1–2 additional weeks (RTT, based on our company contract); ~11 bank holidays. We shut down entirely twice a year, two weeks in summer and one week in winter, to allow everyone to truly recharge and avoid prolonged slowdowns. These pauses are part of your total vacation time, giving everyone a real chance to unplug and recharge. No Slack, no email, no FOMO. We love the diverse perspectives we get from having people from all over the world join us (68% of our team is international), and so we of course support relocation to Paris with: Help and sponsored visa process. 1 month of Airbnb 100% covered by amo upon arrival. Assistance from a trusted relocation agency to find your permanent home. Help with French paperwork like opening a French social security account, tax forms, getting your carte vitale (free healthcare), and more. French lessons to be fully set with your new Parisian life. Find more English Speaking Jobs in France on Arbeitnow",
+  "skills": [
+   "Engineering"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 21.3,
+  "matched_skills": [
+   "sql",
+   "english"
+  ],
+  "missing_skills": [
+   "machine learning",
+   "french",
+   "spark",
+   "dbt",
+   "bigquery",
+   "clickhouse",
+   "data pipelines",
+   "gis"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "aac50b92880d",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…we get from having people from all over the world join us (68% of our team is international), and so we of course support relocation to Paris with: Help and sponsored visa process.…"
+   },
+   "semantic": 0.382,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong Java/SQL background with Kafka and PostgreSQL experience aligns well with data pipeline engineering. Strong English communication skills support collaboration with product and engineering teams.",
+    "gaps": "Lacks specific experience with Spark, DBT, BigQuery, ClickHouse, or dedicated data pipeline tooling like Dagster."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Amo%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Amo%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Amo%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Amo%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Amo%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Amo%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Amo%22%20%28%22Senior%20engineer%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Amo%22%20%28%22Senior%20engineer%22%29%20%22Paris%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Research Engineer",
+  "company": "Nomagic",
+  "url": "https://www.arbeitnow.ch/jobs/companies/nomagic/research-engineer-zurich-311561",
+  "country": "DE",
+  "location": "Zurich",
+  "remote": false,
+  "posted": "2026-11-15",
+  "posted_at": "2026-11-15T06:07:12+00:00",
+  "posted_raw": 1794722832,
+  "salary": "",
+  "snippet": "Do you believe the path to general-purpose physical AI runs through noisy, real-world factory deployments? Are you excited by the challenge of turning the classical robotic stacks into the foundational training data for physical AI? Do you want to bridge the gap between world-class ML research and industrial-scale robotic execution? If your answers are yes, we should talk. At Nomagic, we are execu",
+  "description": "Do you believe the path to general-purpose physical AI runs through noisy, real-world factory deployments? Are you excited by the challenge of turning the classical robotic stacks into the foundational training data for physical AI? Do you want to bridge the gap between world-class ML research and industrial-scale robotic execution? If your answers are yes, we should talk. At Nomagic, we are executing a humble pivot for general-purpose physical AI. We believe that physical AI is fundamentally a knowledge transfer problem - we are leveraging the \"internet data\" of robotics - massive deployment logs from real systems operating in production environments - to bootstrap our efforts. We are looking for Research Engineers who will help us to build, train, and deploy foundational models that bring our fleet from a classical control stack to generalized AI mastery. Offer essentials Play with real robots, solving real problems, every day. Relocation package. Flexible working hours. English-speaking environment. Here is why we love this job ourselves, and hope you will enjoy it too: We combine world-class research with top-notch engineering and apply it to solve real problems The data already exists. We have robots in production at scale. We aren't waiting for datasets to be collected; the byproduct of our machines doing useful work is being created right now. We measure what matters. We test our code in unit tests, simulations, and directly on real robots. Grounding our models in deployment allows us to truly measure performance. High leverage, high impact. We’re still a highly focused team. If your training recipes improve our agents, you directly change the economics of the company. World-class peers. Our team has built Google Warsaw, unicorn startups, led research in DeepMind, tested rocket engines, and worked at top companies like Nvidia and ByteDance. Now, we are shaping the reality of Physical AI together. We are building the bridge. We aren't a new startup looking for an application; we are an established player bootstrapping physical AI. We believe that this will be the first true proof-of-concept for scaled physical AI. What you will do Your focus will be defined by the intersection of Robotics and ML and large-scale multimodal model training - expertise in both is optimal and alternatively eagerness to learn. Expect challenges across two main pillars with the opportunity to specialise: Core Research & Large-Scale Infrastructure Own the Training Stack: Design, implement, and maintain the core infrastructure for large-scale VLA model training, including scheduling, distribution, job management, checkpointing, and rigorous logging. Enable Rapid Iteration: Build the critical tools and abstractions necessary for launching, monitoring, debugging, and seamlessly reproducing complex, multi-variant experiments. Train from Deployment Logs: Utilize our massive repository of offline, classical stack data to pre-train robust robot foundation models. Drive the Software Feedback Loop: Translate core research needs into concrete infra capabilities, track experiments, analyze results, and close the loop directly with ML researchers to unblock model progress Real-World Evaluation & Operations Design Physical Benchmarks: Design new robotic tasks and build lightweight physical setups to systematically evaluate model capabilities far beyond the limits of simulation. Execute Structured Evaluations: Ensure robots are properly configured, calibrated, and ready for rollouts. You will coordinate data collection efforts and run structured, on-robot evaluations to measure real-world success rates. Close the Physical Feedback Loop: Analyze real-world evaluation results to guide the ML research direction. You will identify operational bottlenecks across software, hardware, and deployment systems to continuously improve our iteration speed. Scale the Workflows: Beta test internal and third-party tools for teaching robots new skills, and write clear, structured documentation so the broader team can reproduce your workflows and scale your impact. What skills we’d like you to have: Experience: Deep experience and understanding at the intersection of machine learning, systems engineering, and robotics. Proven Track Record: Experience training, fine-tuning, and deploying modern deep learning architectures (Transformers, VLMs or VLAs, Imitation Learning, RL) for robot control, ideally with policies validated on real hardware. Engineering Excellence: Strong software engineering and infrastructure skills. You are highly proficient in Python and deep learning frameworks (PyTorch/JAX) and can write clean, scalable code for training and evaluation. Robotics Intuition: Comfort working hands-on with hardware. You understand the robotics full stack (perception, controls, state estimation) and how to debug failures when software meets the physical world. Pragmatic Research Mindset: You possess the ability to move seamlessly between research and implementation. You prefer execution, iteration speed, and real-world robustness over theoretical purity. What should you expect once you apply? A phone screen with the hiring manager to discuss your background and our technical direction. A half-day of on-sites (cultural fit & deep-dive technical interviews). A final decision made within 2-3 days after the on-site interview. Important: Expect detailed, honest feedback after completing the process, regardless of our decision. Find Jobs in Switzerland on Arbeitnow",
+  "skills": [
+   "350 - Research"
+  ],
+  "employment_type": "Full-Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 19.7,
+  "matched_skills": [
+   "english",
+   "unit testing"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "robotics",
+   "deep learning",
+   "bootstrap",
+   "logging",
+   "monitoring",
+   "transformers"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "a1cd151d36e0",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Relocation package.…"
+   },
+   "semantic": 0.306,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong background in distributed systems, high-throughput data processing, and large-scale infrastructure using Kafka, PostgreSQL, and AWS. Experience with real-world deployment and optimization aligns well with the need for robust foundati",
+    "gaps": "Lacks direct experience in robotics, physical AI, or machine learning model training, though strong in data processing and system architecture."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nomagic%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nomagic%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Zurich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nomagic%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nomagic%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Zurich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nomagic%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nomagic%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Zurich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Nomagic%22%20%28%22Senior%20engineer%22%29%20%22Zurich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Nomagic%22%20%28%22Senior%20engineer%22%29%20%22Zurich%22"
+     }
+    }
+   }
+  }
+ }
+]
