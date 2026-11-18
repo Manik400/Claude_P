@@ -1,6 +1,15 @@
 {
- "updated": "2026-11-17T14:55:30Z",
+ "updated": "2026-11-18T06:04:17Z",
  "items": [
+  {
+   "id": "applications-20261118-060417-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-11-18T06:04:17Z",
+   "file": "data/applications/applications-20261118-060417-applications-sent.html",
+   "bytes": 20332371,
+   "meta": {}
+  },
   {
    "id": "careers-20261117-145530-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -126,15 +135,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261117-080551-naukri-openings-2026-11-17-run-3.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261117-071846-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-11-17T07:18:46Z",
-   "file": "data/applications/applications-20261117-071846-applications-sent.html",
-   "bytes": 19556111,
-   "meta": {}
   },
   {
    "id": "careers-20261116-141336-engineer-senior-software-developer-sse-s",
