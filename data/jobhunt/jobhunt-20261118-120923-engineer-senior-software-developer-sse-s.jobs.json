@@ -1,0 +1,363 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "FPGA Engineer (Controls & Signal Processing)",
+  "company": "Enactintelligence",
+  "url": "https://www.arbeitnow.ch/jobs/companies/enactintelligence/fpga-engineer-controls-signal-processing-zurich-377560",
+  "country": "DE",
+  "location": "Zürich",
+  "remote": false,
+  "posted": "2026-11-18",
+  "posted_at": "2026-11-18T00:40:32+00:00",
+  "posted_raw": 1794962432,
+  "salary": "",
+  "snippet": "About Enact The next defining technological breakthrough will be in the physical world. We stand at a historical inflection point: bringing general-purpose intelligence into robotics. At Enact we rethink the entire robotic tech stack from model architectures and data pipelines, to the actuators and sensors that feed the model. Pushing beyond pure vision and language approaches, we build a proprioc",
+  "description": "About Enact The next defining technological breakthrough will be in the physical world. We stand at a historical inflection point: bringing general-purpose intelligence into robotics. At Enact we rethink the entire robotic tech stack from model architectures and data pipelines, to the actuators and sensors that feed the model. Pushing beyond pure vision and language approaches, we build a proprioceptive nerve system, and the cortex that makes sense of it, to solve dexterity through whole-body force-awareness and deploy robots for thousands of tasks in industry and beyond. We are shaping a company where brilliant and unconventional people thrive together on solving the hardest challenges of our time. We are truth seekers. We reason from first principles, test our beliefs against reality, and trust that the best ideas can come from anyone. We move fast. We care deeply about our work and colleagues and are driven by passion to change the status quo. If this resonates, we're excited to hear from you. In This Role You Will Design, implement, and verify the FPGA fabric at the heart of our custom hardware, from real-time control and signal processing to high-speed sensor and data interfaces. Own the build flow: synthesis, place & route, static timing analysis, and timing closure on real silicon. Develop testbenches, simulation, and co-simulation to verify behaviour at unit and system level. Take designs from RTL through board bring-up, integration, and lab debug under real operating conditions all the way through to production-ready. Keep the design understandable: specifications, timing budgets, and verification plans. What We're Looking For Strong digital design fundamentals: RTL in SystemVerilog (or VHDL), and a solid grasp of computer architecture. The ability to reason about fixed- and floating-point data paths and pipelines - where precision goes, where it costs you, and how a computation maps onto real hardware. Experience closing timing: static timing analysis, writing constraints, clock-domain crossing, and synchronization. Fluency with at least one vendor toolchain (Xilinx/AMD, Intel/Altera, or Lattice), in a heavily scripted setting. Comfortable reading schematics, reasoning from first principles, and working shoulder-to-shoulder with electronics and mechanical engineers. The ability to take designs from benchtop prototype to production ready. Fluency in English (German not required, though useful!). Bonus Points If You Have Having done these before is a plus, not a prerequisite. You'll do much of it in the role: Rust or embedded firmware experience. DSP in fabric: filtering (FIR/IIR), FFT, and fixed-point implementation. Control theory: system identification, plant modeling, and loop tuning. High-speed ADC/DAC interfaces and sensor/communication protocols. Expert knowledge of version control, especially git. Safety-critical or certified design. Experience collaborating across analog, software, and mechanical domains. What We Offer The opportunity to make a real impact working on some of the biggest challenges of our time A fast-paced learning environment alongside an outstanding, driven team Ownership from day one, with the ability to iterate quickly and see your impact firsthand in an early-stage startup Visa sponsorship & relocation benefits to hire the best in the world A world-class in-person setup in central Zürich, with excellent prototyping, robotics, and technical infrastructure for hands-on builders Competitive compensation and meaningful equity participation Find more English Speaking Jobs in Switzerland on Arbeitnow",
+  "skills": [
+   "Technical Staff"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 33.9,
+  "matched_skills": [
+   "english",
+   "german"
+  ],
+  "missing_skills": [
+   "robotics",
+   "fpga",
+   "data pipelines",
+   "vhdl",
+   "rust",
+   "embedded",
+   "firmware",
+   "git"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "56ed631ad8a6",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "yes",
+    "evidence": "…day one, with the ability to iterate quickly and see your impact firsthand in an early-stage startup Visa sponsorship & relocation benefits to hire the best in the world A world-class in-person setup in central Zürich, with excellent prototyping, robotics, and technical infrastructure for hands-on…"
+   },
+   "semantic": 0.233,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with FPGA signal processing and data pipeline requirements.",
+    "gaps": "Lacks FPGA-specific hardware design experience (RTL, SystemVerilog) and embedded firmware skills."
+   },
+   "is_mnc": false,
+   "lpa": 55.2,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a software engineer in Germany (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 55.2,
+   "lpa_hi": 55.2,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Senior%20engineer%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Senior%20engineer%22%29%20%22Z%C3%BCrich%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Robotic Controls Engineer",
+  "company": "Enactintelligence",
+  "url": "https://www.arbeitnow.ch/jobs/companies/enactintelligence/robotic-controls-engineer-zurich-41326",
+  "country": "DE",
+  "location": "Zürich",
+  "remote": false,
+  "posted": "2026-11-18",
+  "posted_at": "2026-11-18T00:40:32+00:00",
+  "posted_raw": 1794962432,
+  "salary": "",
+  "snippet": "About Enact The next defining technological breakthrough will be in the physical world. We stand at a historical inflection point: bringing general-purpose intelligence into robotics. At Enact we rethink the entire robotic tech stack from model architectures and data pipelines, to the actuators and sensors that feed the model. Pushing beyond pure vision and language approaches, we build a proprioc",
+  "description": "About Enact The next defining technological breakthrough will be in the physical world. We stand at a historical inflection point: bringing general-purpose intelligence into robotics. At Enact we rethink the entire robotic tech stack from model architectures and data pipelines, to the actuators and sensors that feed the model. Pushing beyond pure vision and language approaches, we build a proprioceptive nerve system, and the cortex that makes sense of it, to solve dexterity through whole-body force-awareness and deploy robots for thousands of tasks in industry and beyond. We are shaping a company where brilliant and unconventional people thrive together on solving the hardest challenges of our time. We are truth seekers. We reason from first principles, test our beliefs against reality, and trust that the best ideas can come from anyone. We move fast. We care deeply about our work and colleagues and are driven by passion to change the status quo. If this resonates, we're excited to hear from you. In This Role You will develop the proprioceptive motion control layer to enable our robots to do high contact manipulation predictably, smoothly, and safely under varied and uncertain conditions. Design and implement model- and learning-based estimation and control algorithms, along with the runtime loops that form the backbone for teleoperation and our AI-driven manipulation, from simulation to the real robot system. Debug and diagnose complex system behaviors spanning the interplay of hardware, software, and algorithms. Own robot bring-up, including validation and refinement of our robot model descriptions (URDF, MuJoCo XML, USD, etc.) for simulation and control, characterizing and adjusting for the sim-to-real gap as needed. Work together with both our hardware team and our AI researchers to continuously assess and push the performance of our full stack robot system What We're Looking For Degree (BSc/MSc/PhD) in Robotics, Mechanical Engineering, or a related field Excellent theoretical and practical grasp of model and learning based whole-body control and state estimation Experience with robot simulation environments (MuJoCo, Isaac Sim, or similar) and robot description files (URDF, USD, etc.) Proven ability to take complex algorithms from concept through hardware integration to production-ready real-time robot software Strong proficiency in Python, complemented by efficient low-level programming skills in Rust or C/C++ Bonus Points If You Have Hands-on experience with tensor and automatic differentiation frameworks such as JAX, PyTorch, CppAD, Burn, or similar. Experience with whole-body force estimation Experience in developing reinforcement learning based robot control Experience in robot safety, including Control Barrier Functions and/or relevant industry certifications. Experience in contact rich manipulation, preferably including teleoperation and interfacing with large behavior models such as VLAs. What we offer The opportunity to make a real impact working on some of the biggest challenges of our time A fast-paced learning environment alongside an outstanding, driven team Ownership from day one, with the ability to iterate quickly and see your impact firsthand in an early-stage startup Visa sponsorship & relocation benefits to hire the best in the world A world-class in-person setup in central Zürich, with excellent prototyping, robotics, and technical infrastructure for hands-on builders Competitive compensation and meaningful equity participation Find more English Speaking Jobs in Switzerland on Arbeitnow",
+  "skills": [
+   "Technical Staff"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 32.3,
+  "matched_skills": [
+   "data structures",
+   "english"
+  ],
+  "missing_skills": [
+   "robotics",
+   "data pipelines",
+   "artificial intelligence",
+   "python",
+   "rust",
+   "c++",
+   "pytorch",
+   "reinforcement learning"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "547cca7554c9",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "yes",
+    "evidence": "…day one, with the ability to iterate quickly and see your impact firsthand in an early-stage startup Visa sponsorship & relocation benefits to hire the best in the world A world-class in-person setup in central Zürich, with excellent prototyping, robotics, and technical infrastructure for hands-on…"
+   },
+   "semantic": 0.089,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with the need for robust motion control systems and data pipelines.",
+    "gaps": "Lacks specific robotics degrees, simulation experience (MuJoCo/Isaac Sim), and low-level programming skills in Rust or C++."
+   },
+   "is_mnc": false,
+   "lpa": 55.2,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a software engineer in Germany (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 55.2,
+   "lpa_hi": 55.2,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Senior%20engineer%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Senior%20engineer%22%29%20%22Z%C3%BCrich%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Platforms and Infrastructure Engineer",
+  "company": "Enactintelligence",
+  "url": "https://www.arbeitnow.ch/jobs/companies/enactintelligence/platforms-and-infrastructure-engineer-zurich-119094",
+  "country": "DE",
+  "location": "Zürich",
+  "remote": false,
+  "posted": "2026-11-18",
+  "posted_at": "2026-11-18T00:40:32+00:00",
+  "posted_raw": 1794962432,
+  "salary": "",
+  "snippet": "About Enact The next defining technological breakthrough will be in the physical world. We stand at a historical inflection point: bringing general-purpose intelligence into robotics. At Enact we rethink the entire robotic tech stack from model architectures and data pipelines, to the actuators and sensors that feed the model. Pushing beyond pure vision and language approaches, we build a proprioc",
+  "description": "About Enact The next defining technological breakthrough will be in the physical world. We stand at a historical inflection point: bringing general-purpose intelligence into robotics. At Enact we rethink the entire robotic tech stack from model architectures and data pipelines, to the actuators and sensors that feed the model. Pushing beyond pure vision and language approaches, we build a proprioceptive nerve system, and the cortex that makes sense of it, to solve dexterity through whole-body force-awareness and deploy robots for thousands of tasks in industry and beyond. We are shaping a company where brilliant and unconventional people thrive together on solving the hardest challenges of our time. We are truth seekers. We reason from first principles, test our beliefs against reality, and trust that the best ideas can come from anyone. We move fast. We care deeply about our work and colleagues and are driven by passion to change the status quo. If this resonates, we're excited to hear from you. In This Role You Will Maintain our Bazel build infrastructure to run smoothly at all times. Maintain and improve our Nix robot deployment platform and development environment to enable predictable ML experiments. Design, implement, and maintain robust CI/CD pipelines including HITL to accelerate software delivery. Architect and scale Kubernetes and Ray clusters to power our training, evaluation, and CI/CD pipelines. Manage and scale cloud infrastructure (AWS) to support our robotic software stack. Collaborate with engineering teams to optimize system performance and reliability. Monitor system health and respond to incidents to ensure high availability. What We're Looking For Strong proficiency running Bazel infrastructure. Proven experience with cloud infrastructure (AWS/GCP) and infrastructure-as-code tools like Terraform and Nix. Experience with building, maintaining and running embedded Linux. Experience managing scalable production environments and troubleshooting complex system issues. Solid understanding of networking, security best practices, and monitoring tools. Fluent in English (spoken and written), with strong interpersonal and communication skills. Bonus Points If You Have Experience managing high-performance computing (HPC) clusters. Proficiency in building and maintaining large-scale data pipelines for machine learning workflows. Proficiency in container orchestration using Kubernetes. Background in robotics software development or hardware-software integration. Familiarity with Rust, C++ and Python. What we offer The opportunity to make a real impact working on some of the biggest challenges of our time A fast-paced learning environment alongside an outstanding, driven team Ownership from day one, with the ability to iterate quickly and see your impact firsthand in an early-stage startup Visa sponsorship & relocation benefits to hire the best in the world A world-class in-person setup in central Zürich, with excellent prototyping, robotics, and technical infrastructure for hands-on builders Competitive compensation and meaningful equity participation Find more English Speaking Jobs in Switzerland on Arbeitnow",
+  "skills": [
+   "Technical Staff"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 30.9,
+  "matched_skills": [
+   "ci/cd",
+   "aws",
+   "english",
+   "linux"
+  ],
+  "missing_skills": [
+   "robotics",
+   "data pipelines",
+   "machine learning",
+   "kubernetes",
+   "high availability",
+   "gcp",
+   "terraform",
+   "embedded"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "24364e833fe8",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "yes",
+    "evidence": "…day one, with the ability to iterate quickly and see your impact firsthand in an early-stage startup Visa sponsorship & relocation benefits to hire the best in the world A world-class in-person setup in central Zürich, with excellent prototyping, robotics, and technical infrastructure for hands-on…"
+   },
+   "semantic": 0.307,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong AWS and CI/CD experience with Nix and Bazel infrastructure, matching the candidate's core technical requirements.",
+    "gaps": "Lacks specific robotics, HPC, and embedded Linux experience required for this role."
+   },
+   "is_mnc": false,
+   "lpa": 53.4,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a devops engineer in Germany (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 53.4,
+   "lpa_hi": 53.4,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Z%C3%BCrich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Enactintelligence%22%20%28%22Senior%20engineer%22%29%20%22Z%C3%BCrich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Enactintelligence%22%20%28%22Senior%20engineer%22%29%20%22Z%C3%BCrich%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "seek",
+  "source_name": "Seek",
+  "title": "Project / Site Engineer",
+  "company": "BildGroup",
+  "url": "https://www.seek.com.au/job/95955463",
+  "country": "AU",
+  "location": "Echuca, Shepparton & Goulburn Valley VIC",
+  "remote": null,
+  "posted": "2026-11-17",
+  "posted_at": "2026-11-17T21:25:40+00:00",
+  "posted_raw": "2026-11-17T21:25:40Z",
+  "salary": "",
+  "snippet": "Deliver a subdivision project in Echuca with our Urban team. For project and site engineers who are locally based or open to relocating. Deliver a subdivision project in Echuca with our Urban team ( Hands-on site role from earthworks through to statement of compliance Locally based or ready to relocate to the Echuca-Moama region",
+  "description": "",
+  "skills": [],
+  "employment_type": "Full time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 16.4,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "1bc56093fdcd",
+  "extra": {
+   "category": "Project Engineering",
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…For project and site engineers who are locally based or open to relocating.…"
+   },
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has extensive experience with site infrastructure, including Kafka, PostgreSQL, and AWS, aligning with the project engineer's need for hands-on technical skills in earthworks and site management.",
+    "gaps": "Candidate lacks direct site engineering experience and is based in Gurugram, not Echuca, making relocation required."
+   },
+   "is_mnc": false,
+   "lpa": 50.4,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a software engineer in Australia (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 50.4,
+   "lpa_hi": 50.4,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Echuca%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Echuca%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Echuca%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Senior%20engineer%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Senior%20engineer%22%29%20%22Echuca%22"
+     }
+    }
+   }
+  }
+ }
+]
