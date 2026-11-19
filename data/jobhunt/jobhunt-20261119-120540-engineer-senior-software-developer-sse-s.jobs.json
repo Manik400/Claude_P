@@ -1,0 +1,360 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Applied AI Software Engineer - Defense",
+  "company": "Mistral.ai",
+  "url": "https://www.arbeitnow.fr/jobs/companies/mistralai/applied-ai-software-engineer-defense-paris-246533",
+  "country": "DE",
+  "location": "Paris",
+  "remote": false,
+  "posted": "2026-11-19",
+  "posted_at": "2026-11-19T03:43:25+00:00",
+  "posted_raw": 1795059805,
+  "salary": "",
+  "snippet": "About Mistral Mistral provides full-stack AI solutions: from frontier models to developer tools, applications, and compute. We partner with enterprises tackling the hardest problems across high-stakes industries like finance, manufacturing, defense, healthcare, and the public sector, co-creating customized AI systems that they can run on their terms. We are a dynamic, collaborative team passionate",
+  "description": "About Mistral Mistral provides full-stack AI solutions: from frontier models to developer tools, applications, and compute. We partner with enterprises tackling the hardest problems across high-stakes industries like finance, manufacturing, defense, healthcare, and the public sector, co-creating customized AI systems that they can run on their terms. We are a dynamic, collaborative team passionate about AI and its potential to transform society. Our diverse workforce thrives in competitive environments and is committed to driving innovation. Our teams are distributed between Europe, North America, Asia and the Middle East. We are creative, low-ego and team-spirited. About the role Join Mistral AI’s Defense team to build software for defense institutions and industry. We are looking for an experienced software engineer with strong engineering fundamentals and a background in data engineering or transactional, analytical or distributed systems. You will help shape the architecture, write production code and own substantial software components, from design through deployment and operation. This role offers the scope and autonomy of a senior technical individual contributor in a small team. It is particularly suited to engineers operating at Senior or Staff level in demanding product engineering environments who want broad ownership and to stay deeply involved in implementation. What you will do Design and build services for data ingestion, transformation, storage, querying and operational workflows. Develop shared data models, APIs and SDKs that help engineers build applications on a consistent foundation. Make authorization a core part of the architecture: define and enforce which users, applications and agents can access data or perform actions, with clear audit trails. Solve problems involving data consistency, schema evolution, concurrency, performance and failure recovery across services and data systems. Turn needs from our applied engineers and defense users into reusable software capabilities, making pragmatic choices about what to build and how to evolve them. Own delivery end to end, including implementation, testing, observability, debugging and maintainability in demanding deployment environments. Use AI coding tools and coding agents extensively to accelerate implementation, testing, refactoring and debugging. Help the team improve these workflows while maintaining a high engineering standard. What we are looking for Strong practical familiarity with AI coding tools and agentic engineering workflows. You use coding agents regularly, can break complex work into well-scoped tasks, provide effective context, review generated code and validate the result through tests and debugging. You remain accountable for the architecture, correctness, security and maintainability of what you ship. A strong track record of building and operating production software, with substantial ownership of complex systems. Experience in data engineering or in building transactional, analytical or distributed systems. You understand the trade-offs behind data models, storage, query execution and service boundaries. Experience building products where access control, permissions and data governance are central to how the system works. Work on platforms such as Foundry, or systems with comparable requirements, is particularly relevant. Broad software engineering skills and the ability to move between architecture, implementation and production debugging. You are comfortable working across unfamiliar parts of a codebase. Strong proficiency in Python or another programming language, solid SQL skills and the ability to become productive quickly in a Python and TypeScript environment. High autonomy and sound judgment: you can turn an ambiguous problem into a concrete plan, make technical decisions and deliver useful increments with limited supervision. A collaborative approach to technical leadership through code, design discussions, reviews and mentoring, and a clear motivation to build software for defense institutions and industry. Nice to have Experience building a data platform or developer product used by other engineering teams. Experience with fine-grained authorization, multi-tenant architectures, data lineage or auditable operational workflows. Experience with self-hosted software, restricted networks or other demanding deployment constraints. Familiarity with LLM applications and their integration with data and tools. What We Offer We offer a comprehensive benefits package designed to support your well-being, growth, and work-life balance. Benefits vary by country and may include healthcare coverage, parental leave, retirement plans, relocation support, wellness programs, meal and transportation allowances, and other location-specific perks. For the most up-to-date details on benefits available in your location, please refer to our Benefits page . Privacy Policy Your privacy matters to us. You can learn more about how we handle your personal data in our Applicant Privacy Policy . Find Jobs in France on Arbeitnow",
+  "skills": [
+   "Solutions"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 39.5,
+  "matched_skills": [
+   "distributed systems",
+   "concurrency",
+   "observability",
+   "sql",
+   "typescript"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "python",
+   "refactoring",
+   "ai agents",
+   "team leadership",
+   "mentoring",
+   "llm"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "d6d284798fb9",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Benefits vary by country and may include healthcare coverage, parental leave, retirement plans, relocation support, wellness programs, meal and transportation allowances, and other location-specific perks.…"
+   },
+   "semantic": 0.246,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong match due to 2 years of production experience in distributed systems, Kafka, PostgreSQL, and AWS, with proven expertise in high-throughput analytics and data optimization.",
+    "gaps": "Limited AI/ML background; candidate lacks direct experience in AI agents, LLMs, or Python, which are critical for this applied AI role."
+   },
+   "is_mnc": false,
+   "lpa": 55.2,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a software engineer in Germany (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 55.2,
+   "lpa_hi": 55.2,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Senior%20engineer%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Senior%20engineer%22%29%20%22Paris%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Product Engineer - Frontend focus",
+  "company": "Manex AI GmbH",
+  "url": "https://www.arbeitnow.com/jobs/companies/manex-ai-gmbh/product-engineer-frontend-focus-munich-69998",
+  "country": "DE",
+  "location": "Munich",
+  "remote": false,
+  "posted": "2026-11-19",
+  "posted_at": "2026-11-19T06:40:17+00:00",
+  "posted_raw": 1795070417,
+  "salary": "",
+  "snippet": "Who We Are Manufacturing runs on fragmented data: machines, sensors and decade-old systems that don't talk to each other. Data sits in departmental silos, knowledge lives in people's heads, and AI can't unfold its potential in point solutions that don't deliver. At Manex AI, we build the missing layer. Our platform handles manufacturing data at scale, models the factory ontology and builds agentic",
+  "description": "Who We Are Manufacturing runs on fragmented data: machines, sensors and decade-old systems that don't talk to each other. Data sits in departmental silos, knowledge lives in people's heads, and AI can't unfold its potential in point solutions that don't deliver. At Manex AI, we build the missing layer. Our platform handles manufacturing data at scale, models the factory ontology and builds agentic applications that reason and act across it. We're a fast-growing team in Munich, backed by Lightspeed and BlueYard, with engineers from top companies and leading enterprise manufacturers as customers. We ship fast, work close to the shopfloor, and we don't ship things we're not proud of. The Role As Product Engineer with a frontend focus, you'll build the product features our customers use every day, fully owning the product with a strong focus on usability and intuitive design. You'll use AI to ship a high volume of polished work and stay close to the problems of the people who use it. You'll work directly with founders, engineers and customers, and see your work in production at leading manufacturers. What You'll Do Product features: Take features from first idea to production Customer applications: Turn manufacturing use cases into interfaces that users pick up without training Architecture: Make the calls that keep our frontend consistent, maintainable and ready to scale Design & usability: Shape flows, layouts, interactions and UI patterns so that users understand them without explanation Customer feedback: Talk to users, observe how they work and turn what you learn into product improvements Quality: Keep every interface fast, accessible and finished You Should Apply If You Use AI as a serious engineering tool and can turn it into a high volume of reliable output Think in products and want to solve the actual problem of the user Have strong visual judgment and notice when an interface feels confusing, inconsistent or unfinished Enjoy making complex workflows feel simple and intuitive Care about frontend fundamentals such as usability, accessibility, performance and maintainability Learn unfamiliar technologies quickly and form your own judgment about technical tradeoffs We care more about evidence of cleverness, craft and learning speed than about years of experience, credentials or prior use of our exact stack. Nice to Have TypeScript, React or Next.js Experience shipping product features end-to-end Experience with user research, prototyping or usability testing Complex interfaces involving data grids, graphs, editors, workflows or real-time state Experience with B2B or customer-facing products Visual regression, accessibility and browser testing Our current stack includes Next.js 16.3, React 19, TypeScript, Tailwind CSS, Radix-based components, TanStack libraries, Storybook, Vitest and Playwright. Familiarity helps, but none of these tools is a prerequisite. What We Offer A cooperative team where you own your work, but never solve hard problems alone High trust and ownership from day one Competitive salary and equity Corporate Wellpass membership and a subsidized Deutschlandticket Regular offsites with the greatest team: think Austrian mountains, lakeside retreats or European cities Relocation support, including corporate housing offers Are you willing to start contributing to European autonomy at scale? Apply now! Find more English Speaking Jobs in Germany on Arbeitnow",
+  "skills": [
+   "Tech"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 36.6,
+  "matched_skills": [
+   "typescript",
+   "react",
+   "english"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "ai agents",
+   "accessibility",
+   "next.js",
+   "prototyping",
+   "tailwind",
+   "playwright"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "520c463f406a",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Regular offsites with the greatest team: think Austrian mountains, lakeside retreats or European cities Relocation support, including corporate housing offers Are you willing to start contributing to European autonomy at scale? Apply now! Find more English Speaking Jobs in Germany…"
+   },
+   "semantic": 0.283,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong React/TypeScript background with 2 years of production backend experience. Proven ability to ship high-volume features and optimize performance, aligning with the role's focus on usability and scalable interfaces.",
+    "gaps": "Limited frontend product experience compared to the role's requirement for end-to-end shipping and user research."
+   },
+   "is_mnc": false,
+   "lpa": 44.2,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a frontend developer in Germany (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 44.2,
+   "lpa_hi": 44.2,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manex%20AI%20GmbH%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manex%20AI%20GmbH%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manex%20AI%20GmbH%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manex%20AI%20GmbH%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manex%20AI%20GmbH%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manex%20AI%20GmbH%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manex%20AI%20GmbH%22%20%28%22Senior%20engineer%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manex%20AI%20GmbH%22%20%28%22Senior%20engineer%22%29%20%22Munich%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Senior Machine Learning Engineer",
+  "company": "Physicsx",
+  "url": "https://www.arbeitnow.co.uk/jobs/companies/physicsx/senior-machine-learning-engineer-london-12046",
+  "country": "DE",
+  "location": "London",
+  "remote": false,
+  "posted": "2026-11-19",
+  "posted_at": "2026-11-19T09:55:17+00:00",
+  "posted_raw": 1795082117,
+  "salary": "",
+  "snippet": "<div class=\"content-intro\"><h2>About us</h2> <div><strong>Re-architecting Engineering for the Age of Intelligence<br></strong><br>PhysicsX is the physics AI company for industrials. The company’s mission is to accelerate hardware innovation by overhauling what industrial engineering and manufacturing look like today. PhysicsX is building a new simulation software stack to deliver deep physics AI e",
+  "description": "<div class=\"content-intro\"><h2>About us</h2> <div><strong>Re-architecting Engineering for the Age of Intelligence<br></strong><br>PhysicsX is the physics AI company for industrials. The company’s mission is to accelerate hardware innovation by overhauling what industrial engineering and manufacturing look like today. PhysicsX is building a new simulation software stack to deliver deep physics AI enablement across the entire engineering lifecycle. The company partners with leading organisations in aerospace & defence, automotive, semiconductors, materials, and energy & renewables, supporting them on some of their most critical and complex challenges. PhysicsX is headquartered in the United Kingdom, with offices in London, New York, and Singapore and an expanding presence in the Bay Area.</div></div><h4> </h4> <h3><strong>Note: </strong>We are currently recruiting for multiple positions, however please only apply for the role that best aligns with your skillset and career goals.</h3> <h2><strong>Who We're Looking For</strong></h2> <p>As a Senior Machine Learning Engineer in Field Engineering, you are an experienced problem solver and technical leader who stays anchored to impact. You are someone who can grasp advanced engineering concepts across multiple industries, lead technical initiatives, and excel at working directly with customers (and often side-by-side with them on-site) to embed cutting-edge AI models into tools that are useful and used.</p> <p>You’ve shipped ML systems end-to-end and at scale: you design, build and test reliable, scalable ML data pipelines; you know how to explore and manipulate 3D point-cloud and mesh data to enable geometry-aware modelling; you select the right libraries, frameworks and tools and make pragmatic product decisions that set Field Engineering up for success. Working at the intersection of data science and software engineering, you translate R&D and project outputs into reusable libraries, tooling and products.</p> <p>With at least 3 years industry experience (post Masters or PhD) in a commercial, non-research environment, you're ready to not only execute but also lead and mentor others. You're truly excited about taking ownership of complex work streams and guiding teams to success, while continuously improving the systems and solutions you work on to ensure they are practical, impactful and meet the evolving needs of our customers.</p> <p> </p> <h2>This Role </h2> <p>As a Senior MLE, you'll work closely with our Data Scientists, Simulation Engineers, and customers to understand and define the engineering and physics challenges we are solving. You will iterate with customers and use your influence to drive decisions around reliable deployment with measurable outcomes.</p> <p>You'll:</p> <ul> <li>Own the deployment of ML models and engineering surrogates (e.g., deep learning on CAE/CFD/FEA data, time‑series forecasting, anomaly detection, optimization & control) to customer production environments.</li> <li>Communicate results and trade‑offs to senior stakeholders; steer roadmaps and influence product direction with evidence.</li> <li>Lead scoping and architecture design for data/ML systems; define success metrics, delivery plans and quality bars.</li> <li>Excel at building robust and scalable ML systems, training and inference pipelines and APIs, running both on cloud and on-prem environments. The tech stack you will use for this includes: Python, PyTorch, Pandas, fastAPI, Scipy, Kubeflow, among others.</li> <li>Mentor and develop engineers and data scientists; provide technical direction and clear, calm decision‑making under pressure.</li> <li>Travel to customer sites in North America, Europe, Asia, Oceania, for an <strong>average of 3-4 weeks per quarter</strong>, where you'll collaborate closely with customers to build solutions on-site.</li> <li>Own the scoping of new projects and work-streams with existing customers and taking part in bringing new customers to PhysicsX.</li> </ul> <p>As a senior member of the team, you’ll significantly influence our technical direction and will be involved in shaping future solutions and products, while developing your skills as a technical leader.</p> <p> </p> <h2><strong>Our Field Engineering teams drive innovation to turn AI models into practical solutions - <a href=\"https://www.physicsx.ai/newsroom/how-delivery-makes-physical-ai-work-in-the-real-world\">read our blog to learn more about how you’ll contribute to this exciting journey!</a></strong><a href=\"https://www.physicsx.ai/newsroom/how-delivery-makes-physical-ai-work-in-the-real-world\"> </a></h2> <p>We operate on a hybrid working model with 3 days in our Shoreditch office. </p> <p><strong>What we offer</strong></p> <p><strong>Build what actually matters</strong></p> <p>Help shape an AI-native engineering company at a formative stage, tackling problems that genuinely matter for industry and society. This is work with real-world impact - and something you can be proud to stand behind.</p> <p><strong>Learn alongside exceptional people</strong></p> <p>Work with a high-caliber, collaborative team of engineers, scientists, and operators who care deeply about doing great work, and about helping each other get better. We come from diverse backgrounds, but we share a commitment to operating at the highest level and addressing some of the most complex challenges out there. If you’re ambitious, thoughtful, and driven by impact, you’ll feel at home.</p> <p><strong>Influence over hierarchy</strong></p> <p>We operate with a flat structure: good ideas win - wherever they come from. Questioning assumptions and challenging the status quo isn’t just welcomed, it’s expected.</p> <p><strong>Sustainable pace, long-term ambition</strong></p> <p>Building meaningful technology is a marathon, not a sprint. We believe in balancing focused, ambitious work with a life beyond it. Our hybrid model blends time together in our Shoreditch office with work-from-home days, giving you the flexibility to work sustainably while staying connected in person.</p> <p><strong>And it doesn’t stop there …</strong></p> <p>🚀 <strong>Equity options</strong> - share meaningfully in the company you’re helping to build.</p> <p>🏦 <strong>10% employer pension contribution</strong> - because investing in future matters.</p> <p>🍽️ <strong>Free office lunches</strong> - to keep you energised and focused.</p> <p>👶 <strong>Enhanced parental leave</strong> - 3 months full pay paternity and 6 months full pay maternity leave, to provide extra flexibility during the moments that matter most.</p> <p>🍼 <strong>YellowNest nursery scheme</strong> - to help working parents manage childcare costs.</p> <p><strong>☀️ 25 days of Annual Leave (+ Public Holidays)</strong><span class=\"Apple-converted-space\"> </span>- because taking time to rest matters.</p> <p>🏥 <strong>Private medical insurance</strong> - 100% employee cover, giving you complete peace of mind.</p> <p>💪 <strong>Wellhub Subscription</strong><span class=\"Apple-converted-space\"> </span>- gain access to thousands of gyms, classes and wellness apps, supporting both physical and mental wellbeing.</p> <p>👀 <strong>Eye tests</strong> - because good work depends on good health.</p> <p>📈 <strong>Personal development</strong> - dedicated support for learning, development, and leveling up over time.</p> <p>💛 <strong>Employee Assistance Programme (EAP)</strong> - confidential wellbeing support, available whenever you need it.</p> <p>🚲 <strong>Bike2Work scheme and</strong><span class=\"Apple-converted-space\"> </span>🚆 <strong>Season ticket loan</strong> - to make getting to work easier and greener.</p> <p>🚗 <strong>Octopus EV salary sacrifice</strong> - for a simpler, more sustainable way to drive electric.</p> <p><em>🔎 Watch this space, we’re continuing to build this as we grow…</em></p><div class=\"content-conclusion\"><div> </div> <div>We value diversity and are committed to equal employment opportunity regardless of sex, race, religion, ethnicity, nationality, disability, age, sexual orientation or gender identity. We strongly encourage individuals from groups traditionally underrepresented in tech to apply. To help make a change, we sponsor bright women from disadvantaged backgrounds through their university degrees in science and mathematics. </div> <div> </div> <div>We collect diversity and inclusion data solely for the purpose of monitoring the effectiveness of our equal opportunities policies and ensuring compliance with employment and equality legislation. This information is confidential, used only in aggregate form, and will not influence the outcome of your application. </div> <div> <div class=\"body body__secondary\"> <div id=\"question_7460024101-description\" class=\"question-description\"></div> </div> </div> <div> <div class=\"select\"> </div> </div></div> Find Jobs in United Kingdom on Arbeitnow",
+  "skills": [
+   "Field Engineering"
+  ],
+  "employment_type": "",
+  "exp_min": 3.0,
+  "exp_max": null,
+  "seniority": "senior",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 21.6,
+  "matched_skills": [],
+  "missing_skills": [
+   "artificial intelligence",
+   "machine learning",
+   "edge ai",
+   "data pipelines",
+   "data science",
+   "deep learning",
+   "python",
+   "pytorch"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "613fe12e3314",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "visa",
+    "relocation": "unknown",
+    "visa": "yes",
+    "evidence": "…To help make a change, we sponsor bright women from disadvantaged backgrounds through their university degrees in science and mathematics.…"
+   },
+   "semantic": 0.338,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns well with the candidate's ability to build scalable data pipelines and optimize high-throughput systems.",
+    "gaps": "Lacks direct ML framework experience (PyTorch) and deep expertise in 3D point-cloud processing, which are core to the Field Engineering role."
+   },
+   "is_mnc": false,
+   "lpa": 55.2,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a machine learning engineer in Germany (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 55.2,
+   "lpa_hi": 55.2,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Physicsx%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Physicsx%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22London%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Physicsx%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Physicsx%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22London%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Physicsx%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Physicsx%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22London%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Physicsx%22%20%28%22Senior%20engineer%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Physicsx%22%20%28%22Senior%20engineer%22%29%20%22London%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "seek",
+  "source_name": "Seek",
+  "title": "Project / Site Engineer",
+  "company": "BildGroup",
+  "url": "https://www.seek.com.au/job/95955463",
+  "country": "AU",
+  "location": "Echuca, Shepparton & Goulburn Valley VIC",
+  "remote": null,
+  "posted": "2026-11-17",
+  "posted_at": "2026-11-17T21:25:40+00:00",
+  "posted_raw": "2026-11-17T21:25:40Z",
+  "salary": "",
+  "snippet": "Deliver a subdivision project in Echuca with our Urban team. For project and site engineers who are locally based or open to relocating. Deliver a subdivision project in Echuca with our Urban team ( Hands-on site role from earthworks through to statement of compliance Locally based or ready to relocate to the Echuca-Moama region",
+  "description": "",
+  "skills": [],
+  "employment_type": "Full time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 16.3,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "1bc56093fdcd",
+  "extra": {
+   "category": "Project Engineering",
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…For project and site engineers who are locally based or open to relocating.…"
+   },
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Candidate has extensive experience with site infrastructure, including Kafka, PostgreSQL, and AWS, aligning with the project engineer's need for hands-on technical skills in earthworks and site management.",
+    "gaps": "Candidate lacks direct site engineering experience and is based in Gurugram, not Echuca, making relocation required."
+   },
+   "is_mnc": false,
+   "lpa": 51.5,
+   "lpa_kind": "role",
+   "lpa_source": "market median for a software engineer in Australia (JSearch / Glassdoor, base pay)",
+   "lpa_url": "",
+   "lpa_lo": 51.5,
+   "lpa_hi": 51.5,
+   "pay_bonus": 5.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Echuca%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Echuca%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Echuca%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22BildGroup%22%20%28%22Senior%20engineer%22%29%20%22Echuca%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22BildGroup%22%20%28%22Senior%20engineer%22%29%20%22Echuca%22"
+     }
+    }
+   }
+  }
+ }
+]
