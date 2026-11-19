@@ -1,0 +1,536 @@
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script>(function () {
+  try {
+    var r = document.documentElement, t = localStorage.getItem('jh:theme') || 'auto';
+    if (t === 'light' || t === 'dark') r.setAttribute('data-theme', t);
+    if (localStorage.getItem('jh:ui') === 'v2') {
+      r.setAttribute('data-ui', 'v2');
+      var l = document.createElement('link'); l.rel = 'stylesheet'; l.href = 'https://fonts.googleapis.com/css2?family=Archivo+Black&family=Archivo:wght@400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap'; document.head.appendChild(l);
+    }
+  } catch (e) { /* private window: follow the device */ }
+})();</script>
+
+<title>Job Openings 2026-11-19 r3</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700&family=Source+Sans+3:wght@400;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+  html { font-size: clamp(14.5px, calc(0.28vw + 11.2px), 18px); } @media (max-width: 899px) { html { font-size: 16px; } }  /* text scales with the screen */
+
+  :root {
+    --bg: #f2f4f7;
+    --surface: #ffffff;
+    --surface-2: #fafbfc;
+    --line: #dde2e9;
+    --ink: #161b22;
+    --muted: #5b6675;
+    --accent: #1f5c8b;
+    --accent-soft: #e8f0f7;
+    --accent-on: #ffffff;
+    --new: #a15c07;
+    --new-soft: #fdf3e3;
+    --good: #166534;
+    --good-soft: #e6f4ea;
+    --shadow: 0 1px 2px rgba(22, 27, 34, .06), 0 4px 12px rgba(22, 27, 34, .04);
+  }
+  @media (prefers-color-scheme: dark) {
+    :root:not([data-theme="light"]) {
+      --bg: #0e1218;
+      --surface: #161c25;
+      --surface-2: #1b222c;
+      --line: #2a3441;
+      --ink: #e7ecf3;
+      --muted: #8d99a9;
+      --accent: #6aa9d8;
+      --accent-soft: #17293a;
+      --accent-on: #0e1218;
+      --new: #e0a54a;
+      --new-soft: #2e2413;
+      --good: #6ec48c;
+      --good-soft: #14291c;
+      --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+    }
+  }
+  :root[data-theme="dark"] {
+    --bg: #0e1218;
+    --surface: #161c25;
+    --surface-2: #1b222c;
+    --line: #2a3441;
+    --ink: #e7ecf3;
+    --muted: #8d99a9;
+    --accent: #6aa9d8;
+    --accent-soft: #17293a;
+    --accent-on: #0e1218;
+    --new: #e0a54a;
+    --new-soft: #2e2413;
+    --good: #6ec48c;
+    --good-soft: #14291c;
+    --shadow: 0 1px 2px rgba(0, 0, 0, .4), 0 4px 14px rgba(0, 0, 0, .3);
+  }
+
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    background: var(--bg);
+    color: var(--ink);
+    font-family: "Source Sans 3", ui-sans-serif, system-ui, -apple-system, sans-serif;
+    font-size: 0.9375rem;
+    line-height: 1.5;
+  }
+  .wrap { max-width: none; margin: 0; padding: 32px clamp(14px, 2.2vw, 36px) 80px; }  /* fill the screen - no empty side margins */
+
+  header { display: flex; flex-direction: column; gap: 6px; margin-bottom: 24px; }
+  .eyebrow {
+    font-family: "IBM Plex Mono", ui-monospace, monospace;
+    font-size: 0.75rem; letter-spacing: .09em; text-transform: uppercase; color: var(--muted);
+  }
+  h1 {
+    font-family: Archivo, ui-sans-serif, system-ui, sans-serif;
+    font-weight: 700; font-size: clamp(26px, 4vw, 36px);
+    margin: 0; letter-spacing: -.02em; text-wrap: balance;
+  }
+  .sub { color: var(--muted); }
+
+  .stats { display: flex; flex-wrap: wrap; gap: 10px; margin: 22px 0 18px; }
+  .stat {
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 12px 16px; min-width: 116px; box-shadow: var(--shadow);
+  }
+  .stat b {
+    display: block; font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.5rem; font-weight: 500; line-height: 1.15;
+  }
+  .stat span {
+    font-size: 0.6875rem; letter-spacing: .07em; text-transform: uppercase; color: var(--muted);
+    font-family: "IBM Plex Mono", monospace;
+  }
+  .stat.is-applied b { color: var(--good); }
+  .stat.is-new b { color: var(--new); }
+
+  .bar {
+    position: sticky; top: 0; z-index: 5;
+    display: flex; flex-wrap: wrap; gap: 8px; align-items: center;
+    background: var(--bg); padding: 6px 0; border-bottom: 1px solid var(--line); margin-bottom: 4px;
+  }
+  .chip {
+    font: 500 0.8125rem/1 Archivo, sans-serif;
+    border: 1px solid var(--line); background: var(--surface); color: var(--ink);
+    padding: 5px 11px; border-radius: 999px; cursor: pointer;
+  }
+  .chip[aria-pressed="true"] { background: var(--accent); border-color: var(--accent); color: var(--accent-on); }
+  @media (max-height: 760px) { .bar { position: static; } }
+  .chip:focus-visible, .row a:focus-visible, input:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .spacer { flex: 1 1 auto; }
+  .bar-sep { width: 1px; align-self: stretch; background: var(--line); margin: 0 3px; }
+  .bar-label {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6875rem; letter-spacing: .08em;
+    text-transform: uppercase; color: var(--muted); padding-right: 2px;
+  }
+  .search {
+    font: 400 0.875rem "Source Sans 3", sans-serif; color: var(--ink);
+    background: var(--surface); border: 1px solid var(--line);
+    border-radius: 8px; padding: 5px 10px; min-width: 180px; flex: 1 1 200px;
+  }
+
+  .group-head {
+    display: flex; align-items: baseline; gap: 10px;
+    margin: 26px 0 10px; padding-bottom: 6px; border-bottom: 2px solid var(--ink);
+  }
+  .group-head h2 {
+    font-family: Archivo, sans-serif; font-size: 0.9375rem; font-weight: 700;
+    letter-spacing: .06em; text-transform: uppercase; margin: 0;
+  }
+  .group-head .count { font-family: "IBM Plex Mono", monospace; font-size: 0.8125rem; color: var(--muted); }
+
+  .row {
+    display: grid;
+    grid-template-columns: 34px 1fr 172px 120px 92px;
+    gap: 14px; align-items: start;
+    background: var(--surface); border: 1px solid var(--line); border-radius: 10px;
+    padding: 13px 15px; margin-bottom: 7px; box-shadow: var(--shadow);
+  }
+  .row.done { background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 30%, var(--line)); }
+  .row.done .title a { text-decoration: line-through; opacity: .62; }
+  .row input[type="checkbox"] { width: 19px; height: 19px; margin-top: 2px; accent-color: var(--good); cursor: pointer; }
+
+  .title { font-family: Archivo, sans-serif; font-weight: 600; font-size: 0.9688rem; line-height: 1.3; }
+  .title a { color: var(--ink); text-decoration: none; }
+  .title a:hover { color: var(--accent); text-decoration: underline; }
+  .company { color: var(--muted); font-size: 0.8438rem; margin-top: 2px; }
+  .tags { display: flex; flex-wrap: wrap; gap: 5px; margin-top: 7px; }
+  .tag {
+    font-family: "IBM Plex Mono", monospace; font-size: 0.6562rem; letter-spacing: .05em;
+    text-transform: uppercase; padding: 2px 7px; border-radius: 4px;
+    border: 1px solid var(--line); color: var(--muted); background: var(--surface-2);
+  }
+  .tag.new { color: var(--new); background: var(--new-soft); border-color: color-mix(in srgb, var(--new) 32%, var(--line)); }
+  .tag.remote { color: var(--accent); background: var(--accent-soft); border-color: color-mix(in srgb, var(--accent) 32%, var(--line)); }
+  .tag.easy { color: var(--good); background: var(--good-soft); border-color: color-mix(in srgb, var(--good) 32%, var(--line)); }
+  .note { color: var(--muted); font-size: 0.7812rem; margin-top: 6px; }
+  .note.ai { color: var(--ink); border-left: 2px solid var(--accent); padding-left: 8px; }
+
+  .meta { font-size: 0.8125rem; color: var(--muted); }
+  .meta div + div { margin-top: 3px; }
+  .rank {
+    font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums;
+    font-size: 1.0625rem; text-align: right; color: var(--accent);
+  }
+  .rank small { display: block; font-size: 0.5938rem; letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+
+  .empty { color: var(--muted); padding: 26px 0; text-align: center; }
+
+  /* Shared with the interview-prep page, which links back here. */
+  nav.top {
+    display: flex; flex-wrap: wrap; gap: 4px; align-items: center;
+    border-bottom: 1px solid var(--line); margin-bottom: 22px;
+  }
+  nav.top a, nav.top span.here {
+    font: 600 0.8438rem/1 Archivo, sans-serif; text-decoration: none;
+    padding: 11px 15px; border-bottom: 2px solid transparent; color: var(--muted);
+    border-radius: 6px 6px 0 0;
+  }
+  nav.top a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.top span.here { color: var(--ink); border-bottom-color: var(--accent); }
+  nav.top a.disabled { opacity: .45; pointer-events: none; }
+
+  /* Each scan of the day keeps its own page, so this is how you get back to
+     the 08:52 list from the 18:11 one. */
+  nav.runs {
+    display: flex; flex-wrap: wrap; gap: 6px; align-items: baseline;
+    margin: -14px 0 20px; font: 400 0.7812rem/1.6 "Source Sans 3", sans-serif;
+  }
+  nav.runs .label { color: var(--muted); margin-right: 2px; }
+  nav.runs a, nav.runs span.here {
+    padding: 3px 9px; border-radius: 999px; text-decoration: none;
+    border: 1px solid var(--line); color: var(--muted);
+    font: 500 0.7812rem/1.6 "IBM Plex Mono", monospace;
+  }
+  nav.runs a:hover { color: var(--ink); background: var(--surface-2); }
+  nav.runs span.here { color: var(--ink); border-color: var(--accent); background: var(--surface-2); }
+  nav.runs .sep { color: var(--line); padding: 0 4px; }
+
+  footer { margin-top: 40px; padding-top: 18px; border-top: 1px solid var(--line); color: var(--muted); font-size: 0.8125rem; }
+  footer code { font-family: "IBM Plex Mono", monospace; font-size: 0.75rem; }
+
+  @media (max-width: 760px) {
+    .row { grid-template-columns: 30px 1fr; }
+    .meta, .rank { grid-column: 2; text-align: left; }
+    .rank { font-size: 0.9375rem; }
+  }
+  @media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }
+</style>
+
+<div class="wrap">
+  <nav class="top">
+    <span class="here">Job Scanner</span>
+    <a href="#" class="disabled">Top 10 Jobs</a>
+    <a href="#" class="disabled">Interview Preparation (not generated)</a>
+    <a href="applications.html">Applications sent</a>
+  </nav>
+
+  <nav class="runs">
+    <span class="label">Today&rsquo;s scans</span>
+    <a href="openings-2026-11-19-r1.html">r1</a>
+    <a href="openings-2026-11-19-r2.html">r2</a>
+    <span class="here">r3</span>
+    <span class="sep">|</span>
+    <a href="openings-2026-11-18-r3.html">11-18</a>
+    <a href="openings-2026-11-17-r3.html">11-17</a>
+    <a href="openings-2026-11-16-r3.html">11-16</a>
+    <a href="openings-2026-11-13-r3.html">11-13</a>
+  </nav>
+
+  <header>
+    <div class="eyebrow">2026-11-19 &middot; scan 3 &middot; All locations &middot; first seen today</div>
+    <h1>95 openings, 95 new today</h1>
+    <p class="sub">Every opening this scan found, remote first. Tick a row when you have applied &mdash; ticks are saved in this browser and carry across every day&rsquo;s page.</p>
+  </header>
+
+  <div class="stats">
+    <div class="stat"><b id="s-total">0</b><span>Openings</span></div>
+    <div class="stat is-new"><b id="s-new">0</b><span>New today</span></div>
+    <div class="stat"><b id="s-remote">0</b><span>Remote</span></div>
+    <div class="stat is-applied"><b id="s-applied">0</b><span>Applied</span></div>
+    <div class="stat"><b id="s-left">0</b><span>Still to do</span></div>
+  </div>
+
+  <div class="bar">
+    <span class="fgrp" data-grp="openings.show"><span class="flabel">Show</span><span class="fbody">
+      <button class="chip" data-filter="all" aria-pressed="true">All</button>
+      <button class="chip" data-filter="new" aria-pressed="false">New today</button>
+      <button class="chip" data-filter="remote" aria-pressed="false">Remote</button>
+      <button class="chip" data-filter="easy" aria-pressed="false">One-click apply</button>
+      <button class="chip" data-filter="todo" aria-pressed="false">Not applied</button>
+      <button class="chip" data-filter="mnc" aria-pressed="false">MNC / big tech / unicorn</button>
+      <button class="chip" data-filter="pay" aria-pressed="false">&#8805; 10 LPA</button>
+    </span></span>
+    <span class="fgrp" data-grp="openings.posted"><span class="flabel">Posted</span><span class="fbody">
+      <button class="chip" data-posted="any" aria-pressed="true">Any</button>
+      <button class="chip" data-posted="1" aria-pressed="false">1 day</button>
+      <button class="chip" data-posted="2" aria-pressed="false">2 days</button>
+      <button class="chip" data-posted="7" aria-pressed="false">7 days</button>
+    </span></span>
+    <span class="spacer"></span>
+    <span class="fgrp" data-grp="openings.search"><span class="flabel">Search</span><span class="fbody">
+      <input class="search" id="q" type="search" placeholder="Filter by title or company" aria-label="Filter by title or company">
+    </span></span>
+  </div>
+
+  <div id="list"></div>
+
+  <footer>
+    <p>Generated 2026-11-19 from 95 Naukri and 0 LinkedIn listings.
+    Naukri scores are 0&ndash;100 across skills, title, experience, location and freshness.
+    LinkedIn shows title match only &mdash; its cards carry no skills or experience range, so the two are not the same measure.</p>
+    <p>Ticks are stored in this browser under <code>jobtracker.applied</code>. Clearing site data clears them.</p>
+    <p>Every listing carries a posted date.</p>
+  </footer>
+</div>
+
+<script id="data" type="application/json">[{"id": "naukri:131126033236", "board": "Naukri", "title": "Senior C / C++ / C# (.NET) Developer - Remote", "company": "LearnTube.ai (backed by Google)", "location": "Remote", "salary": "25-40 Lacs PA", "lpa": 40.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "5 Days Ago", "age": 6, "rank": 71.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-c-c-c-net-developer-remote-learntube-ai-backed-by-google-mumbai-all-areas-3-to-8-years-131126033236", "remote": true, "easy": false, "note": "Core, ASP.Net, C#, .Net, C++", "ai": "Fit: Lacks C/C++/C# experience; strong in .Net", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:171126018885", "board": "Naukri", "title": "Python Developer", "company": "First American", "location": "Remote", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "1 Day Ago", "age": 2, "rank": 67.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developer-first-american-bengaluru-3-to-5-years-171126018885", "remote": true, "easy": false, "note": "Development, Python, React.js", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:161126010157", "board": "Naukri", "title": "Senior Software Engineer (Video Streaming)", "company": "Genea", "location": "Remote", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 66.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-software-engineer-video-streaming-genea-ahmedabad-3-to-8-years-161126010157", "remote": true, "easy": false, "note": "Ffmpeg, Video, Streams, Software, Engineering, Streaming", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126505221", "board": "Naukri", "title": "Flutter Engineer", "company": "Lintel Technologies", "location": "Remote", "salary": "Not disclosed", "lpa": 10.5, "lpa_kind": "role", "lpa_source": "market median for a mobile developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 57.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-flutter-engineer-lintel-technologies-pvt-ltd-remote-1-to-3-years-181126505221", "remote": true, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126020599", "board": "Naukri", "title": "Full Stack .Net Developer", "company": "Hitachi Energy", "location": "Chennai", "salary": "Not disclosed", "lpa": 9.0, "lpa_kind": "typical", "lpa_source": "typical for Hitachi (IT services MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "itservices", "mnc_name": "Hitachi", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 88.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-net-developer-hitachi-energy-chennai-2-to-5-years-181126020599", "remote": false, "easy": false, "note": ".Net Core, Full Stack, Core, .Net, ASP.Net, C#", "ai": "Fit: Candidate has full stack experience and React skills.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:171126026069", "board": "Naukri", "title": "Full Stack .Net Developer", "company": "ICICI Lombard", "location": "Mumbai (All Areas)(Vikhroli West)", "salary": "Not disclosed", "lpa": 9.7, "lpa_kind": "role", "lpa_source": "market median for a full stack developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-7 Yrs", "posted": "1 Day Ago", "age": 2, "rank": 78.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-net-developer-icici-lombard-mumbai-all-areas-3-to-7-years-171126026069", "remote": false, "easy": false, "note": "Core, Full Stack, C#, SQL, Angular, .Net Core", "ai": "Fit: Candidate has relevant experience in microservices and backend development, aligns with .NET Core and C#.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126015505", "board": "Naukri", "title": "Software Developer", "company": "Naukri E Hire Campaign", "location": "Bengaluru, Kochi", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "Just Now", "age": 0, "rank": 78.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-naukri-e-hire-campaign-kochi-bengaluru-2-to-7-years-191126015505", "remote": false, "easy": false, "note": "Software, Angular, .Net Core, Software development, Core, .Net", "ai": "Fit: Candidate has 2+ years experience, relevant skills in Java, Spring Boot, React, AWS, Docker.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126931518", "board": "Naukri", "title": "Software Developer", "company": "Softrak Infosolution", "location": "Delhi / NCR, Faridabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 78.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-softrakinfosolutionprivetlimited-faridabad-delhi-ncr-2-to-4-years-181126931518", "remote": false, "easy": true, "note": "Software, Server, Software development, ASP.Net, C#, SQL", "ai": "Fit: Candidate has relevant experience in software development and React.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126931865", "board": "Naukri", "title": "Software Developer", "company": "BOT Vfx", "location": "Chennai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 73.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-bot-vfx-chennai-3-to-8-years-181126931865", "remote": false, "easy": true, "note": "Software, Python, Typescript, Software development, CSS, Rabbitmq", "ai": "Fit: Strong backend experience, Python proficiency, and event-driven architecture knowledge fit well.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126505320", "board": "Naukri", "title": "Microservices Backend developer", "company": "Alois Solutions", "location": "New Delhi", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 73.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-microservices-backend-developer-alois-solutions-new-delhi-3-to-8-years-181126505320", "remote": false, "easy": false, "note": "Boot, Agile, Spring Boot, Microservices, GIT, Jenkins", "ai": "Fit: Strong Spring Boot and microservices experience align well.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:121126034941", "board": "Naukri", "title": "Software Engineer 3", "company": "FactSet", "location": "Hybrid - Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "6 Days Ago", "age": 7, "rank": 70.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-3-factset-hyderabad-3-to-5-years-121126034941", "remote": false, "easy": true, "note": "Software, Postgresql, Python, Rest, API, AWS", "ai": "Fit: Experienced in distributed systems, microservices, and CI/CD, aligns well with the role.", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126505257", "board": "Naukri", "title": "Full-Stack Developer", "company": "Brocodedev Infotech", "location": "Gurugram, Panipat, Yamunanagar, Faridabad, Sonipat, Hisar", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 69.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-brocodedev-infotech-panipat-yamunanagar-faridabad-sonipat-gurugram-hisar-2-to-5-years-181126505257", "remote": false, "easy": false, "note": "Software development, Full Stack, Cloud, Javascript", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501561", "board": "Naukri", "title": "Full Stack Developer", "company": "BMW Techworks India", "location": "Chennai", "salary": "Not disclosed", "lpa": 11.0, "lpa_kind": "typical", "lpa_source": "typical for BMW (MNC engineering centre, 0-2 yrs)", "mnc": true, "mnc_tier": "gcc", "mnc_name": "BMW", "experience": "0-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 69.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-bmw-techworks-india-private-limited-chennai-0-to-8-years-181126501561", "remote": false, "easy": false, "note": "SQL, Management, Software development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126037700", "board": "Naukri", "title": "React JS Developer", "company": "Tech Mahindra", "location": "Hybrid - Bengaluru, Chennai", "salary": "Not disclosed", "lpa": 4.8, "lpa_kind": "typical", "lpa_source": "typical for Tech Mahindra (IT services MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "itservices", "mnc_name": "Tech Mahindra", "experience": "3-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 69.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-react-js-developer-tech-mahindra-chennai-bengaluru-3-to-5-years-181126037700", "remote": false, "easy": true, "note": "Typescript, CSS, Development, React.js, Javascript, HTML", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502022", "board": "Naukri", "title": "Software Engineer", "company": "Infinite", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 68.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-infinite-computer-solutions-india-pvt-ltd-noida-0-to-4-years-181126502022", "remote": false, "easy": false, "note": "Docker, Cloud, Infrastructure, Linux", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126505262", "board": "Naukri", "title": "Software Developer", "company": "S Global Tech", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 68.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-developer-suntech-global-noida-2-to-6-years-181126505262", "remote": false, "easy": false, "note": "Software, Python, Software development, Java", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126504095", "board": "Naukri", "title": "Backend Developer", "company": "Embitel Technologies", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 67.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-embitel-bengaluru-2-to-4-years-181126504095", "remote": false, "easy": false, "note": "Architecture, Cloud, Development, AWS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502516", "board": "Naukri", "title": "Backend Developer", "company": "Akra Tech", "location": "Chennai", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 66.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-akra-tech-chennai-3-to-8-years-181126502516", "remote": false, "easy": false, "note": "Integration, Backend, CSS, Docker, AWS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501950", "board": "Naukri", "title": "Software Engineer I", "company": "Mastercard", "location": "Pune", "salary": "Not disclosed", "lpa": 19.0, "lpa_kind": "typical", "lpa_source": "typical for Mastercard (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Mastercard", "experience": "0-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 66.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-i-mastercard-pune-0-to-3-years-181126501950", "remote": false, "easy": false, "note": "Payments, Agile", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126929669", "board": "Naukri", "title": "Python Developers", "company": "CGI", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 66.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-python-developers-cgi-information-systems-and-management-consultants-bengaluru-2-to-7-years-181126929669", "remote": false, "easy": true, "note": "SQL, Architecture, Microservices, Redis, Rabbitmq", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126931459", "board": "Naukri", "title": "Backend Developer", "company": "Devout Tech Consultants", "location": "Nagar", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 65.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-devout-tech-consultants-nagar-3-to-5-years-181126931459", "remote": false, "easy": true, "note": "Core, SQL, Javascript, CSS, C++", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501563", "board": "Naukri", "title": "Full Stack Developer", "company": "BMW Techworks India", "location": "Chennai", "salary": "Not disclosed", "lpa": 11.0, "lpa_kind": "typical", "lpa_source": "typical for BMW (MNC engineering centre, 0-2 yrs)", "mnc": true, "mnc_tier": "gcc", "mnc_name": "BMW", "experience": "0-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 65.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-bmw-techworks-india-private-limited-chennai-0-to-8-years-181126501563", "remote": false, "easy": false, "note": "Full Stack, Software development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501566", "board": "Naukri", "title": "Full Stack Developer", "company": "BMW Techworks India", "location": "Chennai", "salary": "Not disclosed", "lpa": 11.0, "lpa_kind": "typical", "lpa_source": "typical for BMW (MNC engineering centre, 0-2 yrs)", "mnc": true, "mnc_tier": "gcc", "mnc_name": "BMW", "experience": "0-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 64.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-bmw-techworks-india-private-limited-chennai-0-to-6-years-181126501566", "remote": false, "easy": false, "note": "Angular, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:120925026404", "board": "Naukri", "title": "Angular Js Developer - Bengaluru", "company": "Infosys", "location": "Hybrid - Bengaluru, Hyderabad, Chennai", "salary": "Not disclosed", "lpa": 6.3, "lpa_kind": "typical", "lpa_source": "typical for Infosys (IT services MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "itservices", "mnc_name": "Infosys", "experience": "3-8 Yrs", "posted": "6 Days Ago", "age": 7, "rank": 63.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-angular-js-developer-bengaluru-infosys-hyderabad-chennai-bengaluru-3-to-8-years-120925026404", "remote": false, "easy": false, "note": "Angular, Development, React.js, Javascript", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:111126922105", "board": "Naukri", "title": "Net Core Developer", "company": "Kaizen Sra Technologies", "location": "Bengaluru, Dubai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-7 Yrs", "posted": "7 Days Ago", "age": 8, "rank": 63.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-net-core-developer-kaizen-sra-technologies-bengaluru-dubai-3-to-7-years-111126922105", "remote": false, "easy": true, "note": "Core, Messaging, .Net Core, .Net, Kafka, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126932328", "board": "Naukri", "title": "Security Engineer II - Engineer", "company": "Uber", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 30.0, "lpa_kind": "typical", "lpa_source": "typical for Uber (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Uber", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 63.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-security-engineer-ii-engineer-uber-india-research-and-development-private-limited-bengaluru-3-to-8-years-181126932328", "remote": false, "easy": true, "note": "Architecture, CSS, Management, Engineering", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:071026942499", "board": "Naukri", "title": "Software Development Engineer II", "company": "F5", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for F5 (Product MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "product", "mnc_name": "F5", "experience": "3-8 Yrs", "posted": "14 Days Ago", "age": 15, "rank": 63.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-ii-f5-networks-innovation-private-limited-bengaluru-3-to-8-years-071026942499", "remote": false, "easy": true, "note": "Agile, Automation, Azure, Architecture", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126927894", "board": "Naukri", "title": "Software Engineer", "company": "Motorola Solutions", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 63.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-motorola-solutions-kodiak-networks-india-private-limited-bengaluru-2-to-7-years-181126927894", "remote": false, "easy": true, "note": "Cloud Infrastructure, Data, Docker", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126012362", "board": "Naukri", "title": "Standard Cell Generation Engineer", "company": "Incise Infotech", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "Just Now", "age": 0, "rank": 63.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-standard-cell-generation-engineer-incise-infotech-noida-1-to-3-years-191126012362", "remote": false, "easy": false, "note": "Linux, Generation, Python, Development, Automation", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126930059", "board": "Naukri", "title": "Chief Technology Officer / Vice President - Full Stack Development", "company": "Benovymed Healthcare", "location": "Gurugram, Noida, Delhi / NCR", "salary": "Not disclosed", "lpa": 9.7, "lpa_kind": "role", "lpa_source": "market median for a full stack developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 61.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-chief-technology-officer-vice-president-full-stack-development-benovymed-healthcare-noida-gurugram-delhi-ncr-2-to-7-years-181126930059", "remote": false, "easy": true, "note": "Python, Full Stack, Java, Angularjs", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501017", "board": "Naukri", "title": "Software Engineer", "company": "Prosares Solutions", "location": "Mumbai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 61.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-prosares-solutions-pvt-ltd-mumbai-0-to-5-years-181126501017", "remote": false, "easy": false, "note": "Integration, Cloud, AWS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126929680", "board": "Naukri", "title": "Chief Technology Officer/Vice President - Full Stack Development", "company": "Benovymed Healthcare", "location": "Gurugram, Noida", "salary": "Not disclosed", "lpa": 9.7, "lpa_kind": "role", "lpa_source": "market median for a full stack developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 59.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-chief-technology-officer-vice-president-full-stack-development-benovymed-healthcare-noida-gurugram-2-to-7-years-181126929680", "remote": false, "easy": true, "note": "Full Stack, AWS, Angularjs, React.js", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:161126021838", "board": "Naukri", "title": "Dot Net Developer-With React", "company": "NEC Corporation", "location": "Hybrid - Chennai(Perungudi)", "salary": "8-15 Lacs PA", "lpa": 15.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "2 Days Ago", "age": 3, "rank": 59.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-dot-net-developer-with-react-nec-corporation-chennai-3-to-5-years-161126021838", "remote": false, "easy": false, "note": "Agile, .Net, ASP.Net", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:171126926805", "board": "Naukri", "title": "Web Developer", "company": "Mouser", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 6.4, "lpa_kind": "role", "lpa_source": "market median for a frontend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-7 Yrs", "posted": "1 Day Ago", "age": 2, "rank": 58.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-web-developer-mouser-electronics-india-pvt-ltd-bengaluru-3-to-7-years-171126926805", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502004", "board": "Naukri", "title": "Backend Developer", "company": "Comviva", "location": "Gurugram", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 58.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-developer-comviva-technologies-limited-gurugram-0-to-4-years-181126502004", "remote": false, "easy": false, "note": "Integration, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502023", "board": "Naukri", "title": "Software Engineer", "company": "Infinite", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 58.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-infinite-computer-solutions-india-pvt-ltd-noida-0-to-4-years-181126502023", "remote": false, "easy": false, "note": "Cloud Infrastructure, Docker", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126035994", "board": "Naukri", "title": "Associate Digital Engineer - Digital Mobility Products", "company": "TVS Motor", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 58.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-associate-digital-engineer-digital-mobility-products-tvs-motor-bengaluru-3-to-6-years-181126035994", "remote": false, "easy": false, "note": "Boot, Spring Boot, Microservices, Java, Rest", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126038139", "board": "Naukri", "title": "Software Engineer", "company": "Wissen Technology", "location": "Hybrid - Bengaluru, Pune", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 57.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-wissen-technology-pune-bengaluru-3-to-8-years-181126038139", "remote": false, "easy": true, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126506189", "board": "Naukri", "title": "Frontend Developer", "company": "Infinite Net Solutions (INS)", "location": "Jamshedpur", "salary": "Not disclosed", "lpa": 6.4, "lpa_kind": "role", "lpa_source": "market median for a frontend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 57.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-developer-infinite-net-solutions-jamshedpur-2-to-4-years-181126506189", "remote": false, "easy": false, "note": "Javascript, CSS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501313", "board": "Naukri", "title": "Software Engineer", "company": "Neighborly", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 57.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-neighborlybrands-bengaluru-0-to-5-years-181126501313", "remote": false, "easy": false, "note": "Development, SQL", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126931859", "board": "Naukri", "title": "Software Development Engineer (SDE) - JavaScript Development & Testing", "company": "Chimpsatwork Studios", "location": "Hybrid - Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 56.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-sde-javascript-development-testing-caw-studios-pvt-ltd-hyderabad-3-to-5-years-181126931859", "remote": false, "easy": true, "note": "Typescript, Software development, Agile", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501517", "board": "Naukri", "title": "Software Engineer III - CCAAS Migration, Amazon Connect, Python & AWS", "company": "JPMorgan Chase Bank", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 19.0, "lpa_kind": "typical", "lpa_source": "typical for JPMorgan Chase (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "JPMorgan Chase", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 56.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-iii-ccaas-migration-amazon-connect-python-aws-jp-morgan-and-chase-hyderabad-3-to-8-years-181126501517", "remote": false, "easy": false, "note": "Cloud, Development, AWS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501394", "board": "Naukri", "title": "Frontend Engineer", "company": "Add Pearl Info", "location": "Ahmedabad", "salary": "Not disclosed", "lpa": 6.4, "lpa_kind": "role", "lpa_source": "market median for a frontend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 56.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-engineer-add-pearl-info-ahmedabad-0-to-3-years-181126501394", "remote": false, "easy": false, "note": "Javascript, CSS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:121126033245", "board": "Naukri", "title": "Software Development Engineer 2", "company": "Prismforce", "location": "Hybrid - Bengaluru, Pune, Mumbai (All Areas)", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "6 Days Ago", "age": 7, "rank": 56.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-2-prismforce-pune-bengaluru-mumbai-all-areas-3-to-6-years-121126033245", "remote": false, "easy": false, "note": "Javascript, Microservices, Software development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126929371", "board": "Naukri", "title": "Chief Technology Officer/Vice President", "company": "Benovymed Healthcare Private Limited", "location": "Noida", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 56.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-chief-technology-officer-vice-president-benovymed-healthcare-private-limited-noida-2-to-7-years-181126929371", "remote": false, "easy": true, "note": "Angular, Architecture, Development, Full Stack", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502154", "board": "Naukri", "title": "Senior Analyst-Control Management (SQL, Python)", "company": "AMERICAN EXPRESS", "location": "Gurugram", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for American Express (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "American Express", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 56.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-analyst-control-management-sql-python-american-express-india-gurugram-3-to-8-years-181126502154", "remote": false, "easy": false, "note": "SQL, Data", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:041126023519", "board": "Naukri", "title": "Software Development Engineer", "company": "Moveinsync Technology Solutions", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "14 Days Ago", "age": 15, "rank": 55.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-development-engineer-moveinsync-technology-solutions-bengaluru-3-to-5-years-041126023519", "remote": false, "easy": true, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126928348", "board": "Naukri", "title": "CPU Verification Engineer", "company": "Intel", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 15.0, "lpa_kind": "typical", "lpa_source": "typical for Intel (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Intel", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 55.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-cpu-verification-engineer-intel-technology-india-pvt-ltd-bengaluru-3-to-8-years-181126928348", "remote": false, "easy": true, "note": "Architecture, Cpu, Engineering", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502406", "board": "Naukri", "title": "Frontend Engineer ( React & Next . js )", "company": "Apps For Bharat", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 6.4, "lpa_kind": "role", "lpa_source": "market median for a frontend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 55.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-engineer-react-next-js-apps-for-bharat-bengaluru-2-to-5-years-181126502406", "remote": false, "easy": false, "note": "Javascript, CSS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126930644", "board": "Naukri", "title": "Senior Frontend Developer - HTML/CSS", "company": "Benovymed Healthcare", "location": "Chennai", "salary": "Not disclosed", "lpa": 6.4, "lpa_kind": "role", "lpa_source": "market median for a frontend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-senior-frontend-developer-html-css-benovymed-healthcare-chennai-2-to-7-years-181126930644", "remote": false, "easy": true, "note": "CSS, Architecture, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501708", "board": "Naukri", "title": "Databricks Engineer", "company": "Parkar Global Technologies", "location": "Pune", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-databricks-engineer-parkar-global-technologies-pvt-ltd-pune-0-to-7-years-181126501708", "remote": false, "easy": false, "note": "Processing, Storage, AWS", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126927575", "board": "Naukri", "title": "Applications Developer_Enterprise App SaaS", "company": "Uber", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 30.0, "lpa_kind": "typical", "lpa_source": "typical for Uber (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Uber", "experience": "3-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-applications-developer-enterprise-app-saas-uber-india-research-and-development-private-limited-bengaluru-3-to-4-years-181126927575", "remote": false, "easy": true, "note": "Cloud, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:170626501937", "board": "Naukri", "title": "SRE - Reliability Engineer-1", "company": "Deutsche Bank", "location": "Pune", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for Deutsche Bank (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Deutsche Bank", "experience": "3-7 Yrs", "posted": "30+ Days Ago", "age": 155, "rank": 54.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sre-reliability-engineer-1-deutsche-bank-pune-3-to-7-years-170626501937", "remote": false, "easy": false, "note": "C++, Project, Linux", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501510", "board": "Naukri", "title": "Experience Design - Associate", "company": "JPMorgan Chase Bank", "location": "Mumbai", "salary": "Not disclosed", "lpa": 19.0, "lpa_kind": "typical", "lpa_source": "typical for JPMorgan Chase (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "JPMorgan Chase", "experience": "0-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-experience-design-associate-jp-morgan-and-chase-mumbai-0-to-4-years-181126501510", "remote": false, "easy": false, "note": "Agile", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501413", "board": "Naukri", "title": "Full-Stack Developer (MarTech)", "company": "Attributics", "location": "Pune", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 54.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-developer-martech-attributics-pune-0-to-6-years-181126501413", "remote": false, "easy": false, "note": "Angular, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:040724501547", "board": "Naukri", "title": "Backend Engineer", "company": "Drivetrain", "location": "Bengaluru, Hyderabad, Pune, New Delhi, Mumbai, Kolkata, Chennai", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-4 Yrs", "posted": "30+ Days Ago", "age": 868, "rank": 53.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-backend-engineer-drivetrain-kolkata-mumbai-new-delhi-hyderabad-pune-chennai-bengaluru-3-to-4-years-040724501547", "remote": false, "easy": false, "note": "Hibernate, Backend, Postgresql", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502980", "board": "Naukri", "title": "Sr Product Specialist - Financial Data Stack", "company": "Arcesium", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 26.0, "lpa_kind": "typical", "lpa_source": "typical for Arcesium (HFT / quant, 0-2 yrs)", "mnc": true, "mnc_tier": "hft", "mnc_name": "Arcesium", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 53.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sr-product-specialist-financial-data-stack-arcesium-india-private-limited-hyderabad-2-to-5-years-181126502980", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502979", "board": "Naukri", "title": "Sr Product Specialist - Financial Data Stack", "company": "Arcesium", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 26.0, "lpa_kind": "typical", "lpa_source": "typical for Arcesium (HFT / quant, 0-2 yrs)", "mnc": true, "mnc_tier": "hft", "mnc_name": "Arcesium", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 53.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sr-product-specialist-financial-data-stack-arcesium-india-private-limited-bengaluru-2-to-5-years-181126502979", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126926812", "board": "Naukri", "title": "Product Analyst", "company": "Visa Consolidated Support Services India", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 53.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-product-analyst-visa-consolidated-support-services-india-pvt-ltd-bengaluru-2-to-7-years-181126926812", "remote": false, "easy": false, "note": "Processing, Data, Engineering", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:180926017070", "board": "Naukri", "title": "Software Engineer - ADM", "company": "Addepar", "location": "Pune", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 52.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-software-engineer-adm-addepar-pune-2-to-5-years-180926017070", "remote": false, "easy": false, "note": "SQL, Backend", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:300726500004", "board": "Naukri", "title": "Payments & Cards QA Engineer, AS", "company": "Deutsche Bank", "location": "Pune", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for Deutsche Bank (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Deutsche Bank", "experience": "3-8 Yrs", "posted": "30+ Days Ago", "age": 112, "rank": 52.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-payments-cards-qa-engineer-as-deutsche-bank-pune-3-to-8-years-300726500004", "remote": false, "easy": false, "note": "SQL, Data, Management", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501428", "board": "Naukri", "title": "Frontend Developer", "company": "onified.ai", "location": "Gurugram", "salary": "Not disclosed", "lpa": 6.4, "lpa_kind": "role", "lpa_source": "market median for a frontend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 50.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-frontend-developer-onified-ai-gurugram-0-to-3-years-181126501428", "remote": false, "easy": false, "note": "Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:111126013420", "board": "Naukri", "title": "Back End Developer", "company": "Hero Fincorp", "location": "Gurugram", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "7 Days Ago", "age": 8, "rank": 50.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-back-end-developer-hero-fincorp-gurugram-3-to-6-years-111126013420", "remote": false, "easy": false, "note": "Python, Java, Backend, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501212", "board": "Naukri", "title": "VS01783 - Senior Backend and Integrations Engineer", "company": "E4 Software Services", "location": "Mumbai", "salary": "Not disclosed", "lpa": 7.0, "lpa_kind": "role", "lpa_source": "market median for a backend developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 50.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-vs01783-senior-backend-and-integrations-engineer-e4-softwares-mumbai-3-to-6-years-181126501212", "remote": false, "easy": false, "note": "Integration, Cloud", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:121126012972", "board": "Naukri", "title": "Dot Net Developer", "company": "Capgemini", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 5.8, "lpa_kind": "typical", "lpa_source": "typical for Capgemini (IT services MNC, 0-2 yrs)", "mnc": true, "mnc_tier": "itservices", "mnc_name": "Capgemini", "experience": "3-8 Yrs", "posted": "6 Days Ago", "age": 7, "rank": 49.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-dot-net-developer-capgemini-bengaluru-3-to-8-years-121126012972", "remote": false, "easy": false, "note": "Core, .Net Core, .Net, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126011985", "board": "Naukri", "title": "Apigee Engineer", "company": "Volto It Labs", "location": "Noida", "salary": "5-10 Lacs PA", "lpa": 10.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "Just Now", "age": 0, "rank": 49.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-apigee-engineer-volto-it-labs-noida-3-to-5-years-191126011985", "remote": false, "easy": false, "note": "Rest, Management", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501502", "board": "Naukri", "title": "Associate - Compensation & Benefits", "company": "JPMorgan Chase Bank", "location": "Mumbai", "salary": "Not disclosed", "lpa": 19.0, "lpa_kind": "typical", "lpa_source": "typical for JPMorgan Chase (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "JPMorgan Chase", "experience": "0-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 48.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-associate-compensation-benefits-jp-morgan-and-chase-mumbai-0-to-4-years-181126501502", "remote": false, "easy": false, "note": "Data", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126013782", "board": "Naukri", "title": "Mulesoft Consultant", "company": "Sonata Software", "location": "Hybrid - Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "Just Now", "age": 0, "rank": 48.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-mulesoft-consultant-sonata-software-bengaluru-1-to-3-years-191126013782", "remote": false, "easy": false, "note": "SQL, Integration, Development", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126504376", "board": "Naukri", "title": "Regulatory Reporting, AS Professional", "company": "Deutsche Bank", "location": "Mumbai", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for Deutsche Bank (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Deutsche Bank", "experience": "2-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 48.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-regulatory-reporting-as-professional-deutsche-bank-mumbai-2-to-6-years-181126504376", "remote": false, "easy": false, "note": "Processing, Payments", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126926874", "board": "Naukri", "title": "Product Analyst", "company": "Visa Consolidated Support Services India", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 48.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-product-analyst-visa-consolidated-support-services-india-pvt-ltd-bengaluru-2-to-7-years-181126926874", "remote": false, "easy": false, "note": "Architecture, Data", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126932501", "board": "Naukri", "title": "Silicon Packaging Design Engineer", "company": "Intel", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 15.0, "lpa_kind": "typical", "lpa_source": "typical for Intel (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Intel", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 47.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-silicon-packaging-design-engineer-intel-technology-india-pvt-ltd-bengaluru-3-to-6-years-181126932501", "remote": false, "easy": true, "note": "Management, Engineering", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126017307", "board": "Naukri", "title": "Marketing positions with 2-3 years of hospital marketing experience", "company": "Techfirst Software Solutions", "location": "Hyderabad(HITEC City)", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-3 Yrs", "posted": "Just Now", "age": 0, "rank": 47.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-marketing-positions-with-2-3-years-of-hospital-marketing-experience-techfirst-software-solutions-hyderabad-2-to-3-years-191126017307", "remote": false, "easy": false, "note": "Management, Key", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:171126919868", "board": "Naukri", "title": "Full Stack Data Engineer", "company": "Ford Business Solutions", "location": "Chennai", "salary": "Not disclosed", "lpa": null, "lpa_kind": "", "lpa_source": "", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 2, "rank": 47.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-full-stack-data-engineer-ford-motor-private-limited-chennai-3-to-8-years-171126919868", "remote": false, "easy": false, "note": "Storage", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126927419", "board": "Naukri", "title": "Workforce Management Specialist IV", "company": "Uber", "location": "New Delhi", "salary": "Not disclosed", "lpa": 30.0, "lpa_kind": "typical", "lpa_source": "typical for Uber (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Uber", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 46.8, "rank_label": "score", "url": "https://www.naukri.com/job-listings-workforce-management-specialist-iv-uber-india-research-and-development-private-limited-new-delhi-3-to-8-years-181126927419", "remote": false, "easy": true, "note": "HTML, Project", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126500905", "board": "Naukri", "title": "Business Management Analyst, NCT", "company": "Deutsche Bank", "location": "Pune", "salary": "Not disclosed", "lpa": 17.0, "lpa_kind": "typical", "lpa_source": "typical for Deutsche Bank (Finance / bank, 0-2 yrs)", "mnc": true, "mnc_tier": "finance", "mnc_name": "Deutsche Bank", "experience": "1-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 46.6, "rank_label": "score", "url": "https://www.naukri.com/job-listings-business-management-analyst-nct-deutsche-bank-pune-1-to-3-years-181126500905", "remote": false, "easy": false, "note": "Management", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:030726011863", "board": "Naukri", "title": "Driver Developer", "company": "Mirafra", "location": "Hyderabad", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "Few Hours Ago", "age": 0, "rank": 46.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-driver-developer-mirafra-hyderabad-3-to-6-years-030726011863", "remote": false, "easy": true, "note": "Development, Framework, Linux", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502527", "board": "Naukri", "title": "Executive - Videographer", "company": "Swiggy", "location": "Mumbai", "salary": "Not disclosed", "lpa": 25.0, "lpa_kind": "typical", "lpa_source": "typical for Swiggy (Unicorn / startup, 0-2 yrs)", "mnc": true, "mnc_tier": "unicorn", "mnc_name": "Swiggy", "experience": "0-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 45.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-executive-videographer-swiggy-mumbai-0-to-3-years-181126502527", "remote": false, "easy": false, "note": "Video", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501215", "board": "Naukri", "title": "VS01782 - Senior Mobile App Engineer", "company": "E4 Software Services", "location": "Mumbai", "salary": "Not disclosed", "lpa": 10.5, "lpa_kind": "role", "lpa_source": "market median for a mobile developer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-6 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 45.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-vs01782-senior-mobile-app-engineer-e4-softwares-mumbai-3-to-6-years-181126501215", "remote": false, "easy": false, "note": "React.js", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126932515", "board": "Naukri", "title": "Memory Electrical Validation Engineer", "company": "Intel", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 15.0, "lpa_kind": "typical", "lpa_source": "typical for Intel (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Intel", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-memory-electrical-validation-engineer-intel-technology-india-pvt-ltd-bengaluru-3-to-8-years-181126932515", "remote": false, "easy": true, "note": "Engineering", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126928403", "board": "Naukri", "title": "SoC Physical Design Engineer", "company": "Intel", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 15.0, "lpa_kind": "typical", "lpa_source": "typical for Intel (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Intel", "experience": "3-8 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-soc-physical-design-engineer-intel-technology-india-pvt-ltd-bengaluru-3-to-8-years-181126928403", "remote": false, "easy": true, "note": "Project", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126502293", "board": "Naukri", "title": "Connectivity Engineer", "company": "Samsan Technologies", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 43.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-connectivity-engineer-samsan-technologies-bengaluru-2-to-5-years-181126502293", "remote": false, "easy": false, "note": "Linux", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126506603", "board": "Naukri", "title": "Tuner Developer", "company": "Visteon", "location": "Bengaluru, Chennai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-12 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 42.7, "rank_label": "score", "url": "https://www.naukri.com/job-listings-tuner-developer-visteon-automotive-india-private-limited-chennai-bengaluru-3-to-12-years-181126506603", "remote": false, "easy": false, "note": "Development, Linux", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126014235", "board": "Naukri", "title": "Walk-in || Automation Tester", "company": "Ariadne Software", "location": "Hyderabad", "salary": "5-10 Lacs PA", "lpa": 10.0, "lpa_kind": "stated", "lpa_source": "the posting", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "", "posted": "Just Now", "age": 0, "rank": 42.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-automation-tester-ariadne-software-hyderabad-3-to-6-years-191126014235", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:131126020268", "board": "Naukri", "title": "Junior RPA Developer", "company": "Accion Labs", "location": "Hybrid - Mumbai(Ghodbunder Road)", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-3 Yrs", "posted": "5 Days Ago", "age": 6, "rank": 39.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-junior-rpa-developer-accion-labs-mumbai-1-to-3-years-131126020268", "remote": false, "easy": false, "note": "Analytics", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126928358", "board": "Naukri", "title": "Silicon Package Design Engineer", "company": "Intel", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 15.0, "lpa_kind": "typical", "lpa_source": "typical for Intel (Big tech, 0-2 yrs)", "mnc": true, "mnc_tier": "bigtech", "mnc_name": "Intel", "experience": "3-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 39.3, "rank_label": "score", "url": "https://www.naukri.com/job-listings-silicon-package-design-engineer-intel-technology-india-pvt-ltd-bengaluru-3-to-5-years-181126928358", "remote": false, "easy": true, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126503756", "board": "Naukri", "title": "Sr Graphic Designer", "company": "Marketing Mojito", "location": "Mumbai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-3 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 38.4, "rank_label": "score", "url": "https://www.naukri.com/job-listings-sr-graphic-designer-marketing-mojito-mumbai-2-to-3-years-181126503756", "remote": false, "easy": false, "note": "Analytics", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126014962", "board": "Naukri", "title": "Automobile Engineer", "company": "Villa Shipping & Trading", "location": "Maldives", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-5 Yrs", "posted": "Just Now", "age": 0, "rank": 36.5, "rank_label": "score", "url": "https://www.naukri.com/job-listings-automobile-engineer-villa-shipping-trading-maldives-2-to-5-years-191126014962", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126015564", "board": "Naukri", "title": "Diesel Engineer", "company": "Villa Shipping & Trading", "location": "Maldives", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-4 Yrs", "posted": "Just Now", "age": 0, "rank": 36.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-diesel-engineer-villa-shipping-trading-maldives-2-to-4-years-191126015564", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:290926028625", "board": "Naukri", "title": "Executive - Tech Support", "company": "Bitla Software", "location": "Bengaluru", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 36.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-executive-tech-support-bitla-software-bengaluru-0-to-5-years-290926028625", "remote": false, "easy": false, "note": "Management", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126503326", "board": "Naukri", "title": "Photographer", "company": "New Roots Hair Clinic", "location": "Pune, Mumbai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 34.1, "rank_label": "score", "url": "https://www.naukri.com/job-listings-photographer-new-roots-skin-hair-clinic-mumbai-pune-1-to-4-years-181126503326", "remote": false, "easy": false, "note": "Operations", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:240826011830", "board": "Naukri", "title": "AR Caller - Hospital Billing", "company": "Calpion Software Technologies", "location": "Bengaluru, Bangalore Rural", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 33.2, "rank_label": "score", "url": "https://www.naukri.com/job-listings-ar-caller-hospital-billing-calpion-software-technologies-bangalore-rural-bengaluru-1-to-4-years-240826011830", "remote": false, "easy": false, "note": "Management", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:191126016696", "board": "Naukri", "title": "Field Surveyor", "company": "Lepton Software Export & Research", "location": "Gurugram", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "0-5 Yrs", "posted": "Just Now", "age": 0, "rank": 30.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-field-surveyor-lepton-software-export-research-gurugram-0-to-5-years-191126016696", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126503975", "board": "Naukri", "title": "Executive - B2B Paid Media", "company": "Ethinos", "location": "Pune", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "2-7 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 29.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-executive-b2b-paid-media-ethinos-digital-marketing-pune-2-to-7-years-181126503975", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126501071", "board": "Naukri", "title": "Controls Tester", "company": "Mufg Pension & Market Services", "location": "Mumbai", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "3-5 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 28.9, "rank_label": "score", "url": "https://www.naukri.com/job-listings-controls-tester-mufg-pension-market-services-mumbai-3-to-5-years-181126501071", "remote": false, "easy": false, "note": "Analytics", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}, {"id": "naukri:181126503262", "board": "Naukri", "title": "Photographer", "company": "New Roots Hair Clinic", "location": "Pune, Mumbai, Siliguri", "salary": "Not disclosed", "lpa": 9.1, "lpa_kind": "role", "lpa_source": "market median for a software engineer in India, 0-2 yrs (web: ambitionbox.com)", "mnc": false, "mnc_tier": "", "mnc_name": "", "experience": "1-4 Yrs", "posted": "1 Day Ago", "age": 1, "rank": 28.0, "rank_label": "score", "url": "https://www.naukri.com/job-listings-photographer-new-roots-skin-hair-clinic-mumbai-siliguri-pune-1-to-4-years-181126503262", "remote": false, "easy": false, "note": "", "ai": "", "new": true, "first_seen": "2026-11-19", "status": "", "status_note": ""}]</script>
+<script>
+  const ROWS = JSON.parse(document.getElementById('data').textContent);
+  const KEY = 'jobtracker.applied';
+  const TODAY = '2026-11-19';
+
+  const load = () => { try { return JSON.parse(localStorage.getItem(KEY)) || {}; } catch (e) { return {}; } };
+  const save = (v) => { try { localStorage.setItem(KEY, JSON.stringify(v)); } catch (e) {} };
+  let applied = load();
+  let filter = 'all';
+  let postedMax = null;   // null = any age
+  let query = '';
+
+  const esc = (s) => String(s == null ? '' : s).replace(/[&<>"']/g, c => (
+    {'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+
+  function visible(r) {
+    if (filter === 'new' && !r.new) return false;
+    if (filter === 'remote' && !r.remote) return false;
+    if (filter === 'easy' && !r.easy) return false;
+    if (filter === 'todo' && (applied[r.id] || r.status === 'applied')) return false;
+    if (filter === 'mnc' && !r.mnc) return false;
+    if (filter === 'pay' && !((r.lpa || 0) >= 10)) return false;
+    // Posted is a separate axis, so "remote" and "2 days" combine rather than
+    // replacing each other. A row with no readable date is excluded whenever a
+    // date filter is on - it cannot be shown to satisfy it.
+    if (postedMax !== null && (r.age === null || r.age > postedMax)) return false;
+    if (query) {
+      const hay = (r.title + ' ' + r.company + ' ' + r.location).toLowerCase();
+      if (!hay.includes(query)) return false;
+    }
+    return true;
+  }
+
+  function statusTag(r) {
+    const note = r.status_note ? ' title="' + esc(r.status_note) + '"' : '';
+    if (r.status === 'applied') return '<span class="tag easy"' + note + '>Applied by agent</span>';
+    if (r.status === 'would-apply') return '<span class="tag easy"' + note + '>Would apply</span>';
+    if (r.status === 'questionnaire') return '<span class="tag new"' + note + '>Needs your answer</span>';
+    if (r.status === 'offsite') return '<span class="tag"' + note + '>Company site</span>';
+    if (r.status === 'already') return '<span class="tag"' + note + '>Applied earlier</span>';
+    if (r.status) return '<span class="tag"' + note + '>' + esc(r.status) + '</span>';
+    return '';
+  }
+
+  function rowHtml(r) {
+    const done = !!applied[r.id] || r.status === 'applied';
+    const tags = [
+      statusTag(r),
+      r.new ? '<span class="tag new">New</span>' : '',
+      r.remote ? '<span class="tag remote">Remote</span>' : '',
+      r.easy ? '<span class="tag easy">One-click</span>' : '',
+      r.mnc ? '<span class="tag new" title="' + esc(r.mnc_name || '') + '">MNC' + (r.mnc_tier ? ' · ' + esc(r.mnc_tier) : '') + '</span>' : '',
+      r.lpa ? '<span class="tag' + (r.lpa >= 10 ? ' easy' : '') + '" title="' + esc(r.lpa_source || '') + '">' +
+                (r.lpa_kind === 'stated' ? '' : '~') + '₹' + esc(r.lpa) + ' LPA' + (r.lpa_kind === 'stated' ? '' : ' (' + esc(r.lpa_kind) + ')') + '</span>' : '',
+      '<span class="tag">' + esc(r.board) + '</span>',
+      (!r.new && r.first_seen) ? '<span class="tag">seen ' + esc(r.first_seen) + '</span>' : '',
+    ].join('');
+    return '' +
+      '<div class="row' + (done ? ' done' : '') + '" data-id="' + esc(r.id) + '">' +
+        '<input type="checkbox" ' + (done ? 'checked' : '') +
+          ' aria-label="Mark ' + esc(r.title) + ' as applied">' +
+        '<div>' +
+          '<div class="title"><a href="' + esc(r.url) + '" target="_blank" rel="noopener">' + esc(r.title) + '</a></div>' +
+          '<div class="company">' + esc(r.company) + '</div>' +
+          '<div class="tags">' + tags + '</div>' +
+          (r.note ? '<div class="note">' + esc(r.note) + '</div>' : '') +
+          (r.ai ? '<div class="note ai" title="from the local model">' + esc(r.ai) + '</div>' : '') +
+        '</div>' +
+        '<div class="meta"><div>' + (r.location ? esc(r.location) : '&mdash;') + '</div>' +
+          (r.salary ? '<div>' + esc(r.salary) + '</div>' : '') + '</div>' +
+        '<div class="meta">' + (r.experience ? '<div>' + esc(r.experience) + '</div>' : '') +
+          (r.posted ? '<div>' + esc(r.posted) + '</div>' : '') + '</div>' +
+        '<div class="rank">' + (r.rank == null ? '&mdash;' : esc(r.rank)) +
+          '<small>' + esc(r.rank_label) + '</small></div>' +
+      '</div>';
+  }
+
+  function render() {
+    const list = document.getElementById('list');
+    const shown = ROWS.filter(visible);
+    const boards = ['Naukri', 'LinkedIn'];
+    let html = '';
+    boards.forEach(board => {
+      const group = shown.filter(r => r.board === board);
+      if (!group.length) return;
+      html += '<div class="group-head"><h2>' + board + '</h2>' +
+              '<span class="count">' + group.length + ' shown</span></div>';
+      html += group.map(rowHtml).join('');
+    });
+    list.innerHTML = html || '<p class="empty">Nothing matches this filter.</p>';
+    stats();
+  }
+
+  function stats() {
+    const n = (id, v) => document.getElementById(id).textContent = v;
+    const doneCount = ROWS.filter(r => applied[r.id] || r.status === 'applied').length;
+    n('s-total', ROWS.length);
+    n('s-new', ROWS.filter(r => r.new).length);
+    n('s-remote', ROWS.filter(r => r.remote).length);
+    n('s-applied', doneCount);
+    n('s-left', ROWS.length - doneCount);
+  }
+
+  document.getElementById('list').addEventListener('change', (e) => {
+    if (e.target.type !== 'checkbox') return;
+    const row = e.target.closest('.row');
+    const id = row.getAttribute('data-id');
+    if (e.target.checked) applied[id] = { date: TODAY };
+    else delete applied[id];
+    save(applied);
+    row.classList.toggle('done', e.target.checked);
+    if (filter === 'todo') render(); else stats();
+  });
+
+  function wire(selector, apply) {
+    document.querySelectorAll(selector).forEach(chip => {
+      chip.addEventListener('click', () => {
+        apply(chip);
+        document.querySelectorAll(selector).forEach(c =>
+          c.setAttribute('aria-pressed', String(c === chip)));
+        render();
+      });
+    });
+  }
+  wire('.chip[data-filter]', chip => { filter = chip.dataset.filter; });
+  wire('.chip[data-posted]', chip => {
+    postedMax = chip.dataset.posted === 'any' ? null : Number(chip.dataset.posted);
+  });
+
+  document.getElementById('q').addEventListener('input', (e) => {
+    query = e.target.value.trim().toLowerCase();
+    render();
+  });
+
+  render();
+</script>
+
+<style>
+  details.fgrp { display: inline-block; vertical-align: middle; border: 1px solid rgba(127,127,127,.28);
+    border-radius: 12px; padding: 3px 6px; }
+  details.fgrp > summary { display: inline-flex; align-items: center; gap: 4px; cursor: pointer; list-style: none;
+    font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase; opacity: .7;
+    padding: 4px 4px; white-space: nowrap; user-select: none; }
+  details.fgrp > summary::-webkit-details-marker { display: none; }
+  details.fgrp > summary::before { content: "\25B8"; font-size: 0.625rem; transition: transform .15s; }
+  details.fgrp[open] > summary::before { transform: rotate(90deg); }
+  details.fgrp > summary:hover { opacity: 1; }
+  details.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; vertical-align: middle; margin-left: 4px; }
+  details.fgrp:not([open]) { opacity: .9; }
+  /* a filter field: a labelled group, always open - only the whole toolbar collapses */
+  span.fgrp { display: inline-flex; align-items: center; flex-wrap: wrap; gap: 6px; vertical-align: middle;
+    border: 1px solid rgba(127,127,127,.28); border-radius: 12px; padding: 3px 8px; }
+  span.fgrp > .flabel { font-size: 0.6875rem; font-weight: 600; letter-spacing: .06em; text-transform: uppercase;
+    opacity: .7; padding: 4px 2px; white-space: nowrap; }
+  span.fgrp > .fbody { display: inline-flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+  /* the whole filter toolbar can be hidden: only its Filters button stays */
+  .tb-toggle { display: inline-flex; align-items: center; gap: 6px; cursor: pointer; font: inherit; font-size: 0.75rem; font-weight: 700;
+    letter-spacing: .05em; text-transform: uppercase; padding: 5px 10px; border-radius: 8px; border: 1px solid rgba(127,127,127,.35);
+    background: transparent; color: inherit; opacity: .85; flex: none; }
+  .tb-toggle:hover { opacity: 1; }
+  .tb-toggle::after { content: "\25B4"; font-size: 0.7rem; }
+  .tb-hidden .tb-toggle::after { content: "\25BE"; }
+  .tb-hidden > :not(.tb-toggle) { display: none !important; }
+  .tb-hidden { padding-top: 4px !important; padding-bottom: 4px !important; }
+
+  /* thin scrollbars that follow the page's light / dark theme */
+  :root { color-scheme: light dark; } :root[data-theme="light"] { color-scheme: light; } :root[data-theme="dark"] { color-scheme: dark; }
+  * { scrollbar-width: thin; }
+
+  /* V2 skin (the site's portfolio look): one layer over each page's own variables */
+  :root[data-ui="v2"] {
+    --bg: #E9EAE4; --surface: #FFFFFF; --surface-2: #F5F6F2; --card: #FFFFFF; --card2: #F5F6F2;
+    --ink: #11151A; --fg: #11151A; --muted: #4E575F; --line: #11151A; --line2: #C9CCC3;
+    --accent: #EE3D28; --accent-on: #FFFFFF; --accent-soft: rgba(238,61,40,.12); --accent-bg: rgba(238,61,40,.12);
+    --v2-mono: 'JetBrains Mono', ui-monospace, Menlo, Consolas, monospace; --v2-display: 'Archivo Black', Impact, system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) { :root[data-ui="v2"]:not([data-theme="light"]) {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); } }
+  :root[data-ui="v2"][data-theme="dark"] {
+    --bg: #0D1114; --surface: #151A1F; --surface-2: #1B2228; --card: #151A1F; --card2: #1B2228;
+    --ink: #ECEEE9; --fg: #ECEEE9; --muted: #98A4AC; --line: #2B333A; --line2: #232A30;
+    --accent: #FF5F49; --accent-on: #11151A; --accent-soft: rgba(255,95,73,.16); --accent-bg: rgba(255,95,73,.16); }
+  :root[data-ui="v2"] body, :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea {
+    font-family: 'Archivo', system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif; }
+  :root[data-ui="v2"] h1, :root[data-ui="v2"] h2, :root[data-ui="v2"] h3 { font-family: var(--v2-display); font-weight: 400; letter-spacing: -.01em; }
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tag, :root[data-ui="v2"] .pill, :root[data-ui="v2"] .ghost, :root[data-ui="v2"] .tb-toggle,
+  :root[data-ui="v2"] details.fgrp > summary, :root[data-ui="v2"] span.fgrp > .flabel, :root[data-ui="v2"] .muted, :root[data-ui="v2"] th, :root[data-ui="v2"] code {
+    font-family: var(--v2-mono); letter-spacing: .02em; }
+  :root[data-ui="v2"] *:not(svg):not(path):not(circle) { border-radius: 0 !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] input, :root[data-ui="v2"] select, :root[data-ui="v2"] textarea,
+  :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle, :root[data-ui="v2"] details.fgrp, :root[data-ui="v2"] span.fgrp { border: 2px solid var(--line) !important; }
+  :root[data-ui="v2"] button, :root[data-ui="v2"] .chip, :root[data-ui="v2"] .tb-toggle { box-shadow: 2px 2px 0 var(--line); font-weight: 700; }
+  :root[data-ui="v2"] .chip[aria-pressed="true"], :root[data-ui="v2"] button[aria-pressed="true"] { background: var(--accent) !important; color: #fff !important; }
+  :root[data-ui="v2"] [class*="card"], :root[data-ui="v2"] .app, :root[data-ui="v2"] .stat, :root[data-ui="v2"] section,
+  :root[data-ui="v2"] .q, :root[data-ui="v2"] .row, :root[data-ui="v2"] article { border-color: var(--line) !important; box-shadow: 3px 3px 0 var(--line); }
+</style>
+<script>
+(function () {
+  "use strict";
+  // collapsible filter groups, open / closed remembered
+  document.querySelectorAll("details.fgrp[data-acc]").forEach(function (d) {
+    var key = "acc:" + d.getAttribute("data-acc");
+    try { var v = localStorage.getItem(key); if (v !== null) d.open = v === "1"; } catch (e) { /* private window */ }
+    d.addEventListener("toggle", function () {
+      try { localStorage.setItem(key, d.open ? "1" : "0"); } catch (e) { /* private window */ }
+    });
+  });
+
+  // a Filters button on every filter toolbar: hides / shows the whole bar
+  var kind = (document.title || "page").split(/\s+/).slice(0, 2).join("-").toLowerCase();
+  var bars = Array.prototype.filter.call(document.querySelectorAll(".bar-tools, section.controls, div.bar"), function (el) {
+    return el.querySelector(".chip, input[type=search], .search, select");   // a real filter bar, not a progress bar
+  });
+  bars.forEach(function (bar, i) {
+    if (bar.querySelector(":scope > .tb-toggle")) return;
+    var key = "tb:" + kind + ":" + i, btn = document.createElement("button");
+    btn.type = "button"; btn.className = "tb-toggle";
+    function paint(hidden) {
+      bar.classList.toggle("tb-hidden", hidden);
+      btn.textContent = hidden ? "Show filters" : "Filters";
+      btn.setAttribute("aria-expanded", hidden ? "false" : "true");
+      btn.title = hidden ? "Show the filters" : "Hide the filters";
+    }
+    var hidden = false;
+    try { hidden = localStorage.getItem(key) === "1"; } catch (e) {}
+    bar.insertBefore(btn, bar.firstChild);
+    paint(hidden);
+    btn.addEventListener("click", function () {
+      var h = !bar.classList.contains("tb-hidden"); paint(h);
+      try { h ? localStorage.setItem(key, "1") : localStorage.removeItem(key); } catch (e) {}
+    });
+  });
+
+  // the site's theme / skin changed while this page is open: follow it
+  window.addEventListener("storage", function (e) {
+    if (e.key !== "jh:theme" && e.key !== "jh:ui") return;
+    var r = document.documentElement, t = localStorage.getItem("jh:theme") || "auto";
+    if (t === "light" || t === "dark") r.setAttribute("data-theme", t); else r.removeAttribute("data-theme");
+    if (localStorage.getItem("jh:ui") === "v2") r.setAttribute("data-ui", "v2"); else r.removeAttribute("data-ui");
+  });
+})();
+</script>
+
