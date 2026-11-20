@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-19T14:48:34Z",
+ "updated": "2026-11-20T06:33:27Z",
  "items": [
+  {
+   "id": "applications-20261120-063327-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-11-20T06:33:27Z",
+   "file": "data/applications/applications-20261120-063327-applications-sent.html",
+   "bytes": 21543832,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261120-063325-naukri-openings-2026-11-20-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-20 run 1 - Last 24h",
+   "when": "2026-11-20T06:33:25Z",
+   "file": "data/naukri/naukri-20261120-063325-naukri-openings-2026-11-20-run-1-last-24.html",
+   "bytes": 137517,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261120-063325-naukri-openings-2026-11-20-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "careers-20261119-144834-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -126,15 +146,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261119-073303-naukri-openings-2026-11-19-run-2-early.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261119-060346-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-11-19T06:03:46Z",
-   "file": "data/applications/applications-20261119-060346-applications-sent.html",
-   "bytes": 20786667,
-   "meta": {}
   },
   {
    "id": "careers-20261118-143050-engineer-senior-software-developer-sse-s",
@@ -2151,18 +2162,6 @@
    "bytes": 100867,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-1-last-24.jobs.json",
-    "jobs": "73"
-   }
-  },
-  {
-   "id": "naukri-20261030-084429-naukri-openings-2026-10-30-run-2-early",
-   "kind": "naukri",
-   "title": "Job Openings 2026-10-30 r2 - Early",
-   "when": "2026-10-30T08:44:29Z",
-   "file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-2-early.html",
-   "bytes": 35431,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261030-084429-naukri-openings-2026-10-30-run-2-early.jobs.json",
     "jobs": "73"
    }
   }
