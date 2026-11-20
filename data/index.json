@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-20T07:47:11Z",
+ "updated": "2026-11-20T09:50:10Z",
  "items": [
+  {
+   "id": "careers-20261120-095010-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE, senior backend engineer, .NET developer, C# developer, spring boot developer, API developer",
+   "when": "2026-11-20T09:50:10Z",
+   "file": "data/careers/careers-20261120-095010-engineer-senior-software-developer-sse-s.json",
+   "bytes": 3044405,
+   "meta": {
+    "jobs": "301",
+    "relocation": "6",
+    "countries": "IN",
+    "experience": "0-3",
+    "reloc_mode": "any",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "jobhunt-20261120-074711-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1677,26 +1697,6 @@
    "bytes": 63467,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261105-101859-naukri-openings-2026-10-20-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "careers-20261105-083543-engineer-senior-software-developer-sse-s",
-   "kind": "careers",
-   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-11-05T08:35:43Z",
-   "file": "data/careers/careers-20261105-083543-engineer-senior-software-developer-sse-s.json",
-   "bytes": 2878799,
-   "meta": {
-    "jobs": "204",
-    "relocation": "2",
-    "countries": "IN",
-    "experience": "0-3",
-    "reloc_mode": "any",
-    "days": "2",
-    "hours": "",
-    "min_salary": "12 LPA",
-    "list_sha": "ec840ae28566",
-    "list_count": "9110"
    }
   },
   {
