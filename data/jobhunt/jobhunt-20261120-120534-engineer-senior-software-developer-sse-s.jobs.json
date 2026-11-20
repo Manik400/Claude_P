@@ -1,0 +1,90 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Senior Backend Engineer, Backend Platform (PHP and Python)",
+  "company": "Manychat",
+  "url": "https://www.arbeitnow.nl/jobs/companies/manychat/senior-backend-engineer-backend-platform-php-and-python-amsterdam-netherlands-343456",
+  "country": "DE",
+  "location": "Amsterdam, Netherlands",
+  "remote": false,
+  "posted": "2026-11-19",
+  "posted_at": "2026-11-19T21:40:33+00:00",
+  "posted_raw": 1795124433,
+  "salary": "",
+  "snippet": "WHO WE ARE 🌍 Creating content that resonates is great — turning that attention into growth is even better. That's what Manychat does. Our AI-powered automations help creators and brands engage with audiences across Instagram, Messenger, WhatsApp, and TikTok — at the right moment, with the right message, minus the manual work. We're 400+ people across three continents behind the leading platform fo",
+  "description": "WHO WE ARE 🌍 Creating content that resonates is great — turning that attention into growth is even better. That's what Manychat does. Our AI-powered automations help creators and brands engage with audiences across Instagram, Messenger, WhatsApp, and TikTok — at the right moment, with the right message, minus the manual work. We're 400+ people across three continents behind the leading platform for conversational growth, with AI skills shaping how we build, how we work, and how we grow. WHO WE'RE LOOKING FOR 🌟 Want to own how the backend works for everyone, not just one corner of it? We’re looking for a Senior Backend Engineer who works across PHP and Python and wants a say in the bigger picture. You’ll lead company-level projects like our Auth Service: one authorization layer for PHP and Python, so Python products can handle their traffic directly instead of going through PHP. When things are unclear, you’ll research first, weigh the trade-offs and write them down. Then you’ll ship in small, safe steps. You’ll also decide where code should live based on what’s best for the system, not on which language you know best. Product teams will come to you for advice, reviews, and a way through when they're stuck. The team is still taking shape, so you'll also help define ownership, standards, and how we work. If that mix of deep technical work and influence across teams sounds like you, keep reading. YOUR FUTURE TEAMMATES 👋 Meet the Backend Platform team: We're a small team of engineers from core PHP, Infra, and AI backgrounds. We lead technical initiatives across the whole backend and own its health. Product teams build and run their own components, and we give them the tools, standards, and expertise to do it well. Each of us leads our own project, from planning to agreeing with other teams to production. We work in weekly cycles and write our decisions down. Right now we're bringing PHP and Python platform work together into one common backend platform. WHAT YOU'LL DO 🚀 Lead company-level technical projects end to end, from design and planning to rollout and support, such as completing our Auth Service development and shaping authorization as a separate layer for PHP and Python. Shape the shared PHP and Python platform, and decide where each module should live based on the needs of the whole system. Build the foundations that let new Python products launch and scale without being wired through PHP each time. Define clear ownership of technical components across the backend, including who owns monitoring and knowledge for each. Improve how we spot and handle problems: bug and incident management, less noise in alerts and error tracking, and Grafana Cloud dashboards for how services interact. Find root causes across PHP and Python services using metrics, logs, and distributed tracing. Make performance part of everyday work, not something we fix after incidents: clear performance metrics, tools that show where things slow down, and analysis of unusual user behavior that causes degradation. Make architecture decisions with high load in mind, working with databases, servers, proxies, and DNS alongside the Infra team. Work with the Security team to fix vulnerabilities, build in security practices, and keep libraries and dependencies up to date. Improve developer experience: dev environment, CI/CD, routine automation, one documentation approach for PHP and Python, and tools for AI coding assistants. Turn product teams' requests into solutions: find what really hurts, propose the best fix, and support them with architecture advice and reviews in shared components. TO SHINE IN THIS ROLE 💥 You'll need: Production backend experience in PHP or Python, and the ability to read and work with the other. You'll write production code in both. Experience with high-load production systems and improving their performance. Experience designing multi-component systems with clear boundaries, planning for failures, rollout, and rollback, with security in mind. Experience comparing technical options, naming the trade-offs, and explaining your choice in writing (ADRs, Design Docs). Hands-on observability experience: metrics, dashboards, alerts, logs, and distributed tracing, and using them to find root causes. Experience leading a project that spans several teams: breaking it into small, testable steps, getting other teams on board, and taking it to production. A track record of improving engineering quality beyond your own tasks, for example setting up error monitoring, or a new process when things kept breaking. Enough infrastructure knowledge (databases, servers, proxies, DNS) to work well with Infra and see how your changes affect them. Clear communication: you explain your point of view, find the real problem behind a request, and flag risks early. Experience leading work independently while supporting your team: taking feedback, helping colleagues grow, and changing your mind when the arguments are good. It would be great if you have: Experience on a Platform or Core team. Strong production experience in both PHP and Python. Experience with authentication and authorization systems (for example, JWT or Ory Oathkeeper). Experience defining SLOs and building symptom-based alerts. Experience running incidents and blameless post-mortems. Experience with Grafana Cloud, Rollbar, or similar tools. Experience building developer tooling, CI/CD, or tools for AI coding assistants. Experience mentoring engineers or leading knowledge sharing across teams. WHAT WE OFFER 🤗 We care deeply about your growth, well-being, and comfort: 🌍 Hybrid onboarding to start work remotely and relocation support for you and your family. 💙 Comprehensive health insurance for both you and your family. 📚 Professional development budget for conference tickets, online courses, and other relevant resources to help you grow. 🫶 Flexible benefits package: no one-size-fits-all perks here. You get a budget and you decide where it goes, from health and wellbeing to family and setting up your home office. 🪴 Hybrid work and generous, flexible time off — planned with your team, not rationed by a rigid quota. 🍽️ In-office perks, including free meals and snacks. 🤝 Company-funded sport activities, annual offsites and team-building events. 🤖 AI isn't a perk here — it's how we work. Claude, OpenAI, and more are on by default from day one, and we back teams in adopting whatever makes them faster. Manychat is an Equal Opportunity Employer. We’re committed to building a diverse and inclusive team. We do not discriminate against qualified employees or applicants because of race, color, religion, gender identity, sex, sexual preference, sexual identity, pregnancy, national origin, ancestry, citizenship, age, marital status, physical disability, mental disability, medical condition, military status, or any other characteristic protected by local law or ordinance. This commitment is also reflected through our candidate experience. If you have individual needs that may require an accommodation during the interview process, please indicate this in your application. We will do our best to provide assistance throughout your interview process to ensure you’re set up for success. By submitting my application I acknowledge that I have read and understood the company’s Candidate Privacy Statement available at Candidate Privacy Statement Find more English Speaking Jobs in Netherlands on Arbeitnow",
+  "skills": [
+   "Engineering"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "senior",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 40.7,
+  "matched_skills": [
+   "grafana",
+   "ci/cd",
+   "observability",
+   "english"
+  ],
+  "missing_skills": [
+   "php",
+   "python",
+   "artificial intelligence",
+   "monitoring",
+   "dns",
+   "jwt",
+   "mentoring",
+   "openai"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "1b742ef3e2fe",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…WE OFFER 🤗 We care deeply about your growth, well-being, and comfort: 🌍 Hybrid onboarding to start work remotely and relocation support for you and your family.…"
+   },
+   "semantic": 0.578,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with the platform's core infrastructure needs.",
+    "gaps": "Lacks direct PHP/Python backend experience and AI/observability expertise."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Amsterdam%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Amsterdam%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Amsterdam%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Senior%20engineer%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Senior%20engineer%22%29%20%22Amsterdam%22"
+     }
+    }
+   }
+  }
+ }
+]
