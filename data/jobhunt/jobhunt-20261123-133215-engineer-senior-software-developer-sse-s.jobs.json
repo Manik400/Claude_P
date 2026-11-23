@@ -1,0 +1,590 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Senior Site Reliability Engineer | Trading Infrastructure | Python/Linux",
+  "company": "Blocktech",
+  "url": "https://www.arbeitnow.nl/jobs/companies/blocktech/senior-site-reliability-engineer-trading-infrastructure-python-linux-amsterdam-140713",
+  "country": "DE",
+  "location": "Amsterdam",
+  "remote": false,
+  "posted": "2026-11-21",
+  "posted_at": "2026-11-21T18:40:33+00:00",
+  "posted_raw": 1795286433,
+  "salary": "",
+  "snippet": "BlockTech is hiring a Senior Site Reliability Engineer to join its Tech department in Amsterdam. Crypto markets never close, and neither does our trading. Bare-metal hosts, cloud instances, exchange connectivity, messaging, and the trading services on top all have to work around the clock. In this role, you'll sit between infrastructure, engineering, and trading, and follow every problem wherever",
+  "description": "BlockTech is hiring a Senior Site Reliability Engineer to join its Tech department in Amsterdam. Crypto markets never close, and neither does our trading. Bare-metal hosts, cloud instances, exchange connectivity, messaging, and the trading services on top all have to work around the clock. In this role, you'll sit between infrastructure, engineering, and trading, and follow every problem wherever it leads. About BlockTech BlockTech is an algorithmic trading firm headquartered in Amsterdam, with a second office in Singapore. We specialize in market making and trade cryptocurrency derivatives and spot markets globally, using our own capital. We're growing fast and expanding into new markets. We trade options and delta one around the clock on the largest crypto venues. Our platform runs on a Linux bare-metal fleet alongside cloud deployments in the regions where exchanges run, with services written in Python and Rust. What will you do? You will make sure everything works, and works properly. Most problems don't stay inside one team's boundaries: a strange fill might come from a network issue, a config change, or an exchange that changed its behavior without telling anyone. You understand what each service does for trading, what it costs when it breaks, and which fix matters most right now. You own an issue from the first alert to the long-term fix that stops it coming back. You will: Own the live environment. Monitor trading across all our venues, take charge of incidents, and own both the immediate fix and the long-term one. Bridge infrastructure, engineering, and trading. Translate a trader's “something looks off” into a root cause, and a root cause into a priority the right team can act on. Partner with the desk. Work closely with traders and quants, so reliability work is driven by what actually matters for PnL and risk. Debug across the full stack. Linux and network performance, exchange connectivity, messaging and databases (Kafka, NATS, Redis, PostgreSQL/TimescaleDB, ClickHouse), and the Python and Rust trading services themselves. Own our hybrid infrastructure. Run the bare-metal fleet and cloud deployments, plus their configuration management and deployment pipelines across environments. Build observability. Use Prometheus/VictoriaMetrics, Grafana, Sentry, and Kibana to catch a problem before the trading desk does. Change things safely. Plan and run maintenance, upgrades, and releases without trading going dark. Raise the bar. Cut toil with automation, and spread SRE practices across Tech so every team builds reliable systems from the start. What we're looking for You'll need: 5+ years running production systems where uptime and correctness matter, in an SRE, DevOps, systems, or software engineering role. At least 2 years of that in a trading environment (a trading firm, exchange, or broker), working directly with live trading systems and traders. A working understanding of how trading systems operate: order and quote flow, positions and PnL, exchange connectivity, and why latency and correctness matter. A commercial mindset. You can weigh technical trade-offs against business impact and explain them clearly to traders and engineers alike. Strong Linux skills, including troubleshooting performance at the OS and kernel level. Solid networking fundamentals: TCP/IP, UDP, and multicast, plus comfort reading a packet capture. Hands-on experience running production workloads in a public cloud (AWS or similar): networking (VPCs, peering, cross-region latency), compute choices, and infrastructure as code (Terraform or similar). Proficiency in Python, and the ability to read and debug code you didn't write, including our Rust services. Hands-on experience with configuration management (Ansible or similar) and CI/CD. Experience operating at least some of our stack: Kafka, NATS, PostgreSQL, ClickHouse, Redis, Prometheus, or Grafana. Calm, structured incident handling, and clear communication in English under pressure. Bonus points for: Experience with options or crypto markets. Exchange connectivity experience (WebSocket or FIX APIs). Low-latency or market-making environments. Hands-on Rust experience. Much of our platform is written in it. Network hardware (Arista, Cisco), routing protocols, or packet capture tooling. Server hardware and kernel tuning for low latency. Running data-heavy systems such as time-series databases. Pay, location, and relocation Compensation: a competitive base salary plus a performance bonus based on individual and company results. Trading fund: outstanding performance is rewarded with the opportunity to buy into the trading fund. Location: On-site at our Amsterdam office Visa: BlockTech sponsors the Dutch highly skilled migrant visa. Relocation: All-in relocation package and Dutch classes for international hires. Eligible hires may qualify for the 30% ruling. What else is in it for you Pension plan, company laptop, and home internet reimbursement An extensive in-house training program and an annual learning and development budget An environment that embraces AI, both to speed up your work and to advance our systems Gym reimbursement and sports during working hours: kickboxing, CrossFit, fitness, and soccer Weekly Friday drinks, monthly outings, quarterly sports competitions, and two trips abroad a year Daily breakfast and warm lunch, plus snacks and drinks all day How we work We're a team of trading and tech enthusiasts with a flat hierarchy. Have an idea today, and it can ship tomorrow. The best idea wins, whoever it comes from. This role comes with a high degree of autonomy. You'll own hard problems from the first alert to the long-term fix and solve them your way. We promote reverse leadership, give everyone an equal playing field, and invest in personal and professional development. Ready to keep a 24/7 trading firm running? Make your move and apply! You can expect to hear back from us within 5 working days. Our culture At our core, we are a team of passionate trading and tech enthusiasts committed to revolutionizing trading through automation. Our collaborative approach ensures that everyone contributes to achieving our ambitious goals. In this role, you will be both challenged and stretched, with ample opportunities for growth and development, both within and beyond your main responsibilities. We invest in our people by offering competitive compensation and benefits, fostering innovation, and celebrating success. Our commitment to personal development transcends traditional norms; we provide an equal playing field, promote reverse leadership, and offer boundless growth opportunities for all our employees. Join us to unlock your potential and drive innovation in the exciting world of algorithmic trading. Find Jobs in Netherlands on Arbeitnow",
+  "skills": [
+   "Tech"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 2.0,
+  "exp_max": null,
+  "seniority": "senior",
+  "fit": "fit",
+  "exp_class": "A",
+  "exp_class_label": "DIRECT MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 46.3,
+  "matched_skills": [
+   "linux",
+   "kafka",
+   "postgresql",
+   "prometheus",
+   "grafana",
+   "timescaledb",
+   "observability",
+   "devops",
+   "aws",
+   "ci/cd",
+   "english",
+   "websockets"
+  ],
+  "missing_skills": [
+   "site reliability",
+   "python",
+   "rust",
+   "redis",
+   "clickhouse",
+   "trading systems",
+   "dutch",
+   "team leadership"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "0c8eaa55680c",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Relocation: All-in relocation package and Dutch classes for international hires.…"
+   },
+   "semantic": 0.377,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with BlockTech's core infrastructure needs.",
+    "gaps": "Lacks direct trading system experience and Python/Rust proficiency required for live trading environments."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blocktech%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blocktech%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Amsterdam%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blocktech%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blocktech%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Amsterdam%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blocktech%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blocktech%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Amsterdam%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Blocktech%22%20%28%22Senior%20engineer%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Blocktech%22%20%28%22Senior%20engineer%22%29%20%22Amsterdam%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Senior Backend Engineer, Backend Platform (PHP and Python)",
+  "company": "Manychat",
+  "url": "https://www.arbeitnow.nl/jobs/companies/manychat/senior-backend-engineer-backend-platform-php-and-python-amsterdam-netherlands-239601",
+  "country": "DE",
+  "location": "Amsterdam, Netherlands",
+  "remote": false,
+  "posted": "2026-11-21",
+  "posted_at": "2026-11-21T18:40:34+00:00",
+  "posted_raw": 1795286434,
+  "salary": "",
+  "snippet": "WHO WE ARE 🌍 Creating content that resonates is great — turning that attention into growth is even better. That's what Manychat does. Our AI-powered automations help creators and brands engage with audiences across Instagram, Messenger, WhatsApp, and TikTok — at the right moment, with the right message, minus the manual work. We're 400+ people across three continents behind the leading platform fo",
+  "description": "WHO WE ARE 🌍 Creating content that resonates is great — turning that attention into growth is even better. That's what Manychat does. Our AI-powered automations help creators and brands engage with audiences across Instagram, Messenger, WhatsApp, and TikTok — at the right moment, with the right message, minus the manual work. We're 400+ people across three continents behind the leading platform for conversational growth, with AI skills shaping how we build, how we work, and how we grow. WHO WE'RE LOOKING FOR 🌟 Want to own how the backend works for everyone, not just one corner of it? We’re looking for a Senior Backend Engineer who works across PHP and Python and wants a say in the bigger picture. You’ll lead company-level projects like our Auth Service: one authorization layer for PHP and Python, so Python products can handle their traffic directly instead of going through PHP. When things are unclear, you’ll research first, weigh the trade-offs and write them down. Then you’ll ship in small, safe steps. You’ll also decide where code should live based on what’s best for the system, not on which language you know best. Product teams will come to you for advice, reviews, and a way through when they're stuck. The team is still taking shape, so you'll also help define ownership, standards, and how we work. If that mix of deep technical work and influence across teams sounds like you, keep reading. YOUR FUTURE TEAMMATES 👋 Meet the Backend Platform team: We're a small team of engineers from core PHP, Infra, and AI backgrounds. We lead technical initiatives across the whole backend and own its health. Product teams build and run their own components, and we give them the tools, standards, and expertise to do it well. Each of us leads our own project, from planning to agreeing with other teams to production. We work in weekly cycles and write our decisions down. Right now we're bringing PHP and Python platform work together into one common backend platform. WHAT YOU'LL DO 🚀 Lead company-level technical projects end to end, from design and planning to rollout and support, such as completing our Auth Service development and shaping authorization as a separate layer for PHP and Python. Shape the shared PHP and Python platform, and decide where each module should live based on the needs of the whole system. Build the foundations that let new Python products launch and scale without being wired through PHP each time. Define clear ownership of technical components across the backend, including who owns monitoring and knowledge for each. Improve how we spot and handle problems: bug and incident management, less noise in alerts and error tracking, and Grafana Cloud dashboards for how services interact. Find root causes across PHP and Python services using metrics, logs, and distributed tracing. Make performance part of everyday work, not something we fix after incidents: clear performance metrics, tools that show where things slow down, and analysis of unusual user behavior that causes degradation. Make architecture decisions with high load in mind, working with databases, servers, proxies, and DNS alongside the Infra team. Work with the Security team to fix vulnerabilities, build in security practices, and keep libraries and dependencies up to date. Improve developer experience: dev environment, CI/CD, routine automation, one documentation approach for PHP and Python, and tools for AI coding assistants. Turn product teams' requests into solutions: find what really hurts, propose the best fix, and support them with architecture advice and reviews in shared components. TO SHINE IN THIS ROLE 💥 You'll need: Production backend experience in PHP or Python, and the ability to read and work with the other. You'll write production code in both. Experience with high-load production systems and improving their performance. Experience designing multi-component systems with clear boundaries, planning for failures, rollout, and rollback, with security in mind. Experience comparing technical options, naming the trade-offs, and explaining your choice in writing (ADRs, Design Docs). Hands-on observability experience: metrics, dashboards, alerts, logs, and distributed tracing, and using them to find root causes. Experience leading a project that spans several teams: breaking it into small, testable steps, getting other teams on board, and taking it to production. A track record of improving engineering quality beyond your own tasks, for example setting up error monitoring, or a new process when things kept breaking. Enough infrastructure knowledge (databases, servers, proxies, DNS) to work well with Infra and see how your changes affect them. Clear communication: you explain your point of view, find the real problem behind a request, and flag risks early. Experience leading work independently while supporting your team: taking feedback, helping colleagues grow, and changing your mind when the arguments are good. It would be great if you have: Experience on a Platform or Core team. Strong production experience in both PHP and Python. Experience with authentication and authorization systems (for example, JWT or Ory Oathkeeper). Experience defining SLOs and building symptom-based alerts. Experience running incidents and blameless post-mortems. Experience with Grafana Cloud, Rollbar, or similar tools. Experience building developer tooling, CI/CD, or tools for AI coding assistants. Experience mentoring engineers or leading knowledge sharing across teams. WHAT WE OFFER 🤗 We care deeply about your growth, well-being, and comfort: 🌍 Hybrid onboarding to start work remotely and relocation support for you and your family. 💙 Comprehensive health insurance for both you and your family. 📚 Professional development budget for conference tickets, online courses, and other relevant resources to help you grow. 🫶 Flexible benefits package: no one-size-fits-all perks here. You get a budget and you decide where it goes, from health and wellbeing to family and setting up your home office. 🪴 Hybrid work and generous, flexible time off — planned with your team, not rationed by a rigid quota. 🍽️ In-office perks, including free meals and snacks. 🤝 Company-funded sport activities, annual offsites and team-building events. 🤖 AI isn't a perk here — it's how we work. Claude, OpenAI, and more are on by default from day one, and we back teams in adopting whatever makes them faster. Manychat is an Equal Opportunity Employer. We’re committed to building a diverse and inclusive team. We do not discriminate against qualified employees or applicants because of race, color, religion, gender identity, sex, sexual preference, sexual identity, pregnancy, national origin, ancestry, citizenship, age, marital status, physical disability, mental disability, medical condition, military status, or any other characteristic protected by local law or ordinance. This commitment is also reflected through our candidate experience. If you have individual needs that may require an accommodation during the interview process, please indicate this in your application. We will do our best to provide assistance throughout your interview process to ensure you’re set up for success. By submitting my application I acknowledge that I have read and understood the company’s Candidate Privacy Statement available at Candidate Privacy Statement Find Jobs in Netherlands on Arbeitnow",
+  "skills": [
+   "Engineering"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "senior",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 39.1,
+  "matched_skills": [
+   "grafana",
+   "ci/cd",
+   "observability"
+  ],
+  "missing_skills": [
+   "php",
+   "python",
+   "artificial intelligence",
+   "monitoring",
+   "dns",
+   "jwt",
+   "mentoring",
+   "openai"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "717e4b0e829b",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…WE OFFER 🤗 We care deeply about your growth, well-being, and comfort: 🌍 Hybrid onboarding to start work remotely and relocation support for you and your family.…"
+   },
+   "semantic": 0.578,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with Kafka, PostgreSQL, and AWS aligns with the platform's core infrastructure needs.",
+    "gaps": "Lacks direct PHP/Python backend experience and AI/observability expertise required for this role."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Amsterdam%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Amsterdam%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Amsterdam%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Manychat%22%20%28%22Senior%20engineer%22%29%20%22Amsterdam%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Manychat%22%20%28%22Senior%20engineer%22%29%20%22Amsterdam%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Propulsion Data & Modeling Engineer",
+  "company": "The Exploration Company",
+  "url": "https://www.arbeitnow.fr/jobs/companies/the-exploration-company/propulsion-data-modeling-engineer-bordeaux-26107",
+  "country": "DE",
+  "location": "Bordeaux, France",
+  "remote": false,
+  "posted": "2026-11-22",
+  "posted_at": "2026-11-22T15:40:13+00:00",
+  "posted_raw": 1795362013,
+  "salary": "",
+  "snippet": "Here at The Exploration Company, we are building spacecraft for humanity. The heart of a spacecraft lies in its propulsion system, and that's why we, at The Exploration Company, are dedicated to developing our own cutting-edge Propulsion Systems ensuring the highest level of efficiency and reliability in our space endeavours. We want you as a talented Propulsion Functional Systems Engineer to cont",
+  "description": "Here at The Exploration Company, we are building spacecraft for humanity. The heart of a spacecraft lies in its propulsion system, and that's why we, at The Exploration Company, are dedicated to developing our own cutting-edge Propulsion Systems ensuring the highest level of efficiency and reliability in our space endeavours. We want you as a talented Propulsion Functional Systems Engineer to contribute to the development, testing, analysis, prediction and refinement of the functional architecture for Nyx Earth Propulsion System Development Models. In order to derisk and gain confidence on the flight propulsion system, different development models are being built in order to run a multitude of tests spanning from functional tests, cold flows to system level hot fires. This testing will allow for the verification and validation of all the propulsion subsystems. You will be responsible for bridging the gap between design and hardware testing for the Nyx spacecraft propulsion system. As such, you will work closely with both the design and testing teams to ensure seamless integration and validation of propulsion subsystems. You will report to the Propulsion Development Models Principal Engineer. Key responsibilities: In your capacity as a Propulsion Functional Systems Engineer, you will be responsible for the development of analysis, post processing, and prediction tools that can support testing and design activities linked to the propulsion sub-systems. Your role will be continuously evolving, but day-to-day responsibilities will include: During the Design Phase: Work closely with the pressure and feed system engineers to define the best configuration of the test setups, ensuring a high level of representativeness and testability to conduct all fluid modelling and analyses to verify repeatability of the test rigs with the flight systems and to perform test predictions. Support on the creation of test plans for propulsion subsystems (from a modeling perspective), including data acquisition, analysis, and reporting to ensure the performance of the system can be assessed. Design and develop propulsion analysis and post processing tools, to support testing activities and design maturation Work in close collaboration with the pressure and feed system engineers to ensure the anchoring of the different fluidic models and assess against test data During testing phase: Provide on-site support during propulsion test campaigns, working closely with the test operator and test conductor. Perform test campaigns, analysing in real-time, through different test parameters and ensure test results with timely resolution of any anomaly arising during testing. Conduct pre-test and post-test reviews and elaborate the test reports. Update and correlate the fluidic models based on test results. Provide actionable insights to identify key performance indicators and potential critical scenarios What we would love to see from you: A minimum of a bachelor's degree in a related Engineering discipline. +3 years of related experience in complex fluid systems, fluidic modeling, data analysis and data post processing. Strong engineering fundamentals in thermodynamics, fluid dynamics, and combustion principles. Familiarity with test facilities, or storable propulsion systems is an asset Experience in propulsion systems storable or cryogenic fluidic systems is a plus. Proficiency in python for fluid analyses, data post processing and model anchoring. Experience in EcosimPro (or similar software) for the high fidelity analysis of numerical twins. Proficiency in conducting fluid analyses using classical hand calculations Excellent collaboration skills for working effectively across multidisciplinary teams. Fluency in English. Skills and Behaviours: Strong oral and written communication skills. Strong analysis and problem-solving skills. Strong organizing and prioritization of tasks. Strong team player with a proactive mindset. Positive and flexible attitude to get the job done. Ability to communicate at all levels of the business. Demonstrates behaviours consistent with The Exploration Company’s core values of Mission, Vision, Integrity, Excellence and Teamwork. Space enthusiast, ready to change the European space industry. Nice to have, Ecosim experience Why you should join us! What makes us special here at The Exploration Company and why we think you will enjoy working here is: We’re Agile - we make decisions fast whilst keeping our goals and systems in mind We’re Open and Collaborative - we are transparent about risks and obstacles, so that we can cooperate to overcome them We have a lot of Fun - we refuel our energy knowing we are democratising space. It’s a wonderful and rare opportunity, are YOU up for the challenge? We'd love to hear from you if you wish to be a part of our journey. Please submit your CV now for immediate consideration and we will be in touch shortly. The Exploration Company is an equal opportunity employer and values diversity. We do not discriminate based on race, religion, colour, national origin, gender, sexual orientation, age, marital status or disability status. Relocation assistance is provided for those willing to relocate including visa sponsorship where applicable. All offers are contingent upon the successful completion of a background check, which will be subject to the country, role, and project you applied for. By submitting your application, you acknowledge and agree that any offer of employment may be conditional upon successful condition of this check. The Exploration Company partners with Zinc Work Limited located in the UK (Zinc), a third-party provider, to ensure this process as efficient and transparent as possible. If applicable, you will receive an email from Zinc upon acceptance of your offer with a link to a secure portal where you can provide the required information to Zinc. Find more English Speaking Jobs in France on Arbeitnow",
+  "skills": [
+   "Engineering"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 3.0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 38.1,
+  "matched_skills": [
+   "english",
+   "agile"
+  ],
+  "missing_skills": [
+   "data analysis",
+   "python"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "46dc0582be0e",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "yes",
+    "evidence": "…Relocation assistance is provided for those willing to relocate including visa sponsorship where applicable.…"
+   },
+   "semantic": 0.133,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Candidate has strong backend and data engineering skills with Kafka, PostgreSQL, and cloud experience, aligning well with the need for analysis and post-processing tools.",
+    "gaps": "Lacks direct propulsion modeling experience and Python proficiency, which are critical for fluid dynamics analysis and simulation work."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bordeaux%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bordeaux%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bordeaux%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Senior%20engineer%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Senior%20engineer%22%29%20%22Bordeaux%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Senior Propulsion Test Engineer",
+  "company": "The Exploration Company",
+  "url": "https://www.arbeitnow.fr/jobs/companies/the-exploration-company/senior-propulsion-test-engineer-bordeaux-162552",
+  "country": "DE",
+  "location": "Bordeaux, France",
+  "remote": false,
+  "posted": "2026-11-22",
+  "posted_at": "2026-11-22T15:40:13+00:00",
+  "posted_raw": 1795362013,
+  "salary": "",
+  "snippet": "Here at The Exploration Company, we are building spacecraft for humanity. We are developing, producing, and operating Nyx, a modular and reusable space orbital vehicle that can eventually be refuelled in orbit, and which carries cargo – and potentially humans in the long run. We are also developing different types of propulsion systems to power our future vehicles and missions. As a talented Senio",
+  "description": "Here at The Exploration Company, we are building spacecraft for humanity. We are developing, producing, and operating Nyx, a modular and reusable space orbital vehicle that can eventually be refuelled in orbit, and which carries cargo – and potentially humans in the long run. We are also developing different types of propulsion systems to power our future vehicles and missions. As a talented Senior Propulsion Test Engineer , you will be responsible for the test and analysis of our future propulsion systems. Key Responsibilities: In your capacity as a Senior Propulsion Test Engineer , your role will be continuously evolving, but day to day your duties will include: Prepare and execute tests at the engine and component level to evaluate hardware performance. Developing test plans, test objectives and schedules consistent with requirements and timelines; leading daily test operations and generating test reports. Autonomously leading risk assessment analyses and defining mitigation actions to ensure personnel and hardware safety during all test campaigns. Interpreting P&IDs and generating test sequences, balancing the risk, needs of the test and the limits of the test bench and test article. Working hand in hand with development engineers, test bench team, AIT team and external partners to support all test operations on internal and external test facilities. Supporting rapid test data processing with component development engineers to guide the remainder of the test campaign and plan future test campaigns. Defining, developing and updating test procedures and guidelines to improve test operations. Preparing technical documentation, including detailed procedures, test reports, design reviews, and performance analyses. What we would love to see from you: Bachelor's, master's or PhD in aerospace engineering, mechanical engineering, or a related field (master's and above preferred). 3–5 years of experience in propulsion testing or related fields. Proficiency in propulsion chemistry, thermodynamics, and fluid dynamics. Proven hands-on experience with engine testing or equivalent. Background in cryogenic propulsion will be a big plus. Experience with commonly used simulation tools in propulsion testing (e.g., CEA). Proficiency in python programming language is a plus. Exposure to CAD Software (Siemens NX, CATIA, or similar) and Geometric Dimensioning and Tolerancing. Strong problem-solving and analytical abilities. Excellent communication and leadership skills, with the ability to convey complex concepts to diverse audiences. Why you should join us! What makes us special here at The Exploration Company and why we think you will enjoy working here is: We’re Agile - we make decisions fast whilst keeping our goals and systems in mind We’re Open and Collaborative - we are transparent about risks and obstacles, so that we can cooperate to overcome them We have a lot of Fun - we refuel our energy knowing we are democratising space. It’s a wonderful and rare opportunity, are YOU up for the challenge? We'd love to hear from you if you wish to be a part of our journey. Please submit your CV now for immediate consideration and we will be in touch shortly. The Exploration Company is an equal opportunity employer and values diversity. We do not discriminate based on race, religion, colour, national origin, gender, sexual orientation, age, marital status or disability status. Relocation assistance is provided for those willing to relocate including visa sponsorship where applicable. All offers are contingent upon the successful completion of a background check, which will be subject to the country, role, and project you applied for. By submitting your application, you acknowledge and agree that any offer of employment may be conditional upon successful condition of this check. The Exploration Company partners with Zinc Work Limited located in the UK (Zinc), a third-party provider, to ensure this process as efficient and transparent as possible. If applicable, you will receive an email from Zinc upon acceptance of your offer with a link to a secure portal where you can provide the required information to Zinc. Find more English Speaking Jobs in France on Arbeitnow",
+  "skills": [
+   "MAIT"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": 3.0,
+  "exp_max": 5.0,
+  "seniority": "senior",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 30.5,
+  "matched_skills": [
+   "agile",
+   "english"
+  ],
+  "missing_skills": [
+   "technical documentation",
+   "python",
+   "team leadership"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "467607e66df2",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "yes",
+    "evidence": "…Relocation assistance is provided for those willing to relocate including visa sponsorship where applicable.…"
+   },
+   "semantic": 0.085,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with high-throughput systems and data processing aligns well with the technical rigor of propulsion testing. However, the candidate lacks specific propulsion engineering knowledge, cryogenic experience, and hands-o",
+    "gaps": "Missing critical propulsion-specific expertise, cryogenic experience, and hands-on engine testing skills."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Bordeaux%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Bordeaux%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Bordeaux%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22The%20Exploration%20Company%22%20%28%22Senior%20engineer%22%29%20%22Bordeaux%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22The%20Exploration%20Company%22%20%28%22Senior%20engineer%22%29%20%22Bordeaux%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "adzuna",
+  "source_name": "Adzuna",
+  "title": "Propulsion Systems Engineer",
+  "company": "Northrop Grumman",
+  "url": "https://www.adzuna.com.au/details/5973904906?utm_medium=api&utm_source=28f9775f",
+  "country": "AU",
+  "location": "Mascot, Rockdale Area",
+  "remote": null,
+  "posted": "2026-11-21",
+  "posted_at": "2026-11-21T20:27:09+00:00",
+  "posted_raw": "2026-11-21T20:27:09Z",
+  "salary": "",
+  "snippet": "AUSTRALIAN CITIZENSHIP REQUIRED FOR THIS POSITION: Yes RELOCATION ASSISTANCE: Relocation assistance may be available CLEARANCE TYPE: AU- Secret (NV1) TRAVEL: Yes, 10% of the Time Description We are Northrop Grumman Australia (NGA). Our 800 strong team is leveraging unparalleled global resources to deliver sovereign Defence capability aligned to the Government’s priorities across Aeronautics, Missi",
+  "description": "",
+  "skills": [],
+  "employment_type": "permanent",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 29.8,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "136926bf5774",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…AUSTRALIAN CITIZENSHIP REQUIRED FOR THIS POSITION: Yes RELOCATION ASSISTANCE: Relocation assistance may be available CLEARANCE TYPE: AU- Secret (NV1) TRAVEL: Yes, 10% of the Time Description We are Northrop Grumman Australia (NGA).…"
+   },
+   "semantic": 0.0,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong Java/Cloud experience with Kafka, PostgreSQL, and AWS aligns well with propulsion system engineering and distributed system requirements.",
+    "gaps": "Significant gap in aerospace defense clearance (AU- Secret) and specific propulsion systems knowledge required by Northrop Grumman."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Northrop%20Grumman%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mascot%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Northrop%20Grumman%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Mascot%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Northrop%20Grumman%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mascot%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Northrop%20Grumman%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Mascot%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Northrop%20Grumman%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mascot%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Northrop%20Grumman%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Mascot%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Northrop%20Grumman%22%20%28%22Senior%20engineer%22%29%20%22Mascot%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Northrop%20Grumman%22%20%28%22Senior%20engineer%22%29%20%22Mascot%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Sales Engineer Enterprise - French",
+  "company": "Brevo",
+  "url": "https://www.arbeitnow.fr/jobs/companies/brevo/sales-engineer-enterprise-french-paris-france-369268",
+  "country": "DE",
+  "location": "Paris, France",
+  "remote": false,
+  "posted": "2026-11-23",
+  "posted_at": "2026-11-23T03:26:20+00:00",
+  "posted_raw": 1795404380,
+  "salary": "t and enterprise deals (€5K–€50K MRR). Strong technical skills in marketing automation, API int",
+  "snippet": "At Brevo, we’re not just building a CRM. With our technology, we’re helping millions of organizations build lasting relationships with their customers. From emails and SMS to WhatsApp, Chat, and Marketing Automation, our tools are intuitive, powerful, and built to scale with every ambition. We give businesses a clear view of the customer journey, so they can focus on what matters: connection. As a",
+  "description": "At Brevo, we’re not just building a CRM. With our technology, we’re helping millions of organizations build lasting relationships with their customers. From emails and SMS to WhatsApp, Chat, and Marketing Automation, our tools are intuitive, powerful, and built to scale with every ambition. We give businesses a clear view of the customer journey, so they can focus on what matters: connection. As a certified B Corp , we’re proud to grow with purpose, committed to high standards of social and environmental impact, not just performance. Today, more than 500,000 businesses across 180 countries —from NGOs like Amnesty International to global brands like Carrefour, eBay, Louis Vuitton, and Michelin—trust Brevo to engage their audiences, cut through complexity, and deliver results. Our reliable technology and 75+ integrations help them create unparalleled customer experiences, without the usual tech headaches. We recently exceeded 200m ARR and reached a major milestone by becoming a Unicorn , backed by strong growth and global expansion - and we’re just getting started! The Sales Engineer drives revenue growth in the French region while serving as the critical link between market needs, product strategy, and sales team effectiveness. This role balances three core missions: closing new business (primary focus), establishing a product feedback loop, and validating the setup for implementation with integrators. Your Impact at Brevo: Revenue Generation : Partner with Account Executives (typically 3 AEs) to win deals through technical excellence, conducting tailored demonstrations, designing solutions for complex integration requirements, leading technical discovery, and addressing objections throughout the sales cycle. Execute comprehensive deal handoffs to onboarding teams with detailed technical documentation. Product Intelligence & Feedback Loop : Serve as the voice of the market by systematically capturing and communicating insights that shape Brevo's product roadmap. Track and quantify MRR lost due to product limitations or missing features. Participate in regular product feedback sessions with Product Management, providing competitive intelligence, market trend analysis, and feature request prioritization based on revenue impact Product Enablement : Collaborate with the Sales Engineer team to maintain expert-level knowledge of Brevo's products and actively contribute to the team's technical expertise. Share new use cases using recent product releases, product training sessions, create technical sales collateral (demo scripts, integration guides, battle cards), and share best practices from successful customer conversations Design technical solutions addressing API integrations, data flow architecture, CRM system connectivity, and data migration strategies for mid-market (up to 2,000 employees) and enterprise prospects Work closely with integrator partners: collaborate on the scoping of the project, evaluate the effort of implementation, validate the hypothesis of the integrator, bring the technical Product expertise to check the realistic timeline for implementation Develop and deliver enablement content including solution frameworks, technical positioning guides, and objection-handling techniques Monitor industry trends and integration ecosystem developments to ensure Brevo remains competitive in technical capabilities Who you are: 3+ years in SaaS Sales Engineering/Solutions Consulting, supporting complex mid-market and enterprise deals (€5K–€50K MRR). Strong technical skills in marketing automation, API integrations, data modeling, and platform connectivity; able to design end-to-end solutions. Understanding of REST/GraphQL APIs, OAuth/API keys/JWT, and web protocols (HTTP/HTTPS, DNS). CDP experience is a plus. AI enthusiast : proven use of AI skills, agents, illustrate productivity gain with AI, being able to create custom agents to solve recurring pain points. MCP knwoledge is a plus. Proven track record partnering with AEs, supporting multiple reps, and driving high win rates. Experience collaborating with Product to translate market needs, quantify revenue impact, and guide competitive positioning. Experience with integrator partners is a big plus. Excellent communicator able to translate complex technical concepts into clear business value. Analytical, highly organized and self-motivated. Native french speaker; business fluent in English Engineering or business degree with strong technical aptitude (Plus). Why people love working at Brevo: A place to grow, together : Join an international team in a bright, collaborative office located in a vibrant neighborhood. Practical perks for everyday balance: RTT days off, 50% public transport reimbursement, Sustainable Mobility Package (whether you ride a classic bike or go electric, we support your choice to commute greener) and daily Swile meal vouchers (€ 12.50/day) . Learning, every step of the way: Access to English classes and 155,000+ courses on Udemy, plus a strong internal culture of knowledge-sharing and support. Flexible for life : A remote-friendly setup, budget to support your home workspace, and relocation assistance for international talents. Wellbeing that works : Top-notch private healthcare (70% covered), 6-week second-parent leave, extra time off if your child is sick and needs you, and Several services related to prevention, health and personal and professional well-being on Welii platform A culture that cares : From inter-office trips to regular team events, there are plenty of ways to connect beyond your day-to-day. You’ll also find active social, green, and LGBTQIA+ communities, plus Work Council benefits via Leeto, all here to support what matters to you, inside and outside of work. Our candidate journey: Introductory TA call (30 min) Hiring Manager Interview Case Study Final interview with VP Revenue Operations (30 min) Whoever you are, wherever you’re from, if this role speaks to you, we’d love to hear from you. Find more English Speaking Jobs in France on Arbeitnow",
+  "skills": [
+   "Analytics"
+  ],
+  "employment_type": "Full-Time",
+  "exp_min": 3.0,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 29.5,
+  "matched_skills": [
+   "english"
+  ],
+  "missing_skills": [
+   "french",
+   "artificial intelligence",
+   "technical documentation",
+   "product management",
+   "graphql",
+   "oauth",
+   "jwt",
+   "dns"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "a3e475f1ba9c",
+  "extra": {
+   "salary_stated": true,
+   "salary_inr": 4600000,
+   "salary_lpa": 46.0,
+   "salary_text": "t and enterprise deals (€5K–€50K MRR). Strong technical skills in marketing automation, API int",
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Flexible for life : A remote-friendly setup, budget to support your home workspace, and relocation assistance for international talents.…"
+   },
+   "semantic": 0.175,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend engineering background with proven performance optimization and distributed systems experience, aligning with Brevo's technical needs.",
+    "gaps": "Lacks direct sales experience and product management skills required for this role."
+   },
+   "is_mnc": false,
+   "lpa": 46.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Brevo%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Brevo%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Brevo%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Brevo%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Brevo%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Brevo%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Brevo%22%20%28%22Senior%20engineer%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Brevo%22%20%28%22Senior%20engineer%22%29%20%22Paris%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "seek",
+  "source_name": "Seek",
+  "title": "Senior Mechanical Engineer",
+  "company": "APPRO Engineering",
+  "url": "https://www.seek.com.au/job/96056357",
+  "country": "AU",
+  "location": "Rockhampton, Rockhampton & Capricorn Coast QLD · Hybrid",
+  "remote": false,
+  "posted": "2026-11-23",
+  "posted_at": "2026-11-23T06:01:57+00:00",
+  "posted_raw": "2026-11-23T06:01:57Z",
+  "salary": "$140,000 – $180,000 per year",
+  "snippet": "RPEQ analysis and certification of heavy plant and equipment. Make real engineering decisions, reporting directly to the Principal. Compressed 4-day week or 9-day fortnight. $140k–$180k + super, plus relocation support Genuine technical authority and project ownership",
+  "description": "",
+  "skills": [],
+  "employment_type": "Full time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "senior",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 24.3,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "d0ab21dc7403",
+  "extra": {
+   "category": "Mechanical Engineering",
+   "salary_stated": true,
+   "salary_inr": 15120000,
+   "salary_lpa": 151.2,
+   "salary_text": "$140,000 – $180,000 per year",
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…$140k–$180k + super, plus relocation support Genuine technical authority and project ownership"
+   },
+   "semantic": 0.096,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong background in distributed systems, high-throughput data processing, and cloud infrastructure aligns with the engineering rigor required for heavy plant equipment certification.",
+    "gaps": "Significant gap in mechanical design, manufacturing processes, and RPEQ analysis methodologies."
+   },
+   "is_mnc": false,
+   "lpa": 151.2,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Rockhampton%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Rockhampton%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Rockhampton%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Senior%20engineer%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Senior%20engineer%22%29%20%22Rockhampton%22"
+     }
+    }
+   }
+  }
+ }
+]
