@@ -24,6 +24,37 @@
    }
   },
   {
+   "id": "applications-20261123-080821-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-11-23T08:08:21Z",
+   "file": "data/applications/applications-20261123-080821-applications-sent.html",
+   "bytes": 23727135,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261123-080811-naukri-openings-2026-11-23-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-23 run 2 - Early",
+   "when": "2026-11-23T08:08:11Z",
+   "file": "data/naukri/naukri-20261123-080811-naukri-openings-2026-11-23-run-2-early.html",
+   "bytes": 58807,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261123-080811-naukri-openings-2026-11-23-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261123-080810-naukri-openings-2026-11-23-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-23 run 1 - Last 24h",
+   "when": "2026-11-23T08:08:10Z",
+   "file": "data/naukri/naukri-20261123-080810-naukri-openings-2026-11-23-run-1-last-24.html",
+   "bytes": 50740,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261123-080810-naukri-openings-2026-11-23-run-1-last-24.jobs.json"
+   }
+  },
+  {
    "id": "careers-20261122-135215-engineer-senior-software-developer-sse-s",
    "kind": "careers",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE, senior backend engineer, .NET developer, C# developer, spring boot developer, API developer",
@@ -289,15 +320,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261121-065442-naukri-openings-2026-11-21-run-3.jobs.json"
    }
-  },
-  {
-   "id": "applications-20261121-053335-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-11-21T05:33:35Z",
-   "file": "data/applications/applications-20261121-053335-applications-sent.html",
-   "bytes": 22246981,
-   "meta": {}
   },
   {
    "id": "careers-20261120-142914-engineer-senior-software-developer-sse-s",
@@ -2141,28 +2163,6 @@
    "bytes": 28090,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261101-081215-naukri-openings-2026-11-01-run-2-early.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261101-081215-naukri-openings-2026-11-01-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-01 run 3",
-   "when": "2026-11-01T08:12:15Z",
-   "file": "data/naukri/naukri-20261101-081215-naukri-openings-2026-11-01-run-3.html",
-   "bytes": 61699,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261101-081215-naukri-openings-2026-11-01-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261101-081214-naukri-openings-2026-10-15-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-15 run 3",
-   "when": "2026-11-01T08:12:14Z",
-   "file": "data/naukri/naukri-20261101-081214-naukri-openings-2026-10-15-run-3.html",
-   "bytes": 133317,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261101-081214-naukri-openings-2026-10-15-run-3.jobs.json"
    }
   }
  ],
