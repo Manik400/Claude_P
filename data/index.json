@@ -1,6 +1,15 @@
 {
- "updated": "2026-11-24T10:23:26Z",
+ "updated": "2026-11-24T11:03:20Z",
  "items": [
+  {
+   "id": "accuracy-20261124-110320-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-11-24T11:03:20Z",
+   "file": "data/accuracy/accuracy-20261124-110320-accuracy-learning.html",
+   "bytes": 23494,
+   "meta": {}
+  },
   {
    "id": "jobhunt-20261124-102326-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -44,15 +53,6 @@
    "meta": {
     "jobs_file": "data/naukri/naukri-20261124-083417-naukri-openings-2026-11-24-run-3.jobs.json"
    }
-  },
-  {
-   "id": "accuracy-20261124-083417-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-11-24T08:34:17Z",
-   "file": "data/accuracy/accuracy-20261124-083417-accuracy-learning.html",
-   "bytes": 23494,
-   "meta": {}
   },
   {
    "id": "naukri-20261124-083416-naukri-openings-2026-11-24-run-1-last-24",
