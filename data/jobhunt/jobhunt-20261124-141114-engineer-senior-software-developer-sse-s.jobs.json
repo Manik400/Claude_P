@@ -1,0 +1,341 @@
+[
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Development Engineer – HydroDrive",
+  "company": "Actana Consulting Services GmbH",
+  "url": "https://www.arbeitnow.com/jobs/companies/actana-consulting-services-gmbh/development-engineer-hydrodrive-munich-118274",
+  "country": "DE",
+  "location": "Munich",
+  "remote": false,
+  "posted": "2026-11-24",
+  "posted_at": "2026-11-24T10:01:07+00:00",
+  "posted_raw": 1795514467,
+  "salary": "",
+  "snippet": "Your tasks: •Support set up, commission, and test hydraulic components and complete systems on test benches and in vehicles, with a focus on functionality •Apply and optimize hydrostatic drive systems (e. g. HydroDrive) •Support in analyzing and interpretation measurement data, including developing small custom scripts for evaluation •Development of AWD and eAWD Solutions for Commercial Vehicles •",
+  "description": "Your tasks: •Support set up, commission, and test hydraulic components and complete systems on test benches and in vehicles, with a focus on functionality •Apply and optimize hydrostatic drive systems (e. g. HydroDrive) •Support in analyzing and interpretation measurement data, including developing small custom scripts for evaluation •Development of AWD and eAWD Solutions for Commercial Vehicles •Use automotive development and diagnostic tools (e.g., Vector CANalyzer/CANoe, INCA) and evaluation tools (e.g., AVL Concerto, FEV Uniplot) •Apply measurement and sensor technologies in hydraulic systems Your Qualifications: • Technical degree in mechanical, mechatronic, or automotive engineering, or a comparable qualification Experience in automotive development and familiarity with relevant tools and systems •Knowledge of vehicle integration system design •Interest and experience in Commercial Vehicles and All Wheel Drive Systems •Willingness to travel • Strong communication skills in both English and German, written and spoken •Team-oriented mindset and experience in project-based collaboration •High interest in understanding and living the working methods and cultures across all brands •Experience with hydrostatic systems, particularly hydrostatic drive systems •Proficiency in using analysis tools to evaluate validation data •Basic knowledge of and/or experience with the system simulation of hydraulic systems (1D) Our Employee Benefits: Above-average pay Individual further training Travel expenses Regular employee events Fitness studio Company pension scheme Relocation support Find Jobs in Germany on Arbeitnow",
+  "skills": [
+   "Automotive Engineering"
+  ],
+  "employment_type": "Permanent employment (unbefristeter arbeitsvertrag), professional / experienced",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 62.7,
+  "matched_skills": [
+   "system design",
+   "english",
+   "german"
+  ],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "",
+  "id": "d75ea4c764c2",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…pay Individual further training Travel expenses Regular employee events Fitness studio Company pension scheme Relocation support Find Jobs in Germany on Arbeitnow"
+   },
+   "semantic": 0.024,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong backend experience with Kafka, PostgreSQL, and AWS aligns with the candidate's technical background, though the candidate lacks specific automotive engineering knowledge and hydrostatic drive system experience.",
+    "gaps": "Lacks automotive engineering degree and specific experience with hydrostatic drive systems and hydraulic component testing."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Munich%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Munich%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Munich%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Senior%20engineer%22%29%20%22Munich%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Actana%20Consulting%20Services%20GmbH%22%20%28%22Senior%20engineer%22%29%20%22Munich%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "MLE/MLOps",
+  "company": "Whitecircle",
+  "url": "https://www.arbeitnow.fr/jobs/companies/whitecircle/mle-mlops-paris-152059",
+  "country": "DE",
+  "location": "Paris",
+  "remote": false,
+  "posted": "2026-11-24",
+  "posted_at": "2026-11-24T00:40:10+00:00",
+  "posted_raw": 1795480810,
+  "salary": "at scale. We've raised $11M from top funds, founders, and senior leaders at OpenAI, Anthropic,",
+  "snippet": "TLDR: We’re looking for an MLE / MLOps Engineer to own how our models get to production and stay there: GPU Kubernetes, releases and rollbacks, observability, and turning research prototypes into services people can rely on (roughly half infra, half delivery). About us White Circle is an AI Safety company building the safety, reliability, and optimization layer for AI systems. At the core of our p",
+  "description": "TLDR: We’re looking for an MLE / MLOps Engineer to own how our models get to production and stay there: GPU Kubernetes, releases and rollbacks, observability, and turning research prototypes into services people can rely on (roughly half infra, half delivery). About us White Circle is an AI Safety company building the safety, reliability, and optimization layer for AI systems. At the core of our platform are policies – simple natural-language rules that define what an AI model should and shouldn't do. We automatically test, enforce, and continuously improve these policies at scale. We've raised $11M from top funds, founders, and senior leaders at OpenAI, Anthropic, HuggingFace, Mistral, DeepMind, Datadog, Sentry, and others We process over one hundred million API calls every month We fine-tune and train our own LLMs so they run faster and cheaper than any open or proprietary model What you'll do Deploy models from the research team to production and own those deployments end-to-end, including shadow evaluation and canary rollouts before a model takes full traffic. Build and maintain the release process for models: rollout, rollback, bringing up new pods, versioning of models and serving configs. Move our GPU workloads from Nomad to Kubernetes. Cluster setup, networking and security are already covered. Your part is the GPU layer: scheduling, autoscaling, NVIDIA drivers and device plugins, and an API researchers use to submit jobs. Own observability and reliability of our GPU services: metrics, dashboards and alerts for latency, throughput, queue depth and GPU utilization, and incident investigation when those numbers move. Develop and maintain internal services and pipelines that begin as research prototypes, such as data labeling and policy discovery. This is hands-on software engineering and makes up about half of the role. Maintain the environment researchers run experiments in: Kubernetes with the relevant plugins, SageMaker where it fits. Who you are 3+ years running ML systems in production, GPU workloads in particular Strong Kubernetes. You’ve operated GPU nodes and know what breaks between the driver, the runtime and the container Comfortable with Prometheus, PromQL and Grafana. You can read the logs and metrics of an inference service and say what’s wrong You’ve built release pipelines with canaries and rollbacks, and used them under pressure You write code well enough to take someone else’s prototype and turn it into a service you’d be happy to be paged for You’d rather ship and run models than research and train them. You like finishing things more than starting them A plus: hands-on experience with vLLM, SGLang, TensorRT or TensorZero, a Nomad-to-Kubernetes migration behind you, GPU autoscalers and job schedulers. Compensation & benefits Competitive compensation, including equity Flexible time off Office in central London/Paris with flexible hybrid setup Relocation support if you’re moving to Paris, available after your probationary period Premium private health insurance Mental health support, including coverage for therapy when you need it Quarterly sports allowance for the gym, classes, or whatever keeps you active Lunch and dinner covered when you work from the office Learning and development support for courses, conferences, and opportunities to grow your skills All the hardware, subscriptions, tools, and services you need Team off-sites twice a year: we’ve recently been to the Alps, Saint-Tropez, and Marbella How we hire Intro call with Talent Take-home assignment Technical interview with DevOps Engineer Technical interview with Head of Engineering and Head of Applied Research Final call with CEO Compensation: $100K – $150K • Offers Equity • Relocation package • $100K – $150K • Offers Equity • Relocation package Find Jobs in France on Arbeitnow",
+  "skills": [
+   "Research"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 0.4,
+  "score": 36.5,
+  "matched_skills": [
+   "observability",
+   "prometheus",
+   "grafana",
+   "devops"
+  ],
+  "missing_skills": [
+   "kubernetes",
+   "artificial intelligence",
+   "mlops",
+   "openai",
+   "anthropic",
+   "hugging face",
+   "datadog",
+   "llm"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "efbbea14ae7b",
+  "extra": {
+   "salary_stated": true,
+   "salary_inr": 924000000,
+   "salary_lpa": 9240.0,
+   "salary_text": "at scale. We've raised $11M from top funds, founders, and senior leaders at OpenAI, Anthropic,",
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Competitive compensation, including equity Flexible time off Office in central London/Paris with flexible hybrid setup Relocation support if you’re moving to Paris, available after your probationary period Premium private health insurance Mental health support, including coverage for therapy…"
+   },
+   "semantic": 0.472,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong MLOps background with 2 years of GPU/K8s experience, Prometheus/Grafana observability skills, and proven ability to ship production services.",
+    "gaps": "Limited direct MLOps/AI experience compared to the role's focus on AI safety and LLM deployment."
+   },
+   "is_mnc": false,
+   "lpa": 9240.0,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Whitecircle%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Whitecircle%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Paris%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Whitecircle%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Whitecircle%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Paris%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Whitecircle%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Whitecircle%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Paris%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Whitecircle%22%20%28%22Senior%20engineer%22%29%20%22Paris%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Whitecircle%22%20%28%22Senior%20engineer%22%29%20%22Paris%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "arbeitnow",
+  "source_name": "Arbeitnow",
+  "title": "Software Engineer, Inference",
+  "company": "Mistral.ai",
+  "url": "https://www.arbeitnow.co.uk/jobs/companies/mistralai/software-engineer-inference-london-335484",
+  "country": "DE",
+  "location": "London",
+  "remote": false,
+  "posted": "2026-11-24",
+  "posted_at": "2026-11-24T09:40:12+00:00",
+  "posted_raw": 1795513212,
+  "salary": "",
+  "snippet": "About Mistral Mistral provides full-stack AI solutions: from frontier models to developer tools, applications, and compute. We partner with enterprises tackling the hardest problems across high-stakes industries like finance, manufacturing, defense, healthcare, and the public sector, co-creating customized AI systems that they can run on their terms. We are a dynamic, collaborative team passionate",
+  "description": "About Mistral Mistral provides full-stack AI solutions: from frontier models to developer tools, applications, and compute. We partner with enterprises tackling the hardest problems across high-stakes industries like finance, manufacturing, defense, healthcare, and the public sector, co-creating customized AI systems that they can run on their terms. We are a dynamic, collaborative team passionate about AI and its potential to transform society. Our diverse workforce thrives in competitive environments and is committed to driving innovation. Our teams are distributed between Europe, North America, Asia and the Middle East. We are creative, low-ego and team-spirited. About the role The Inference team builds and runs the systems that serve Mistral's models to the world. We own the path from a trained model to a response on someone's screen. That includes the APIs and gateway that requests come through, routing and scheduling across our GPU fleet, and the capacity, deployment and operations work that keeps it all running. Our work serves two groups. Customers need fast, reliable and cost-efficient inference as usage keeps growing. Our researchers rely on the same systems for evaluation, data generation and reinforcement learning, so what we build feeds directly into the next generation of models. What You Will Do As an Engineer on Inference, you'll build and run the services that sit between our users and our models. The work is close to the product and to the hardware, and the improvements you make show up quickly in latency, reliability, cost and how fast we can ship new models. Experience with LLM inference is a plus, but it isn't a requirement. We're just as interested in strong Systems Engineers from other backgrounds who are keen to go deep on serving. A few of the problems our teams work on: Designing and evolving our inference APIs, so model capabilities like tool calling, structured outputs and new modalities are available to developers on launch day. The backend services and gateway every request passes through, from authentication, streaming and rate limiting to usage metering, observability and end-to-end reliability. Routing, load balancing and autoscaling across our clusters, so we absorb traffic spikes without wasting GPUs. Faster, safer rollouts of new models and serving releases. What We're Looking For Have several years of experience shipping and running backend or distributed systems that serve real production traffic. Write high-quality production code, and are comfortable using AI coding tools without compromising on it. Care about performance and reliability, and enjoy making systems faster, cheaper and more robust. Have led the design of significant systems, making the right trade-offs and seeing them through to production. Raise the bar for the engineers around you through code review, design discussions and mentoring. It’s a plus if you’ve shipped production backend services in Python or Go, or operated Kubernetes and cloud infrastructure at scale Experience with LLM serving engines such as vLLM is a strong plus. What We Offer We offer a comprehensive benefits package designed to support your well-being, growth, and work-life balance. Benefits vary by country and may include healthcare coverage, parental leave, retirement plans, relocation support, wellness programs, meal and transportation allowances, and other location-specific perks. For the most up-to-date details on benefits available in your location, please refer to our Benefits page . Privacy Policy Your privacy matters to us. You can learn more about how we handle your personal data in our Applicant Privacy Policy . Find Jobs in United Kingdom on Arbeitnow",
+  "skills": [
+   "Engineering & Infra"
+  ],
+  "employment_type": "Full Time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "",
+  "fit": "unknown",
+  "exp_class": "B",
+  "exp_class_label": "STRONG POTENTIAL MATCH",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 33.5,
+  "matched_skills": [
+   "observability",
+   "distributed systems",
+   "code review"
+  ],
+  "missing_skills": [
+   "artificial intelligence",
+   "llm",
+   "reinforcement learning",
+   "load balancing",
+   "mentoring",
+   "python",
+   "kubernetes"
+  ],
+  "also_on": [],
+  "query": "",
+  "id": "bff2cd7d4555",
+  "extra": {
+   "salary_stated": false,
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…Benefits vary by country and may include healthcare coverage, parental leave, retirement plans, relocation support, wellness programs, meal and transportation allowances, and other location-specific perks.…"
+   },
+   "semantic": 0.284,
+   "score_confidence": "high",
+   "ai_summary": {
+    "why": "Strong experience with distributed systems, Kafka, and observability aligns well with the role's focus on high-throughput inference services and system reliability.",
+    "gaps": "Lacks direct LLM inference experience and Kubernetes expertise, though strong in backend systems and observability."
+   },
+   "is_mnc": false,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22London%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22London%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22London%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22Mistral.ai%22%20%28%22Senior%20engineer%22%29%20%22London%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22Mistral.ai%22%20%28%22Senior%20engineer%22%29%20%22London%22"
+     }
+    }
+   }
+  }
+ },
+ {
+  "source": "seek",
+  "source_name": "Seek",
+  "title": "Senior Mechanical Engineer",
+  "company": "APPRO Engineering",
+  "url": "https://www.seek.com.au/job/96056357",
+  "country": "AU",
+  "location": "Rockhampton, Rockhampton & Capricorn Coast QLD · Hybrid",
+  "remote": false,
+  "posted": "2026-11-23",
+  "posted_at": "2026-11-23T06:01:57+00:00",
+  "posted_raw": "2026-11-23T06:01:57Z",
+  "salary": "$140,000 – $180,000 per year",
+  "snippet": "RPEQ analysis and certification of heavy plant and equipment. Make real engineering decisions, reporting directly to the Principal. Compressed 4-day week or 9-day fortnight. $140k–$180k + super, plus relocation support Genuine technical authority and project ownership",
+  "description": "",
+  "skills": [],
+  "employment_type": "Full time",
+  "exp_min": null,
+  "exp_max": null,
+  "seniority": "senior",
+  "fit": "stretch",
+  "exp_class": "C",
+  "exp_class_label": "STRETCH OPPORTUNITY",
+  "freshness": "Very fresh",
+  "relevance": 1.0,
+  "score": 24.3,
+  "matched_skills": [],
+  "missing_skills": [],
+  "also_on": [],
+  "query": "engineer",
+  "id": "d0ab21dc7403",
+  "extra": {
+   "category": "Mechanical Engineering",
+   "salary_stated": true,
+   "salary_inr": 15120000,
+   "salary_lpa": 151.2,
+   "salary_text": "$140,000 – $180,000 per year",
+   "reloc": {
+    "label": "yes",
+    "relocation": "yes",
+    "visa": "unknown",
+    "evidence": "…$140k–$180k + super, plus relocation support Genuine technical authority and project ownership"
+   },
+   "semantic": 0.096,
+   "score_confidence": "low",
+   "ai_summary": {
+    "why": "Strong background in distributed systems, high-throughput data processing, and cloud infrastructure aligns with the engineering rigor required for heavy plant equipment certification.",
+    "gaps": "Significant gap in mechanical design, manufacturing processes, and RPEQ analysis methodologies."
+   },
+   "is_mnc": false,
+   "lpa": 151.2,
+   "lpa_kind": "stated",
+   "lpa_source": "the posting",
+   "pay_bonus": 8.0,
+   "contacts": {
+    "domain": "",
+    "site": "",
+    "emails": [],
+    "people": [],
+    "searches": {
+     "Tech recruiters": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Technical%20Recruiter%22%20OR%20%22Talent%20Acquisition%22%20OR%20%22Recruiter%22%29%20%22Rockhampton%22"
+     },
+     "Engineering managers": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Engineering%20Manager%22%20OR%20%22Team%20Lead%22%29%20%22Rockhampton%22"
+     },
+     "Head of Engineering / CTO": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Head%20of%20Engineering%22%20OR%20%22VP%20Engineering%22%20OR%20%22CTO%22%29%20%22Rockhampton%22"
+     },
+     "Senior engineer": {
+      "linkedin": "https://www.linkedin.com/search/results/people/?keywords=%22APPRO%20Engineering%22%20%28%22Senior%20engineer%22%29%20%22Rockhampton%22",
+      "google": "https://www.google.com/search?q=site%3Alinkedin.com/in%20%22APPRO%20Engineering%22%20%28%22Senior%20engineer%22%29%20%22Rockhampton%22"
+     }
+    }
+   }
+  }
+ }
+]
