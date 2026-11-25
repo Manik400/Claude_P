@@ -1,6 +1,17 @@
 {
- "updated": "2026-11-24T16:05:45Z",
+ "updated": "2026-11-25T07:59:04Z",
  "items": [
+  {
+   "id": "naukri-20261125-075904-naukri-openings-2026-11-25-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-25 run 1 - Last 24h",
+   "when": "2026-11-25T07:59:04Z",
+   "file": "data/naukri/naukri-20261125-075904-naukri-openings-2026-11-25-run-1-last-24.html",
+   "bytes": 89112,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261125-075904-naukri-openings-2026-11-25-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "careers-20261124-160545-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -2153,18 +2164,6 @@
    "bytes": 42499,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261104-094541-naukri-openings-2026-11-04-run-2-early.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261104-094521-naukri-openings-2026-11-04-run-1-last-24",
-   "kind": "naukri",
-   "title": "Job Openings 2026-11-04 r1 - Last 24h",
-   "when": "2026-11-04T09:45:21Z",
-   "file": "data/naukri/naukri-20261104-094521-naukri-openings-2026-11-04-run-1-last-24.html",
-   "bytes": 96789,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261104-094521-naukri-openings-2026-11-04-run-1-last-24.jobs.json",
-    "jobs": "54"
    }
   }
  ],
