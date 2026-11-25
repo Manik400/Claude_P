@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-25T13:24:29Z",
+ "updated": "2026-11-25T15:53:11Z",
  "items": [
+  {
+   "id": "careers-20261125-155311-engineer-senior-software-developer-sse-s",
+   "kind": "careers",
+   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE, senior backend engineer, .NET developer, C# developer, spring boot developer, API developer",
+   "when": "2026-11-25T15:53:11Z",
+   "file": "data/careers/careers-20261125-155311-engineer-senior-software-developer-sse-s.json",
+   "bytes": 2811885,
+   "meta": {
+    "jobs": "5",
+    "relocation": "4",
+    "countries": "DE,AU",
+    "experience": "0-3",
+    "reloc_mode": "visa",
+    "days": "2",
+    "hours": "",
+    "min_salary": "12 LPA",
+    "list_sha": "ec840ae28566",
+    "list_count": "9110"
+   }
+  },
   {
    "id": "jobhunt-20261125-132429-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
@@ -1770,26 +1790,6 @@
     "worldwide": "",
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261111-070354-engineer-senior-software-developer-sse-s.jobs.json"
-   }
-  },
-  {
-   "id": "careers-20261110-132240-engineer-senior-software-developer-sse-s",
-   "kind": "careers",
-   "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
-   "when": "2026-11-10T13:22:40Z",
-   "file": "data/careers/careers-20261110-132240-engineer-senior-software-developer-sse-s.json",
-   "bytes": 2737596,
-   "meta": {
-    "jobs": "1",
-    "relocation": "1",
-    "countries": "DE,AU",
-    "experience": "0-3",
-    "reloc_mode": "visa",
-    "days": "2",
-    "hours": "",
-    "min_salary": "12 LPA",
-    "list_sha": "ec840ae28566",
-    "list_count": "9110"
    }
   },
   {
