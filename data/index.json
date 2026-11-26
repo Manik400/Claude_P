@@ -24,6 +24,17 @@
    }
   },
   {
+   "id": "naukri-20261126-083518-naukri-openings-2026-11-26-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-26 run 1 - Last 24h",
+   "when": "2026-11-26T08:35:18Z",
+   "file": "data/naukri/naukri-20261126-083518-naukri-openings-2026-11-26-run-1-last-24.html",
+   "bytes": 136627,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261126-083518-naukri-openings-2026-11-26-run-1-last-24.jobs.json"
+   }
+  },
+  {
    "id": "careers-20261125-155311-engineer-senior-software-developer-sse-s",
    "kind": "careers",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE, senior backend engineer, .NET developer, C# developer, spring boot developer, API developer",
@@ -2153,17 +2164,6 @@
    "bytes": 68011,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261104-113300-naukri-openings-2026-11-04-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261104-113258-naukri-openings-2026-10-19-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-19 run 3",
-   "when": "2026-11-04T11:32:58Z",
-   "file": "data/naukri/naukri-20261104-113258-naukri-openings-2026-10-19-run-3.html",
-   "bytes": 83763,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261104-113258-naukri-openings-2026-10-19-run-3.jobs.json"
    }
   }
  ],
