@@ -1,6 +1,106 @@
 {
- "updated": "2026-11-26T15:25:46Z",
+ "updated": "2026-11-27T07:14:24Z",
  "items": [
+  {
+   "id": "naukri-20261127-071424-naukri-openings-2026-11-27-run-3",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-27 run 3",
+   "when": "2026-11-27T07:14:24Z",
+   "file": "data/naukri/naukri-20261127-071424-naukri-openings-2026-11-27-run-3.html",
+   "bytes": 63089,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071424-naukri-openings-2026-11-27-run-3.jobs.json"
+   }
+  },
+  {
+   "id": "accuracy-20261127-071424-accuracy-learning",
+   "kind": "accuracy",
+   "title": "Accuracy & learning",
+   "when": "2026-11-27T07:14:24Z",
+   "file": "data/accuracy/accuracy-20261127-071424-accuracy-learning.html",
+   "bytes": 23505,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261127-071423-naukri-openings-2026-11-09-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-09 run 1 - Last 24h",
+   "when": "2026-11-27T07:14:23Z",
+   "file": "data/naukri/naukri-20261127-071423-naukri-openings-2026-11-09-run-1-last-24.html",
+   "bytes": 54946,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071423-naukri-openings-2026-11-09-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261127-071423-naukri-openings-2026-11-27-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-27 run 1 - Last 24h",
+   "when": "2026-11-27T07:14:23Z",
+   "file": "data/naukri/naukri-20261127-071423-naukri-openings-2026-11-27-run-1-last-24.html",
+   "bytes": 137509,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071423-naukri-openings-2026-11-27-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261127-071423-naukri-openings-2026-11-27-run-2-early",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-27 run 2 - Early",
+   "when": "2026-11-27T07:14:23Z",
+   "file": "data/naukri/naukri-20261127-071423-naukri-openings-2026-11-27-run-2-early.html",
+   "bytes": 34320,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071423-naukri-openings-2026-11-27-run-2-early.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261127-071422-naukri-openings-2026-11-06-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-06 run 1 - Last 24h",
+   "when": "2026-11-27T07:14:22Z",
+   "file": "data/naukri/naukri-20261127-071422-naukri-openings-2026-11-06-run-1-last-24.html",
+   "bytes": 136203,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071422-naukri-openings-2026-11-06-run-1-last-24.jobs.json"
+   }
+  },
+  {
+   "id": "naukri-20261127-071348-naukri-openings-2026-11-27-run-2-early",
+   "kind": "naukri",
+   "title": "Job Openings 2026-11-27 r2 - Early",
+   "when": "2026-11-27T07:13:48Z",
+   "file": "data/naukri/naukri-20261127-071348-naukri-openings-2026-11-27-run-2-early.html",
+   "bytes": 34320,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071348-naukri-openings-2026-11-27-run-2-early.jobs.json",
+    "jobs": "50"
+   }
+  },
+  {
+   "id": "naukri-20261127-071348-naukri-openings-2026-11-27-run-3",
+   "kind": "naukri",
+   "title": "Job Openings 2026-11-27 r3",
+   "when": "2026-11-27T07:13:48Z",
+   "file": "data/naukri/naukri-20261127-071348-naukri-openings-2026-11-27-run-3.html",
+   "bytes": 63089,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071348-naukri-openings-2026-11-27-run-3.jobs.json",
+    "jobs": "50"
+   }
+  },
+  {
+   "id": "naukri-20261127-071347-naukri-openings-2026-11-27-run-1-last-24",
+   "kind": "naukri",
+   "title": "Job Openings 2026-11-27 r1 - Last 24h",
+   "when": "2026-11-27T07:13:47Z",
+   "file": "data/naukri/naukri-20261127-071347-naukri-openings-2026-11-27-run-1-last-24.html",
+   "bytes": 137509,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261127-071347-naukri-openings-2026-11-27-run-1-last-24.jobs.json",
+    "jobs": "50"
+   }
+  },
   {
    "id": "careers-20261126-152546-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -20,15 +120,6 @@
     "list_sha": "ec840ae28566",
     "list_count": "9110"
    }
-  },
-  {
-   "id": "accuracy-20261126-143720-accuracy-learning",
-   "kind": "accuracy",
-   "title": "Accuracy & learning",
-   "when": "2026-11-26T14:37:20Z",
-   "file": "data/accuracy/accuracy-20261126-143720-accuracy-learning.html",
-   "bytes": 23564,
-   "meta": {}
   },
   {
    "id": "jobhunt-20261126-130456-engineer-senior-software-developer-sse-s",
@@ -1950,72 +2041,6 @@
    }
   },
   {
-   "id": "naukri-20261110-070809-naukri-openings-2026-11-10-run-2",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-10 run 2",
-   "when": "2026-11-10T07:08:09Z",
-   "file": "data/naukri/naukri-20261110-070809-naukri-openings-2026-11-10-run-2.html",
-   "bytes": 71361,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261110-070809-naukri-openings-2026-11-10-run-2.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261110-070809-naukri-openings-2026-11-10-run-3-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-10 run 3 - Last 24h",
-   "when": "2026-11-10T07:08:09Z",
-   "file": "data/naukri/naukri-20261110-070809-naukri-openings-2026-11-10-run-3-last-24.html",
-   "bytes": 37203,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261110-070809-naukri-openings-2026-11-10-run-3-last-24.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261110-070809-naukri-openings-2026-11-10-run-4",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-10 run 4",
-   "when": "2026-11-10T07:08:09Z",
-   "file": "data/naukri/naukri-20261110-070809-naukri-openings-2026-11-10-run-4.html",
-   "bytes": 103692,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261110-070809-naukri-openings-2026-11-10-run-4.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261110-070808-naukri-openings-2026-11-10-run-1-early",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-10 run 1 - Early",
-   "when": "2026-11-10T07:08:08Z",
-   "file": "data/naukri/naukri-20261110-070808-naukri-openings-2026-11-10-run-1-early.html",
-   "bytes": 39154,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261110-070808-naukri-openings-2026-11-10-run-1-early.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261109-194814-naukri-openings-2026-10-22-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-22 run 3",
-   "when": "2026-11-09T19:48:14Z",
-   "file": "data/naukri/naukri-20261109-194814-naukri-openings-2026-10-22-run-3.html",
-   "bytes": 81029,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261109-194814-naukri-openings-2026-10-22-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261109-184306-naukri-openings-2026-11-09-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-09 run 1 - Last 24h",
-   "when": "2026-11-09T18:43:06Z",
-   "file": "data/naukri/naukri-20261109-184306-naukri-openings-2026-11-09-run-1-last-24.html",
-   "bytes": 54946,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261109-184306-naukri-openings-2026-11-09-run-1-last-24.jobs.json"
-   }
-  },
-  {
    "id": "jobhunt-20261109-120038-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -2104,17 +2129,6 @@
    }
   },
   {
-   "id": "naukri-20261107-213312-naukri-openings-2026-11-06-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-06 run 1 - Last 24h",
-   "when": "2026-11-07T21:33:12Z",
-   "file": "data/naukri/naukri-20261107-213312-naukri-openings-2026-11-06-run-1-last-24.html",
-   "bytes": 136203,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261107-213312-naukri-openings-2026-11-06-run-1-last-24.jobs.json"
-   }
-  },
-  {
    "id": "jobhunt-20261107-103650-engineer-senior-software-developer-sse-s",
    "kind": "jobhunt",
    "title": "engineer, senior software developer, SSE, SDE II, SDE 2, senior software engineer, software engineer II, software engineer 2, software engineer, software developer, backend engineer, backend developer, full stack engineer, full stack developer, frontend engineer, frontend developer, java developer, SWE, SDE",
@@ -2156,17 +2170,6 @@
     "worldwide": "",
     "dates_checked": "80",
     "jobs_file": "data/jobhunt/jobhunt-20261107-062727-engineer-senior-software-developer-sse-s.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261105-120303-naukri-openings-2026-10-21-run-3",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-10-21 run 3",
-   "when": "2026-11-05T12:03:03Z",
-   "file": "data/naukri/naukri-20261105-120303-naukri-openings-2026-10-21-run-3.html",
-   "bytes": 55255,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261105-120303-naukri-openings-2026-10-21-run-3.jobs.json"
    }
   }
  ],
