@@ -1,6 +1,26 @@
 {
- "updated": "2026-11-28T14:34:13Z",
+ "updated": "2026-11-28T18:03:02Z",
  "items": [
+  {
+   "id": "applications-20261128-180302-applications-sent",
+   "kind": "applications",
+   "title": "Applications sent",
+   "when": "2026-11-28T18:03:02Z",
+   "file": "data/applications/applications-20261128-180302-applications-sent.html",
+   "bytes": 26284066,
+   "meta": {}
+  },
+  {
+   "id": "naukri-20261128-180300-naukri-openings-2026-11-28-run-1-last-24",
+   "kind": "naukri",
+   "title": "Naukri openings 2026-11-28 run 1 - Last 24h",
+   "when": "2026-11-28T18:03:00Z",
+   "file": "data/naukri/naukri-20261128-180300-naukri-openings-2026-11-28-run-1-last-24.html",
+   "bytes": 34856,
+   "meta": {
+    "jobs_file": "data/naukri/naukri-20261128-180300-naukri-openings-2026-11-28-run-1-last-24.jobs.json"
+   }
+  },
   {
    "id": "careers-20261128-143413-engineer-senior-software-developer-sse-s",
    "kind": "careers",
@@ -702,15 +722,6 @@
     "jobs_file": "data/naukri/naukri-20261124-083405-naukri-openings-2026-11-24-run-2-early.jobs.json",
     "jobs": "77"
    }
-  },
-  {
-   "id": "applications-20261124-063611-applications-sent",
-   "kind": "applications",
-   "title": "Applications sent",
-   "when": "2026-11-24T06:36:11Z",
-   "file": "data/applications/applications-20261124-063611-applications-sent.html",
-   "bytes": 24095104,
-   "meta": {}
   },
   {
    "id": "careers-20261123-162214-engineer-senior-software-developer-sse-s",
@@ -2049,17 +2060,6 @@
    "bytes": 136889,
    "meta": {
     "jobs_file": "data/naukri/naukri-20261111-080029-naukri-openings-2026-11-11-run-3.jobs.json"
-   }
-  },
-  {
-   "id": "naukri-20261111-080028-naukri-openings-2026-11-11-run-1-last-24",
-   "kind": "naukri",
-   "title": "Naukri openings 2026-11-11 run 1 - Last 24h",
-   "when": "2026-11-11T08:00:28Z",
-   "file": "data/naukri/naukri-20261111-080028-naukri-openings-2026-11-11-run-1-last-24.html",
-   "bytes": 90317,
-   "meta": {
-    "jobs_file": "data/naukri/naukri-20261111-080028-naukri-openings-2026-11-11-run-1-last-24.jobs.json"
    }
   },
   {
